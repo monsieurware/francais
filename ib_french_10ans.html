@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module d'apprentissage : "10 ans de nous" et Identités</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #764ba2;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #667eea;
+            margin-top: 30px;
+        }
+        .vocab {
+            position: relative;
+            display: inline;
+            color: #764ba2;
+            font-weight: 600;
+            cursor: help;
+            border-bottom: 2px dotted #667eea;
+        }
+        .vocab:hover {
+            background-color: #f0f0ff;
+        }
+        .definition {
+            display: none;
+            position: absolute;
+            background: #2d3748;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: normal;
+            width: 250px;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 5px;
+        }
+        .definition::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: #2d3748;
+        }
+        .vocab:hover .definition {
+            display: block;
+        }
+        .section {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+        .question {
+            background: #fff5e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+        }
+        .question strong {
+            color: #ff9800;
+        }
+        .example {
+            background: #e8f5e9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+        .ib-link {
+            background: #e3f2fd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+        .toggle-section {
+            cursor: pointer;
+            user-select: none;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            border-radius: 5px;
+            margin: 10px 0;
+            transition: background 0.3s;
+        }
+        .toggle-section:hover {
+            background: #764ba2;
+        }
+        .toggle-content {
+            display: none;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .toggle-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Module d'apprentissage IB : "10 ans de nous" de Ben Mazué</h1>
+        <p><strong>Thème IB :</strong> Identités | <strong>Niveau :</strong> French B SL/HL</p>
+
+        <div class="section">
+            <h2>📖 Contexte de la chanson</h2>
+            <p>Ben Mazué est un <span class="vocab">auteur-compositeur<span class="definition">songwriter (qui écrit les paroles et la musique)</span></span> français contemporain. Cette chanson explore l'évolution d'un couple sur dix années, mettant en lumière les transformations personnelles et relationnelles.</p>
+        </div>
+
+        <div class="section">
+            <h2>🔑 Vocabulaire thématique clé</h2>
+            
+            <h3>Le temps et l'évolution</h3>
+            <p>
+                • <span class="vocab">vieillir<span class="definition">to age, to grow old</span></span> - processus de devenir plus âgé<br>
+                • <span class="vocab">plis<span class="definition">wrinkles, folds (in skin)</span></span> - marques physiques du temps<br>
+                • <span class="vocab">10 piges<span class="definition">10 years (colloquial)</span></span> - expression familière pour "années"<br>
+                • <span class="vocab">l'odyssée<span class="definition">odyssey, long journey</span></span> - voyage long et aventureux (référence mythologique)
+            </p>
+
+            <h3>Les relations et l'intimité</h3>
+            <p>
+                • <span class="vocab">s'abîmer<span class="definition">to damage oneself, to wear oneself down</span></span> - se détériorer psychologiquement ou physiquement<br>
+                • <span class="vocab">aller au bout<span class="definition">to go all the way, to see something through</span></span> - continuer jusqu'à la fin<br>
+                • <span class="vocab">passer à côté<span class="definition">to miss out on, to pass by something</span></span> - manquer une opportunité<br>
+                • <span class="vocab">se ranimer<span class="definition">to revive, to come back to life</span></span> - retrouver l'énergie, la passion
+            </p>
+
+            <h3>Expressions idiomatiques</h3>
+            <p>
+                • <span class="vocab">à deux doigts de<span class="definition">on the verge of, very close to</span></span> - presque, très près de<br>
+                • <span class="vocab">tresser des lauriers<span class="definition">to praise prematurely, to celebrate too soon</span></span> - célébrer un succès trop tôt<br>
+                • <span class="vocab">par malchance<span class="definition">unfortunately, by bad luck</span></span> - à cause de la malchance
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>🎭 Analyse thématique : Identités</h2>
+            
+            <div class="toggle-section" onclick="toggleContent('identite-couple')">
+                ▶ 1. L'identité de couple
+            </div>
+            <div id="identite-couple" class="toggle-content">
+                <p>La chanson explore comment l'identité individuelle se <span class="vocab">transforme<span class="definition">transforms, changes</span></span> au sein d'une relation de couple.</p>
+                
+                <div class="example">
+                    <strong>Exemple dans la chanson :</strong> "Deux enfants plus tard" - Comment la parentalité redéfinit l'identité
+                </div>
+                
+                <div class="question">
+                    <strong>Question de réflexion :</strong> Comment l'identité du narrateur a-t-elle évolué pendant ces dix années ? Quels éléments restent constants ?
+                </div>
+                
+                <div class="ib-link">
+                    <strong>Lien IB Identités :</strong> La construction de l'identité à travers les relations personnelles et l'engagement à long terme
+                </div>
+            </div>
+
+            <div class="toggle-section" onclick="toggleContent('identite-physique')">
+                ▶ 2. L'identité physique et le vieillissement
+            </div>
+            <div id="identite-physique" class="toggle-content">
+                <p>Le texte aborde la tension entre l'image de soi intérieure ("on se sent capable de tout") et les changements physiques ("quelques plis sur le corps").</p>
+                
+                <div class="example">
+                    <strong>Vocabulaire corporel :</strong><br>
+                    • <span class="vocab">le corps<span class="definition">the body</span></span><br>
+                    • <span class="vocab">s'habiller<span class="definition">to get dressed</span></span> - rituel quotidien d'intimité<br>
+                    • Les marques physiques du temps qui passe
+                </div>
+                
+                <div class="question">
+                    <strong>Question d'analyse :</strong> Quelle est l'attitude du narrateur face au vieillissement ? Est-elle positive, négative, ou ambivalente ?
+                </div>
+            </div>
+
+            <div class="toggle-section" onclick="toggleContent('identite-temporelle')">
+                ▶ 3. L'identité temporelle : passé, présent, futur
+            </div>
+            <div id="identite-temporelle" class="toggle-content">
+                <p>La chanson navigue entre trois <span class="vocab">dimensions temporelles<span class="definition">time dimensions</span></span> qui façonnent l'identité.</p>
+                
+                <p><strong>Passé :</strong> "nos débuts en mémoire, nos espoirs"</p>
+                <p><strong>Présent :</strong> "10 ans de nous" - le bilan actuel</p>
+                <p><strong>Futur :</strong> "si à l'avenir on passe à côté" - l'incertitude</p>
+                
+                <div class="question">
+                    <strong>Exercice linguistique :</strong> Identifiez les temps verbaux utilisés dans chaque section. Comment les choix temporels reflètent-ils l'évolution de l'identité ?
+                </div>
+            </div>
+
+            <div class="toggle-section" onclick="toggleContent('identite-paradoxe')">
+                ▶ 4. Les paradoxes de l'identité
+            </div>
+            <div id="identite-paradoxe" class="toggle-content">
+                <p>La chanson présente plusieurs <span class="vocab">contradictions<span class="definition">contradictions</span></span> qui révèlent la complexité de l'identité.</p>
+                
+                <div class="example">
+                    <strong>Paradoxes identifiés :</strong><br>
+                    • "On n'a pas vraiment vieilli" ≠ "quelques plis sur le corps"<br>
+                    • "pour longtemps" ≠ "10 piges ça paraît pas tant"<br>
+                    • "on contemple plus que l'on agit" - passivité vs. action<br>
+                    • Douceur ET souffrance, bonheurs qui se brisent mais qu'on ranime
+                </div>
+                
+                <div class="ib-link">
+                    <strong>Concept IB :</strong> L'identité n'est pas figée mais dynamique, pleine de <span class="vocab">nuances<span class="definition">nuances, subtleties</span></span> et de contradictions
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔍 Symbolisme et figures de style</h2>
+            
+            <p><strong>1. La répétition :</strong> "10 ans de nous" (x5)</p>
+            <p>→ Insistance sur la <span class="vocab">durée<span class="definition">duration, length of time</span></span> comme élément central de l'identité du couple</p>
+            
+            <p><strong>2. Les chiffres :</strong></p>
+            <p>• "700 000ème fois" - <span class="vocab">hyperbolique<span class="definition">hyperbolic, exaggerated</span></span>, évoque la routine et l'intimité profonde<br>
+            • "10 ans" / "10 piges" - le <span class="vocab">jalon<span class="definition">milestone, marker</span></span> temporel<br>
+            • "Deux enfants" - transformation concrète de l'identité</p>
+            
+            <p><strong>3. Les métaphores nautiques/voyages :</strong></p>
+            <p>• "l'odyssée" - référence à Homère, suggère un voyage épique<br>
+            • "tourments" et "tournant" - les <span class="vocab">péripéties<span class="definition">twists and turns, ups and downs</span></span> du voyage</p>
+            
+            <div class="question">
+                <strong>Analyse littéraire :</strong> Pourquoi le voyage est-il une métaphore appropriée pour parler de l'identité et des relations ?
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💬 Questions de discussion IB</h2>
+            
+            <div class="question">
+                <strong>1. Identité personnelle vs. collective :</strong><br>
+                Comment le "je" et le "nous" <span class="vocab">coexistent<span class="definition">coexist</span></span> dans cette chanson ? Le narrateur perd-il son identité individuelle ou la renforce-t-il ?
+            </div>
+            
+            <div class="question">
+                <strong>2. Les rites de passage :</strong><br>
+                Quels <span class="vocab">rites de passage<span class="definition">rites of passage</span></span> sont suggérés dans le texte (mariage, parentalité, vieillissement) ? Comment marquent-ils l'évolution de l'identité ?
+            </div>
+            
+            <div class="question">
+                <strong>3. L'authenticité :</strong><br>
+                "Je rougis pas de ce qu'on est devenu" - Que révèle cette phrase sur l'acceptation de soi et l'<span class="vocab">authenticité<span class="definition">authenticity</span></span> de l'identité ?
+            </div>
+            
+            <div class="question">
+                <strong>4. Les attentes sociales :</strong><br>
+                Comment la chanson aborde-t-elle les <span class="vocab">attentes<span class="definition">expectations</span></span> sociétales concernant les relations à long terme et la stabilité ?
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>✍️ Activités d'écriture</h2>
+            
+            <p><strong>1. Journal personnel (250 mots) :</strong></p>
+            <p>Décrivez un moment où votre identité a changé à cause d'une relation importante. Utilisez au moins 5 expressions de vocabulaire de cette leçon.</p>
+            
+            <p><strong>2. Essai comparatif (400 mots) :</strong></p>
+            <p>Comparez la vision de l'identité dans "10 ans de nous" avec votre propre expérience culturelle des relations à long terme.</p>
+            
+            <p><strong>3. Analyse thématique (IB Style) :</strong></p>
+            <p>"Dans quelle mesure cette chanson illustre-t-elle la <span class="vocab">fluidité<span class="definition">fluidity</span></span> de l'identité humaine ?" Répondez en 300-350 mots avec des références spécifiques au texte.</p>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Vocabulaire pour l'examen oral IB</h2>
+            <p>Expressions utiles pour discuter du thème Identités :</p>
+            <p>
+                • <span class="vocab">se construire<span class="definition">to build oneself, to develop one's identity</span></span><br>
+                • <span class="vocab">évoluer<span class="definition">to evolve, to develop</span></span><br>
+                • <span class="vocab">façonner<span class="definition">to shape, to mold</span></span><br>
+                • <span class="vocab">l'épanouissement<span class="definition">fulfillment, blossoming</span></span><br>
+                • <span class="vocab">le cheminement<span class="definition">journey, path (metaphorical)</span></span><br>
+                • <span class="vocab">remettre en question<span class="definition">to question, to challenge</span></span><br>
+                • <span class="vocab">s'affirmer<span class="definition">to assert oneself</span></span>
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleContent(id) {
+            const content = document.getElementById(id);
+            content.classList.toggle('active');
+            const toggle = event.target;
+            toggle.innerHTML = content.classList.contains('active') ? 
+                toggle.innerHTML.replace('▶', '▼') : 
+                toggle.innerHTML.replace('▼', '▶');
+        }
+    </script>
+</body>
+</html>
