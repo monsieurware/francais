@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poema 20 - Pablo Neruda</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-family: 'Georgia', serif;
+        }
+        
+        .author {
+            text-align: center;
+            color: #666;
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: #f8f9fa;
+            border: none;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+        
+        .tab:hover {
+            background: #e8eaf6;
+            color: #1e3c72;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .poem-section {
+            background: #f8f9fa;
+            border-left: 4px solid #1e3c72;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .poem-line {
+            font-size: 1.1em;
+            line-height: 2;
+            color: #333;
+            padding: 8px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+            padding-left: 10px;
+        }
+        
+        .poem-line:hover {
+            background: #e3f2fd;
+            padding-left: 20px;
+        }
+        
+        .poem-line.highlighted {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            padding-left: 20px;
+        }
+        
+        .explanation-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        
+        .explanation-box h4 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+        
+        .vocabulary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .vocab-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .vocab-card:hover {
+            border-color: #1e3c72;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+        
+        .vocab-spanish {
+            font-weight: 600;
+            color: #1e3c72;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        
+        .vocab-english {
+            color: #666;
+            font-style: italic;
+        }
+        
+        .vocab-example {
+            color: #2e7d32;
+            font-size: 0.9em;
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 1px dashed #e0e0e0;
+        }
+        
+        .theme-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        
+        .theme-box h3 {
+            color: #6a1b9a;
+            margin-bottom: 10px;
+        }
+        
+        .analysis-section {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .analysis-section h3 {
+            color: #e65100;
+            margin-bottom: 15px;
+        }
+        
+        .quote {
+            font-style: italic;
+            color: #1e3c72;
+            font-size: 1.1em;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 3px solid #1e3c72;
+        }
+        
+        .interactive-question {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        
+        .interactive-question h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+        
+        .answer-reveal {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .reveal-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .reveal-btn:hover {
+            background: #388e3c;
+        }
+        
+        .stanza {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .stanza-number {
+            color: #1e3c72;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .key-phrase {
+            background: #ffeb3b;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Poema 20</h1>
+        <p class="author">Pablo Neruda</p>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('poem')">📖 El Poema</button>
+            <button class="tab" onclick="showTab('vocab')">📚 Vocabulario</button>
+            <button class="tab" onclick="showTab('analysis')">🔍 Análisis</button>
+            <button class="tab" onclick="showTab('themes')">💭 Temas</button>
+            <button class="tab" onclick="showTab('questions')">❓ Preguntas</button>
+        </div>
+        
+        <!-- POEM TAB -->
+        <div id="poem" class="tab-content active">
+            <div class="poem-section">
+                <div class="stanza">
+                    <div class="poem-line">Puedo escribir los versos más tristes esta noche.</div>
+                    <div class="poem-line">Escribir, por ejemplo: «La noche está estrellada,</div>
+                    <div class="poem-line">y tiritan, azules, los astros, a lo lejos».</div>
+                    <div class="poem-line">El viento de la noche gira en el cielo y canta.</div>
+                </div>
+                
+                <div class="stanza">
+                    <div class="poem-line">Puedo escribir los versos más tristes esta noche.</div>
+                    <div class="poem-line">Yo la quise, y a veces ella también me quiso.</div>
+                    <div class="poem-line">En las noches como ésta la tuve entre mis brazos.</div>
+                    <div class="poem-line">La besé tantas veces bajo el cielo infinito.</div>
+                </div>
+                
+                <div class="stanza">
+                    <div class="poem-line">Ella me quiso, a veces yo también la quería.</div>
+                    <div class="poem-line">Cómo no haber amado sus grandes ojos fijos.</div>
+                </div>
+                
+                <div class="stanza">
+                    <div class="poem-line">Puedo escribir los versos más tristes esta noche.</div>
+                    <div class="poem-line">Pensar que no la tengo. Sentir que la he perdido.</div>
+                    <div class="poem-line">Oír la noche inmensa, más inmensa sin ella.</div>
+                    <div class="poem-line">Y el verso cae al alma como al pasto el rocío.</div>
+                </div>
+                
+                <div class="stanza">
+                    <div class="poem-line">Qué importa que mi amor no pudiera guardarla.</div>
+                    <div class="poem-line">La noche está estrellada y ella no está conmigo.</div>
+                    <div class="poem-line">Eso es todo. A lo lejos alguien canta. A lo lejos</div>
+                    <div class="poem-line">Mi alma no se contenta con haberla perdido.</div>
+                </div>
+                
+                <div class="stanza">
+                    <div class="poem-line">Como para acercarla mi mirada la busca.</div>
+                    <div class="poem-line">Mi corazón la busca, y ella no está conmigo.</div>
+                </div>
+                
+                <div class="stanza">
+                    <div class="poem-line">La misma noche que hace blanquear los mismos árboles.</div>
+                    <div class="poem-line">Nosotros, los de entonces, ya no somos los mismos.</div>
+                </div>
+                
+                <div class="stanza">
+                    <div class="poem-line">Ya no la quiero, es cierto, pero cuánto la quise.</div>
+                    <div class="poem-line">Mi voz buscaba el viento para tocar su oído.</div>
+                </div>
+                
+                <div class="stanza">
+                    <div class="poem-line">De otro. Será de otro. Como antes de mis besos.</div>
+                    <div class="poem-line">Su voz, su cuerpo claro. Sus ojos infinitos.</div>
+                </div>
+                
+                <div class="stanza">
+                    <div class="poem-line">Ya no la quiero, es cierto, pero tal vez la quiero.</div>
+                    <div class="poem-line">Es tan corto el amor, y es tan largo el olvido.</div>
+                </div>
+                
+                <div class="stanza">
+                    <div class="poem-line">Porque en noches como ésta la tuve entre mis brazos,</div>
+                    <div class="poem-line">mi alma no se contenta con haberla perdido.</div>
+                </div>
+                
+                <div class="stanza">
+                    <div class="poem-line">Aunque éste sea el último dolor que ella me causa,</div>
+                    <div class="poem-line">y estos sean los últimos versos que yo le escribo.</div>
+                </div>
+            </div>
+            
+            <div class="explanation-box">
+                <h4>💡 Tip de lectura:</h4>
+                <p>Haz clic en cualquier verso para ver explicaciones detalladas (próximamente). Este poema trata sobre el dolor de perder un amor y la contradicción de los sentimientos.</p>
+            </div>
+        </div>
+        
+        <!-- VOCABULARY TAB -->
+        <div id="vocab" class="tab-content">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">📚 Vocabulario Clave</h2>
+            
+            <div class="vocabulary-grid">
+                <div class="vocab-card">
+                    <div class="vocab-spanish">estrellada</div>
+                    <div class="vocab-english">starry, filled with stars</div>
+                    <div class="vocab-example">"La noche está estrellada" - The night is starry</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">tiritar</div>
+                    <div class="vocab-english">to shiver, to twinkle</div>
+                    <div class="vocab-example">"tiritan, azules, los astros" - the stars twinkle, blue</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">los astros</div>
+                    <div class="vocab-english">the stars, celestial bodies</div>
+                    <div class="vocab-example">"los astros, a lo lejos" - the stars, in the distance</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">quise / quiso</div>
+                    <div class="vocab-english">loved (preterite of querer)</div>
+                    <div class="vocab-example">"Yo la quise" - I loved her</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">besé</div>
+                    <div class="vocab-english">I kissed (preterite of besar)</div>
+                    <div class="vocab-example">"La besé tantas veces" - I kissed her so many times</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">inmensa</div>
+                    <div class="vocab-english">immense, vast</div>
+                    <div class="vocab-example">"la noche inmensa" - the immense night</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">el rocío</div>
+                    <div class="vocab-english">the dew</div>
+                    <div class="vocab-example">"como al pasto el rocío" - like dew on grass</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">guardarla</div>
+                    <div class="vocab-english">to keep her, to hold onto her</div>
+                    <div class="vocab-example">"no pudiera guardarla" - couldn't keep her</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">acercarla</div>
+                    <div class="vocab-english">to bring her closer</div>
+                    <div class="vocab-example">"Como para acercarla" - As if to bring her closer</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">blanquear</div>
+                    <div class="vocab-english">to whiten, to make white</div>
+                    <div class="vocab-example">"hace blanquear los árboles" - makes the trees white</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">el olvido</div>
+                    <div class="vocab-english">forgetting, oblivion</div>
+                    <div class="vocab-example">"es tan largo el olvido" - forgetting is so long</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">los de entonces</div>
+                    <div class="vocab-english">those from back then, who we were then</div>
+                    <div class="vocab-example">"los de entonces, ya no somos los mismos"</div>
+                </div>
+            </div>
+            
+            <div class="explanation-box">
+                <h4>⚙️ Gramática importante:</h4>
+                <p><strong>Pretérito:</strong> quise, quiso, besé, tuve (acciones completadas en el pasado)</p>
+                <p><strong>Imperfecto:</strong> quería (acción habitual o continua en el pasado)</p>
+                <p><strong>Presente:</strong> está, gira, canta (describe el momento actual)</p>
+            </div>
+        </div>
+        
+        <!-- ANALYSIS TAB -->
+        <div id="analysis" class="tab-content">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">🔍 Análisis Literario</h2>
+            
+            <div class="analysis-section">
+                <h3>🎭 Estructura</h3>
+                <p>El poema tiene 32 versos sin una estructura de estrofas fija. La repetición de la frase <span class="key-phrase">"Puedo escribir los versos más tristes esta noche"</span> actúa como un estribillo que marca momentos clave del poema.</p>
+            </div>
+            
+            <div class="analysis-section">
+                <h3>🌙 Imágenes y Símbolos</h3>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">La noche estrellada</div>
+                    <div class="vocab-english">Representa la belleza que contrasta con la tristeza del poeta. La noche es testigo de su dolor.</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">Los astros que tiritan</div>
+                    <div class="vocab-english">Las estrellas que tiemblan simbolizan la fragilidad y la distancia, como el amor perdido.</div>
+                </div>
+                
+                <div class="vocab-card">
+                    <div class="vocab-spanish">El rocío en el pasto</div>
+                    <div class="vocab-english">Una imagen de naturaleza que muestra cómo la tristeza cae suavemente sobre el alma del poeta.</div>
+                </div>
+            </div>
+            
+            <div class="analysis-section">
+                <h3>💔 Contradicciones</h3>
+                <p>El poema está lleno de contradicciones que muestran la confusión emocional del poeta:</p>
+                
+                <div class="quote">"Yo la quise, y a veces ella también me quiso"</div>
+                <p style="margin: 10px 0;">vs.</p>
+                <div class="quote">"Ella me quiso, a veces yo también la quería"</div>
+                <p style="margin-top: 15px;">El poeta invierte los sujetos, mostrando la naturaleza incierta y desigual del amor.</p>
+                
+                <div class="quote" style="margin-top: 20px;">"Ya no la quiero, es cierto, pero cuánto la quise"</div>
+                <p style="margin: 10px 0;">vs.</p>
+                <div class="quote">"Ya no la quiero, es cierto, pero tal vez la quiero"</div>
+                <p style="margin-top: 15px;">Estas líneas muestran la ambivalencia: el poeta insiste en que ya no la ama, pero inmediatamente duda.</p>
+            </div>
+            
+            <div class="explanation-box">
+                <h4>✍️ Estilo de Neruda</h4>
+                <p>Pablo Neruda usa un lenguaje sencillo pero profundamente emotivo. Sus imágenes de la naturaleza (noche, estrellas, viento, rocío) crean una atmósfera melancólica que refleja el estado emocional del poeta.</p>
+            </div>
+        </div>
+        
+        <!-- THEMES TAB -->
+        <div id="themes" class="tab-content">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">💭 Temas Principales</h2>
+            
+            <div class="theme-box">
+                <h3>💔 El Amor Perdido</h3>
+                <p>El tema central es la pérdida del amor. El poeta recuerda los momentos felices del pasado mientras enfrenta la realidad dolorosa del presente.</p>
+                <div class="quote">"Pensar que no la tengo. Sentir que la he perdido."</div>
+            </div>
+            
+            <div class="theme-box">
+                <h3>⏰ El Tiempo y el Cambio</h3>
+                <p>El poema explora cómo el tiempo cambia a las personas y las relaciones.</p>
+                <div class="quote">"Nosotros, los de entonces, ya no somos los mismos."</div>
+                <p style="margin-top: 10px;">Esta línea muestra que tanto el poeta como su amada han cambiado con el tiempo.</p>
+            </div>
+            
+            <div class="theme-box">
+                <h3>🌙 La Naturaleza como Reflejo Emocional</h3>
+                <p>Neruda usa elementos de la naturaleza para expresar sus emociones: la noche inmensa refleja su soledad, las estrellas representan la belleza inalcanzable.</p>
+                <div class="quote">"La noche está estrellada y ella no está conmigo."</div>
+            </div>
+            
+            <div class="theme-box">
+                <h3>✍️ La Poesía como Catarsis</h3>
+                <p>El acto de escribir versos es en sí mismo un tema. El poeta usa la poesía para procesar y expresar su dolor.</p>
+                <div class="quote">"Puedo escribir los versos más tristes esta noche."</div>
+                <p style="margin-top: 10px;">Repetir esta frase sugiere que escribir es su manera de lidiar con el sufrimiento.</p>
+            </div>
+            
+            <div class="theme-box">
+                <h3>😔 La Contradicción Emocional</h3>
+                <p>El poeta expresa sentimientos contradictorios: amor y desamor, aceptación y negación, recuerdo y olvido.</p>
+                <div class="quote">"Es tan corto el amor, y es tan largo el olvido."</div>
+                <p style="margin-top: 10px;">Esta línea resume perfectamente la paradoja: el amor dura poco, pero olvidarlo toma mucho tiempo.</p>
+            </div>
+        </div>
+        
+        <!-- QUESTIONS TAB -->
+        <div id="questions" class="tab-content">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">❓ Preguntas de Comprensión</h2>
+            
+            <div class="interactive-question">
+                <h4>1. ¿Por qué repite el poeta "Puedo escribir los versos más tristes esta noche"?</h4>
+                <button class="reveal-btn" onclick="toggleAnswer(1)">Ver respuesta</button>
+                <div class="answer-reveal" id="answer-1">
+                    <p>Esta repetición funciona como un estribillo que enfatiza el dolor del poeta. Cada vez que aparece, marca un nuevo aspecto de su sufrimiento. También muestra que el poeta está tratando de procesar su dolor a través de la escritura.</p>
+                </div>
+            </div>
+            
+            <div class="interactive-question">
+                <h4>2. ¿Qué significa "Nosotros, los de entonces, ya no somos los mismos"?</h4>
+                <button class="reveal-btn" onclick="toggleAnswer(2)">Ver respuesta</button>
+                <div class="answer-reveal" id="answer-2">
+                    <p>Esta línea muestra que el tiempo ha cambiado tanto al poeta como a su amada. Las personas que estaban enamoradas en el pasado ("los de entonces") ya no son las mismas personas en el presente. Han cambiado, han crecido, y por eso la relación no pudo continuar.</p>
+                </div>
+            </div>
+            
+            <div class="interactive-question">
+                <h4>3. ¿El poeta todavía ama a esta mujer? Explica la contradicción.</h4>
+                <button class="reveal-btn" onclick="toggleAnswer(3)">Ver respuesta</button>
+                <div class="answer-reveal" id="answer-3">
+                    <p>El poeta expresa una profunda contradicción. Dice "Ya no la quiero, es cierto" pero inmediatamente añade "pero tal vez la quiero". Esto muestra que aunque intenta convencerse de que ya no la ama, todavía tiene sentimientos por ella. También dice "mi alma no se contenta con haberla perdido", lo que confirma que aún sufre por la pérdida.</p>
+                </div>
+            </div>
+            
+            <div class="interactive-question">
+                <h4>4. ¿Qué papel juega la naturaleza (la noche, las estrellas, el viento) en el poema?</h4>
+                <button class="reveal-btn" onclick="toggleAnswer(4)">Ver respuesta</button>
+                <div class="answer-reveal" id="answer-4">
+                    <p>La naturaleza refleja y amplifica las emociones del poeta. La "noche inmensa" representa su soledad y vacío. Las estrellas que "tiritan" (tiemblan) muestran fragilidad. El viento que "gira y canta" contrasta con el silencio de su amor perdido. Neruda usa la naturaleza como espejo de su estado emocional.</p>
+                </div>
+            </div>
+            
+            <div class="interactive-question">
+                <h4>5. ¿Qué significa "Es tan corto el amor, y es tan largo el olvido"?</h4>
+                <button class="reveal-btn" onclick="toggleAnswer(5)">Ver respuesta</button>
+                <div class="answer-reveal" id="answer-5">
+                    <p>Esta es una de las líneas más famosas del poema. Significa que el amor dura poco tiempo (es corto), pero el proceso de olvidar ese amor toma mucho tiempo (es largo). Es una reflexión sobre cómo el dolor de perder un amor puede durar mucho más que la relación misma.</p>
+                </div>
+            </div>
+            
+            <div class="interactive-question">
+                <h4>6. ¿Por qué dice "De otro. Será de otro"?</h4>
+                <button class="reveal-btn" onclick="toggleAnswer(6)">Ver respuesta</button>
+                <div class="answer-reveal" id="answer-6">
+                    <p>El poeta está aceptando dolorosamente que su amada ahora pertenece (o pertenecerá) a otra persona. "Como antes de mis besos" significa que ella será para otro hombre como era antes de que el poeta la conociera - nueva, sin la historia que compartieron juntos. Es un momento de profunda resignación.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function toggleAnswer(num) {
+            const answer = document.getElementById('answer-' + num);
+            if (answer.style.display === 'none' || answer.style.display === '') {
+                answer.style.display = 'block';
+                event.target.textContent = 'Ocultar respuesta';
+            } else {
+                answer.style.display = 'none';
+                event.target.textContent = 'Ver respuesta';
+            }
+        }
+    </script>
+</body>
+</html>
