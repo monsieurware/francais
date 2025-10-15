@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IB French - Types de Textes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #764ba2;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .text-type-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .type-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .type-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .type-btn.active {
+            background: #28a745;
+        }
+        
+        .content-area {
+            display: none;
+        }
+        
+        .content-area.active {
+            display: block;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #764ba2;
+        }
+        
+        .section h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        .section h3 {
+            color: #333;
+            margin: 15px 0 10px 0;
+            font-size: 1.1em;
+        }
+        
+        .format-box {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .format-box h4 {
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+        
+        .format-item {
+            padding: 8px 0;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        
+        .format-item:last-child {
+            border-bottom: none;
+        }
+        
+        .phrase-list {
+            background: #e8f5e9;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .phrase-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 4px;
+            font-style: italic;
+            color: #2e7d32;
+        }
+        
+        .example-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+        }
+        
+        .example-box strong {
+            color: #856404;
+        }
+        
+        .tips-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+        }
+        
+        .tips-box h4 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+        
+        .tips-box ul {
+            margin-left: 20px;
+        }
+        
+        .tips-box li {
+            margin: 8px 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .practice-section {
+            background: #fff3e0;
+            border: 3px solid #ff9800;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .practice-section h3 {
+            color: #e65100;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .practice-prompt {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .practice-prompt strong {
+            color: #e65100;
+        }
+        
+        .writing-area {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            resize: vertical;
+            margin: 15px 0;
+        }
+        
+        .writing-area:focus {
+            outline: none;
+            border-color: #ff9800;
+        }
+        
+        .word-count {
+            text-align: right;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .practice-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .practice-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .practice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-analyze {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .btn-clear {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-save {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .feedback-box {
+            background: white;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .feedback-box.show {
+            display: block;
+        }
+        
+        .feedback-box h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .feedback-item {
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+        
+        .feedback-item.good {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+        
+        .feedback-item.improve {
+            background: #fff3e0;
+            border-color: #ff9800;
+        }
+        
+        .feedback-item.missing {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+        
+        .feedback-icon {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .icon {
+            margin-right: 8px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Guide IB - Types de Textes</h1>
+        <p class="subtitle">Maîtrisez tous les formats de textes pour l'examen IB French</p>
+        
+        <div class="text-type-selector">
+            <button class="type-btn" onclick="showType('article')">📰 Article</button>
+            <button class="type-btn" onclick="showType('blog')">💻 Blog</button>
+            <button class="type-btn" onclick="showType('brochure')">📄 Brochure</button>
+            <button class="type-btn" onclick="showType('email')">✉️ Email</button>
+            <button class="type-btn" onclick="showType('lettre-formelle')">📮 Lettre Formelle</button>
+            <button class="type-btn" onclick="showType('lettre-amicale')">💌 Lettre Amicale</button>
+            <button class="type-btn" onclick="showType('discours')">🎤 Discours</button>
+            <button class="type-btn" onclick="showType('rapport')">📊 Rapport</button>
+            <button class="type-btn" onclick="showType('critique')">⭐ Critique</button>
+            <button class="type-btn" onclick="showType('interview')">🎙️ Interview</button>
+            <button class="type-btn" onclick="showType('tract')">📣 Tract</button>
+            <button class="type-btn" onclick="showType('guide')">📖 Guide</button>
+        </div>
+        
+        <!-- ARTICLE -->
+        <div id="article" class="content-area">
+            <div class="section">
+                <h2>📰 Article (Journal/Magazine)</h2>
+                
+                <div class="tips-box">
+                    <h4>Objectif:</h4>
+                    <p>Informer, expliquer, analyser un sujet d'actualité de manière objective et factuelle</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>1. Titre accrocheur</strong> - Clair et intéressant (La Une)</div>
+                    <div class="format-item"><strong>2. Chapeau/Manchette</strong> - Résumé en 2-3 lignes</div>
+                    <div class="format-item"><strong>3. Introduction</strong> - Présente le sujet (Qui? Quoi? Où? Quand? Comment?)</div>
+                    <div class="format-item"><strong>4. Corps</strong> - 2-3 paragraphes avec détails, faits, statistiques</div>
+                    <div class="format-item"><strong>5. Conclusion</strong> - Phrase de synthèse</div>
+                    <div class="format-item"><strong>6. Signature</strong> - Nom de l'auteur</div>
+                </div>
+                
+                <h3>Phrases utiles:</h3>
+                <div class="phrase-list">
+                    <div class="phrase-item">Nous le savons tous...</div>
+                    <div class="phrase-item">De nos jours...</div>
+                    <div class="phrase-item">Récemment...</div>
+                    <div class="phrase-item">Stop au... ! (Stop au gaspillage alimentaire !)</div>
+                    <div class="phrase-item">Aujourd'hui, c'est la Journée nationale de...</div>
+                    <div class="phrase-item">Retrouve toutes ces informations sur...</div>
+                </div>
+                
+                <div class="example-box">
+                    <strong>Exemple:</strong><br>
+                    <em>Aujourd'hui, c'est la Journée nationale de lutte contre le gaspillage alimentaire. Dans toute la France, des événements sont organisés pour faire prendre conscience du problème au consommateur...</em>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>💡 Conseils:</h4>
+                    <ul>
+                        <li>Style journalistique: neutre et formel</li>
+                        <li>Vocabulaire précis et varié</li>
+                        <li>Utilisez des faits, statistiques, exemples concrets</li>
+                        <li>Paragraphes clairs, distincts et assez courts</li>
+                        <li>Pas d'expressions familières</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- BLOG -->
+        <div id="blog" class="content-area">
+            <div class="section">
+                <h2>💻 Blog</h2>
+                
+                <div class="tips-box">
+                    <h4>Objectif:</h4>
+                    <p>Partager une expérience personnelle, exprimer son opinion de manière subjective</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>1. Titre</strong> - Accrocheur et personnel</div>
+                    <div class="format-item"><strong>2. Date</strong></div>
+                    <div class="format-item"><strong>3. Nom de l'auteur</strong></div>
+                    <div class="format-item"><strong>4. Introduction</strong> - Situation, contexte</div>
+                    <div class="format-item"><strong>5. Corps</strong> - Développement en plusieurs aspects/niveaux/avant-après</div>
+                    <div class="format-item"><strong>6. Conclusion</strong> - Bilan personnel</div>
+                </div>
+                
+                <h3>Phrases utiles:</h3>
+                <div class="phrase-list">
+                    <div class="phrase-item">J'ai porté, cette semaine, une grande attention au débat sur...</div>
+                    <div class="phrase-item">Je constate aujourd'hui avec consternation que...</div>
+                    <div class="phrase-item">Bon, il fallait que ça arrive...</div>
+                    <div class="phrase-item">Quelle tristesse...</div>
+                    <div class="phrase-item">Nos amis les...</div>
+                    <div class="phrase-item">Il y a de quoi...</div>
+                    <div class="phrase-item">C'est LA question</div>
+                </div>
+                
+                <div class="example-box">
+                    <strong>Exemple:</strong><br>
+                    <em>Je vais vous raconter une histoire. C'est un homme... Et oui les parents lui avaient donné Grégory comme prénom. Au premier rang de la classe, il s'appelait Grégory...</em>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>💡 Conseils:</h4>
+                    <ul>
+                        <li>Ton: subjectif, humoristique/ironique/cynisme acceptable</li>
+                        <li>Texte rédigé à la première personne</li>
+                        <li>Vocabulaire: précis mais peut être vague pour effet comique</li>
+                        <li>Registre: courant, peut être familier</li>
+                        <li>Utilisez comparaisons, répétitions, jeux de mots, questions rhétoriques</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- EMAIL -->
+        <div id="email" class="content-area">
+            <div class="section">
+                <h2>✉️ Email/Courriel</h2>
+                
+                <div class="tips-box">
+                    <h4>Objectif:</h4>
+                    <p>Faire explicitement référence au sujet, répondre à une question ou expliquer le but de la correspondance</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>À:</strong> Adresse électronique du destinataire</div>
+                    <div class="format-item"><strong>Objet:</strong> Sujet précis</div>
+                    <div class="format-item"><strong>Date:</strong> Date d'envoi</div>
+                    <div class="format-item"><strong>Formule d'appel:</strong> Salut ! / Bonjour / Monsieur/Madame</div>
+                    <div class="format-item"><strong>Corps:</strong> Message organisé en paragraphes</div>
+                    <div class="format-item"><strong>Formule finale:</strong> Selon le registre</div>
+                    <div class="format-item"><strong>Signature:</strong> Prénom (ou nom complet)</div>
+                </div>
+                
+                <h3>Phrases utiles:</h3>
+                <div class="phrase-list">
+                    <div class="phrase-item">J'étais super content(e) d'avoir de tes nouvelles</div>
+                    <div class="phrase-item">Je suis désolé(e) de ne pas t'avoir répondu plus tôt</div>
+                    <div class="phrase-item">J'ai hâte de recevoir tes nouvelles pour ma réponse tardive</div>
+                    <div class="phrase-item">Je m'inquiète / je n'ai pas de confiance en ton nouvel ami</div>
+                    <div class="phrase-item">Excuse-moi mais ton nouvel ami Paul ne m'inspire pas confiance</div>
+                    <div class="phrase-item">Bisous, bisous / À très bientôt / Gros bisous</div>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>💡 Conseils:</h4>
+                    <ul>
+                        <li>Registre: courant ou familier (selon le destinataire)</li>
+                        <li>Ton: affectueux, enthousiaste</li>
+                        <li>Point de vue: subjectif</li>
+                        <li>Comparaisons, exagérations, questions rhétoriques</li>
+                        <li>Tutoiement/vouvoiement selon contexte</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LETTRE FORMELLE -->
+        <div id="lettre-formelle" class="content-area">
+            <div class="section">
+                <h2>📮 Lettre Formelle (Officielle)</h2>
+                
+                <div class="tips-box">
+                    <h4>Objectif:</h4>
+                    <p>Exposer un problème, protester, suggérer quelque chose (utilisez le conditionnel!)</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>1. Coordonnées expéditeur</strong> (en haut à gauche)</div>
+                    <div class="format-item"><strong>2. Coordonnées destinataire</strong> (en haut à droite)</div>
+                    <div class="format-item"><strong>3. Lieu et date</strong></div>
+                    <div class="format-item"><strong>4. Objet de la lettre</strong></div>
+                    <div class="format-item"><strong>5. Formule d'appel:</strong> Madame/Monsieur le directeur</div>
+                    <div class="format-item"><strong>6. Introduction:</strong> Exposer le problème</div>
+                    <div class="format-item"><strong>7. Corps:</strong> Arguments (1, 2, 3) logiquement organisés</div>
+                    <div class="format-item"><strong>8. Conclusion:</strong> Ce que vous aimeriez que le destinataire fasse</div>
+                    <div class="format-item"><strong>9. Formule finale:</strong> Je vous prie d'agréer, Monsieur, l'expression de mes sentiments distingués</div>
+                    <div class="format-item"><strong>10. Signature</strong></div>
+                </div>
+                
+                <h3>Phrases utiles:</h3>
+                <div class="phrase-list">
+                    <div class="phrase-item">Je vous écris parce que... / pour (+ verbe inf.)</div>
+                    <div class="phrase-item">Je me permets de vous écrire pour vous faire part de mon opposition à...</div>
+                    <div class="phrase-item">Suite à la diffusion de... j'aimerais exprimer mon indignation</div>
+                    <div class="phrase-item">Après avoir vu... je tiens à féliciter... pour la qualité de...</div>
+                    <div class="phrase-item">Je déplore le fait que... / Je manque de...</div>
+                    <div class="phrase-item">J'espère que vous prendrez les mesures nécessaires pour...</div>
+                    <div class="phrase-item">Dans l'espoir que vous traiterez ma demande dans les plus brefs délais...</div>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>💡 Conseils:</h4>
+                    <ul>
+                        <li>Ton: courtois, formel</li>
+                        <li>Vocabulaire: soutenu, formel</li>
+                        <li>Registre: soutenu, formel</li>
+                        <li>Point de vue: subjectif</li>
+                        <li>Vouvoiement de manière constante</li>
+                        <li>Pas de phrases commençant par "je"</li>
+                        <li>Structure logique avec connecteurs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LETTRE AMICALE -->
+        <div id="lettre-amicale" class="content-area">
+            <div class="section">
+                <h2>💌 Lettre à un(e) ami(e)</h2>
+                
+                <div class="tips-box">
+                    <h4>Objectif:</h4>
+                    <p>Partager des nouvelles personnelles, donner des conseils, demander de l'aide</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>1. Lieu et date</strong></div>
+                    <div class="format-item"><strong>2. Formule d'appel:</strong> Cher/Chère + prénom, Salut Marc!</div>
+                    <div class="format-item"><strong>3. Introduction</strong></div>
+                    <div class="format-item"><strong>4. Corps:</strong> Message personnel</div>
+                    <div class="format-item"><strong>5. Formule finale:</strong> Bisous, À bientôt, Gros bisous, Je t'embrasse</div>
+                    <div class="format-item"><strong>6. Signature:</strong> Prénom</div>
+                </div>
+                
+                <h3>Phrases utiles:</h3>
+                <div class="phrase-list">
+                    <div class="phrase-item">Comment vas-tu ? J'espère que tu vas bien!</div>
+                    <div class="phrase-item">Je t'écris pour te parler de... / pour te demander ton avis</div>
+                    <div class="phrase-item">À très bientôt, j'espère / J'espère que nous aurons l'occasion de nous voir bientôt!</div>
+                    <div class="phrase-item">Passe le bonjour à tout le monde / Embrasse la famille pour moi</div>
+                    <div class="phrase-item">Tu es ma meilleure amie et je m'inquiète pour toi</div>
+                    <div class="phrase-item">J'ai entendu dire que... Pourquoi ne m'as-tu pas demandé conseil?</div>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>💡 Conseils:</h4>
+                    <ul>
+                        <li>Ton: amical, expressif</li>
+                        <li>Vocabulaire: courant</li>
+                        <li>Registre: familier</li>
+                        <li>Tutoiement/vouvoiement de manière constante</li>
+                        <li>Comparaisons, exagérations, questions rhétoriques</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DISCOURS -->
+        <div id="discours" class="content-area">
+            <div class="section">
+                <h2>🎤 Discours</h2>
+                
+                <div class="tips-box">
+                    <h4>Objectif:</h4>
+                    <p>Présenter un sujet, persuader, inspirer l'audience</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>1. Salutation:</strong> Mesdames/Messieurs, Chers amis, Bonjour à tous</div>
+                    <div class="format-item"><strong>2. Remerciement:</strong> Merci de votre attention</div>
+                    <div class="format-item"><strong>3. But de l'allocution</strong></div>
+                    <div class="format-item"><strong>4. Structure et efficace:</strong> Arguments + illustrations</div>
+                    <div class="format-item"><strong>5. Se tenir au point de choisi</strong></div>
+                    <div class="format-item"><strong>6. Conclusion efficace</strong></div>
+                </div>
+                
+                <h3>Phrases utiles:</h3>
+                <div class="phrase-list">
+                    <div class="phrase-item">Mesdames / Messieurs / Mes chers amis / camarades</div>
+                    <div class="phrase-item">Je voudrais vous parler de...</div>
+                    <div class="phrase-item">Ne trouvez-vous pas inquiétant que...</div>
+                    <div class="phrase-item">Comme chacun sait...</div>
+                    <div class="phrase-item">[Avoid] Je pense que... [Better] Si je me tiens aujourd'hui devant vous, c'est avant tout pour vous faire part de mes inquiétudes</div>
+                    <div class="phrase-item">Nous devons réagir avant qu'il ne soit trop tard!</div>
+                    <div class="phrase-item">La situation est intolérable! / Il est grand temps de nous mobiliser contre ce fléau!</div>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>💡 Conseils:</h4>
+                    <ul>
+                        <li>Ton: persuasif, enthousiaste, convaincant</li>
+                        <li>Impératifs pour encourager à agir</li>
+                        <li>Questions rhétoriques</li>
+                        <li>Images, métaphores, comparaisons</li>
+                        <li>Exclamations</li>
+                        <li>Répétitions pour convaincre</li>
+                        <li>Vouvoiement</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- RAPPORT -->
+        <div id="rapport" class="content-area">
+            <div class="section">
+                <h2>📊 Rapport / Compte-rendu</h2>
+                
+                <div class="tips-box">
+                    <h4>Objectif:</h4>
+                    <p>Informer de manière objective sur un événement, une expérience, des résultats</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>Mise en page:</strong> Titre, sous-titres, paragraphes, nom de l'auteur</div>
+                    <div class="format-item"><strong>Objet:</strong> Préciser le sujet</div>
+                    <div class="format-item"><strong>À l'attention de:</strong> Destinataire</div>
+                    <div class="format-item"><strong>De la part de:</strong> Expéditeur</div>
+                    <div class="format-item"><strong>Date:</strong></div>
+                    <div class="format-item"><strong>Introduction:</strong> Faits/informations/dates</div>
+                    <div class="format-item"><strong>Corps:</strong> Description des étapes/activités/éléments</div>
+                    <div class="format-item"><strong>Résultats/bénéfices</strong></div>
+                    <div class="format-item"><strong>Conclusion:</strong> Recommandations ou bilan positif/négatif</div>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>💡 Conseils:</h4>
+                    <ul>
+                        <li>Point de vue: majoritairement objectif</li>
+                        <li>Temps passé</li>
+                        <li>Comparaisons</li>
+                        <li>Adjectifs évocateurs</li>
+                        <li>Tutoiement ou vouvoiement</li>
+                        <li>Ton évocateur, enthousiaste</li>
+                        <li>Vocabulaire précis pour informer</li>
+                        <li>Registre: courant (pas trop ou pas du tout d'expressions familières)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CRITIQUE -->
+        <div id="critique" class="content-area">
+            <div class="section">
+                <h2>⭐ Critique (Film/Concert/Livre)</h2>
+                
+                <div class="tips-box">
+                    <h4>Objectif:</h4>
+                    <p>Description avec détails techniques + avis critique avec arguments</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>1. Titre</strong></div>
+                    <div class="format-item"><strong>2. Division logique:</strong> Informations factuelles sur le produit</div>
+                    <div class="format-item"><strong>3. Nom de l'auteur</strong></div>
+                    <div class="format-item"><strong>4. Attribution d'une note</strong></div>
+                    <div class="format-item"><strong>5. Point de vue: subjectif</strong></div>
+                    <div class="format-item"><strong>6. Variété de procédés stylistiques</strong></div>
+                </div>
+                
+                <h3>Éléments à inclure:</h3>
+                <div class="format-box">
+                    <h4>Pour un film:</h4>
+                    <div class="format-item">Titre, Réalisatrice, Distribution, Note, Palmarès</div>
+                    
+                    <h4>Pour un livre:</h4>
+                    <div class="format-item">Titre, Auteur, Éditeur, Nombre de pages</div>
+                    
+                    <h4>Pour un concert:</h4>
+                    <div class="format-item">Artiste, Lieu, Date, Durée</div>
+                </div>
+                
+                <h3>Phrases utiles:</h3>
+                <div class="phrase-list">
+                    <div class="phrase-item"><strong>Positif:</strong> exceptionnel, hors pair, incroyable, merveilleux, sensationnel, fantastique, époustouflant, stupéfiant, extraordinaire, magique, inimitable, sans pareil</div>
+                    <div class="phrase-item"><strong>Négatif:</strong> choquant, navrant, affligeant, désolant, décevant, nul, décousue, absurde, incohérent, exécrable, atroce, râlé, peu convaincant, lamentable, épouvantable, pitoyable</div>
+                    <div class="phrase-item">J'aime l'univers de Johan Heliot et je n'ai pas été déçue par ce bouquin</div>
+                    <div class="phrase-item">Surtout ne le râtez pas! / Précipitez-vous pour aller le voir!</div>
+                    <div class="phrase-item">À ne manquer sous aucun prétexte!</div>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>💡 Conseils:</h4>
+                    <ul>
+                        <li>Ton: adapté à un public général ou spécifique</li>
+                        <li>Vocabulaire: courant ou soutenu</li>
+                        <li>Registre: courant/familier</li>
+                        <li>Comparaisons, adjectifs qualificatifs évocateurs</li>
+                        <li>Au moins une phrase interrogative/exclamative/impérative</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- INTERVIEW -->
+        <div id="interview" class="content-area">
+            <div class="section">
+                <h2>🎙️ Interview / Entretien</h2>
+                
+                <div class="tips-box">
+                    <h4>Objectif:</h4>
+                    <p>Les questions montrent les connaissances du journaliste au sujet de la personne interviewée</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>1. Titre accrocheur</strong></div>
+                    <div class="format-item"><strong>2. Entrée en matière:</strong> Présentation de la personne</div>
+                    <div class="format-item"><strong>3. Présentation questions-réponses</strong></div>
+                    <div class="format-item"><strong>4. Indiquer clairement le changement d'interlocuteur</strong> (retour à la ligne, nom ou initiales)</div>
+                    <div class="format-item"><strong>5. Conclusion à l'interview, remerciement</strong></div>
+                    <div class="format-item"><strong>6. Propos recueillis par:</strong> (nom du journaliste), Nom du magazine, date</div>
+                </div>
+                
+                <h3>Phrases utiles:</h3>
+                <div class="phrase-list">
+                    <div class="phrase-item">Propos recueillis par... + nom du magazine / journal</div>
+                    <div class="phrase-item">Il est l'un des premiers à...</div>
+                    <div class="phrase-item">Quelle est la place de...?</div>
+                    <div class="phrase-item">De quoi parle...</div>
+                    <div class="phrase-item">Parlez-nous de...</div>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>💡 Conseils:</h4>
+                    <ul>
+                        <li>Ton: courtois, soutenu ou peut être familier par endroits</li>
+                        <li>Vocabulaire: spécifique à la carrière de la personne interviewée</li>
+                        <li>Procédés stylistiques variés</li>
+                        <li>Adaptés au contenu des échanges (étonnement, surprise, incrédulité, questionnement)</li>
+                        <li>Utiliser la ponctuation pour exprimer les émotions</li>
+                        <li>Connecteurs logiques: chronologie, conséquence, cause</li>
+                        <li>Anecdotes, cas vécus, exemples tirés de la vie quotidienne</li>
+                        <li>Humour, questions "difficiles" ou "dérangeantes"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TRACT -->
+        <div id="tract" class="content-area">
+            <div class="section">
+                <h2>📣 Tract / Appel</h2>
+                
+                <div class="tips-box">
+                    <h4>Objectif:</h4>
+                    <p>Dénoncer une situation scandaleuse/inquiétante, présenter un projet et convaincre à agir ou réagir</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>1. Introduction:</strong> Exposant des faits et informations</div>
+                    <div class="format-item"><strong>2. Titre, sous-titres</strong></div>
+                    <div class="format-item"><strong>3. Informations présentées sous forme de liste ou de texte</strong></div>
+                    <div class="format-item"><strong>4. Présentation efficace:</strong> Mots en majuscules, soulignés, ponctuation</div>
+                </div>
+                
+                <h3>Caractéristiques:</h3>
+                <div class="format-box">
+                    <div class="format-item">✓ Texte clair et structuré</div>
+                    <div class="format-item">✓ À être publié sur internet, dans un magazine, un journal, ou un papier</div>
+                    <div class="format-item">✓ Phrases exclamatives</div>
+                    <div class="format-item">✓ Exagérations, questions rhétoriques visant à inciter</div>
+                    <div class="format-item">✓ Ton: sérieux, expressif</div>
+                    <div class="format-item">✓ Vocabulaire de l'action, de la solidarité, de la responsabilité citoyenne</div>
+                    <div class="format-item">✓ Registre: courant</div>
+                </div>
+                
+                <div class="example-box">
+                    <strong>Exemple:</strong><br>
+                    <em>POUR FAIRE DES ÉCONOMIES<br>
+                    LE CCAS ET LA VILLE DE CHAMBÉRY<br>
+                    S'ATTAQUENT À NOS ANCIENS ET<br>
+                    FERMENT DEUX FOYERS LOGEMENTS<br><br>
+                    Nous, résidents, familles et amis de la résidence François Boyer, sommes indignés par cette situation et invitons toute personne, pour qui vieillir dans la dignité et le respect est un droit inattaquable, à soutenir nos actions et notre combat.</em>
+                </div>
+            </div>
+        </div>
+        
+        <!-- GUIDE -->
+        <div id="guide" class="content-area">
+            <div class="section">
+                <h2>📖 Guide de Recommandations / Instructions</h2>
+                
+                <div class="tips-box">
+                    <h4>Objectif:</h4>
+                    <p>Informer, donner des conseils/instructions, encourager/convaincre à agir</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>1. Titre:</strong> "10 conseils pour voyager écolo"</div>
+                    <div class="format-item"><strong>2. Photo / logo</strong></div>
+                    <div class="format-item"><strong>3. Introduction intéressante:</strong> Question, questions-réponses, questionnaire</div>
+                    <div class="format-item"><strong>4. Informations sous forme de listes/encadrés:</strong> Sections claires et distinctes</div>
+                    <div class="format-item"><strong>5. Présentation attirante:</strong> Photos/dessins avec légende</div>
+                    <div class="format-item"><strong>6. Petite conclusion, un slogan final</strong></div>
+                    <div class="format-item"><strong>7. Élément permettant d'identifier ou de contacter l'auteur</strong></div>
+                </div>
+                
+                <h3>Phrases utiles:</h3>
+                <div class="phrase-list">
+                    <div class="phrase-item">Exemples de titres: "Comment se faire des amis?" / "Petits conseils aux couples mixtes"</div>
+                    <div class="phrase-item">"Politesse et bonnes manières" / "Réussir son entrée à l'université"</div>
+                    <div class="phrase-item">"Comment gérer au mieux le stress des examens"</div>
+                    <div class="phrase-item">Un doute? Une question? Pour répondre à toutes vos questions, n'hésitez pas: 0800 94 94 17 Appel gratuit</div>
+                </div>
+                
+                <h3>Procédés stylistiques:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>Impératifs:</strong> (N')hésitez (pas) à... / Veillez à + inf / À ce que + subj / Pensez à... / Ayez le réflexe de... / Utilisez... / Osez... / Privilégiez... / Évitez... / N'acceptez pas...</div>
+                    <div class="format-item"><strong>Subjonctifs:</strong> Il faut que... / Il est important que... / Il est indispensable que...</div>
+                    <div class="format-item"><strong>Exclamations</strong></div>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>💡 Conseils:</h4>
+                    <ul>
+                        <li>Ton: informatif, explicatif, et éventuellement humoristique</li>
+                        <li>Vouvoiement (ou tutoiement pour une brochure adressée aux adolescents)</li>
+                        <li>Vocabulaire: précis, voire spécifique (Santé, relations, etc)</li>
+                        <li>Phrases simples et généralement courtes pour un ton percutant</li>
+                        <li>Registre: courant, langue accessible, instructions faciles à comprendre</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- BROCHURE -->
+        <div id="brochure" class="content-area">
+            <div class="section">
+                <h2>📄 Brochure (Informative/Publicitaire)</h2>
+                
+                <div class="tips-box">
+                    <h4>Types:</h4>
+                    <p><strong>Informative:</strong> Détails sur le problème/association et ses actions<br>
+                    <strong>Publicitaire:</strong> Détails sur l'organisation des activités/service proposé</p>
+                </div>
+                
+                <h3>Structure:</h3>
+                <div class="format-box">
+                    <div class="format-item"><strong>1. Titre:</strong> Sous forme de question/exclamation ("Manque d'énergie?")</div>
+                    <div class="format-item"><strong>2. Introduction intéressante:</strong> (Vous aimez... ? Vous êtes... ? Alors vous aller adorer...)</div>
+                    <div class="format-item"><strong>3. Sous-titres</strong></div>
+                    <div class="format-item"><strong>4. Informations sous forme de texte/listes/encadrés</strong></div>
+                    <div class="format-item"><strong>5. Présentation attirante:</strong> Photos, informations, faits</div>
+                    <div class="format-item"><strong>6. Slogan final</strong></div>
+                    <div class="format-item"><strong>7. Élément permettant d'identifier ou de contacter l'auteur</strong></div>
+                </div>
+                
+                <h3>Phrases utiles (Publicitaire):</h3>
+                <div class="phrase-list">
+                    <div class="phrase-item">Où peut-on se procurer...?</div>
+                    <div class="phrase-item">Achetez-en dès aujourd'hui!</div>
+                    <div class="phrase-item">Le meilleur / la meilleure... sur le marché</div>
+                    <div class="phrase-item">Défier toute concurrence</div>
+                    <div class="phrase-item">Pour plus d'informations rendez-vous sur le site</div>
+                    <div class="phrase-item">Envoyez-nous des questions en ligne</div>
+                </div>
+                
+                <h3>Phrases utiles (Informative):</h3>
+                <div class="phrase-list">
+                    <div class="phrase-item">Comment peut-on rester indifférent face à... = How can anyone remain indifferent to...</div>
+                    <div class="phrase-item">Sachez que... = Know that...</div>
+                    <div class="phrase-item">Il est primordial que + SUBJ. = It is essential that...</div>
+                    <div class="phrase-item">Les chiffres le prouvent ! / The statistics prove it!</div>
+                    <div class="phrase-item">Savez-vous que...? Did you know that?</div>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>💡 Conseils:</h4>
+                    <ul>
+                        <li><strong>Publicitaire:</strong> Ton persuasif, Jouer sur le ton (Résultats des vacances intelligentes!)</li>
+                        <li><strong>Informative:</strong> Ton: informatif, explicatif</li>
+                        <li>Vouvoiement (ou tutoiement si adressé aux adolescents)</li>
+                        <li>Vocabulaire précis, commercial, champs lexicaux (bonheur, rêve, voyages, développement personnel)</li>
+                        <li>Registre: courant, langue accessible, informations faciles à comprendre</li>
+                        <li>Impératifs, Subjonctifs, Structures impersonnelles, Questions directes, Comparaisons, Adjectifs qualificatifs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showType(type) {
+            // Hide all content areas
+            document.querySelectorAll('.content-area').forEach(area => {
+                area.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected content
+            document.getElementById(type).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Scroll to top of content
+            window.scrollTo({
+                top: document.querySelector('.text-type-selector').offsetTop - 20,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Show article by default on load
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('article').classList.add('active');
+            document.querySelector('.type-btn').classList.add('active');
+        });
+    </script>
+</body>
+</html>
