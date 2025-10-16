@@ -330,7 +330,7 @@
         el.type='button'; el.className='cell'+(cell.free?' free':'')+(cell.completed?' completed':'');
         el.setAttribute('data-id', cell.id);
         el.innerHTML = (cell.free?'<h4>CARTE LIBRE</h4>':'<h4>TÂCHE</h4>') + `<p>${cell.prompt}</p>` + `<span class="badge">Fait</span>` + (cell.response?`<div class="assist">Réponse sauvegardée ✓</div>`:'') + (cell.audio?`<div class="assist">🎙️ Audio enregistré</div>`:'');
-        el.addEventListener('click',()=>{ __userGesture = true; try{ openCell(cell.id); } finally { __userGesture = false; } });
+        el.addEventListener('click',(e)=>{ if(!e.isTrusted) return; __userGesture = true; try{ openCell(cell.id); } finally { __userGesture = false; } });
         gridEl.appendChild(el);
       });
     }
@@ -346,8 +346,11 @@
     }
 
     // ---------- Modal & keyboard ----------
-    // Guard against any non‑user‑initiated modal opens (some LMS previewers can fire synthetic clicks)
+    // Guard against non‑user‑initiated opens (Schoology/Chrome sometimes fires synthetic clicks).
+    // We use two gates: (1) event.isTrusted on the click handler, (2) a global "user interacted" latch.
     let __userGesture = false;
+    let __userInteracted = false;
+    ['pointerdown','keydown','touchstart'].forEach(t=>window.addEventListener(t,()=>{__userInteracted=true},{once:true,passive:true}));
     const dlg=document.getElementById('dlg');
     const dlgPrompt=document.getElementById('dlgPrompt');
     const resp=document.getElementById('resp');
@@ -360,8 +363,14 @@
     let currentId=null;
 
     function openCell(id){
-      // Only open when called from a real user gesture (click/keyboard triggering a click)
-      if(!__userGesture) { return; }
+      // Only open when called from a real user gesture AND after first human interaction
+      if(!__userGesture || !__userInteracted) { return; }
+      currentId=id; const cell=board.find(c=>c.id===id);
+      dlgPrompt.innerHTML=(cell.free?'<strong>CARTE LIBRE</strong> – ':'<strong>TÂCHE</strong> – ')+cell.prompt;
+      resp.value=cell.response||''; updateCount(); if(!dlg.open) dlg.showModal(); setTimeout(()=>resp.focus(),40);
+      loadAudioUI(cell);
+      preflightMic();
+    }
       currentId=id; const cell=board.find(c=>c.id===id);
       dlgPrompt.innerHTML=(cell.free?'<strong>CARTE LIBRE</strong> – ':'<strong>TÂCHE</strong> – ')+cell.prompt;
       resp.value=cell.response||''; updateCount(); if(!dlg.open) dlg.showModal(); setTimeout(()=>resp.focus(),40);
