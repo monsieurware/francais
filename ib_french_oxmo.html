@@ -4,153 +4,239 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module d'apprentissage : "Le droit de chanter" - Oxmo Puccino</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Lato', sans-serif;
             max-width: 900px;
             margin: 0 auto;
             padding: 20px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            color: #333;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            color: #2c3e50;
+            line-height: 1.6;
         }
+        
         .container {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
+        
         h1 {
-            color: #e94560;
-            border-bottom: 3px solid #0f3460;
-            padding-bottom: 10px;
+            color: #e74c3c;
+            border-bottom: 4px solid #3498db;
+            padding-bottom: 15px;
+            font-weight: 900;
+            font-size: 2em;
+            letter-spacing: -0.5px;
         }
+        
         h2 {
-            color: #0f3460;
-            margin-top: 30px;
+            color: #2c3e50;
+            margin-top: 35px;
+            font-weight: 700;
+            font-size: 1.6em;
         }
+        
         h3 {
-            color: #16213e;
-            margin-top: 20px;
+            color: #34495e;
+            margin-top: 25px;
+            font-weight: 700;
+            font-size: 1.2em;
         }
+        
         .vocab {
             position: relative;
             display: inline;
-            color: #e94560;
-            font-weight: 600;
+            color: #e74c3c;
+            font-weight: 700;
             cursor: help;
-            border-bottom: 2px dotted #0f3460;
+            border-bottom: 2px dotted #3498db;
+            transition: all 0.2s ease;
         }
+        
         .vocab:hover {
-            background-color: #fff5f5;
+            background-color: #ecf0f1;
+            border-bottom-color: #e74c3c;
         }
+        
         .definition {
             display: none;
             position: absolute;
-            background: #1a1a2e;
+            background: #2c3e50;
             color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
+            padding: 12px 18px;
+            border-radius: 10px;
             font-size: 0.9em;
-            font-weight: normal;
+            font-weight: 400;
             width: 280px;
             z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             bottom: 100%;
             left: 50%;
             transform: translateX(-50%);
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
+        
         .definition::after {
             content: '';
             position: absolute;
             top: 100%;
             left: 50%;
             transform: translateX(-50%);
-            border: 8px solid transparent;
-            border-top-color: #1a1a2e;
+            border: 10px solid transparent;
+            border-top-color: #2c3e50;
         }
+        
         .vocab:hover .definition {
             display: block;
         }
+        
         .section {
             background: #f8f9fa;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .question {
+            background: #fff3e0;
             padding: 20px;
             margin: 20px 0;
             border-radius: 10px;
-            border-left: 5px solid #0f3460;
+            border-left: 4px solid #f39c12;
         }
-        .question {
-            background: #fff9e6;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-            border-left: 4px solid #ffa500;
-        }
+        
         .question strong {
-            color: #cc8400;
+            color: #e67e22;
+            font-weight: 700;
         }
+        
         .example {
-            background: #f0f8ff;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-            border-left: 4px solid #4682b4;
+            background: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
         }
+        
         .ib-link {
-            background: #ffe6e6;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-            border-left: 4px solid #e94560;
+            background: #fadbd8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 4px solid #e74c3c;
             font-weight: 500;
         }
+        
         .toggle-section {
             cursor: pointer;
             user-select: none;
-            padding: 12px;
-            background: #0f3460;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
-            border-radius: 5px;
-            margin: 10px 0;
-            transition: background 0.3s;
-            font-weight: 500;
+            border-radius: 8px;
+            margin: 12px 0;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
+        
         .toggle-section:hover {
-            background: #e94560;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
         }
+        
         .toggle-content {
             display: none;
-            padding: 15px;
+            padding: 20px;
             background: #f8f9fa;
-            border-radius: 5px;
-            margin-top: 5px;
+            border-radius: 8px;
+            margin-top: 8px;
         }
+        
         .toggle-content.active {
             display: block;
+            animation: slideDown 0.3s ease;
         }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         .context-box {
-            background: #e8f5e9;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border-left: 5px solid #4caf50;
+            background: #d5f4e6;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border-left: 5px solid #27ae60;
         }
+        
         .quote-analysis {
-            background: #fff3e0;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
+            background: #fef5e7;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
             font-style: italic;
+            border-left: 4px solid #f39c12;
         }
+        
         .theme-badge {
             display: inline-block;
-            background: #e94560;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
+            padding: 8px 18px;
+            border-radius: 25px;
             font-size: 0.85em;
             margin: 5px;
-            font-weight: 600;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 12px;
+            margin: 25px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+        }
+        
+        p {
+            margin-bottom: 12px;
+            font-weight: 400;
+        }
+        
+        strong {
+            font-weight: 700;
         }
     </style>
 </head>
@@ -159,6 +245,10 @@
         <h1>🎤 Module d'apprentissage IB : "Le droit de chanter" d'Oxmo Puccino</h1>
         <p><strong>Thèmes IB :</strong> <span class="theme-badge">Organisation sociale</span> <span class="theme-badge">Identités</span></p>
         <p><strong>Niveau :</strong> French B SL/HL</p>
+
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/2HmNXWuK3ck" title="Le droit de chanter - Oxmo Puccino" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
 
         <div class="context-box">
             <h2>🎯 Contexte artistique et culturel</h2>
