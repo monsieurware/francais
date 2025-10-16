@@ -335,15 +335,11 @@
         });
         render(); updateProgress();
       }
-    }); }
-        else{ const p=pool[k++]; cells.push({id:'c'+i, prompt:p.t, response:'', completed:false, free:false}); }
-      }
-      board=cells; save(); render(); updateProgress();
     }
 
     function render(){
       gridEl.innerHTML='';
-      board.forEach((cell,idx)=>{
+      board.forEach((cell)=>{
         const el=document.createElement('button');
         el.type='button'; el.className='cell'+(cell.free?' free':'')+(cell.completed?' completed':'');
         el.setAttribute('data-id', cell.id);
@@ -383,7 +379,6 @@
     function openCell(id){
       // Only open when called from a real user gesture AND after first human interaction
       if(!__userGesture || !__userInteracted) { return; }
-
       currentId=id; const cell=board.find(c=>c.id===id);
       dlgPrompt.innerHTML=(cell.free?'<strong>CARTE LIBRE</strong> – ':'<strong>TÂCHE</strong> – ')+cell.prompt;
       resp.value=cell.response||''; updateCount(); if(!dlg.open) dlg.showModal(); setTimeout(()=>resp.focus(),40);
