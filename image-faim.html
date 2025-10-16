@@ -365,12 +365,7 @@
     function openCell(id){
       // Only open when called from a real user gesture AND after first human interaction
       if(!__userGesture || !__userInteracted) { return; }
-      currentId=id; const cell=board.find(c=>c.id===id);
-      dlgPrompt.innerHTML=(cell.free?'<strong>CARTE LIBRE</strong> – ':'<strong>TÂCHE</strong> – ')+cell.prompt;
-      resp.value=cell.response||''; updateCount(); if(!dlg.open) dlg.showModal(); setTimeout(()=>resp.focus(),40);
-      loadAudioUI(cell);
-      preflightMic();
-    }
+
       currentId=id; const cell=board.find(c=>c.id===id);
       dlgPrompt.innerHTML=(cell.free?'<strong>CARTE LIBRE</strong> – ':'<strong>TÂCHE</strong> – ')+cell.prompt;
       resp.value=cell.response||''; updateCount(); if(!dlg.open) dlg.showModal(); setTimeout(()=>resp.focus(),40);
