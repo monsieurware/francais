@@ -330,7 +330,7 @@
         el.type='button'; el.className='cell'+(cell.free?' free':'')+(cell.completed?' completed':'');
         el.setAttribute('data-id', cell.id);
         el.innerHTML = (cell.free?'<h4>CARTE LIBRE</h4>':'<h4>TÂCHE</h4>') + `<p>${cell.prompt}</p>` + `<span class="badge">Fait</span>` + (cell.response?`<div class="assist">Réponse sauvegardée ✓</div>`:'') + (cell.audio?`<div class="assist">🎙️ Audio enregistré</div>`:'');
-        el.addEventListener('click',()=>openCell(cell.id));
+        el.addEventListener('click',()=>{ __userGesture = true; try{ openCell(cell.id); } finally { __userGesture = false; } });
         gridEl.appendChild(el);
       });
     }
@@ -346,6 +346,8 @@
     }
 
     // ---------- Modal & keyboard ----------
+    // Guard against any non‑user‑initiated modal opens (some LMS previewers can fire synthetic clicks)
+    let __userGesture = false;
     const dlg=document.getElementById('dlg');
     const dlgPrompt=document.getElementById('dlgPrompt');
     const resp=document.getElementById('resp');
@@ -358,6 +360,8 @@
     let currentId=null;
 
     function openCell(id){
+      // Only open when called from a real user gesture (click/keyboard triggering a click)
+      if(!__userGesture) { return; }
       currentId=id; const cell=board.find(c=>c.id===id);
       dlgPrompt.innerHTML=(cell.free?'<strong>CARTE LIBRE</strong> – ':'<strong>TÂCHE</strong> – ')+cell.prompt;
       resp.value=cell.response||''; updateCount(); if(!dlg.open) dlg.showModal(); setTimeout(()=>resp.focus(),40);
@@ -530,6 +534,10 @@
     // ---------- Init ----------
     function mountKeyboardInit(){ mountKeyboard(); }
     mountKeyboardInit();
+    // Explicitly ensure dialog is closed on load
+    try{ if(dlg.open) dlg.close(); }catch(e){}
+    // As an extra safety in aggressive previewers: close any auto-open within the first second
+    setTimeout(()=>{ try{ if(dlg.open) dlg.close(); }catch(e){} }, 800);
     load();
   </script>
 </body>
