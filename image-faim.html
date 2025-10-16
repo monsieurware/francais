@@ -315,36 +315,22 @@
     const bingoTag=document.getElementById('bingoTag');
 
     function buildBoard(){
-      try{
-        const pool = getPromptPool(); let k=0; const cells=[];
-        for(let i=0;i<25;i++){
-          if(i===12){ cells.push({id:'c12', prompt:'Propose ton propre angle d’analyse.', response:'', completed:true, free:true}); }
-          else{
-            const p = pool[k++];
-            const text = (p && p.t && String(p.t).trim().length>0) ? p.t : `Tâche de secours ${i+1}: observe un détail et explique.`;
-            cells.push({id:'c'+i, prompt:text, response:'', completed:false, free:false});
-          }
-        }
-        board=cells; save(); render(); updateProgress();
-      }catch(err){
-        console.error('[buildBoard] fallback due to error:', err);
-        // Absolute fallback: guaranteed board
-        board = Array.from({length:25}, (_,i)=>{
-          if(i===12) return {id:'c12', prompt:'Propose ton propre angle d’analyse.', response:'', completed:true, free:true};
-          return {id:'c'+i, prompt:`Tâche de secours ${i+1}: décris un indice et une hypothèse.`, response:'', completed:false, free:false};
-        });
-        render(); updateProgress();
+      const pool = getPromptPool(); let k=0; const cells=[];
+      for(let i=0;i<25;i++){
+        if(i===12){ cells.push({id:'c12', prompt:'Propose ton propre angle d’analyse.', response:'', completed:true, free:true}); }
+        else{ const p=pool[k++]; cells.push({id:'c'+i, prompt:p.t, response:'', completed:false, free:false}); }
       }
+      board=cells; save(); render(); updateProgress();
     }
 
     function render(){
       gridEl.innerHTML='';
-      board.forEach((cell)=>{
+      board.forEach((cell,idx)=>{
         const el=document.createElement('button');
         el.type='button'; el.className='cell'+(cell.free?' free':'')+(cell.completed?' completed':'');
         el.setAttribute('data-id', cell.id);
         el.innerHTML = (cell.free?'<h4>CARTE LIBRE</h4>':'<h4>TÂCHE</h4>') + `<p>${cell.prompt}</p>` + `<span class="badge">Fait</span>` + (cell.response?`<div class="assist">Réponse sauvegardée ✓</div>`:'') + (cell.audio?`<div class="assist">🎙️ Audio enregistré</div>`:'');
-        el.addEventListener('click',(e)=>{ if(!e.isTrusted) return; __userGesture = true; try{ openCell(cell.id); } finally { __userGesture = false; } });
+        el.addEventListener('click',()=>openCell(cell.id));
         gridEl.appendChild(el);
       });
     }
@@ -360,11 +346,6 @@
     }
 
     // ---------- Modal & keyboard ----------
-    // Guard against non‑user‑initiated opens (Schoology/Chrome sometimes fires synthetic clicks).
-    // We use two gates: (1) event.isTrusted on the click handler, (2) a global "user interacted" latch.
-    let __userGesture = false;
-    let __userInteracted = false;
-    ['pointerdown','keydown','touchstart'].forEach(t=>window.addEventListener(t,()=>{__userInteracted=true},{once:true,passive:true}));
     const dlg=document.getElementById('dlg');
     const dlgPrompt=document.getElementById('dlgPrompt');
     const resp=document.getElementById('resp');
@@ -377,8 +358,6 @@
     let currentId=null;
 
     function openCell(id){
-      // Only open when called from a real user gesture AND after first human interaction
-      if(!__userGesture || !__userInteracted) { return; }
       currentId=id; const cell=board.find(c=>c.id===id);
       dlgPrompt.innerHTML=(cell.free?'<strong>CARTE LIBRE</strong> – ':'<strong>TÂCHE</strong> – ')+cell.prompt;
       resp.value=cell.response||''; updateCount(); if(!dlg.open) dlg.showModal(); setTimeout(()=>resp.focus(),40);
@@ -510,8 +489,7 @@
     })();
 
     // ---------- Tests ----------
-    // Do NOT auto-open the modal on load anymore.
-    // Keep tests lightweight and UI-safe (no clicks).
+    // Default: DO NOT auto-open any modal. Enable tests with ?test=1
     const RUN_TESTS = new URLSearchParams(location.search).get('test') === '1';
     function __runTests(){
       console.log('%cRunning sanity tests…','color:#22d3ee');
@@ -526,14 +504,12 @@
       updateProgress();
       const anyBingo = LINES.some(line=>line.every(i=>board[i].completed));
       console.assert(anyBingo===true, 'At least one bingo line should be detected after marking first row');
-      // Modal presence test (no auto-open)
-      console.assert(document.getElementById('dlg') instanceof HTMLDialogElement, 'Dialog element exists');
-      console.assert(document.getElementById('dlg').open===false, 'Dialog should NOT be open on load');
-      // Chunk insertion test (simulate only on a detached textarea)
-      const fake = document.createElement('textarea'); fake.value='X';
-      function insertTmp(t){ const s=fake.selectionStart||1, e=fake.selectionEnd||1; fake.value=fake.value.slice(0,s)+t+fake.value.slice(e); }
-      const exampleChunk=(CHUNKS[0] && CHUNKS[0].text) || ''; insertTmp(exampleChunk);
-      console.assert(fake.value.includes(exampleChunk), 'Chunk insertion logic works in isolation');
+      // Modal open test (only when testing)
+      const firstBtn=gridEl.querySelector('.cell'); if(firstBtn){ firstBtn.click(); }
+      console.assert(document.getElementById('dlg').open===true, 'Dialog should open on cell click');
+      // Chunk insertion test
+      const exampleChunk=(CHUNKS[0] && CHUNKS[0].text) || ''; insertAtCursor(resp, exampleChunk);
+      console.assert((resp.value||'').includes(exampleChunk), 'Chunk should insert into response');
       // Clipboard test (does not throw)
       const copied = copyMaybe('test'); console.assert(typeof copied==='boolean', 'copyMaybe returns a boolean without throwing');
       // Upload fallback test (logic only)
@@ -551,14 +527,7 @@
     // ---------- Init ----------
     function mountKeyboardInit(){ mountKeyboard(); }
     mountKeyboardInit();
-    // Explicitly ensure dialog is closed on load
-    try{ if(dlg.open) dlg.close(); }catch(e){}
-    // As an extra safety in aggressive previewers: close any auto-open within the first second
-    setTimeout(()=>{ try{ if(dlg.open) dlg.close(); }catch(e){} }, 800);
-    // Some LMS environments delay layout; queue one more render tick
-    if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', load, {once:true}); }
-    else { load(); }
-    requestAnimationFrame(()=>{ try{ if(!gridEl.children.length) { render(); updateProgress(); } }catch(e){} });
+    load();
   </script>
 </body>
 </html>
