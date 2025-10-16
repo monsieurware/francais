@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IB French B – Bingo (Liberté d’expression)</title>
+  <style>
+    :root{
+      /* Tricolore-inspired palette */
+      --bg:#0b1020;           /* deep navy */
+      --bg2:#10172a;
+      --card:#0f172a;
+      --text:#e6edf6;         /* off-white */
+      --muted:#94a3b8;
+      --brand:#3b82f6;        /* bleu */
+      --accent:#ef4444;       /* rouge */
+      --good:#22c55e;         /* green */
+      --free-bg:linear-gradient(180deg, rgba(59,130,246,.25), rgba(239,68,68,.25));
+      --free-color:#93c5fd;
+      --shadow:0 14px 40px rgba(0,0,0,.35);
+    }
+    html,body{height:100%}
+    body{margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans"; color:var(--text); background:radial-gradient(1100px 520px at 20% -5%, #151b31 0%, var(--bg) 60%) fixed}
+    .wrap{max-width:1200px; margin:0 auto; padding:24px 18px 96px}
+    header{display:grid; grid-template-columns:1fr; gap:16px; align-items:center; margin-bottom:18px}
+    @media(min-width:900px){header{grid-template-columns:1.25fr .95fr}}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.09); border-radius:18px; box-shadow:var(--shadow)}
+    .imgCard{position:relative; overflow:hidden}
+    .imgCard img{display:block; width:100%; height:100%; object-fit:cover; border-radius:16px}
+    .imgInfo{position:absolute; inset:auto 12px 12px 12px; background:rgba(0,0,0,.5); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; font-size:.92rem}
+    .controls{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.14); color:var(--text); background:linear-gradient(180deg, rgba(59,130,246,.14), rgba(239,68,68,.09)); cursor:pointer; transition:.15s transform ease, .2s filter ease; user-select:none}
+    .btn[disabled]{opacity:.55; cursor:not-allowed}
+    .btn:hover{filter:brightness(1.08)}
+    .btn:active{transform:translateY(1px)}
+    .tabHeader{display:flex; justify-content:center; gap:8px; margin-bottom:16px}
+    .tabBtn{padding:10px 20px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:rgba(59,130,246,.12); color:var(--text); cursor:pointer}
+    .tabBtn.active{background:var(--brand); color:#06122b}
+    .tabContent{display:none}
+    .tabContent.active{display:block}
+
+    .grid{margin-top:16px; display:grid; grid-template-columns:repeat(5,1fr); gap:10px}
+    .cell{min-height:130px; background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025)); border:1px solid rgba(255,255,255,.15); border-radius:16px; padding:12px; position:relative; overflow:hidden; cursor:pointer; transition:.15s transform ease, .25s box-shadow ease}
+    .cell:hover{box-shadow:0 10px 26px rgba(59,130,246,.18); transform:translateY(-2px)}
+    .cell h4{margin:0 0 6px; font-size:.95rem; color:#93c5fd}
+    .cell.free{background:var(--free-bg)}
+    .cell.free h4{color:#e2e8f0; text-shadow:0 0 8px rgba(59,130,246,.6)}
+    .cell p{margin:0; font-size:.92rem; color:var(--text)}
+    .badge{position:absolute; top:8px; right:8px; font-size:.75rem; background:rgba(34,197,94,.18); color:#d1fae5; border:1px solid rgba(34,197,94,.35); padding:4px 8px; border-radius:999px; display:none}
+    .cell.completed .badge{display:inline-block}
+    .assist{margin-top:6px; font-size:.8rem; color:var(--muted)}
+
+    .chunkBank{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; background:rgba(255,255,255,.05); border-radius:12px; padding:14px; border:1px solid rgba(255,255,255,.1)}
+    .chunk{background:rgba(59,130,246,.12); border:1px solid rgba(59,130,246,.25); border-radius:10px; padding:8px; font-size:.9rem; text-align:center}
+
+    /* Progress tracker */
+    .progress{display:flex; align-items:center; gap:12px; margin-top:10px}
+    .mini{display:grid; grid-template-columns:repeat(5,10px); gap:4px; padding:6px; border:1px solid rgba(255,255,255,.12); border-radius:10px; background:rgba(255,255,255,.04)}
+    .mini div{width:10px;height:10px;border-radius:2px;background:#374151}
+    .mini div.done{background:var(--good)}
+    .bingoTag{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:rgba(34,197,94,.15); color:#d1fae5}
+
+    /* Modal */
+    dialog{border:none; border-radius:16px; padding:0; background:transparent}
+    .modal{width:min(780px,94vw); background:linear-gradient(180deg,#0a1224,#0a0f1a); border:1px solid rgba(255,255,255,.12); border-radius:16px; box-shadow:var(--shadow); overflow:hidden}
+    .modal header{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.09)}
+    .modal header h3{margin:0; font-size:1.05rem}
+    .modal .body{display:grid; grid-template-columns:1fr; gap:12px; padding:14px 16px}
+    .modal .prompt{font-size:.98rem; color:#e2e8f0}
+    .kbdRow{display:flex; flex-wrap:wrap; gap:8px; padding:10px; border:1px dashed rgba(255,255,255,.18); border-radius:12px; background:rgba(255,255,255,.04)}
+    .kbdRow button{padding:6px 10px; border-radius:8px; background:#0b1526; color:#e5e7eb; border:1px solid rgba(255,255,255,.14); cursor:pointer}
+    textarea{width:100%; min-height:140px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:#0b1526; color:var(--text); resize:vertical}
+    .modal footer{display:flex; justify-content:space-between; align-items:center; gap:8px; padding:14px 16px; border-top:1px solid rgba(255,255,255,.09)}
+    .hint{font-size:.85rem; color:var(--muted)}
+
+    /* Audio controls */
+    .audioBar{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+    .audioBar .rec{background:linear-gradient(180deg, rgba(239,68,68,.18), rgba(239,68,68,.08)); border-color:rgba(239,68,68,.35)}
+    .audioBar .timer{font-variant-numeric:tabular-nums; min-width:54px; text-align:center}
+    .permWarn{display:none;color:#fecaca;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);padding:8px 10px;border-radius:8px}
+    /* Primer media helpers */
+    .primer{display:grid; gap:14px}
+    .primer h2{margin:6px 0 4px}
+    .mediaWrap{position:relative; width:100%; padding-top:56.25%; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.12); box-shadow:var(--shadow); background:#000}
+    .mediaWrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0; display:block}
+    .primerImg{display:block; width:100%; height:auto; border-radius:14px; border:1px solid rgba(255,255,255,.12); box-shadow:var(--shadow)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="tabHeader">
+      <button class="tabBtn active" data-tab="bingo" type="button">🎯 Bingo</button>
+      <button class="tabBtn" data-tab="chunks" type="button">💬 Banque de chunks utiles</button>
+      <button class="tabBtn" data-tab="laicite" type="button">📚 Laïcité – repères</button>
+    </div>
+
+    <div id="bingo" class="tabContent active">
+      <header>
+        <section class="card imgCard">
+          <img src="https://images.ohmyhosting.se/xipOtl5cokgKJYb34D9Nv5rvUS8=/fit-in/1680x1050/smart/filters:quality(85)/https%3A%2F%2Fengelsbergideas.com%2Fwp-content%2Fuploads%2F2024%2F11%2FFrance-Freedom-of-Expression.jpg" alt="Manifestation en France : pancarte ‘Laïcité = Liberté’" />
+          <div class="imgInfo"><strong>Déclencheur visuel</strong> — Observe la scène : quels <em>slogans</em>, <em>symboles</em> et <em>émotions</em> repères‑tu ? Quelles <em>valeurs</em> sont mises en avant ?</div>
+        </section>
+        <section class="card" style="padding:14px 16px">
+          <h2 style="margin:8px 0 12px; letter-spacing:.3px">Bingo d’expression orale – IB French B (SL) – Liberté d’expression</h2>
+          <p class="small" style="margin-top:0">Thèmes : Identités • Organisation sociale • Droits humains. Clique une case, rédige ta réflexion, puis échange avec un camarade.</p>
+          <div class="controls">
+            <button class="btn" id="shuffleBtn" type="button">🔀 Mélanger</button>
+            <button class="btn" id="clearBtn" type="button">🧹 Effacer</button>
+            <button class="btn" id="exportBtn" type="button">⬇️ Exporter</button>
+            <div class="progress" id="progress">
+              <div class="mini" id="mini"></div>
+              <span id="countText">0/25</span>
+              <span class="bingoTag" id="bingoTag" style="display:none">🎉 BINGO !</span>
+            </div>
+          </div>
+        </section>
+      </header>
+
+      <section class="grid" id="grid">
+        <!-- Static placeholders for CSP-restricted platforms; JS will replace. -->
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell free"><h4>CARTE LIBRE</h4><p>Propose ton propre angle d’analyse.</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+        <button type="button" class="cell"><h4>TÂCHE</h4><p>Chargement…</p></button>
+      </section>
+      <noscript>
+        <p style="margin-top:8px;color:#fca5a5">JavaScript est désactivé ou bloqué par votre plateforme. Ouvrez cette activité dans un nouvel onglet via l’iframe.</p>
+      </noscript>
+    </div>
+
+    <div id="chunks" class="tabContent">
+      <h2>💬 Banque de chunks utiles (liberté d’expression)</h2>
+      <p class="small">Filtre par catégorie et recherche. Clique pour insérer (si une case est ouverte) ou pour copier.</p>
+      <div class="card" style="padding:12px; margin-bottom:10px">
+        <div id="chunkFilters" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+          <strong style="margin-right:6px">Catégories :</strong>
+          <button class="btn" data-cat="all" type="button">Toutes</button>
+          <button class="btn" data-cat="amorces" type="button">Amorces</button>
+          <button class="btn" data-cat="verbes" type="button">Verbes</button>
+          <button class="btn" data-cat="descriptions" type="button">Descriptions</button>
+          <button class="btn" data-cat="connecteurs" type="button">Connecteurs</button>
+          <button class="btn" data-cat="nuancer" type="button">Nuancer</button>
+          <button class="btn" data-cat="interaction" type="button">Interaction</button>
+          <button class="btn" data-cat="donnees" type="button">Données</button>
+          <button class="btn" data-cat="hypotheses" type="button">Hypothèses</button>
+          <input id="chunkSearch" type="search" placeholder="Rechercher…" style="margin-left:auto; padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.12); background:#0b1526; color:var(--text); min-width:200px" />
+        </div>
+      </div>
+      <div class="chunkBank" id="chunkBank"></div>
+    </div>
+
+    <!-- Laïcité primer tab -->
+    <div id="laicite" class="tabContent">
+      <section class="card" style="padding:14px 16px; margin-bottom:12px">
+        <h2 style="margin:6px 0 10px">📚 Laïcité – repères essentiels</h2>
+        <p class="small" style="margin:0">La laïcité en France garantit la <strong>liberté de conscience</strong> et la <strong>neutralité de l’État</strong> vis‑à‑vis des convictions. Elle permet d’exercer ses croyances dans le respect de l’ordre public et de l’égalité entre tous les citoyens.</p>
+      </section>
+      <div class="primer">
+        <img class="primerImg" alt="Affiche loi 1905 – Liberté de conscience et séparation des Églises et de l’État" src="https://ligue59.org/wp-content/uploads/2024/12/petition-loi-1905.jpg" loading="lazy" />
+        <section class="card" style="padding:14px 16px">
+          <h3 style="margin:4px 0 10px">Vidéo : comprendre la laïcité</h3>
+          <div class="mediaWrap">
+            <iframe
+              src="https://www.youtube.com/embed/TFdOCfU859w?rel=0&modestbranding=1&playsinline=1"
+              title="Laïcité – vidéo explicative"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <p class="hint" style="margin-top:10px">Si la vidéo ne s’affiche pas dans votre ENT/LMS, ouvrez l’activité dans un nouvel onglet ou via l’iframe externe autorisant <em>allowfullscreen</em> et <em>encrypted-media</em>.</p>
+        </section>
+        <section class="card" style="padding:14px 16px">
+          <h3 style="margin:4px 0 8px">À retenir</h3>
+          <ul style="margin:0 0 6px 16px">
+            <li>Liberté de conscience : chacun est libre de croire ou de ne pas croire.</li>
+            <li>Neutralité de l’État : l’administration ne favorise aucune conviction.</li>
+            <li>Égalité et respect : les citoyens sont égaux face à la loi, quelles que soient leurs croyances.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <dialog id="dlg">
+    <div class="modal" role="dialog" aria-modal="true">
+      <header>
+        <h3 id="dlgTitle">Réponds à la tâche</h3>
+        <button class="btn" id="closeDlg" type="button">✖</button>
+      </header>
+      <div class="body">
+        <div class="prompt" id="dlgPrompt"></div>
+        <label for="resp" class="hint">Ta réponse (tu peux parler d’abord, puis écrire un bref résumé) :</label>
+        <textarea id="resp" placeholder="Écris ici…"></textarea>
+        <div>
+          <div class="hint" style="margin-bottom:6px"><strong>Clavier d’accents</strong> : clique pour insérer dans le texte</div>
+          <div class="kbdRow" id="kbd"></div>
+        </div>
+        <div class="audioBar">
+          <button class="btn rec" id="recBtn" type="button">⏺️ Enregistrer</button>
+          <button class="btn" id="stopBtn" type="button" disabled>⏹️ Stop</button>
+          <button class="btn" id="playBtn" type="button" disabled>▶️ Écouter</button>
+          <button class="btn" id="delAudioBtn" type="button" disabled>🗑️ Supprimer audio</button>
+          <button class="btn" id="uploadBtn" type="button">📤 Importer audio</button>
+          <input id="uploadInput" type="file" accept="audio/*" style="display:none" />
+          <span class="hint timer" id="timer">00:00</span>
+          <audio id="audio" controls style="display:none; width:100%"></audio>
+        </div>
+        <div id="permWarn" class="permWarn">Micro non accessible. Vérifie les permissions du navigateur et les paramètres de l’iframe.</div>
+      </div>
+      <footer>
+        <span class="hint" id="count">0/800 caractères</span>
+        <div style="display:flex; gap:8px">
+          <button class="btn" id="save" type="button">💾 Enregistrer</button>
+          <button class="btn" id="clearCell" type="button">Effacer la réponse</button>
+        </div>
+      </footer>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast">Action effectuée</div>
+
+  <script>
+    // ---------- Utilities ----------
+    const toast=document.getElementById('toast');
+    function showToast(msg){ toast.textContent=msg; toast.style.display='block'; setTimeout(()=>toast.style.display='none', 1300); }
+
+    function copyMaybe(text){
+      try{
+        if(!('clipboard' in navigator) || !navigator.isSecureContext) return false;
+        const p=navigator.clipboard.writeText(text); if(p && p.then) p.catch(()=>{}); return true;
+      }catch(e){ return false; }
+    }
+
+    // ---------- Accent keyboard ----------
+    const ACCENTS=['à','â','ä','æ','ç','é','è','ê','ë','î','ï','ô','œ','ö','ù','û','ü','ÿ','À','Ç','É','È','Ê','Ë','Î','Ï','Ô','Ù','Û','Ü','«','»','€'];
+
+    // ---------- Chunk bank (civic/debate oriented) ----------
+    const CHUNKS=[
+      {cat:'amorces',text:"À mon avis, …"},{cat:'amorces',text:"Selon moi, …"},{cat:'amorces',text:"Il me semble que …"},
+      {cat:'amorces',text:"D’après cette scène, on peut penser que …"},{cat:'amorces',text:"On dirait que les manifestants …"},
+      {cat:'verbes',text:"manifester / revendiquer / contester"},{cat:'verbes',text:"défendre / protéger / garantir"},{cat:'verbes',text:"respecter / transgresser / limiter"},
+      {cat:'verbes',text:"s’exprimer / débattre / dialoguer"},{cat:'verbes',text:"provoquer / apaiser / polariser"},
+      {cat:'descriptions',text:"pancarte / slogan / banderole"},{cat:'descriptions',text:"foule / cortège / rassemblement"},{cat:'descriptions',text:"drapeau tricolore / symbole républicain"},
+      {cat:'descriptions',text:"expression faciale / émotion / détermination"},{cat:'descriptions',text:"valeurs affichées : laïcité, liberté, tolérance"},
+      {cat:'connecteurs',text:"d’une part … d’autre part …"},{cat:'connecteurs',text:"cependant / néanmoins / en revanche"},{cat:'connecteurs',text:"par conséquent / ainsi / donc"},
+      {cat:'nuancer',text:"Je comprends cette position, mais …"},{cat:'nuancer',text:"Tout en respectant …, on peut soutenir que …"},{cat:'nuancer',text:"Bien que …, il est important de …"},
+      {cat:'interaction',text:"Qu’en penses‑tu ?"},{cat:'interaction',text:"Peux‑tu donner un exemple ?"},{cat:'interaction',text:"Et si on considérait l’angle de … ?"},
+      {cat:'donnees',text:"selon la Constitution / la loi de 1905 …"},{cat:'donnees',text:"un sondage montre que …"},{cat:'donnees',text:"à court terme / à long terme"},
+      {cat:'hypotheses',text:"Si la liberté d’expression était restreinte, …"},{cat:'hypotheses',text:"Dans le cas où des limites seraient nécessaires, …"},{cat:'hypotheses',text:"Cette hypothèse reste à vérifier."}
+    ];
+
+    const chunkBank=document.getElementById('chunkBank');
+    const chunkFilters=document.getElementById('chunkFilters');
+    const chunkSearch=document.getElementById('chunkSearch');
+    let activeCat='all';
+
+    function renderChunks(){
+      const q=(chunkSearch&&chunkSearch.value?chunkSearch.value:'').toLowerCase().trim();
+      chunkBank.innerHTML='';
+      CHUNKS.filter(c=>activeCat==='all'||c.cat===activeCat)
+            .filter(c=>!q||c.text.toLowerCase().includes(q))
+            .forEach(c=>{ const div=document.createElement('div'); div.className='chunk'; div.textContent=c.text; div.title=c.cat; div.addEventListener('click',()=>{ if(dlg.open){ insertAtCursor(resp,(resp.value&&!resp.value.endsWith('\n')?' ':' ')+c.text+' ');} else { const ok=copyMaybe(c.text); showToast(ok?'Copié ✔︎':'Copie bloquée — ouvre une case pour insérer'); } }); chunkBank.appendChild(div); });
+    }
+    if(chunkFilters){
+      chunkFilters.addEventListener('click',(e)=>{ const btn=e.target.closest('button[data-cat]'); if(!btn) return; activeCat=btn.getAttribute('data-cat'); [...chunkFilters.querySelectorAll('button[data-cat]')].forEach(b=>{ if(b===btn) b.classList.add('active'); else b.classList.remove('active'); }); renderChunks(); });
+      const allBtn=chunkFilters.querySelector('button[data-cat="all"]'); if(allBtn) allBtn.classList.add('active');
+    }
+    if(chunkSearch){ chunkSearch.addEventListener('input',renderChunks); }
+    renderChunks();
+
+    // ---------- Tabs ----------
+    const tabs=document.querySelectorAll('.tabBtn');
+    const contents=document.querySelectorAll('.tabContent');
+    tabs.forEach(btn=>btn.addEventListener('click',()=>{ tabs.forEach(b=>b.classList.remove('active')); contents.forEach(c=>c.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active'); }));
+
+    // ---------- Prompts (24 + free center) ----------
+    const PROMPTS=[
+      {t:'Décris la scène de manière neutre : qui, quoi, où ? Quels indices visuels ?'},
+      {t:'Analyse le slogan « Laïcité = Liberté » : que signifie‑t‑il selon toi ?'},
+      {t:'Formule deux opinions opposées sur les limites de la liberté d’expression.'},
+      {t:'Quelles <strong>valeurs républicaines</strong> vois‑tu (liberté, égalité, fraternité) ? Justifie.'},
+      {t:'Relie cette image à la notion de <em>laïcité</em> (sans confondre avec hostilité aux religions).'},
+      {t:'Identifie un <em>stéréotype possible</em> et reformule pour préserver la dignité.'},
+      {t:'Exprime ton ressenti : « je me sens… » / « cette image évoque… »'},
+      {t:'Rédige une <em>question ouverte</em> qui invite au débat respectueux.'},
+      {t:'Relie à un événement historique ou d’actualité en France sur la liberté d’expression.'},
+      {t:'Compare avec une autre manifestation en France ou ailleurs (ressemblances/différences).'},
+      {t:'Quels <strong>droits humains</strong> peuvent être concernés ici ?'},
+      {t:'Donne deux <strong>actions citoyennes</strong> possibles pour défendre une idée sans violence.'},
+      {t:'Analyse la composition : cadrage, lumière, profondeur, foule → effet sur le message.'},
+      {t:'Choisis un angle journalistique pour titrer l’image (neutre, engagé, critique).'},
+      {t:'Transforme une affirmation catégorique en <em>question prudente</em>.'},
+      {t:'Subjonctif : « Il faut que… » / « Bien que… » → propose une position nuancée.'},
+      {t:'Élabore un mini‑dialogue entre deux personnes en désaccord respectueux.'},
+      {t:'Quelles émotions de la foule repères‑tu ? Quels indices précis les montrent ?'},
+      {t:'Explique un mot‑clé (ex. « censure », « blasphème », « pluralisme ») et utilise‑le.'},
+      {t:'Propose un indicateur pour évaluer la qualité du débat public.'},
+      {t:'Imagine un risque si la liberté d’expression était réduite (hypothèse).'},
+      {t:'Imagine une mesure pour protéger à la fois <em>dignité</em> et <em>liberté</em>.'},
+      {t:'Reformule l’idée d’un camarade avec accord partiel + concession.'},
+      {t:'Conclue par une phrase d’espoir ou une solution concrète.'}
+    ];
+
+    // ---------- Helpers ----------
+    function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1])}
+    function getPromptPool(){
+      const valid=PROMPTS.filter(p=>p&&typeof p.t==='string'&&p.t.trim().length>0);
+      const need=24-valid.length; const fillers=[]; for(let i=1;i<=Math.max(0,need);i++){ fillers.push({t:`Tâche supplémentaire ${i} : décris un symbole et son interprétation.`}); }
+      return shuffle([...valid,...fillers]).slice(0,24);
+    }
+
+    // ---------- Bingo lines ----------
+    const LINES=(()=>{ const rows=[0,5,10,15,20].map(s=>[s,s+1,s+2,s+3,s+4]); const cols=[0,1,2,3,4].map(c=>[c,c+5,c+10,c+15,c+20]); const diags=[[0,6,12,18,24],[4,8,12,16,20]]; return [...rows,...cols,...diags]; })();
+
+    // ---------- State & storage (Ephemeral by default) ----------
+    const LS_KEY='ibfb-liberte-v1';
+    const EPHEMERAL=(new URLSearchParams(location.search).get('persist')!=='1');
+    let board=[];
+    if(EPHEMERAL){ try{ localStorage.removeItem(LS_KEY); }catch(e){} }
+    function save(){ if(EPHEMERAL) return; try{ localStorage.setItem(LS_KEY, JSON.stringify(board)); }catch(e){} }
+    function load(){ if(!EPHEMERAL){ try{ const raw=localStorage.getItem(LS_KEY); if(raw){ board=JSON.parse(raw); render(); updateProgress(); return; } }catch(e){} } buildBoard(); }
+
+    // ---------- Build & render ----------
+    const gridEl=document.getElementById('grid');
+    const mini=document.getElementById('mini');
+    const countText=document.getElementById('countText');
+    const bingoTag=document.getElementById('bingoTag');
+
+    function buildBoard(){
+      try{
+        const pool=getPromptPool(); let k=0; const cells=[];
+        for(let i=0;i<25;i++){
+          if(i===12){ cells.push({id:'c12',prompt:'Propose ton propre angle d’analyse.',response:'',completed:true,free:true}); }
+          else{ const p=pool[k++]; const text=(p&&p.t&&String(p.t).trim().length>0)?p.t:`Tâche de secours ${i+1}: observe un détail et explique.`; cells.push({id:'c'+i,prompt:text,response:'',completed:false,free:false}); }
+        }
+        board=cells; save(); render(); updateProgress();
+      }catch(err){ console.error('[buildBoard] fallback',err); board=Array.from({length:25},(_,i)=> i===12?{id:'c12',prompt:'Propose ton propre angle d’analyse.',response:'',completed:true,free:true}:{id:'c'+i,prompt:`Tâche de secours ${i+1}: décris un symbole.`,response:'',completed:false,free:false}); render(); updateProgress(); }
+    }
+
+    function render(){
+      gridEl.innerHTML='';
+      board.forEach(cell=>{ const el=document.createElement('button'); el.type='button'; el.className='cell'+(cell.free?' free':'')+(cell.completed?' completed':''); el.setAttribute('data-id',cell.id); el.innerHTML=(cell.free?'<h4>CARTE LIBRE</h4>':'<h4>TÂCHE</h4>')+`<p>${cell.prompt}</p>`+`<span class="badge">Fait</span>`+(cell.response?`<div class="assist">Réponse sauvegardée ✓</div>`:'')+(cell.audio?`<div class="assist">🎙️ Audio enregistré</div>`:''); el.addEventListener('click',(e)=>{ if(!e.isTrusted) return; __userGesture=true; try{ openCell(cell.id); } finally { __userGesture=false; } }); gridEl.appendChild(el); });
+    }
+
+    function updateProgress(){ mini.innerHTML=''; board.forEach(c=>{ const d=document.createElement('div'); if(c.completed) d.classList.add('done'); mini.appendChild(d); }); const done=board.filter(c=>c.completed).length; countText.textContent=done+'/25'; const lines=LINES.filter(L=>L.every(i=>board[i].completed)); bingoTag.style.display=lines.length>0?'inline-flex':'none'; if(lines.length>0) showToast('🎉 BINGO !'); }
+
+    // ---------- Modal & keyboard ----------
+    let __userGesture=false, __userInteracted=false; ['pointerdown','keydown','touchstart'].forEach(t=>window.addEventListener(t,()=>{__userInteracted=true},{once:true,passive:true}));
+    const dlg=document.getElementById('dlg'); const dlgPrompt=document.getElementById('dlgPrompt'); const resp=document.getElementById('resp'); const closeDlg=document.getElementById('closeDlg'); const saveBtn=document.getElementById('save'); const clearCellBtn=document.getElementById('clearCell'); const count=document.getElementById('count'); const kbd=document.getElementById('kbd'); const permWarn=document.getElementById('permWarn'); let currentId=null;
+    function openCell(id){ if(!__userGesture||!__userInteracted) return; currentId=id; const cell=board.find(c=>c.id===id); dlgPrompt.innerHTML=(cell.free?'<strong>CARTE LIBRE</strong> – ':'<strong>TÂCHE</strong> – ')+cell.prompt; resp.value=cell.response||''; updateCount(); if(!dlg.open) dlg.showModal(); setTimeout(()=>resp.focus(),40); loadAudioUI(cell); preflightMic(); }
+    function closeModal(){ try{ stopRec(); }catch(e){} dlg.close(); currentId=null; }
+    function updateCount(){ count.textContent=(resp.value.length||0)+'/800 caractères'; }
+    resp.addEventListener('input',updateCount);
+
+    function mountKeyboard(){ kbd.innerHTML=''; ACCENTS.forEach(ch=>{ const b=document.createElement('button'); b.type='button'; b.textContent=ch; b.addEventListener('click',()=>insertAtCursor(resp,ch)); kbd.appendChild(b); }); }
+    function insertAtCursor(field,text){ const s=field.selectionStart,e=field.selectionEnd,v=field.value; field.value=v.slice(0,s)+text+v.slice(e); field.selectionStart=field.selectionEnd=s+text.length; field.focus(); updateCount(); }
+
+    saveBtn.addEventListener('click',()=>{ if(currentId==null) return; const cell=board.find(c=>c.id===currentId); cell.response=resp.value.slice(0,800); cell.completed=cell.free||cell.response.trim().length>=10||!!cell.audio; save(); render(); updateProgress(); showToast('Enregistré ✅'); closeModal(); });
+    clearCellBtn.addEventListener('click',()=>{ if(currentId==null) return; const cell=board.find(c=>c.id===currentId); cell.response=''; if(!cell.free && !cell.audio) cell.completed=false; save(); render(); updateProgress(); showToast('Réponse effacée'); resp.value=''; updateCount(); });
+    closeDlg.addEventListener('click',closeModal);
+
+    // ---------- Audio (MediaRecorder) + Fallback Upload ----------
+    const recBtn=document.getElementById('recBtn'), stopBtn=document.getElementById('stopBtn'), playBtn=document.getElementById('playBtn'), delAudioBtn=document.getElementById('delAudioBtn'), uploadBtn=document.getElementById('uploadBtn'), uploadInput=document.getElementById('uploadInput'), audioEl=document.getElementById('audio'), timerEl=document.getElementById('timer');
+    let mediaStream=null, mediaRec=null, chunks=[], t0=0, tick=null;
+    function hhmm(s){const m=Math.floor(s/60),ss=('0'+(s%60)).slice(-2); return ('0'+m).slice(-2)+':'+ss;}
+    async function preflightMic(){ try{ if(!('mediaDevices' in navigator)||!('MediaRecorder' in window)){ recBtn.disabled=stopBtn.disabled=playBtn.disabled=delAudioBtn.disabled=true; permWarn.style.display='block'; permWarn.textContent='Enregistrement audio non supporté par ce navigateur.'; return; } if(navigator.permissions&&navigator.permissions.query){ try{ const st=await navigator.permissions.query({name:'microphone'}); if(st.state==='denied'){ permWarn.style.display='block'; permWarn.textContent='Micro refusé. Autorise le microphone.'; } }catch(e){} } }catch(e){} }
+    async function startRec(){ try{ if(!navigator.mediaDevices||!window.MediaRecorder){ showToast('Audio non supporté'); return; } mediaStream=await navigator.mediaDevices.getUserMedia({audio:true}); mediaRec=new MediaRecorder(mediaStream); chunks=[]; mediaRec.ondataavailable=e=>{ if(e.data&&e.data.size>0) chunks.push(e.data); }; mediaRec.onstop=()=>{ try{ const blob=new Blob(chunks,{type:mediaRec.mimeType||'audio/webm'}); const reader=new FileReader(); reader.onloadend=()=>{ const dataUrl=reader.result; const cell=board.find(c=>c.id===currentId); if(!cell) return; cell.audio={dataUrl,mime:blob.type||'audio/webm'}; cell.completed=true; save(); render(); updateProgress(); audioEl.src=dataUrl; audioEl.style.display='block'; playBtn.disabled=false; delAudioBtn.disabled=false; showToast('Audio enregistré 🎙️'); }; reader.readAsDataURL(blob); }catch(e){ console.error(e); showToast('Erreur audio'); } cleanupStream(); }; mediaRec.start(); recBtn.disabled=true; stopBtn.disabled=false; playBtn.disabled=true; delAudioBtn.disabled=true; t0=Date.now(); timerEl.textContent='00:00'; tick=setInterval(()=>{ const s=Math.floor((Date.now()-t0)/1000); timerEl.textContent=hhmm(s); },250); }catch(err){ console.error(err); if(err&&(err.name==='NotAllowedError'||err.name==='NotFoundError')){ permWarn.style.display='block'; permWarn.textContent='Micro non accessible. Autorise le micro ou utilise « Importer audio ».'; } showToast('Micro non accessible'); cleanupStream(); } }
+    function stopRec(){ try{ if(mediaRec&&mediaRec.state!=='inactive') mediaRec.stop(); }catch(e){} stopBtn.disabled=true; recBtn.disabled=false; clearInterval(tick); tick=null; }
+    function cleanupStream(){ try{ mediaStream&&mediaStream.getTracks().forEach(t=>t.stop()); }catch(e){} mediaStream=null; mediaRec=null; clearInterval(tick); tick=null; timerEl.textContent='00:00'; }
+    function loadAudioUI(cell){ if(cell&&cell.audio){ audioEl.src=cell.audio.dataUrl; audioEl.style.display='block'; playBtn.disabled=false; delAudioBtn.disabled=false; } else { audioEl.removeAttribute('src'); audioEl.style.display='none'; playBtn.disabled=true; delAudioBtn.disabled=true; } stopBtn.disabled=true; recBtn.disabled=false; timerEl.textContent='00:00'; }
+    uploadBtn.addEventListener('click',()=>uploadInput.click());
+    uploadInput.addEventListener('change',()=>{ const file=uploadInput.files&&uploadInput.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=()=>{ if(currentId==null) return; const cell=board.find(c=>c.id===currentId); if(!cell) return; cell.audio={dataUrl:reader.result,mime:file.type||'audio/*'}; cell.completed=true; save(); render(); updateProgress(); audioEl.src=reader.result; audioEl.style.display='block'; playBtn.disabled=false; delAudioBtn.disabled=false; showToast('Audio importé 📤'); }; reader.readAsDataURL(file); uploadInput.value=''; });
+    recBtn.addEventListener('click',()=>{ startRec().catch(()=>{}); }); stopBtn.addEventListener('click',()=>{ try{ stopRec(); }catch(e){} }); playBtn.addEventListener('click',()=>{ if(!audioEl.src) return; audioEl.play(); }); delAudioBtn.addEventListener('click',()=>{ if(currentId==null) return; const cell=board.find(c=>c.id===currentId); if(!cell) return; delete cell.audio; if(!cell.free && !(cell.response&&cell.response.trim().length>=10)) cell.completed=false; save(); loadAudioUI(cell); render(); updateProgress(); showToast('Audio supprimé'); });
+
+    // ---------- Top controls ----------
+    (function wire(){ const sBtn=document.getElementById('shuffleBtn'); const cBtn=document.getElementById('clearBtn'); const eBtn=document.getElementById('exportBtn'); if(sBtn) sBtn.addEventListener('click',()=>{ if(confirm('Mélanger réinitialise les invites et supprime les réponses & audios. Continuer ?')){ localStorage.removeItem(LS_KEY); buildBoard(); showToast('Mélangé 🎲'); }}); if(cBtn) cBtn.addEventListener('click',()=>{ if(confirm('Effacer toutes les réponses & audios ?')){ board.forEach(c=>{c.response=''; delete c.audio; c.completed=!!c.free;}); save(); render(); updateProgress(); showToast('Réinitialisé'); }}); if(eBtn) eBtn.addEventListener('click',()=>{ const rows=[["#","Type","Invite","Réponse","Audio?","Complétée"]]; board.forEach((c,i)=>rows.push([i+1,c.free?'CARTE LIBRE':'TÂCHE',c.prompt.replace(/\n/g,' '),(c.response||'').replace(/\n/g,' '),c.audio?'oui':'non',c.completed?'oui':'non'])); const csv=rows.map(r=>r.map(x=>('"'+String(x).replace(/"/g,'""')+'"')).join(',')).join('\n'); const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='bingo-liberte-expression.csv'; a.click(); URL.revokeObjectURL(url); showToast('CSV exporté'); }); })();
+
+    // ---------- Tests (opt-in via ?test=1) ----------
+    const RUN_TESTS=new URLSearchParams(location.search).get('test')==='1';
+    function __runTests(){ const pool=getPromptPool(); console.assert(Array.isArray(pool)&&pool.length===24,'pool length'); console.assert(pool.every(p=>p&&typeof p.t==='string'&&p.t.length>0),'valid .t'); buildBoard(); console.assert(gridEl.children.length===25,'25 cells'); console.assert(gridEl.children[12].classList.contains('free'),'center free'); for(let i=0;i<5;i++){board[i].completed=true;} updateProgress(); const any=LINES.some(L=>L.every(i=>board[i].completed)); console.assert(any===true,'bingo possible'); const copied=copyMaybe('x'); console.assert(typeof copied==='boolean','copyMaybe boolean'); console.assert('mediaDevices' in navigator,'mediaDevices present'); }
+    if(RUN_TESTS){ __runTests(); }
+
+    // ---------- Init ----------
+    function mountKeyboardInit(){ mountKeyboard(); }
+    mountKeyboardInit();
+    try{ if(dlg.open) dlg.close(); }catch(e){}
+    setTimeout(()=>{ try{ if(dlg.open) dlg.close(); }catch(e){} },800);
+    if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',load,{once:true}); } else { load(); }
+    requestAnimationFrame(()=>{ try{ if(!gridEl.children.length){ render(); updateProgress(); } }catch(e){} });
+  </script>
+</body>
+</html>
