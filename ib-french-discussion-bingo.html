@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bingo Discussion - IB French B SL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 24px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 32px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #5a67d8;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .image-section {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .discussion-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .warning-box {
+            background: #fef2f2;
+            border: 2px solid #fca5a5;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+            align-items: start;
+        }
+        
+        .warning-icon {
+            color: #dc2626;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .warning-title {
+            font-weight: bold;
+            color: #991b1b;
+            margin-bottom: 4px;
+        }
+        
+        .warning-text {
+            font-size: 14px;
+            color: #b91c1c;
+            line-height: 1.5;
+        }
+        
+        .input-section {
+            margin-bottom: 24px;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+            margin-bottom: 12px;
+        }
+        
+        .input-group {
+            flex: 1;
+        }
+        
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #5a67d8;
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.1);
+        }
+        
+        .copy-btn {
+            background: #2563eb;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+            transition: background 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .instructions {
+            background: #eef2ff;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .instructions p {
+            font-size: 14px;
+            color: #4338ca;
+            margin-bottom: 8px;
+        }
+        
+        .instructions p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reminder {
+            font-weight: 500;
+            color: #5a67d8;
+        }
+        
+        .bingo-alert {
+            font-size: 18px;
+            font-weight: bold;
+            color: #16a34a;
+            margin-top: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .progress {
+            font-size: 14px;
+            color: #5a67d8;
+            margin-top: 8px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .cell {
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s;
+            position: relative;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cell:hover {
+            border-color: #818cf8;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .cell.selected {
+            border-color: #5a67d8;
+            background: #eef2ff;
+            box-shadow: 0 4px 12px rgba(90, 103, 216, 0.2);
+            transform: scale(1.02);
+        }
+        
+        .cell.completed {
+            background: #f0fdf4;
+        }
+        
+        .cell.free-space {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border-color: #d97706;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            font-size: 14px;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .cell.free-space:hover {
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+        }
+        
+        .cell-text {
+            font-size: 12px;
+            line-height: 1.4;
+            color: #1f2937;
+        }
+        
+        .check-mark {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #22c55e;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .response-area {
+            background: #eef2ff;
+            border: 2px solid #818cf8;
+            border-radius: 8px;
+            padding: 24px;
+        }
+        
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+        
+        .response-task {
+            flex: 1;
+        }
+        
+        .task-number {
+            font-weight: bold;
+            color: #5a67d8;
+            margin-bottom: 8px;
+        }
+        
+        .task-text {
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 16px;
+        }
+        
+        .complete-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-left: 16px;
+        }
+        
+        .complete-btn.not-completed {
+            background: #5a67d8;
+            color: white;
+        }
+        
+        .complete-btn.not-completed:hover {
+            background: #4c51bf;
+        }
+        
+        .complete-btn.completed {
+            background: #22c55e;
+            color: white;
+        }
+        
+        .complete-btn.completed:hover {
+            background: #16a34a;
+        }
+        
+        .accent-keyboard {
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        
+        .accent-btn {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .accent-btn:hover {
+            background: #5a67d8;
+            color: white;
+            border-color: #5a67d8;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 160px;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #5a67d8;
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.1);
+        }
+        
+        .word-count {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 8px;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow: auto;
+        }
+        
+        .modal-content h3 {
+            margin-bottom: 12px;
+            color: #5a67d8;
+        }
+        
+        .modal-content textarea {
+            font-family: monospace;
+            font-size: 12px;
+            height: 300px;
+        }
+        
+        .modal-content button {
+            margin-top: 12px;
+            background: #5a67d8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bingo Discussion - IB French B SL</h1>
+        <p class="subtitle">Analyse d'image : Questions sociales</p>
+        
+        <div class="image-section">
+            <img src="https://i.imgur.com/zOILQvH.jpeg" 
+                 alt="Image de discussion" 
+                 class="discussion-image"
+                 onerror="this.onerror=null; this.style.display='none'; document.getElementById('imageError').style.display='block';">
+            <div id="imageError" style="display:none; padding: 20px; background: #fee2e2; border: 2px solid #f87171; border-radius: 8px; text-align: center;">
+                <p style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">⚠️ L'image ne peut pas être chargée</p>
+                <a href="https://i.imgur.com/zOILQvH.jpeg" 
+                   target="_blank" 
+                   style="display: inline-block; background: #5a67d8; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 8px;">
+                    🔗 Voir l'image sur Imgur
+                </a>
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            <div class="warning-icon">⚠️</div>
+            <div>
+                <div class="warning-title">IMPORTANT : Tes réponses ne seront PAS sauvegardées !</div>
+                <div class="warning-text">
+                    Quand tu quittes cette page, tout ton travail sera perdu. 
+                    Utilise le bouton "Copier toutes mes réponses" régulièrement pour sauvegarder ton travail !
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="studentName">Nom :</label>
+                    <input type="text" id="studentName" placeholder="Ton nom">
+                </div>
+                <button class="copy-btn" onclick="copyAllResponses()">
+                    📋 Copier toutes mes réponses
+                </button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <p><strong>Instructions :</strong> Clique sur une case pour la sélectionner et écrire ta réponse. 
+            Utilise le clavier d'accents ci-dessous pour taper les caractères français. 
+            Tu dois compléter une ligne, une colonne ou une diagonale complète.</p>
+            <p><strong>📌 Espace Libre (case centrale) :</strong> Pour cette case, exprime une réflexion personnelle libre sur l'image ou le sujet de ton choix.</p>
+            <p class="reminder">💡 N'oublie pas de copier tes réponses régulièrement !</p>
+            <div id="bingoAlert"></div>
+            <div class="progress" id="progress">Cases complétées : 0 / 25</div>
+        </div>
+        
+        <div class="grid" id="grid"></div>
+        
+        <div id="responseArea" style="display: none;"></div>
+    </div>
+
+    <script>
+        const tasks = [
+            "Décris en détail ce que tu vois dans cette image (3-4 phrases)",
+            "Quel message la pancarte essaie-t-elle de communiquer ? Explique.",
+            "Pourquoi penses-tu que le drapeau français est présent dans l'image ?",
+            "Utilise le conditionnel : Que ferais-tu si tu voyais cette personne dans la rue ?",
+            "Quels sentiments cette image évoque-t-elle chez toi ? Pourquoi ?",
+            "Identifie trois problèmes sociaux que cette image représente",
+            "Compare la situation des sans-abri en France et dans ton pays",
+            "Utilise le subjonctif : Il est important que la société...",
+            "Quelles sont les causes principales de l'itinérance selon toi ?",
+            "Propose deux solutions concrètes pour aider les sans-abri",
+            "Raconte (au passé composé/imparfait) : Une fois, j'ai vu une personne sans-abri...",
+            "Comment les médias représentent-ils généralement les personnes sans-abri ?",
+            "🌟 ESPACE LIBRE - RÉFLEXION PERSONNELLE 🌟",
+            "Quel rôle le gouvernement devrait-il jouer pour résoudre ce problème ?",
+            "Utilise 'si + imparfait' : Si j'étais ministre, je...",
+            "Quels stéréotypes existent sur les personnes sans-abri ? Sont-ils justes ?",
+            "Explique le lien entre pauvreté et dignité humaine",
+            "Comment cette situation pourrait-elle être différente dans 10 ans ?",
+            "Quelles organisations existent en France pour aider les sans-abri ?",
+            "Débat : Est-ce que donner de l'argent directement aide vraiment ? Pourquoi ou pourquoi pas ?",
+            "Comment la pandémie COVID-19 a-t-elle affecté les personnes sans-abri ?",
+            "Utilise des pronoms relatifs : La personne qui/que/dont...",
+            "Quel est le rapport entre éducation et pauvreté ?",
+            "Si tu pouvais interviewer cette personne, quelles 3 questions poserais-tu ?",
+            "Écris un titre de journal pour cette image et explique ton choix"
+        ];
+
+        let selectedCell = null;
+        let completedCells = new Set();
+        let responses = {};
+        let currentTextarea = null;
+
+        const accents = ['à', 'â', 'é', 'è', 'ê', 'ë', 'î', 'ï', 'ô', 'ù', 'û', 'ü', 'ÿ', 'ç', 'œ', 'æ', 
+                        'À', 'Â', 'É', 'È', 'Ê', 'Ë', 'Î', 'Ï', 'Ô', 'Ù', 'Û', 'Ü', 'Ÿ', 'Ç', 'Œ', 'Æ',
+                        '«', '»'];
+
+        function init() {
+            const grid = document.getElementById('grid');
+            tasks.forEach((task, index) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                if (index === 12) {
+                    cell.classList.add('free-space');
+                }
+                cell.innerHTML = `<div class="cell-text">${task}</div>`;
+                cell.onclick = () => selectCell(index);
+                grid.appendChild(cell);
+            });
+            updateGrid();
+        }
+
+        function selectCell(index) {
+            selectedCell = index;
+            updateGrid();
+            showResponseArea();
+        }
+
+        function updateGrid() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach((cell, index) => {
+                cell.classList.remove('selected');
+                if (index === selectedCell) {
+                    cell.classList.add('selected');
+                }
+                if (completedCells.has(index)) {
+                    cell.classList.add('completed');
+                    if (!cell.querySelector('.check-mark')) {
+                        const check = document.createElement('div');
+                        check.className = 'check-mark';
+                        check.innerHTML = '✓';
+                        cell.appendChild(check);
+                    }
+                } else {
+                    const check = cell.querySelector('.check-mark');
+                    if (check) check.remove();
+                }
+            });
+            
+            document.getElementById('progress').textContent = `Cases complétées : ${completedCells.size} / 25`;
+            checkBingo();
+        }
+
+        function insertAccent(char) {
+            if (currentTextarea) {
+                const start = currentTextarea.selectionStart;
+                const end = currentTextarea.selectionEnd;
+                const text = currentTextarea.value;
+                currentTextarea.value = text.substring(0, start) + char + text.substring(end);
+                currentTextarea.selectionStart = currentTextarea.selectionEnd = start + 1;
+                currentTextarea.focus();
+                updateResponse();
+            }
+        }
+
+        function showResponseArea() {
+            const area = document.getElementById('responseArea');
+            const isCompleted = completedCells.has(selectedCell);
+            
+            let accentKeyboard = '<div class="accent-keyboard" id="accentKeyboard"></div>';
+            
+            area.style.display = 'block';
+            area.innerHTML = `
+                <div class="response-area">
+                    <div class="response-header">
+                        <div class="response-task">
+                            <div class="task-number">Tâche #${selectedCell + 1}</div>
+                            <div class="task-text">${tasks[selectedCell]}</div>
+                        </div>
+                        <button class="complete-btn ${isCompleted ? 'completed' : 'not-completed'}" 
+                                onclick="toggleComplete()">
+                            ${isCompleted ? '✓ Complété' : 'Marquer comme complété'}
+                        </button>
+                    </div>
+                    <label><strong>Clavier d'accents :</strong></label>
+                    ${accentKeyboard}
+                    <label><strong>Ta réponse :</strong></label>
+                    <textarea id="responseText" placeholder="Écris ta réponse ici..." 
+                              oninput="updateResponse()">${responses[selectedCell] || ''}</textarea>
+                    <div class="word-count" id="wordCount">Nombre de mots : 0</div>
+                </div>
+            `;
+            currentTextarea = document.getElementById('responseText');
+            
+            // Populate accent keyboard with proper event listeners
+            const keyboardDiv = document.getElementById('accentKeyboard');
+            accents.forEach(accent => {
+                const btn = document.createElement('button');
+                btn.className = 'accent-btn';
+                btn.textContent = accent;
+                btn.onclick = () => insertAccent(accent);
+                keyboardDiv.appendChild(btn);
+            });
+            
+            updateWordCount();
+        }
+
+        function toggleComplete() {
+            if (completedCells.has(selectedCell)) {
+                completedCells.delete(selectedCell);
+            } else {
+                completedCells.add(selectedCell);
+            }
+            updateGrid();
+            showResponseArea();
+        }
+
+        function updateResponse() {
+            const text = document.getElementById('responseText').value;
+            responses[selectedCell] = text;
+            updateWordCount();
+        }
+
+        function updateWordCount() {
+            const text = document.getElementById('responseText')?.value || '';
+            const words = text.split(/\s+/).filter(w => w.length > 0).length;
+            const counter = document.getElementById('wordCount');
+            if (counter) {
+                counter.textContent = `Nombre de mots : ${words}`;
+            }
+        }
+
+        function checkBingo() {
+            const size = 5;
+            const completed = Array.from(completedCells);
+            
+            for (let row = 0; row < size; row++) {
+                let hasRow = true;
+                for (let col = 0; col < size; col++) {
+                    if (!completed.includes(row * size + col)) {
+                        hasRow = false;
+                        break;
+                    }
+                }
+                if (hasRow) {
+                    showBingo();
+                    return;
+                }
+            }
+            
+            for (let col = 0; col < size; col++) {
+                let hasCol = true;
+                for (let row = 0; row < size; row++) {
+                    if (!completed.includes(row * size + col)) {
+                        hasCol = false;
+                        break;
+                    }
+                }
+                if (hasCol) {
+                    showBingo();
+                    return;
+                }
+            }
+            
+            let hasDiag1 = true;
+            let hasDiag2 = true;
+            for (let i = 0; i < size; i++) {
+                if (!completed.includes(i * size + i)) hasDiag1 = false;
+                if (!completed.includes(i * size + (size - 1 - i))) hasDiag2 = false;
+            }
+            
+            if (hasDiag1 || hasDiag2) {
+                showBingo();
+                return;
+            }
+            
+            document.getElementById('bingoAlert').innerHTML = '';
+        }
+
+        function showBingo() {
+            document.getElementById('bingoAlert').innerHTML = 
+                '<div class="bingo-alert">🎉 BINGO ! Tu as complété une ligne !</div>';
+        }
+
+        function copyAllResponses() {
+            const studentName = document.getElementById('studentName').value || '[Non rempli]';
+            const date = new Date().toLocaleDateString('fr-FR');
+            
+            let text = `BINGO DISCUSSION - IB FRENCH B SL\n`;
+            text += `================================\n\n`;
+            text += `Nom: ${studentName}\n`;
+            text += `Date: ${date}\n`;
+            text += `Image: Sans-abri avec pancarte "J'AI FAIM"\n\n`;
+            text += `RÉPONSES COMPLÉTÉES:\n`;
+            text += `================================\n\n`;
+            
+            const completedArray = Array.from(completedCells).sort((a, b) => a - b);
+            
+            if (completedArray.length === 0) {
+                text += `Aucune tâche complétée pour le moment.\n`;
+            } else {
+                completedArray.forEach((index) => {
+                    text += `Tâche #${index + 1}:\n`;
+                    text += `${tasks[index]}\n\n`;
+                    text += `Réponse:\n`;
+                    text += `${responses[index] || '[Aucune réponse écrite]'}\n\n`;
+                    text += `---\n\n`;
+                });
+            }
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('✓ Toutes tes réponses ont été copiées! Tu peux maintenant les coller dans un document.');
+                }).catch(() => {
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+        
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert('✓ Toutes tes réponses ont été copiées! Tu peux maintenant les coller dans un document.');
+                } else {
+                    showCopyModal(text);
+                }
+            } catch (err) {
+                showCopyModal(text);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        function showCopyModal(text) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            
+            const content = document.createElement('div');
+            content.className = 'modal-content';
+            
+            content.innerHTML = `
+                <h3>Copie manuelle requise</h3>
+                <p style="margin-bottom: 12px; font-size: 14px;">Sélectionne tout le texte ci-dessous et copie-le (Ctrl+C ou Cmd+C) :</p>
+                <textarea readonly onclick="this.select()">${text}</textarea>
+                <button onclick="this.parentElement.parentElement.remove()">Fermer</button>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            content.querySelector('textarea').select();
+        }
+
+        init();
+    </script>
+</body>
+</html>
