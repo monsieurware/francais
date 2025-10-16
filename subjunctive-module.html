@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprendre le Subjonctif</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comfortaa', cursive;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 40px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #5a67d8;
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #718096;
+            font-size: 18px;
+        }
+        
+        .content {
+            background: white;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: #5a67d8;
+            font-size: 28px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .story-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            line-height: 1.8;
+            font-size: 18px;
+        }
+        
+        .highlight {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .highlight:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .explanation {
+            background: #eef2ff;
+            border-left: 4px solid #5a67d8;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .explanation.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        .arrow {
+            color: #dc2626;
+            font-weight: bold;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .trigger-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .trigger-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .trigger-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .trigger-card h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .trigger-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .practice-area {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .question {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            background: #edf2f7;
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .option:hover {
+            background: #e2e8f0;
+            transform: translateX(5px);
+        }
+        
+        .option.correct {
+            background: #c6f6d5;
+            border-color: #48bb78;
+        }
+        
+        .option.incorrect {
+            background: #fed7d7;
+            border-color: #f56565;
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .feedback.show {
+            display: block;
+        }
+        
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: #5a67d8;
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-size: 18px;
+        }
+        
+        .comparison-table td {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 16px;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f7fafc;
+        }
+        
+        .indicatif {
+            color: #2563eb;
+            font-weight: bold;
+        }
+        
+        .subjonctif {
+            color: #dc2626;
+            font-weight: bold;
+        }
+        
+        .interactive-story {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #5a67d8;
+            margin: 20px 0;
+        }
+        
+        .story-choice {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        
+        .story-choice:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .story-result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .story-result.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        .tip-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .tip-box strong {
+            color: #92400e;
+        }
+        
+        .footer {
+            background: white;
+            padding: 30px;
+            border-radius: 0 0 20px 20px;
+            text-align: center;
+            color: #718096;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .nav-btn {
+            background: #5a67d8;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: #4c51bf;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎭 Le Subjonctif</h1>
+            <p class="subtitle">Un voyage dans le monde des émotions, doutes et désirs</p>
+        </div>
+        
+        <div class="content">
+            <!-- Section 1: Introduction avec Histoire TPRS -->
+            <div class="section">
+                <h2 class="section-title">📖 L'Histoire de Sophie</h2>
+                <div class="story-box">
+                    <p>Sophie est une étudiante de l'IB. Elle a un grand problème aujourd'hui.</p>
+                    <p style="margin-top: 15px;">Sa mère veut <span class="highlight" onclick="showExplanation('exp1')">qu'elle étudie</span> la médecine, mais Sophie doute <span class="highlight" onclick="showExplanation('exp2')">qu'elle puisse</span> réussir. Elle préfère <span class="highlight" onclick="showExplanation('exp3')">qu'on la laisse</span> choisir sa propre voie.</p>
+                    <p style="margin-top: 15px;">Il est important <span class="highlight" onclick="showExplanation('exp4')">qu'elle parle</span> avec sa famille. Bien qu'elle <span class="highlight" onclick="showExplanation('exp5')">soit</span> nerveuse, elle doit exprimer ses sentiments.</p>
+                </div>
+                
+                <div id="exp1" class="explanation">
+                    <strong>💡 "qu'elle étudie"</strong><br>
+                    <span class="arrow">→</span> Le verbe VOULOIR exprime un désir. Il déclenche le subjonctif !<br>
+                    <span class="arrow">→</span> Indicatif : "elle étudie" <span class="arrow">→</span> Subjonctif : "qu'elle étudie"
+                </div>
+                
+                <div id="exp2" class="explanation">
+                    <strong>💡 "qu'elle puisse"</strong><br>
+                    <span class="arrow">→</span> Le verbe DOUTER exprime une incertitude. Le subjonctif est nécessaire !<br>
+                    <span class="arrow">→</span> Indicatif : "elle peut" <span class="arrow">→</span> Subjonctif : "qu'elle puisse"
+                </div>
+                
+                <div id="exp3" class="explanation">
+                    <strong>💡 "qu'on la laisse"</strong><br>
+                    <span class="arrow">→</span> PRÉFÉRER QUE = désir/préférence <span class="arrow">→</span> subjonctif obligatoire !<br>
+                    <span class="arrow">→</span> Indicatif : "on la laisse" (verbe régulier, même forme !)
+                </div>
+                
+                <div id="exp4" class="explanation">
+                    <strong>💡 "qu'elle parle"</strong><br>
+                    <span class="arrow">→</span> IL EST IMPORTANT QUE = nécessité <span class="arrow">→</span> subjonctif !<br>
+                    <span class="arrow">→</span> Cette structure impersonnelle déclenche toujours le subjonctif.
+                </div>
+                
+                <div id="exp5" class="explanation">
+                    <strong>💡 "qu'elle soit"</strong><br>
+                    <span class="arrow">→</span> BIEN QUE = concession <span class="arrow">→</span> subjonctif toujours !<br>
+                    <span class="arrow">→</span> ÊTRE au subjonctif : que je sois, que tu sois, qu'il/elle soit
+                </div>
+            </div>
+
+            <!-- Section 2: Les Déclencheurs -->
+            <div class="section">
+                <h2 class="section-title">🎯 Les Déclencheurs du Subjonctif</h2>
+                <p style="margin-bottom: 20px; color: #4a5568; font-size: 16px;">Clique sur chaque carte pour voir des exemples :</p>
+                
+                <div class="trigger-box">
+                    <div class="trigger-card" onclick="showTriggerExample('volonte')">
+                        <h3>💪 Volonté</h3>
+                        <p>vouloir, désirer, exiger, préférer</p>
+                    </div>
+                    <div class="trigger-card" onclick="showTriggerExample('emotion')">
+                        <h3>❤️ Émotion</h3>
+                        <p>être content, regretter, avoir peur</p>
+                    </div>
+                    <div class="trigger-card" onclick="showTriggerExample('doute')">
+                        <h3>🤔 Doute</h3>
+                        <p>douter, ne pas penser, ne pas croire</p>
+                    </div>
+                    <div class="trigger-card" onclick="showTriggerExample('impersonnel')">
+                        <h3>⚡ Impersonnel</h3>
+                        <p>il faut, il est important, il vaut mieux</p>
+                    </div>
+                    <div class="trigger-card" onclick="showTriggerExample('conjonction')">
+                        <h3>🔗 Conjonctions</h3>
+                        <p>bien que, pour que, avant que</p>
+                    </div>
+                    <div class="trigger-card" onclick="showTriggerExample('jugement')">
+                        <h3>⚖️ Jugement</h3>
+                        <p>il est bon, il est dommage, c'est triste</p>
+                    </div>
+                </div>
+                
+                <div id="trigger-examples" style="margin-top: 20px;"></div>
+            </div>
+
+            <!-- Section 3: Comparaison Indicatif vs Subjonctif -->
+            <div class="section">
+                <h2 class="section-title">⚔️ Indicatif VS Subjonctif</h2>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Expression</th>
+                        <th>Mode</th>
+                        <th>Exemple</th>
+                    </tr>
+                    <tr>
+                        <td>Je pense que...</td>
+                        <td><span class="indicatif">INDICATIF</span></td>
+                        <td>Je pense qu'il <strong class="indicatif">est</strong> intelligent.</td>
+                    </tr>
+                    <tr>
+                        <td>Je ne pense pas que...</td>
+                        <td><span class="subjonctif">SUBJONCTIF</span></td>
+                        <td>Je ne pense pas qu'il <strong class="subjonctif">soit</strong> intelligent.</td>
+                    </tr>
+                    <tr>
+                        <td>Je crois que...</td>
+                        <td><span class="indicatif">INDICATIF</span></td>
+                        <td>Je crois qu'elle <strong class="indicatif">viendra</strong> demain.</td>
+                    </tr>
+                    <tr>
+                        <td>Je doute que...</td>
+                        <td><span class="subjonctif">SUBJONCTIF</span></td>
+                        <td>Je doute qu'elle <strong class="subjonctif">vienne</strong> demain.</td>
+                    </tr>
+                    <tr>
+                        <td>Il est certain que...</td>
+                        <td><span class="indicatif">INDICATIF</span></td>
+                        <td>Il est certain qu'il <strong class="indicatif">pleuvra</strong>.</td>
+                    </tr>
+                    <tr>
+                        <td>Il est possible que...</td>
+                        <td><span class="subjonctif">SUBJONCTIF</span></td>
+                        <td>Il est possible qu'il <strong class="subjonctif">pleuve</strong>.</td>
+                    </tr>
+                </table>
+                
+                <div class="tip-box">
+                    <strong>💡 Astuce :</strong> Certitude = INDICATIF | Incertitude/Émotion = SUBJONCTIF
+                </div>
+            </div>
+
+            <!-- Section 4: Histoire Interactive -->
+            <div class="section">
+                <h2 class="section-title">🎮 Histoire Interactive : Le Dilemme de Marc</h2>
+                <div class="interactive-story">
+                    <p style="font-size: 18px; margin-bottom: 20px;">Marc doit prendre une décision importante. Ses parents veulent qu'il aille à l'université, mais il rêve de devenir musicien. Que devrait-il faire ?</p>
+                    
+                    <div style="margin: 20px 0;">
+                        <strong>Choisis une réponse :</strong>
+                    </div>
+                    
+                    <button class="story-choice" onclick="storyChoice('A')">
+                        A) Il est important qu'il suive son rêve.
+                    </button>
+                    <button class="story-choice" onclick="storyChoice('B')">
+                        B) Il faut qu'il écoute ses parents.
+                    </button>
+                    <button class="story-choice" onclick="storyChoice('C')">
+                        C) Je pense qu'il peut faire les deux.
+                    </button>
+                    
+                    <div id="story-feedback" class="story-result"></div>
+                </div>
+            </div>
+
+            <!-- Section 5: Pratique Interactive -->
+            <div class="section">
+                <h2 class="section-title">✏️ Pratique Interactive</h2>
+                <div class="practice-area">
+                    <div class="question" id="q1">
+                        <div class="question-text">1. Ma mère veut que je _____ mes devoirs.</div>
+                        <div class="options">
+                            <div class="option" onclick="checkAnswer('q1', 'A', false)">A) fais (indicatif)</div>
+                            <div class="option" onclick="checkAnswer('q1', 'B', true)">B) fasse (subjonctif)</div>
+                            <div class="option" onclick="checkAnswer('q1', 'C', false)">C) ferais (conditionnel)</div>
+                        </div>
+                        <div class="feedback" id="feedback-q1"></div>
+                    </div>
+
+                    <div class="question" id="q2">
+                        <div class="question-text">2. Je suis content que tu _____ là.</div>
+                        <div class="options">
+                            <div class="option" onclick="checkAnswer('q2', 'A', false)">A) es (indicatif)</div>
+                            <div class="option" onclick="checkAnswer('q2', 'B', true)">B) sois (subjonctif)</div>
+                            <div class="option" onclick="checkAnswer('q2', 'C', false)">C) seras (futur)</div>
+                        </div>
+                        <div class="feedback" id="feedback-q2"></div>
+                    </div>
+
+                    <div class="question" id="q3">
+                        <div class="question-text">3. Je pense qu'il _____ demain.</div>
+                        <div class="options">
+                            <div class="option" onclick="checkAnswer('q3', 'A', true)">A) viendra (indicatif)</div>
+                            <div class="option" onclick="checkAnswer('q3', 'B', false)">B) vienne (subjonctif)</div>
+                            <div class="option" onclick="checkAnswer('q3', 'C', false)">C) viendrait (conditionnel)</div>
+                        </div>
+                        <div class="feedback" id="feedback-q3"></div>
+                    </div>
+
+                    <div class="question" id="q4">
+                        <div class="question-text">4. Il faut que nous _____ à l'école.</div>
+                        <div class="options">
+                            <div class="option" onclick="checkAnswer('q4', 'A', false)">A) allons (indicatif)</div>
+                            <div class="option" onclick="checkAnswer('q4', 'B', true)">B) allions (subjonctif)</div>
+                            <div class="option" onclick="checkAnswer('q4', 'C', false)">C) irons (futur)</div>
+                        </div>
+                        <div class="feedback" id="feedback-q4"></div>
+                    </div>
+
+                    <div class="question" id="q5">
+                        <div class="question-text">5. Bien qu'elle _____ fatiguée, elle continue.</div>
+                        <div class="options">
+                            <div class="option" onclick="checkAnswer('q5', 'A', false)">A) est (indicatif)</div>
+                            <div class="option" onclick="checkAnswer('q5', 'B', true)">B) soit (subjonctif)</div>
+                            <div class="option" onclick="checkAnswer('q5', 'C', false)">C) sera (futur)</div>
+                        </div>
+                        <div class="feedback" id="feedback-q5"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 6: Récapitulatif -->
+            <div class="section">
+                <h2 class="section-title">📝 Récapitulatif</h2>
+                <div class="story-box">
+                    <h3 style="margin-bottom: 15px;">Quand utiliser le subjonctif ?</h3>
+                    <p>✓ Après les expressions de volonté, désir, préférence</p>
+                    <p>✓ Après les expressions d'émotion ou de sentiment</p>
+                    <p>✓ Après les expressions de doute ou d'incertitude</p>
+                    <p>✓ Après certaines conjonctions (bien que, pour que, avant que...)</p>
+                    <p>✓ Après les expressions impersonnelles de nécessité ou jugement</p>
+                    <p style="margin-top: 20px;"><strong>⚠️ Exception :</strong> Après "je pense que" et "je crois que" à la forme affirmative → INDICATIF</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Module créé pour les étudiants de l'IB French B</p>
+            <p style="margin-top: 10px;">Bonne pratique ! 🌟</p>
+        </div>
+    </div>
+
+    <script>
+        function showExplanation(id) {
+            const exp = document.getElementById(id);
+            exp.classList.toggle('show');
+        }
+
+        function showTriggerExample(type) {
+            const container = document.getElementById('trigger-examples');
+            const examples = {
+                volonte: `
+                    <div class="story-box">
+                        <h3 style="margin-bottom: 15px;">💪 Volonté & Désir</h3>
+                        <p>• Je veux que tu <strong>viennes</strong> avec moi.</p>
+                        <p>• Elle désire que nous <strong>réussissions</strong>.</p>
+                        <p>• Mon père exige que je <strong>finisse</strong> mes études.</p>
+                        <p>• Je préfère qu'on <strong>parte</strong> tôt.</p>
+                    </div>
+                `,
+                emotion: `
+                    <div class="story-box">
+                        <h3 style="margin-bottom: 15px;">❤️ Émotions & Sentiments</h3>
+                        <p>• Je suis content que tu <strong>sois</strong> là.</p>
+                        <p>• Elle regrette que vous ne <strong>puissiez</strong> pas venir.</p>
+                        <p>• J'ai peur qu'il <strong>pleuve</strong> demain.</p>
+                        <p>• Nous sommes tristes qu'elle <strong>parte</strong>.</p>
+                    </div>
+                `,
+                doute: `
+                    <div class="story-box">
+                        <h3 style="margin-bottom: 15px;">🤔 Doute & Incertitude</h3>
+                        <p>• Je doute qu'il <strong>vienne</strong>.</p>
+                        <p>• Je ne pense pas qu'elle <strong>comprenne</strong>.</p>
+                        <p>• Je ne crois pas que ce <strong>soit</strong> vrai.</p>
+                        <p>• Il n'est pas certain qu'ils <strong>réussissent</strong>.</p>
+                    </div>
+                `,
+                impersonnel: `
+                    <div class="story-box">
+                        <h3 style="margin-bottom: 15px;">⚡ Expressions Impersonnelles</h3>
+                        <p>• Il faut que tu <strong>fasses</strong> attention.</p>
+                        <p>• Il est important que nous <strong>parlions</strong>.</p>
+                        <p>• Il vaut mieux qu'elle <strong>reste</strong> ici.</p>
+                        <p>• Il est nécessaire que vous <strong>sachiez</strong> cela.</p>
+                    </div>
+                `,
+                conjonction: `
+                    <div class="story-box">
+                        <h3 style="margin-bottom: 15px;">🔗 Conjonctions Spéciales</h3>
+                        <p>• Bien qu'il <strong>soit</strong> tard, je continue.</p>
+                        <p>• Pour que tu <strong>comprennes</strong>, je vais expliquer.</p>
+                        <p>• Avant qu'elle <strong>parte</strong>, dis-lui au revoir.</p>
+                        <p>• À moins que vous ne <strong>préfériez</strong> attendre.</p>
+                    </div>
+                `,
+                jugement: `
+                    <div class="story-box">
+                        <h3 style="margin-bottom: 15px;">⚖️ Jugement & Opinion</h3>
+                        <p>• Il est bon que tu <strong>saches</strong> la vérité.</p>
+                        <p>• C'est dommage qu'il ne <strong>vienne</strong> pas.</p>
+                        <p>• C'est triste que nous <strong>devions</strong> partir.</p>
+                        <p>• Il est bizarre qu'elle ne <strong>réponde</strong> pas.</p>
+                    </div>
+                `
+            };
+            container.innerHTML = examples[type];
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function storyChoice(choice) {
+            const feedback = document.getElementById('story-feedback');
+            const responses = {
+                A: {
+                    text: `✨ Excellent choix ! Tu as utilisé le subjonctif correctement après "il est important que". 
+                    Marc décide de suivre sa passion. Ses parents acceptent finalement <strong>qu'il devienne</strong> musicien, 
+                    bien <strong>qu'ils soient</strong> inquiets au début.`,
+                    color: '#c6f6d5'
+                },
+                B: {
+                    text: `✅ Très bien ! "Il faut que" déclenche toujours le subjonctif. 
+                    Marc écoute ses parents et va à l'université. Il est content <strong>qu'ils l'aident</strong>, 
+                    même s'il regrette un peu <strong>qu'il doive</strong> abandonner la musique.`,
+                    color: '#c6f6d5'
+                },
+                C: {
+                    text: `⚠️ Attention ! Tu as utilisé l'indicatif après "je pense que" - c'est correct car c'est une certitude ! 
+                    Mais regarde : "Il est possible <strong>qu'il fasse</strong> les deux." (subjonctif pour la possibilité)
+                    Marc trouve un équilibre entre études et musique.`,
+                    color: '#fef3c7'
+                }
+            };
+            
+            feedback.innerHTML = responses[choice].text;
+            feedback.style.background = responses[choice].color;
+            feedback.style.padding = '20px';
+            feedback.style.borderRadius = '10px';
+            feedback.classList.add('show');
+        }
+
+        function checkAnswer(questionId, choice, isCorrect) {
+            const question = document.getElementById(questionId);
+            const feedback = document.getElementById('feedback-' + questionId);
+            const options = question.querySelectorAll('.option');
+            
+            // Désactiver tous les boutons
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+            });
+            
+            // Marquer la réponse choisie
+            event.target.classList.add(isCorrect ? 'correct' : 'incorrect');
+            
+            // Afficher le feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Excellent ! C\'est la bonne réponse.';
+                feedback.classList.add('correct');
+            } else {
+                feedback.innerHTML = '❌ Pas tout à fait. Essaie de comprendre pourquoi le subjonctif est nécessaire ici.';
+                feedback.classList.add('incorrect');
+            }
+            feedback.classList.add('show');
+        }
+    </script>
+</body>
+</html>
