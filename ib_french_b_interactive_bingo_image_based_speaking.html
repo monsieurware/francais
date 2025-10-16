@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IB French B – Bingo d’expression orale (Image)</title>
+  <style>
+    :root{
+      --bg:#0f172a; --card:#111827; --muted:#94a3b8; --text:#e5e7eb;
+      --brand:#22d3ee; --brand2:#a78bfa; --accent:#34d399; --danger:#f87171;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --free-bg:linear-gradient(180deg, rgba(52,211,153,.35), rgba(34,211,238,.45));
+      --free-color:#22d3ee;
+    }
+    html,body{height:100%}
+    body{margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans"; color:var(--text); background:radial-gradient(1200px 600px at 15% 0%, #1f2937 0%, var(--bg) 60%)}
+    .wrap{max-width:1200px; margin:0 auto; padding:24px 18px 72px}
+    header{display:grid; grid-template-columns:1fr; gap:16px; align-items:center; margin-bottom:18px}
+    @media(min-width:900px){header{grid-template-columns:1.3fr .9fr}}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.08); border-radius:18px; box-shadow:var(--shadow)}
+    .imgCard{position:relative; overflow:hidden}
+    .imgCard img{display:block; width:100%; height:100%; object-fit:cover; border-radius:16px}
+    .imgInfo{position:absolute; inset:auto 12px 12px 12px; background:rgba(0,0,0,.45); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:10px 12px; font-size:.9rem}
+    .controls{display:flex; flex-wrap:wrap; gap:10px}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.12); color:var(--text); background:linear-gradient(180deg, rgba(34,211,238,.1), rgba(167,139,250,.06)); cursor:pointer; transition:.15s transform ease, .2s filter ease; user-select:none}
+    .btn:hover{filter:brightness(1.1)}
+    .btn:active{transform:translateY(1px)}
+    .btn.ghost{background:transparent}
+    .btn.danger{background:linear-gradient(180deg, rgba(248,113,113,.15), transparent)}
+    .grid{margin-top:16px; display:grid; grid-template-columns:repeat(5,1fr); gap:10px}
+    .cell{min-height:130px; background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:12px; position:relative; overflow:hidden; cursor:pointer; transition:.15s transform ease, .25s box-shadow ease}
+    .cell:hover{box-shadow:0 10px 25px rgba(34,211,238,.15); transform:translateY(-2px)}
+    .cell h4{margin:0 0 6px; font-size:.95rem; color:var(--brand)}
+    .cell p{margin:0; font-size:.92rem; color:var(--text)}
+    .badge{position:absolute; top:8px; right:8px; font-size:.75rem; background:rgba(52,211,153,.2); color:#d1fae5; border:1px solid rgba(52,211,153,.35); padding:4px 8px; border-radius:999px; display:none}
+    .cell.completed .badge{display:inline-block}
+    .cell.free{background:var(--free-bg)}
+    .cell.free h4{color:var(--free-color); text-shadow:0 0 6px rgba(34,211,238,.85)}
+    .assist{margin-top:6px; font-size:.8rem; color:var(--muted)}
+    dialog{border:none; border-radius:16px; padding:0; background:transparent}
+    .modal{width:min(780px,94vw); background:linear-gradient(180deg,#0b1220,#0a0f1a); border:1px solid rgba(255,255,255,.1); border-radius:16px; box-shadow:var(--shadow); overflow:hidden}
+    .modal header{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.08)}
+    .modal header h3{margin:0; font-size:1.05rem}
+    .modal .body{display:grid; grid-template-columns:1fr; gap:12px; padding:14px 16px}
+    .modal .prompt{font-size:.98rem; color:#e2e8f0}
+    .kbdRow{display:flex; flex-wrap:wrap; gap:8px; padding:10px; border:1px dashed rgba(255,255,255,.15); border-radius:12px; background:rgba(255,255,255,.03)}
+    .kbdRow button{padding:6px 10px; border-radius:8px; background:#0b1526; color:#e5e7eb; border:1px solid rgba(255,255,255,.12); cursor:pointer}
+    textarea{width:100%; min-height:140px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:#0b1526; color:var(--text); resize:vertical}
+    .modal footer{display:flex; justify-content:space-between; align-items:center; gap:8px; padding:14px 16px; border-top:1px solid rgba(255,255,255,.08)}
+    .hint{font-size:.85rem; color:var(--muted)}
+    .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#0b1526; border:1px solid rgba(255,255,255,.12); color:var(--text); padding:10px 14px; border-radius:10px; display:none}
+    .banner{display:none; place-items:center; position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(2px)}
+    .banner .inner{background:linear-gradient(180deg, rgba(34,211,238,.2), rgba(167,139,250,.15)); border:1px solid rgba(255,255,255,.16); padding:22px 26px; border-radius:16px; text-align:center}
+    .banner h2{margin:0 0 10px}
+    .small{font-size:.86rem; color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <section class="card imgCard">
+        <img src="https://www.consoglobe.com/wp-content/uploads/2021/02/sans-abris_shutterstock_1285915336-645x338.jpg" alt="Image pour discussion: une personne sans-abri assise près d'un mur, avec des effets personnels" />
+        <div class="imgInfo">
+          <strong>Déclencheur visuel</strong> — Observe l’image pendant 30 secondes. Puis choisis des cases du bingo et parle.
+        </div>
+      </section>
+      <section class="card" style="padding:14px 16px">
+        <h2 style="margin:8px 0 12px; letter-spacing:.3px">Bingo d’expression orale – IB French B (SL)</h2>
+        <p class="small" style="margin-top:0">Objectif : déclencher une interaction riche (thèmes : Organisation sociale • Partage de la planète • Identités). Clique une case pour écrire/présenter. 5 d’affilée = <em>BINGO</em> !</p>
+        <div class="controls">
+          <button class="btn" id="shuffleBtn">🔀 Mélanger</button>
+          <button class="btn" id="clearBtn">🧹 Effacer les réponses</button>
+          <button class="btn" id="exportBtn">⬇️ Exporter (CSV)</button>
+          <button class="btn ghost" id="helpBtn">❓ Aide</button>
+        </div>
+      </section>
+    </header>
+
+    <section class="grid" id="grid" aria-label="Bingo – 5 par 5"></section>
+
+    <p class="small">Astuce : Sélectionne un champ de réponse puis utilise le <strong>clavier d’accents</strong> dans la fenêtre pour insérer facilement é, è, à, ç, etc.</p>
+  </div>
+
+  <!-- Modal for responses -->
+  <dialog id="dlg">
+    <div class="modal" role="dialog" aria-modal="true">
+      <header>
+        <h3 id="dlgTitle">Réponds à la tâche</h3>
+        <button class="btn ghost" id="closeDlg">✖</button>
+      </header>
+      <div class="body">
+        <div class="prompt" id="dlgPrompt"></div>
+        <label for="resp" class="hint">Ta réponse (tu peux parler d’abord, puis écrire un bref résumé) :</label>
+        <textarea id="resp" placeholder="Écris ici…"></textarea>
+        <div>
+          <div class="hint" style="margin-bottom:6px"><strong>Clavier d’accents</strong> : clique pour insérer dans le texte</div>
+          <div class="kbdRow" id="kbd"></div>
+        </div>
+      </div>
+      <footer>
+        <span class="hint" id="count">0/800 caractères</span>
+        <div style="display:flex; gap:8px">
+          <button class="btn" id="save">💾 Enregistrer</button>
+          <button class="btn danger" id="clearCell">Effacer la réponse</button>
+        </div>
+      </footer>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast">Enregistré ✅</div>
+  <div class="banner" id="banner">
+    <div class="inner">
+      <h2>🎉 BINGO !</h2>
+      <p>Tu as complété cinq cases d’affilée. Maintenant, échange et approfondis avec tes camarades.</p>
+      <button class="btn" id="dismissBanner">OK</button>
+    </div>
+  </div>
+
+  <script>
+    // Prompts (24) + center free card
+    const PROMPTS = [
+      {t:'Décris la scène avec <em>3 détails sensoriels</em> (vue, sons, température).'},
+      {t:"Quelles <strong>émotions</strong> ressens-tu face à cette image ? Justifie."},
+      {t:"Relie l’image au thème <em>Organisation sociale</em> : quels enjeux ?"},
+      {t:"Fais une hypothèse (<em>si + imparfait</em> → conditionnel) sur une cause."},
+      {t:"Explique <strong>deux causes</strong> et <strong>deux conséquences</strong> possibles."},
+      {t:"Utilise des connecteurs : cependant, pourtant, en revanche, par conséquent."},
+      {t:"Compare avec une situation <em>dans ta communauté</em> (similitudes/différences)."},
+      {t:"Propose <strong>deux solutions réalisables</strong> (court/long terme)."},
+      {t:"Formule une recommandation : « <em>il faudrait que…</em> » (subjonctif)."},
+      {t:"Analyse le <em>cadrage / lumière</em> : quel effet sur le message ?"},
+      {t:"Reformule et nuançe l’idée d’un pair (<em>je comprends, mais…</em>)."},
+      {t:"Définis « sans-abri » vs « mal-logé ». Pourquoi la nuance compte ?"},
+      {t:"Relie aux <em>ODD/ONU</em> (ex. Pas de pauvreté). Donne un indicateur mesurable."},
+      {t:"Quel stéréotype faut-il éviter ? Reformule une idée de façon respectueuse."},
+      {t:"Exprime un <strong>désaccord poli</strong> en 2 phrases avec un exemple."},
+      {t:"Invente un <em>slogan</em> et 1 action pour une campagne locale."},
+      {t:"Rédige une question ouverte pour un entretien avec une association."},
+      {t:"Explique 1 <em>mot clé</em> (ex. précarité) et utilise-le dans une phrase."},
+      {t:"Relie au thème <em>Identités</em> : dignité, regard social, inclusion."},
+      {t:"Relie au thème <em>Partage de la planète</em> : ressources, espaces publics."},
+      {t:"Décris un <em>choix de photographe</em> (angle, profondeur) et son impact."},
+      {t:"Formule une <em>question de TOK</em> : que peut une image prouver ?"},
+      {t:"Imagine une <em>politique communale</em> : objectifs & critères d’évaluation."},
+      {t:"Pose une question à un camarade et <strong>relance</strong> avec « et si… ? »"}
+    ];
+
+    const ACCENTS = ['à','â','ä','æ','ç','é','è','ê','ë','î','ï','ô','œ','ö','ù','û','ü','ÿ','À','Ç','É','È','Ê','Ë','Î','Ï','Ô','Ù','Û','Ü','«','»','€'];
+
+    const LS_KEY = 'ibfb-bingo-v2';
+    const gridEl = document.getElementById('grid');
+    const toast = document.getElementById('toast');
+    const banner = document.getElementById('banner');
+
+    let board = []; // 5x5 cell objects {id,prompt,response,completed,free}
+    let currentId = null;
+
+    const shuffle = (arr) => arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+
+    function buildBoard(){
+      const base = shuffle([...PROMPTS]);
+      const cells = [];
+      for(let i=0;i<25;i++){
+        if(i===12){
+          cells.push({id:'c12', prompt:'Propose ton propre angle d’analyse.', response:'', completed:false, free:true});
+        } else {
+          const p = base.pop();
+          cells.push({id:'c'+i, prompt:p.t, response:'', completed:false, free:false});
+        }
+      }
+      board = cells; save(); render();
+    }
+
+    function render(){
+      gridEl.innerHTML = '';
+      board.forEach((cell, idx)=>{
+        const el = document.createElement('button');
+        el.className = 'cell'+(cell.completed?' completed':'')+(cell.free?' free':'');
+        el.setAttribute('data-id', cell.id);
+        el.setAttribute('aria-label', 'Case '+(idx+1));
+        if(cell.free){
+          el.innerHTML = `<h4>CARTE LIBRE</h4><p>${cell.prompt}</p><span class="badge">Fait</span>${cell.response?`<div class=assist>Réponse sauvegardée ✓</div>`:''}`;
+        } else {
+          el.innerHTML = `<h4>TÂCHE</h4><p>${cell.prompt}</p><span class="badge">Fait</span>${cell.response?`<div class=assist>Réponse sauvegardée ✓</div>`:''}`;
+        }
+        el.addEventListener('click', ()=>openCell(cell.id));
+        gridEl.appendChild(el);
+      });
+    }
+
+    function save(){ localStorage.setItem(LS_KEY, JSON.stringify(board)); }
+    function load(){
+      const raw = localStorage.getItem(LS_KEY);
+      if(raw){ try{ board = JSON.parse(raw); render(); return; }catch(e){} }
+      buildBoard();
+    }
+
+    // Modal and input helpers
+    const dlg = document.getElementById('dlg');
+    const dlgPrompt = document.getElementById('dlgPrompt');
+    const resp = document.getElementById('resp');
+    const closeDlg = document.getElementById('closeDlg');
+    const saveBtn = document.getElementById('save');
+    const clearCellBtn = document.getElementById('clearCell');
+    const count = document.getElementById('count');
+    const kbd = document.getElementById('kbd');
+
+    function openCell(id){
+      currentId = id;
+      const cell = board.find(c=>c.id===id);
+      dlgPrompt.innerHTML = (cell.free? '<strong>CARTE LIBRE</strong> – ' : '<strong>TÂCHE</strong> – ') + cell.prompt;
+      resp.value = cell.response || '';
+      updateCount();
+      if(!dlg.open) dlg.showModal();
+      setTimeout(()=>resp.focus(), 40);
+    }
+    function closeModal(){ dlg.close(); currentId = null; }
+
+    function updateCount(){ count.textContent = `${resp.value.length}/800 caractères`; }
+    resp.addEventListener('input', updateCount);
+
+    function mountKeyboard(){
+      kbd.innerHTML = '';
+      ACCENTS.forEach(ch=>{
+        const b = document.createElement('button');
+        b.type='button'; b.textContent=ch;
+        b.addEventListener('click', ()=>insertAtCursor(resp, ch));
+        kbd.appendChild(b);
+      });
+    }
+    function insertAtCursor(field, text){
+      const start = field.selectionStart, end = field.selectionEnd;
+      const val = field.value;
+      field.value = val.slice(0,start) + text + val.slice(end);
+      field.selectionStart = field.selectionEnd = start + text.length;
+      field.focus(); updateCount();
+    }
+
+    saveBtn.addEventListener('click', ()=>{
+      if(currentId==null) return;
+      const cell = board.find(c=>c.id===currentId);
+      cell.response = resp.value.slice(0,800);
+      cell.completed = (cell.response.trim().length >= 10) || !!cell.free;
+      save(); render(); showToast('Enregistré ✅'); checkBingo(); closeModal();
+    });
+    clearCellBtn.addEventListener('click', ()=>{
+      if(currentId==null) return;
+      const cell = board.find(c=>c.id===currentId);
+      cell.response=''; cell.completed = !!cell.free; save(); render(); showToast('Réponse effacée');
+      resp.value=''; updateCount();
+    });
+    closeDlg.addEventListener('click', closeModal);
+
+    // Top buttons
+    document.getElementById('shuffleBtn').addEventListener('click', ()=>{
+      if(confirm('Mélanger réinitialise les invites (les réponses sauvegardées seront supprimées). Continuer ?')){
+        localStorage.removeItem(LS_KEY); buildBoard(); showToast('Nouveau tirage 🎲');
+      }
+    });
+    document.getElementById('clearBtn').addEventListener('click', ()=>{
+      if(confirm('Effacer toutes les réponses ?')){
+        board.forEach(c=>{ c.response=''; c.completed=!!c.free; }); save(); render(); showToast('Effacé');
+      }
+    });
+    document.getElementById('exportBtn').addEventListener('click', ()=>{
+      const rows = [['#','Libellé','Invite','Réponse','Complétée']];
+      board.forEach((c,i)=>rows.push([i+1, c.free?'CARTE LIBRE':'TÂCHE', strip(c.prompt), (c.response||'').replaceAll('\n',' '), c.completed?'oui':'non']));
+      const csv = rows.map(r=>r.map(x=>`"${String(x).replaceAll('"','""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='bingo-ib-frenchb.csv'; a.click(); URL.revokeObjectURL(url);
+    });
+    document.getElementById('helpBtn').addEventListener('click', ()=>{
+      alert('But: Obtenir 5 cases d\'affilée (ligne/colonne/diagonale).\n1) Clique une case.\n2) Parle d\'abord, puis écris un court résumé.\n3) Enregistre.\n4) Écoute, relance, nuance.');
+    });
+
+    function strip(html){ const tmp=document.createElement('div'); tmp.innerHTML=html; return tmp.textContent||tmp.innerText||''; }
+
+    // Bingo detection
+    const lines = [];
+    for(let r=0;r<5;r++){ lines.push([0,1,2,3,4].map(c=>r*5+c)); }
+    for(let c=0;c<5;c++){ lines.push([0,1,2,3,4].map(r=>r*5+c)); }
+    lines.push([0,6,12,18,24]); lines.push([4,8,12,16,20]);
+    function checkBingo(){
+      const ok = (idx)=> board[idx].completed;
+      const has = lines.some(line => line.every(ok));
+      if(has){ banner.style.display='grid'; }
+    }
+    document.getElementById('dismissBanner').addEventListener('click', ()=>{ banner.style.display='none'; });
+
+    function showToast(msg){
+      toast.textContent = msg; toast.style.display='block';
+      setTimeout(()=>toast.style.display='none', 1500);
+    }
+
+    // Init
+    load();
+    mountKeyboard();
+  </script>
+</body>
+</html>
