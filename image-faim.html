@@ -315,9 +315,27 @@
     const bingoTag=document.getElementById('bingoTag');
 
     function buildBoard(){
-      const pool = getPromptPool(); let k=0; const cells=[];
-      for(let i=0;i<25;i++){
-        if(i===12){ cells.push({id:'c12', prompt:'Propose ton propre angle d’analyse.', response:'', completed:true, free:true}); }
+      try{
+        const pool = getPromptPool(); let k=0; const cells=[];
+        for(let i=0;i<25;i++){
+          if(i===12){ cells.push({id:'c12', prompt:'Propose ton propre angle d’analyse.', response:'', completed:true, free:true}); }
+          else{
+            const p = pool[k++];
+            const text = (p && p.t && String(p.t).trim().length>0) ? p.t : `Tâche de secours ${i+1}: observe un détail et explique.`;
+            cells.push({id:'c'+i, prompt:text, response:'', completed:false, free:false});
+          }
+        }
+        board=cells; save(); render(); updateProgress();
+      }catch(err){
+        console.error('[buildBoard] fallback due to error:', err);
+        // Absolute fallback: guaranteed board
+        board = Array.from({length:25}, (_,i)=>{
+          if(i===12) return {id:'c12', prompt:'Propose ton propre angle d’analyse.', response:'', completed:true, free:true};
+          return {id:'c'+i, prompt:`Tâche de secours ${i+1}: décris un indice et une hypothèse.`, response:'', completed:false, free:false};
+        });
+        render(); updateProgress();
+      }
+    }); }
         else{ const p=pool[k++]; cells.push({id:'c'+i, prompt:p.t, response:'', completed:false, free:false}); }
       }
       board=cells; save(); render(); updateProgress();
@@ -542,7 +560,10 @@
     try{ if(dlg.open) dlg.close(); }catch(e){}
     // As an extra safety in aggressive previewers: close any auto-open within the first second
     setTimeout(()=>{ try{ if(dlg.open) dlg.close(); }catch(e){} }, 800);
-    load();
+    // Some LMS environments delay layout; queue one more render tick
+    if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', load, {once:true}); }
+    else { load(); }
+    requestAnimationFrame(()=>{ try{ if(!gridEl.children.length) { render(); updateProgress(); } }catch(e){} });
   </script>
 </body>
 </html>
