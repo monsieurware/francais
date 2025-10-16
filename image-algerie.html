@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IB French B – Bingo (Guerre d’Algérie & Indépendance)</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#0f172a; --text:#e6edf6; --muted:#9fb0c7; --brand:#3b82f6; --accent:#ef4444; --good:#22c55e; --shadow:0 14px 40px rgba(0,0,0,.35);
+      --free-bg:linear-gradient(180deg, rgba(59,130,246,.25), rgba(239,68,68,.25));
+    }
+    html,body{height:100%}
+    body{margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans"; color:var(--text); background:radial-gradient(1100px 520px at 20% -5%, #151b31 0%, #0b1020 60%) fixed}
+    .wrap{max-width:1200px; margin:0 auto; padding:24px 18px 96px}
+    .tabHeader{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:16px}
+    .tabBtn{padding:10px 18px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:rgba(59,130,246,.12); color:var(--text); cursor:pointer}
+    .tabBtn.active{background:var(--brand); color:#06122b}
+    .tabContent{display:none}
+    .tabContent.active{display:block}
+
+    header{display:grid; grid-template-columns:1fr; gap:16px; align-items:center; margin-bottom:18px}
+    @media(min-width:900px){header{grid-template-columns:1.25fr .95fr}}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.09); border-radius:18px; box-shadow:var(--shadow)}
+    .imgCard{position:relative; overflow:hidden}
+    .imgCard img{display:block; width:100%; height:100%; object-fit:cover; border-radius:16px}
+    .imgInfo{position:absolute; inset:auto 12px 12px 12px; background:rgba(0,0,0,.5); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; font-size:.92rem}
+
+    .controls{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.14); color:var(--text); background:linear-gradient(180deg, rgba(59,130,246,.14), rgba(239,68,68,.09)); cursor:pointer; transition:.15s transform ease, .2s filter ease; user-select:none}
+    .btn[disabled]{opacity:.55; cursor:not-allowed}
+    .btn:hover{filter:brightness(1.08)}
+    .btn:active{transform:translateY(1px)}
+
+    .grid{margin-top:16px; display:grid; grid-template-columns:repeat(5,1fr); gap:10px}
+    .cell{min-height:130px; background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025)); border:1px solid rgba(255,255,255,.15); border-radius:16px; padding:12px; position:relative; overflow:hidden; cursor:pointer; transition:.15s transform ease, .25s box-shadow ease}
+    .cell:hover{box-shadow:0 10px 26px rgba(59,130,246,.18); transform:translateY(-2px)}
+    .cell h4{margin:0 0 6px; font-size:.95rem; color:#93c5fd}
+    .cell.free{background:var(--free-bg)}
+    .cell.free h4{color:#e2e8f0; text-shadow:0 0 8px rgba(59,130,246,.6)}
+    .cell p{margin:0; font-size:.92rem; color:var(--text)}
+    .badge{position:absolute; top:8px; right:8px; font-size:.75rem; background:rgba(34,197,94,.18); color:#d1fae5; border:1px solid rgba(34,197,94,.35); padding:4px 8px; border-radius:999px; display:none}
+    .cell.completed .badge{display:inline-block}
+    .assist{margin-top:6px; font-size:.8rem; color:var(--muted)}
+
+    .chunkBank{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; background:rgba(255,255,255,.05); border-radius:12px; padding:14px; border:1px solid rgba(255,255,255,.1)}
+    .chunk{background:rgba(59,130,246,.12); border:1px solid rgba(59,130,246,.25); border-radius:10px; padding:8px; font-size:.9rem; text-align:center}
+
+    .progress{display:flex; align-items:center; gap:12px; margin-top:10px}
+    .mini{display:grid; grid-template-columns:repeat(5,10px); gap:4px; padding:6px; border:1px solid rgba(255,255,255,.12); border-radius:10px; background:rgba(255,255,255,.04)}
+    .mini div{width:10px;height:10px;border-radius:2px;background:#374151}
+    .mini div.done{background:var(--good)}
+    .bingoTag{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:rgba(34,197,94,.15); color:#d1fae5}
+
+    /* Modal */
+    dialog{border:none; border-radius:16px; padding:0; background:transparent}
+    .modal{width:min(780px,94vw); background:linear-gradient(180deg,#0a1224,#0a0f1a); border:1px solid rgba(255,255,255,.12); border-radius:16px; box-shadow:var(--shadow); overflow:hidden}
+    .modal header{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.09)}
+    .modal .body{display:grid; grid-template-columns:1fr; gap:12px; padding:14px 16px}
+    .modal .prompt{font-size:.98rem; color:#e2e8f0}
+    .kbdRow{display:flex; flex-wrap:wrap; gap:8px; padding:10px; border:1px dashed rgba(255,255,255,.18); border-radius:12px; background:rgba(255,255,255,.04)}
+    .kbdRow button{padding:6px 10px; border-radius:8px; background:#0b1526; color:#e5e7eb; border:1px solid rgba(255,255,255,.14); cursor:pointer}
+    textarea{width:100%; min-height:140px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:#0b1526; color:var(--text); resize:vertical}
+    .modal footer{display:flex; justify-content:space-between; align-items:center; gap:8px; padding:14px 16px; border-top:1px solid rgba(255,255,255,.09)}
+    .hint{font-size:.85rem; color:var(--muted)}
+
+    /* Audio */
+    .audioBar{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+    .audioBar .rec{background:linear-gradient(180deg, rgba(239,68,68,.18), rgba(239,68,68,.08)); border-color:rgba(239,68,68,.35)}
+    .audioBar .timer{font-variant-numeric:tabular-nums; min-width:54px; text-align:center}
+    .permWarn{display:none;color:#fecaca;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);padding:8px 10px;border-radius:8px}
+
+    /* Primer */
+    .primer{display:grid; gap:14px}
+    .mediaWrap{position:relative; width:100%; padding-top:56.25%; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.12); box-shadow:var(--shadow); background:#000}
+    .mediaWrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0; display:block}
+    .primerImg{display:block; width:100%; height:auto; border-radius:14px; border:1px solid rgba(255,255,255,.12); box-shadow:var(--shadow)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="tabHeader">
+      <button class="tabBtn active" data-tab="bingo-alg" type="button">🎯 Bingo – Guerre d’Algérie</button>
+      <button class="tabBtn" data-tab="chunks" type="button">💬 Banque de chunks</button>
+      <button class="tabBtn" data-tab="algerie-primer" type="button">📚 Algérie – repères</button>
+    </div>
+
+    <!-- MODULE: Guerre d’Algérie -->
+    <div id="bingo-alg" class="tabContent active">
+      <header>
+        <section class="card imgCard">
+          <img src="https://s.rfi.fr/media/display/b4145e7c-85de-11ec-bc58-005056a90284/w:1024/p:16x9/photo%20pieds-noirs%20manifestation%20crimes%201958%201962%20000_Par1938251.jpg" alt="Manifestation liée à la guerre d’Algérie" />
+          <div class="imgInfo"><strong>Déclencheur visuel</strong> — Observe les pancartes, la foule et le contexte historique. Quels indices te parlent de la guerre et de l’indépendance ?</div>
+        </section>
+        <section class="card" style="padding:14px 16px">
+          <h2 style="margin:8px 0 12px">Bingo d’expression orale – IB French B (SL) – Guerre d’Algérie & indépendance</h2>
+          <div class="controls">
+            <button class="btn" id="alg-shuffle" type="button">🔀 Mélanger</button>
+            <button class="btn" id="alg-clear" type="button">🧹 Effacer</button>
+            <button class="btn" id="alg-export" type="button">⬇️ Exporter</button>
+            <div class="progress"><div class="mini" id="alg-mini"></div><span id="alg-count">0/25</span><span class="bingoTag" id="alg-bingo" style="display:none">🎉 BINGO !</span></div>
+          </div>
+        </section>
+      </header>
+      <section class="grid" id="alg-grid"></section>
+    </div>
+
+    <!-- CHUNK BANK -->
+    <div id="chunks" class="tabContent">
+      <h2>💬 Banque de chunks (débat / histoire / société)</h2>
+      <div class="card" style="padding:12px; margin-bottom:10px">
+        <div id="chunkFilters" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+          <strong style="margin-right:6px">Catégories :</strong>
+          <button class="btn" data-cat="all" type="button">Toutes</button>
+          <button class="btn" data-cat="amorces" type="button">Amorces</button>
+          <button class="btn" data-cat="verbes" type="button">Verbes</button>
+          <button class="btn" data-cat="descriptions" type="button">Descriptions</button>
+          <button class="btn" data-cat="connecteurs" type="button">Connecteurs</button>
+          <button class="btn" data-cat="nuancer" type="button">Nuancer</button>
+          <button class="btn" data-cat="interaction" type="button">Interaction</button>
+          <button class="btn" data-cat="donnees" type="button">Données</button>
+          <button class="btn" data-cat="hypotheses" type="button">Hypothèses</button>
+          <input id="chunkSearch" type="search" placeholder="Rechercher…" style="margin-left:auto; padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.12); background:#0b1526; color:var(--text); min-width:200px" />
+        </div>
+      </div>
+      <div class="chunkBank" id="chunkBank"></div>
+    </div>
+
+    <!-- Algérie primer tab -->
+    <div id="algerie-primer" class="tabContent">
+      <section class="card" style="padding:14px 16px; margin-bottom:12px"><h2>📚 Guerre d’Algérie – repères</h2><p class="hint">Page pédagogique intégrée ; si votre ENT bloque l’intégration, cliquez sur « ouvrir dans un nouvel onglet ».</p><p><a class="btn" href="https://www.1jour1actu.com/monde/cest-quoi-lindependance-de-lalgerie" target="_blank" rel="noopener noreferrer">🔗 Ouvrir l’article dans un nouvel onglet</a></p></section>
+      <div class="mediaWrap">
+        <iframe src="https://www.1jour1actu.com/monde/cest-quoi-lindependance-de-lalgerie" title="1jour1actu – indépendance de l’Algérie" loading="lazy" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation-by-user-activation" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dialog (modal input + audio) -->
+  <dialog id="dlg">
+    <div class="modal" role="dialog" aria-modal="true">
+      <header>
+        <h3 id="dlgTitle">Réponds à la tâche</h3>
+        <button class="btn" id="closeDlg" type="button">✖</button>
+      </header>
+      <div class="body">
+        <div class="prompt" id="dlgPrompt"></div>
+        <label for="resp" class="hint">Ta réponse (tu peux parler d’abord, puis écrire un bref résumé) :</label>
+        <textarea id="resp" placeholder="Écris ici…"></textarea>
+        <div>
+          <div class="hint" style="margin-bottom:6px"><strong>Clavier d’accents</strong> : clique pour insérer dans le texte</div>
+          <div class="kbdRow" id="kbd"></div>
+        </div>
+        <div class="audioBar">
+          <button class="btn rec" id="recBtn" type="button">⏺️ Enregistrer</button>
+          <button class="btn" id="stopBtn" type="button" disabled>⏹️ Stop</button>
+          <button class="btn" id="playBtn" type="button" disabled>▶️ Écouter</button>
+          <button class="btn" id="delAudioBtn" type="button" disabled>🗑️ Supprimer audio</button>
+          <button class="btn" id="uploadBtn" type="button">📤 Importer audio</button>
+          <input id="uploadInput" type="file" accept="audio/*" style="display:none" />
+          <span class="hint timer" id="timer">00:00</span>
+          <audio id="audio" controls style="display:none; width:100%"></audio>
+        </div>
+        <div id="permWarn" class="permWarn">Micro non accessible. Vérifie les permissions du navigateur et les paramètres de l’iframe.</div>
+      </div>
+      <footer>
+        <span class="hint" id="count">0/800 caractères</span>
+        <div style="display:flex; gap:8px">
+          <button class="btn" id="save" type="button">💾 Enregistrer</button>
+          <button class="btn" id="clearCell" type="button">Effacer la réponse</button>
+        </div>
+      </footer>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" style="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0b1526;border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:10px;display:none">Action effectuée</div>
+
+  <script>
+    // ---------- Utilities ----------
+    const toast=document.getElementById('toast');
+    function showToast(msg){ toast.textContent=msg; toast.style.display='block'; setTimeout(()=>toast.style.display='none',1300); }
+    const ACCENTS=['à','â','ä','æ','ç','é','è','ê','ë','î','ï','ô','œ','ö','ù','û','ü','ÿ','À','Ç','É','È','Ê','Ë','Î','Ï','Ô','Ù','Û','Ü','«','»','€'];
+
+    // ---------- Chunk bank ----------
+    const CHUNKS=[
+      {cat:'amorces',text:'À mon avis, …'},{cat:'amorces',text:'Selon moi, …'},{cat:'amorces',text:'Il me semble que …'},{cat:'amorces',text:"D’après cette photo, on peut penser que …"},
+      {cat:'verbes',text:'manifester / revendiquer / contester'},{cat:'verbes',text:'défendre / protéger / garantir'},{cat:'verbes',text:'respecter / transgresser / limiter'},{cat:'verbes',text:'coloniser / décoloniser / rapatrier / exiler'},
+      {cat:'descriptions',text:'pancarte / slogan / cortège / foule'},{cat:'descriptions',text:'répression / accord / cessez-le-feu'},{cat:'descriptions',text:'pieds-noirs / Harkis / FLN / OAS'},
+      {cat:'connecteurs',text:"d’une part … d’autre part …"},{cat:'connecteurs',text:'cependant / néanmoins / en revanche'},{cat:'connecteurs',text:'par conséquent / ainsi / donc'},
+      {cat:'nuancer',text:'Je comprends cette position, mais …'},{cat:'nuancer',text:'Tout en reconnaissant…, on peut dire que …'},{cat:'nuancer',text:'Bien que …, il est important de …'},
+      {cat:'interaction',text:'Qu’en penses‑tu ?'},{cat:'interaction',text:'Peux‑tu donner un exemple ?'},
+      {cat:'donnees',text:'1954–1962 ; accords d’Évian (1962) ; référendum ; cessez-le-feu'},{cat:'donnees',text:'sources : archives, témoignages, presse de l’époque'},
+      {cat:'hypotheses',text:'Si l’indépendance n’avait pas eu lieu, …'},{cat:'hypotheses',text:'Dans le cas où la réconciliation serait prioritaire, …'}
+    ];
+    const chunkFilters=document.getElementById('chunkFilters');
+    const chunkBank=document.getElementById('chunkBank');
+    const chunkSearch=document.getElementById('chunkSearch');
+    function renderChunks(){
+      const q=(chunkSearch&&chunkSearch.value?chunkSearch.value:'').toLowerCase().trim();
+      chunkBank.innerHTML=''; const activeCat=renderChunks.activeCat||'all';
+      CHUNKS.filter(c=>activeCat==='all'||c.cat===activeCat).filter(c=>!q||c.text.toLowerCase().includes(q)).forEach(c=>{
+        const div=document.createElement('div'); div.className='chunk'; div.textContent=c.text; div.title=c.cat; div.addEventListener('click',()=>{ if(dlg.open){ insertAtCursor(resp,(resp.value&&!resp.value.endsWith('\n')?' ':' ')+c.text+' '); } else { showToast('Copié (si autorisé)'); navigator.clipboard?.writeText?.(c.text).catch(()=>{}); } }); chunkBank.appendChild(div);
+      });
+    }
+    if(chunkFilters){
+      chunkFilters.addEventListener('click',(e)=>{ const btn=e.target.closest('button[data-cat]'); if(!btn) return; renderChunks.activeCat=btn.dataset.cat; [...chunkFilters.querySelectorAll('button[data-cat]')].forEach(b=>b.classList.toggle('active',b===btn)); renderChunks(); });
+      const allBtn=chunkFilters.querySelector('button[data-cat="all"]'); if(allBtn) allBtn.classList.add('active');
+    }
+    chunkSearch?.addEventListener('input',renderChunks);
+
+    // ---------- Bingo module (Algérie) ----------
+    const grid=document.getElementById('alg-grid');
+    const mini=document.getElementById('alg-mini');
+    const countEl=document.getElementById('alg-count');
+    const bingoTag=document.getElementById('alg-bingo');
+    const LINES=(()=>{ const rows=[0,5,10,15,20].map(s=>[s,s+1,s+2,s+3,s+4]); const cols=[0,1,2,3,4].map(c=>[c,c+5,c+10,c+15,c+20]); const diags=[[0,6,12,18,24],[4,8,12,16,20]]; return [...rows,...cols,...diags]; })();
+    const LS_KEY='ibfb-algerie-v1';
+    const EPHEMERAL=(new URLSearchParams(location.search).get('persist')!=='1');
+    let board=[];
+    if(!EPHEMERAL){ try{ const raw=localStorage.getItem(LS_KEY); if(raw) board=JSON.parse(raw)||[]; }catch(e){} }
+
+    const PROMPTS_ALG=[
+      {t:'Décris la scène : qui manifeste, quels signes (pancartes, dates) ?'},
+      {t:'Explique un mot‑clé : « pieds‑noirs », « Harkis », « FLN », « OAS ». Utilise‑le dans une phrase.'},
+      {t:'Relie l’image à un moment clé (1954, 1958, 1962, accords d’Évian).'},
+      {t:'Quels points de vue opposés pourraient s’exprimer dans cette foule ?'},
+      {t:'Quelles conséquences humaines et sociales de la guerre repères‑tu ?'},
+      {t:'Rédige une question ouverte sur mémoire, justice ou réconciliation.'},
+      {t:'Compare cette manifestation à une autre liée à la décolonisation.'},
+      {t:'Quel rôle des médias et des images dans la mémoire du conflit ?'},
+      {t:'Formule une hypothèse : que se passerait‑il sans les accords d’Évian ?'},
+      {t:'Analyse le vocabulaire des pancartes : revendications, émotions.'},
+      {t:'Explique le terme « indépendance » et ses implications pour les deux pays.'},
+      {t:'Présente un fait vérifiable et une interprétation possible (ne pas confondre).'},
+      {t:'Relie à la notion d’exil/rapatriement (pieds‑noirs, Harkis).'},
+      {t:'Subjonctif : « Il faut que… » / « Bien que… » → nuance ta position.'},
+      {t:'Imagine une courte interview de deux personnes aux points de vue opposés.'},
+      {t:'Propose deux actions citoyennes pour un débat apaisé aujourd’hui.'},
+      {t:'Repère un biais possible de lecture et corrige‑le.'},
+      {t:'Conclue : que peut‑on apprendre de ce passé pour le présent ?'},
+      {t:'Choisis un angle journalistique pour titrer l’image (neutre, engagé, critique).'},
+      {t:'Analyse la composition (cadrage, profondeur, foule) → effet sur le message.'},
+      {t:'Identifie un stéréotype possible et reformule pour préserver la dignité.'},
+      {t:'Écris un mini‑dialogue de désaccord respectueux (2 répliques chacun).'},
+      {t:'Transforme une affirmation catégorique en question prudente.'},
+      {t:'Énonce un indicateur pour évaluer la qualité du débat historique.'},
+      {t:'Confronte deux sources (affiche/pancarte vs article) : que convergent‑elles ?'}
+    ];
+
+    function pool(){
+      const valid=PROMPTS_ALG.filter(p=>p&&typeof p.t==='string'&&p.t.trim());
+      const need=24-valid.length; const fillers=[]; for(let i=1;i<=Math.max(0,need);i++){ fillers.push({t:`Tâche supplémentaire ${i} : décris un indice historique.`}); }
+      return [...valid,...fillers].sort(()=>Math.random()-.5).slice(0,24);
+    }
+    function build(){ const p=pool(); let k=0; const cells=[]; for(let i=0;i<25;i++){ if(i===12) cells.push({id:`alg-c12`,prompt:'Propose ton propre angle d’analyse.',response:'',completed:true,free:true}); else { const it=p[k++]; const text=(it&&it.t)||'Décris un détail et son sens.'; cells.push({id:`alg-c${i}`,prompt:text,response:'',completed:false,free:false}); } } board=cells; save(); render(); update(); }
+    function render(){ grid.innerHTML=''; board.forEach(c=>{ const el=document.createElement('button'); el.type='button'; el.className='cell'+(c.free?' free':'')+(c.completed?' completed':''); el.dataset.id=c.id; el.innerHTML=(c.free?'<h4>CARTE LIBRE</h4>':'<h4>TÂCHE</h4>')+`<p>${c.prompt}</p>`+`<span class="badge">Fait</span>`+(c.response?`<div class="assist">Réponse sauvegardée ✓</div>`:'')+(c.audio?`<div class="assist">🎙️ Audio enregistré</div>`:''); el.addEventListener('click',()=>openCell(c.id)); grid.appendChild(el); }); }
+    function update(){ mini.innerHTML=''; board.forEach(c=>{ const d=document.createElement('div'); if(c.completed) d.classList.add('done'); mini.appendChild(d); }); const done=board.filter(c=>c.completed).length; countEl.textContent=done+'/25'; const lines=LINES.filter(L=>L.every(i=>board[i].completed)); bingoTag.style.display=lines.length?'inline-flex':'none'; if(lines.length) showToast('🎉 BINGO !'); }
+    function save(){ if(EPHEMERAL) return; try{ localStorage.setItem(LS_KEY, JSON.stringify(board)); }catch(e){} }
+    function clearAll(){ board.forEach(c=>{c.response=''; delete c.audio; c.completed=!!c.free;}); save(); render(); update(); }
+    function exportCSV(){ const rows=[["#","Type","Invite","Réponse","Audio?","Complétée"]]; board.forEach((c,i)=>rows.push([i+1,c.free?'CARTE LIBRE':'TÂCHE',c.prompt.replace(/\n/g,' '),(c.response||'').replace(/\n/g,' '),c.audio?'oui':'non',c.completed?'oui':'non'])); const csv=rows.map(r=>r.map(x=>('"'+String(x).replace(/"/g,'""')+'"')).join(',')).join('\n'); const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='bingo-algerie.csv'; a.click(); URL.revokeObjectURL(url); }
+
+    document.getElementById('alg-shuffle')?.addEventListener('click',()=>{ if(confirm('Mélanger réinitialise les invites et supprime les réponses & audios. Continuer ?')){ if(!EPHEMERAL) localStorage.removeItem(LS_KEY); build(); }});
+    document.getElementById('alg-clear')?.addEventListener('click',()=>{ if(confirm('Effacer toutes les réponses & audios ?')) clearAll(); });
+    document.getElementById('alg-export')?.addEventListener('click',exportCSV);
+
+    if(!board.length) build(); else { render(); update(); }
+
+    // ---------- Tabs ----------
+    document.querySelectorAll('.tabBtn').forEach(btn=>btn.addEventListener('click',()=>{
+      document.querySelectorAll('.tabBtn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tabContent').forEach(c=>c.classList.remove('active'));
+      btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active');
+    }));
+
+    // ---------- Modal & keyboard ----------
+    const dlg=document.getElementById('dlg'); const resp=document.getElementById('resp'); const closeDlg=document.getElementById('closeDlg'); const saveBtn=document.getElementById('save'); const clearCellBtn=document.getElementById('clearCell'); const count=document.getElementById('count'); const kbd=document.getElementById('kbd'); let currentId=null;
+    function openCell(id){ currentId=id; const cell=board.find(c=>c.id===id); document.getElementById('dlgPrompt').innerHTML=(cell.free?'<strong>CARTE LIBRE</strong> – ':'<strong>TÂCHE</strong> – ')+cell.prompt; resp.value=cell.response||''; updateCount(); if(!dlg.open) dlg.showModal(); setTimeout(()=>resp.focus(),40); loadAudioUI(cell); preflightMic(); }
+    function updateCount(){ count.textContent=(resp.value.length||0)+'/800 caractères'; }
+    function insertAtCursor(field,text){ const s=field.selectionStart,e=field.selectionEnd,v=field.value; field.value=v.slice(0,s)+text+v.slice(e); field.selectionStart=field.selectionEnd=s+text.length; field.focus(); updateCount(); }
+    function mountKeyboard(){ kbd.innerHTML=''; ACCENTS.forEach(ch=>{ const b=document.createElement('button'); b.type='button'; b.textContent=ch; b.addEventListener('click',()=>insertAtCursor(resp,ch)); kbd.appendChild(b); }); }
+    mountKeyboard();
+    resp.addEventListener('input',updateCount);
+    closeDlg.addEventListener('click',()=>dlg.close());
+    saveBtn.addEventListener('click',()=>{ if(!currentId) return; const cell=board.find(c=>c.id===currentId); cell.response=resp.value.slice(0,800); cell.completed=cell.free||cell.response.trim().length>=10||!!cell.audio; save(); render(); update(); dlg.close(); showToast('Enregistré ✅'); });
+    clearCellBtn.addEventListener('click',()=>{ if(!currentId) return; const cell=board.find(c=>c.id===currentId); cell.response=''; if(!cell.free && !cell.audio) cell.completed=false; save(); render(); update(); resp.value=''; updateCount(); showToast('Réponse effacée'); });
+
+    // ---------- Audio (record/upload/playback) ----------
+    const recBtn=document.getElementById('recBtn'), stopBtn=document.getElementById('stopBtn'), playBtn=document.getElementById('playBtn'), delAudioBtn=document.getElementById('delAudioBtn'), uploadBtn=document.getElementById('uploadBtn'), uploadInput=document.getElementById('uploadInput'), audioEl=document.getElementById('audio'), timerEl=document.getElementById('timer'), permWarn=document.getElementById('permWarn');
+    let mediaStream=null, mediaRec=null, chunks=[], t0=0, tick=null;
+    function hhmm(s){const m=Math.floor(s/60),ss=('0'+(s%60)).slice(-2); return ('0'+m).slice(-2)+':'+ss;}
+    async function preflightMic(){ try{ if(!('mediaDevices' in navigator)||!('MediaRecorder' in window)){ recBtn.disabled=stopBtn.disabled=playBtn.disabled=delAudioBtn.disabled=true; permWarn.style.display='block'; permWarn.textContent='Enregistrement audio non supporté.'; return; } if(navigator.permissions&&navigator.permissions.query){ try{ const st=await navigator.permissions.query({name:'microphone'}); if(st.state==='denied'){ permWarn.style.display='block'; permWarn.textContent='Micro refusé. Autorise le micro.'; } }catch(e){} } }catch(e){} }
+    async function startRec(){ try{ mediaStream=await navigator.mediaDevices.getUserMedia({audio:true}); mediaRec=new MediaRecorder(mediaStream); chunks=[]; mediaRec.ondataavailable=e=>{ if(e.data&&e.data.size>0) chunks.push(e.data); }; mediaRec.onstop=()=>{ const blob=new Blob(chunks,{type:mediaRec.mimeType||'audio/webm'}); const reader=new FileReader(); reader.onloadend=()=>{ const cell=board.find(c=>c.id===currentId); cell.audio={dataUrl:reader.result,mime:blob.type||'audio/webm'}; cell.completed=true; save(); render(); update(); audioEl.src=reader.result; audioEl.style.display='block'; playBtn.disabled=false; delAudioBtn.disabled=false; showToast('Audio enregistré 🎙️'); }; reader.readAsDataURL(blob); cleanupStream(); }; mediaRec.start(); recBtn.disabled=true; stopBtn.disabled=false; playBtn.disabled=true; delAudioBtn.disabled=true; t0=Date.now(); timerEl.textContent='00:00'; tick=setInterval(()=>{ const s=Math.floor((Date.now()-t0)/1000); timerEl.textContent=hhmm(s); },250); }catch(err){ console.error(err); permWarn.style.display='block'; permWarn.textContent='Micro non accessible. Autorise le micro ou utilise « Importer audio ».'; showToast('Micro non accessible'); cleanupStream(); } }
+    function stopRec(){ try{ if(mediaRec&&mediaRec.state!=='inactive') mediaRec.stop(); }catch(e){} stopBtn.disabled=true; recBtn.disabled=false; clearInterval(tick); tick=null; }
+    function cleanupStream(){ try{ mediaStream&&mediaStream.getTracks().forEach(t=>t.stop()); }catch(e){} mediaStream=null; mediaRec=null; clearInterval(tick); tick=null; timerEl.textContent='00:00'; }
+    function loadAudioUI(cell){ if(cell&&cell.audio){ audioEl.src=cell.audio.dataUrl; audioEl.style.display='block'; playBtn.disabled=false; delAudioBtn.disabled=false; } else { audioEl.removeAttribute('src'); audioEl.style.display='none'; playBtn.disabled=true; delAudioBtn.disabled=true; } stopBtn.disabled=true; recBtn.disabled=false; timerEl.textContent='00:00'; }
+    uploadBtn.addEventListener('click',()=>uploadInput.click());
+    uploadInput.addEventListener('change',()=>{ const f=uploadInput.files&&uploadInput.files[0]; if(!f) return; const reader=new FileReader(); reader.onload=()=>{ const cell=board.find(c=>c.id===currentId); cell.audio={dataUrl:reader.result,mime:f.type||'audio/*'}; cell.completed=true; save(); render(); update(); audioEl.src=reader.result; audioEl.style.display='block'; playBtn.disabled=false; delAudioBtn.disabled=false; showToast('Audio importé 📤'); }; reader.readAsDataURL(f); uploadInput.value=''; });
+    recBtn.addEventListener('click',()=>startRec()); stopBtn.addEventListener('click',()=>stopRec()); playBtn.addEventListener('click',()=>audioEl.play()); delAudioBtn.addEventListener('click',()=>{ const cell=board.find(c=>c.id===currentId); delete cell.audio; if(!cell.free && !(cell.response&&cell.response.trim().length>=10)) cell.completed=false; save(); render(); update(); audioEl.removeAttribute('src'); audioEl.style.display='none'; playBtn.disabled=true; delAudioBtn.disabled=true; showToast('Audio supprimé'); });
+
+    // ---------- Render chunks on load ----------
+    renderChunks();
+  </script>
+</body>
+</html>
