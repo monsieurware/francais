@@ -288,12 +288,23 @@
     })();
 
     // ---------- State & storage ----------
+    // Ephemeral mode: do not persist across reloads or tabs.
+    // Set `?persist=1` in the URL to disable ephemeral mode and use localStorage again.
     const LS_KEY='ibfb-rfi-v3';
+    const EPHEMERAL = (new URLSearchParams(location.search).get('persist') !== '1');
     let board=[]; // array of 25 {id,prompt,response,completed,free,audio?:{dataUrl,mime}}
 
-    function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(board)); }catch(e){} }
+    // If we switch to ephemeral, proactively clear any previous persisted state on this origin
+    if(EPHEMERAL){ try{ localStorage.removeItem(LS_KEY); }catch(e){} }
+
+    function save(){
+      if(EPHEMERAL) return; // no-op in ephemeral mode
+      try{ localStorage.setItem(LS_KEY, JSON.stringify(board)); }catch(e){}
+    }
     function load(){
-      try{ const raw=localStorage.getItem(LS_KEY); if(raw){ board=JSON.parse(raw); render(); updateProgress(); return; } }catch(e){}
+      if(!EPHEMERAL){
+        try{ const raw=localStorage.getItem(LS_KEY); if(raw){ board=JSON.parse(raw); render(); updateProgress(); return; } }catch(e){}
+      }
       buildBoard();
     }
 
