@@ -6,18 +6,9 @@
   <title>IB French B – Bingo (Liberté d’expression)</title>
   <style>
     :root{
-      /* Tricolore-inspired palette */
-      --bg:#0b1020;           /* deep navy */
-      --bg2:#10172a;
-      --card:#0f172a;
-      --text:#e6edf6;         /* off-white */
-      --muted:#94a3b8;
-      --brand:#3b82f6;        /* bleu */
-      --accent:#ef4444;       /* rouge */
-      --good:#22c55e;         /* green */
+      --bg:#0b1020; --bg2:#10172a; --card:#0f172a; --text:#e6edf6; --muted:#94a3b8;
+      --brand:#3b82f6; --accent:#ef4444; --good:#22c55e; --shadow:0 14px 40px rgba(0,0,0,.35);
       --free-bg:linear-gradient(180deg, rgba(59,130,246,.25), rgba(239,68,68,.25));
-      --free-color:#93c5fd;
-      --shadow:0 14px 40px rgba(0,0,0,.35);
     }
     html,body{height:100%}
     body{margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans"; color:var(--text); background:radial-gradient(1100px 520px at 20% -5%, #151b31 0%, var(--bg) 60%) fixed}
@@ -78,6 +69,7 @@
     .audioBar .rec{background:linear-gradient(180deg, rgba(239,68,68,.18), rgba(239,68,68,.08)); border-color:rgba(239,68,68,.35)}
     .audioBar .timer{font-variant-numeric:tabular-nums; min-width:54px; text-align:center}
     .permWarn{display:none;color:#fecaca;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);padding:8px 10px;border-radius:8px}
+
     /* Primer media helpers */
     .primer{display:grid; gap:14px}
     .primer h2{margin:6px 0 4px}
@@ -190,14 +182,6 @@
           </div>
           <p class="hint" style="margin-top:10px">Si la vidéo ne s’affiche pas dans votre ENT/LMS, ouvrez l’activité dans un nouvel onglet ou via l’iframe externe autorisant <em>allowfullscreen</em> et <em>encrypted-media</em>.</p>
         </section>
-        <section class="card" style="padding:14px 16px">
-          <h3 style="margin:4px 0 8px">À retenir</h3>
-          <ul style="margin:0 0 6px 16px">
-            <li>Liberté de conscience : chacun est libre de croire ou de ne pas croire.</li>
-            <li>Neutralité de l’État : l’administration ne favorise aucune conviction.</li>
-            <li>Égalité et respect : les citoyens sont égaux face à la loi, quelles que soient leurs croyances.</li>
-          </ul>
-        </section>
       </div>
     </div>
   </div>
@@ -238,24 +222,18 @@
     </div>
   </dialog>
 
-  <div class="toast" id="toast">Action effectuée</div>
+  <div class="toast" id="toast" style="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0b1526;border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:10px;display:none">Action effectuée</div>
 
   <script>
     // ---------- Utilities ----------
     const toast=document.getElementById('toast');
     function showToast(msg){ toast.textContent=msg; toast.style.display='block'; setTimeout(()=>toast.style.display='none', 1300); }
+    function copyMaybe(text){ try{ if(!('clipboard' in navigator) || !navigator.isSecureContext) return false; const p=navigator.clipboard.writeText(text); if(p && p.then) p.catch(()=>{}); return true; }catch(e){ return false; } }
 
-    function copyMaybe(text){
-      try{
-        if(!('clipboard' in navigator) || !navigator.isSecureContext) return false;
-        const p=navigator.clipboard.writeText(text); if(p && p.then) p.catch(()=>{}); return true;
-      }catch(e){ return false; }
-    }
-
-    // ---------- Accent keyboard ----------
+    // Accent keyboard
     const ACCENTS=['à','â','ä','æ','ç','é','è','ê','ë','î','ï','ô','œ','ö','ù','û','ü','ÿ','À','Ç','É','È','Ê','Ë','Î','Ï','Ô','Ù','Û','Ü','«','»','€'];
 
-    // ---------- Chunk bank (civic/debate oriented) ----------
+    // Chunk bank
     const CHUNKS=[
       {cat:'amorces',text:"À mon avis, …"},{cat:'amorces',text:"Selon moi, …"},{cat:'amorces',text:"Il me semble que …"},
       {cat:'amorces',text:"D’après cette scène, on peut penser que …"},{cat:'amorces',text:"On dirait que les manifestants …"},
@@ -273,28 +251,27 @@
     const chunkBank=document.getElementById('chunkBank');
     const chunkFilters=document.getElementById('chunkFilters');
     const chunkSearch=document.getElementById('chunkSearch');
-    let activeCat='all';
 
     function renderChunks(){
       const q=(chunkSearch&&chunkSearch.value?chunkSearch.value:'').toLowerCase().trim();
       chunkBank.innerHTML='';
+      const activeCat=renderChunks.activeCat||'all';
       CHUNKS.filter(c=>activeCat==='all'||c.cat===activeCat)
             .filter(c=>!q||c.text.toLowerCase().includes(q))
             .forEach(c=>{ const div=document.createElement('div'); div.className='chunk'; div.textContent=c.text; div.title=c.cat; div.addEventListener('click',()=>{ if(dlg.open){ insertAtCursor(resp,(resp.value&&!resp.value.endsWith('\n')?' ':' ')+c.text+' ');} else { const ok=copyMaybe(c.text); showToast(ok?'Copié ✔︎':'Copie bloquée — ouvre une case pour insérer'); } }); chunkBank.appendChild(div); });
     }
     if(chunkFilters){
-      chunkFilters.addEventListener('click',(e)=>{ const btn=e.target.closest('button[data-cat]'); if(!btn) return; activeCat=btn.getAttribute('data-cat'); [...chunkFilters.querySelectorAll('button[data-cat]')].forEach(b=>{ if(b===btn) b.classList.add('active'); else b.classList.remove('active'); }); renderChunks(); });
+      chunkFilters.addEventListener('click',(e)=>{ const btn=e.target.closest('button[data-cat]'); if(!btn) return; renderChunks.activeCat=btn.getAttribute('data-cat'); [...chunkFilters.querySelectorAll('button[data-cat]')].forEach(b=>{ if(b===btn) b.classList.add('active'); else b.classList.remove('active'); }); renderChunks(); });
       const allBtn=chunkFilters.querySelector('button[data-cat="all"]'); if(allBtn) allBtn.classList.add('active');
     }
     if(chunkSearch){ chunkSearch.addEventListener('input',renderChunks); }
-    renderChunks();
 
-    // ---------- Tabs ----------
+    // Tabs
     const tabs=document.querySelectorAll('.tabBtn');
     const contents=document.querySelectorAll('.tabContent');
     tabs.forEach(btn=>btn.addEventListener('click',()=>{ tabs.forEach(b=>b.classList.remove('active')); contents.forEach(c=>c.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active'); }));
 
-    // ---------- Prompts (24 + free center) ----------
+    // Prompts
     const PROMPTS=[
       {t:'Décris la scène de manière neutre : qui, quoi, où ? Quels indices visuels ?'},
       {t:'Analyse le slogan « Laïcité = Liberté » : que signifie‑t‑il selon toi ?'},
@@ -322,7 +299,6 @@
       {t:'Conclue par une phrase d’espoir ou une solution concrète.'}
     ];
 
-    // ---------- Helpers ----------
     function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1])}
     function getPromptPool(){
       const valid=PROMPTS.filter(p=>p&&typeof p.t==='string'&&p.t.trim().length>0);
@@ -330,10 +306,9 @@
       return shuffle([...valid,...fillers]).slice(0,24);
     }
 
-    // ---------- Bingo lines ----------
     const LINES=(()=>{ const rows=[0,5,10,15,20].map(s=>[s,s+1,s+2,s+3,s+4]); const cols=[0,1,2,3,4].map(c=>[c,c+5,c+10,c+15,c+20]); const diags=[[0,6,12,18,24],[4,8,12,16,20]]; return [...rows,...cols,...diags]; })();
 
-    // ---------- State & storage (Ephemeral by default) ----------
+    // State & storage (Ephemeral)
     const LS_KEY='ibfb-liberte-v1';
     const EPHEMERAL=(new URLSearchParams(location.search).get('persist')!=='1');
     let board=[];
@@ -341,7 +316,7 @@
     function save(){ if(EPHEMERAL) return; try{ localStorage.setItem(LS_KEY, JSON.stringify(board)); }catch(e){} }
     function load(){ if(!EPHEMERAL){ try{ const raw=localStorage.getItem(LS_KEY); if(raw){ board=JSON.parse(raw); render(); updateProgress(); return; } }catch(e){} } buildBoard(); }
 
-    // ---------- Build & render ----------
+    // Build & render
     const gridEl=document.getElementById('grid');
     const mini=document.getElementById('mini');
     const countText=document.getElementById('countText');
@@ -360,27 +335,26 @@
 
     function render(){
       gridEl.innerHTML='';
-      board.forEach(cell=>{ const el=document.createElement('button'); el.type='button'; el.className='cell'+(cell.free?' free':'')+(cell.completed?' completed':''); el.setAttribute('data-id',cell.id); el.innerHTML=(cell.free?'<h4>CARTE LIBRE</h4>':'<h4>TÂCHE</h4>')+`<p>${cell.prompt}</p>`+`<span class="badge">Fait</span>`+(cell.response?`<div class="assist">Réponse sauvegardée ✓</div>`:'')+(cell.audio?`<div class="assist">🎙️ Audio enregistré</div>`:''); el.addEventListener('click',(e)=>{ if(!e.isTrusted) return; __userGesture=true; try{ openCell(cell.id); } finally { __userGesture=false; } }); gridEl.appendChild(el); });
+      board.forEach(cell=>{ const el=document.createElement('button'); el.type='button'; el.className='cell'+(cell.free?' free':'')+(cell.completed?' completed':''); el.setAttribute('data-id',cell.id); el.innerHTML=(cell.free?'<h4>CARTE LIBRE</h4>':'<h4>TÂCHE</h4>')+`<p>${cell.prompt}</p>`+`<span class=\"badge\">Fait</span>`+(cell.response?`<div class=\"assist\">Réponse sauvegardée ✓</div>`:'')+(cell.audio?`<div class=\"assist\">🎙️ Audio enregistré</div>`:''); el.addEventListener('click',(e)=>{ if(!e.isTrusted) return; __userGesture=true; try{ openCell(cell.id); } finally { __userGesture=false; } }); gridEl.appendChild(el); });
     }
 
     function updateProgress(){ mini.innerHTML=''; board.forEach(c=>{ const d=document.createElement('div'); if(c.completed) d.classList.add('done'); mini.appendChild(d); }); const done=board.filter(c=>c.completed).length; countText.textContent=done+'/25'; const lines=LINES.filter(L=>L.every(i=>board[i].completed)); bingoTag.style.display=lines.length>0?'inline-flex':'none'; if(lines.length>0) showToast('🎉 BINGO !'); }
 
-    // ---------- Modal & keyboard ----------
+    // Modal & keyboard
     let __userGesture=false, __userInteracted=false; ['pointerdown','keydown','touchstart'].forEach(t=>window.addEventListener(t,()=>{__userInteracted=true},{once:true,passive:true}));
     const dlg=document.getElementById('dlg'); const dlgPrompt=document.getElementById('dlgPrompt'); const resp=document.getElementById('resp'); const closeDlg=document.getElementById('closeDlg'); const saveBtn=document.getElementById('save'); const clearCellBtn=document.getElementById('clearCell'); const count=document.getElementById('count'); const kbd=document.getElementById('kbd'); const permWarn=document.getElementById('permWarn'); let currentId=null;
     function openCell(id){ if(!__userGesture||!__userInteracted) return; currentId=id; const cell=board.find(c=>c.id===id); dlgPrompt.innerHTML=(cell.free?'<strong>CARTE LIBRE</strong> – ':'<strong>TÂCHE</strong> – ')+cell.prompt; resp.value=cell.response||''; updateCount(); if(!dlg.open) dlg.showModal(); setTimeout(()=>resp.focus(),40); loadAudioUI(cell); preflightMic(); }
     function closeModal(){ try{ stopRec(); }catch(e){} dlg.close(); currentId=null; }
     function updateCount(){ count.textContent=(resp.value.length||0)+'/800 caractères'; }
-    resp.addEventListener('input',updateCount);
-
     function mountKeyboard(){ kbd.innerHTML=''; ACCENTS.forEach(ch=>{ const b=document.createElement('button'); b.type='button'; b.textContent=ch; b.addEventListener('click',()=>insertAtCursor(resp,ch)); kbd.appendChild(b); }); }
     function insertAtCursor(field,text){ const s=field.selectionStart,e=field.selectionEnd,v=field.value; field.value=v.slice(0,s)+text+v.slice(e); field.selectionStart=field.selectionEnd=s+text.length; field.focus(); updateCount(); }
+    resp.addEventListener('input',updateCount);
 
     saveBtn.addEventListener('click',()=>{ if(currentId==null) return; const cell=board.find(c=>c.id===currentId); cell.response=resp.value.slice(0,800); cell.completed=cell.free||cell.response.trim().length>=10||!!cell.audio; save(); render(); updateProgress(); showToast('Enregistré ✅'); closeModal(); });
     clearCellBtn.addEventListener('click',()=>{ if(currentId==null) return; const cell=board.find(c=>c.id===currentId); cell.response=''; if(!cell.free && !cell.audio) cell.completed=false; save(); render(); updateProgress(); showToast('Réponse effacée'); resp.value=''; updateCount(); });
     closeDlg.addEventListener('click',closeModal);
 
-    // ---------- Audio (MediaRecorder) + Fallback Upload ----------
+    // Audio + upload fallback
     const recBtn=document.getElementById('recBtn'), stopBtn=document.getElementById('stopBtn'), playBtn=document.getElementById('playBtn'), delAudioBtn=document.getElementById('delAudioBtn'), uploadBtn=document.getElementById('uploadBtn'), uploadInput=document.getElementById('uploadInput'), audioEl=document.getElementById('audio'), timerEl=document.getElementById('timer');
     let mediaStream=null, mediaRec=null, chunks=[], t0=0, tick=null;
     function hhmm(s){const m=Math.floor(s/60),ss=('0'+(s%60)).slice(-2); return ('0'+m).slice(-2)+':'+ss;}
@@ -393,21 +367,13 @@
     uploadInput.addEventListener('change',()=>{ const file=uploadInput.files&&uploadInput.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=()=>{ if(currentId==null) return; const cell=board.find(c=>c.id===currentId); if(!cell) return; cell.audio={dataUrl:reader.result,mime:file.type||'audio/*'}; cell.completed=true; save(); render(); updateProgress(); audioEl.src=reader.result; audioEl.style.display='block'; playBtn.disabled=false; delAudioBtn.disabled=false; showToast('Audio importé 📤'); }; reader.readAsDataURL(file); uploadInput.value=''; });
     recBtn.addEventListener('click',()=>{ startRec().catch(()=>{}); }); stopBtn.addEventListener('click',()=>{ try{ stopRec(); }catch(e){} }); playBtn.addEventListener('click',()=>{ if(!audioEl.src) return; audioEl.play(); }); delAudioBtn.addEventListener('click',()=>{ if(currentId==null) return; const cell=board.find(c=>c.id===currentId); if(!cell) return; delete cell.audio; if(!cell.free && !(cell.response&&cell.response.trim().length>=10)) cell.completed=false; save(); loadAudioUI(cell); render(); updateProgress(); showToast('Audio supprimé'); });
 
-    // ---------- Top controls ----------
+    // Top controls
     (function wire(){ const sBtn=document.getElementById('shuffleBtn'); const cBtn=document.getElementById('clearBtn'); const eBtn=document.getElementById('exportBtn'); if(sBtn) sBtn.addEventListener('click',()=>{ if(confirm('Mélanger réinitialise les invites et supprime les réponses & audios. Continuer ?')){ localStorage.removeItem(LS_KEY); buildBoard(); showToast('Mélangé 🎲'); }}); if(cBtn) cBtn.addEventListener('click',()=>{ if(confirm('Effacer toutes les réponses & audios ?')){ board.forEach(c=>{c.response=''; delete c.audio; c.completed=!!c.free;}); save(); render(); updateProgress(); showToast('Réinitialisé'); }}); if(eBtn) eBtn.addEventListener('click',()=>{ const rows=[["#","Type","Invite","Réponse","Audio?","Complétée"]]; board.forEach((c,i)=>rows.push([i+1,c.free?'CARTE LIBRE':'TÂCHE',c.prompt.replace(/\n/g,' '),(c.response||'').replace(/\n/g,' '),c.audio?'oui':'non',c.completed?'oui':'non'])); const csv=rows.map(r=>r.map(x=>('"'+String(x).replace(/"/g,'""')+'"')).join(',')).join('\n'); const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='bingo-liberte-expression.csv'; a.click(); URL.revokeObjectURL(url); showToast('CSV exporté'); }); })();
 
-    // ---------- Tests (opt-in via ?test=1) ----------
-    const RUN_TESTS=new URLSearchParams(location.search).get('test')==='1';
-    function __runTests(){ const pool=getPromptPool(); console.assert(Array.isArray(pool)&&pool.length===24,'pool length'); console.assert(pool.every(p=>p&&typeof p.t==='string'&&p.t.length>0),'valid .t'); buildBoard(); console.assert(gridEl.children.length===25,'25 cells'); console.assert(gridEl.children[12].classList.contains('free'),'center free'); for(let i=0;i<5;i++){board[i].completed=true;} updateProgress(); const any=LINES.some(L=>L.every(i=>board[i].completed)); console.assert(any===true,'bingo possible'); const copied=copyMaybe('x'); console.assert(typeof copied==='boolean','copyMaybe boolean'); console.assert('mediaDevices' in navigator,'mediaDevices present'); }
-    if(RUN_TESTS){ __runTests(); }
-
-    // ---------- Init ----------
-    function mountKeyboardInit(){ mountKeyboard(); }
-    mountKeyboardInit();
-    try{ if(dlg.open) dlg.close(); }catch(e){}
-    setTimeout(()=>{ try{ if(dlg.open) dlg.close(); }catch(e){} },800);
-    if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',load,{once:true}); } else { load(); }
-    requestAnimationFrame(()=>{ try{ if(!gridEl.children.length){ render(); updateProgress(); } }catch(e){} });
+    // Init + render safety
+    function mountKeyboard(){ kbd.innerHTML=''; ACCENTS.forEach(ch=>{ const b=document.createElement('button'); b.type='button'; b.textContent=ch; b.addEventListener('click',()=>insertAtCursor(resp,ch)); kbd.appendChild(b); }); }
+    function start(){ mountKeyboard(); try{ if(dlg.open) dlg.close(); }catch(e){} setTimeout(()=>{ try{ if(dlg.open) dlg.close(); }catch(e){} }, 800); if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', load, {once:true}); } else { load(); } requestAnimationFrame(()=>{ try{ if(!gridEl.children.length){ render(); updateProgress(); } }catch(e){} }); renderChunks(); }
+    start();
   </script>
 </body>
 </html>
