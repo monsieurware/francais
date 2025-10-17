@@ -24,6 +24,12 @@
     .imgCard{position:relative; overflow:hidden}
     .imgCard img{display:block; width:100%; height:100%; object-fit:cover; border-radius:16px}
     .imgInfo{position:absolute; inset:auto 12px 12px 12px; background:rgba(0,0,0,.5); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; font-size:.92rem}
+    .zoomBtn{position:absolute; top:12px; right:12px; z-index:2}
+    .zoomCanvas{cursor:grab}
+    .zoomCanvas:active{cursor:grabbing}
+    .zoomToolbar{display:flex; gap:8px; justify-content:flex-end; padding:10px}
+    .zoomStage{position:relative; width:min(1100px,92vw); height:min(72vh,780px); background:#000; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.15)}
+    .zoomStage img{user-select:none; -webkit-user-drag:none; touch-action:none; will-change:transform}
 
     .controls{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
     .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.14); color:var(--text); background:linear-gradient(180deg, rgba(6,182,212,.14), rgba(245,158,11,.12)); cursor:pointer; transition:.15s transform ease, .2s filter ease; user-select:none}
@@ -86,6 +92,7 @@
     <div id="bingo" class="tabContent active">
       <header>
         <section class="card imgCard">
+          <button class="btn zoomBtn" id="zoomOpen" type="button">🔍 Zoomer</button>
           <img src="https://www.infoj.be/wp-content/uploads/2022/07/7-1.png" alt="Affiche bénévolat" />
           <div class="imgInfo"><strong>Déclencheur visuel</strong> — Quelles actions de bénévolat vois-tu ? Quels besoins / impacts ?</div>
         </section>
@@ -208,7 +215,27 @@
     </div>
   </dialog>
 
-  <div class="toast" id="toast" style="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0b1526;border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:10px;display:none">Action effectuée</div>
+  <!-- Image Zoom Dialog -->
+  <dialog id="imgZoom">
+    <div class="modal" role="dialog" aria-modal="true">
+      <header>
+        <h3>Zoom – Affiche bénévolat</h3>
+        <button class="btn" id="zoomClose" type="button">✖</button>
+      </header>
+      <div class="zoomToolbar">
+        <button class="btn" id="zIn" type="button">＋</button>
+        <button class="btn" id="zOut" type="button">－</button>
+        <button class="btn" id="zReset" type="button">⤾ Réinitialiser</button>
+        <a class="btn" href="https://www.infoj.be/wp-content/uploads/2022/07/7-1.png" target="_blank" rel="noopener">↗️ Ouvrir l’image</a>
+      </div>
+      <div class="zoomStage">
+        <img id="zoomImg" class="zoomCanvas" src="https://www.infoj.be/wp-content/uploads/2022/07/7-1.png" alt="Affiche bénévolat – zoom" />
+      </div>
+      <footer style="padding:10px 14px"><span class="hint">Astuce : molette pour zoomer, glisser pour déplacer, double‑clic pour centrer.</span></footer>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" id="toast" style="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0b1526;border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:10px;display:none">Action effectuée</div>
 
   <script>
     // ---------- Utils ----------
@@ -276,7 +303,7 @@
       {t:'Rôle des élèves : qui fait quoi ?'},
       {t:'Budget : de quoi a-t-on besoin ?'},
       {t:'Communication : affiche, annonce, post ?'},
-      {t:'Évalue un risque et un plan B.'},
+      {t:"Identifie un risque concret (ex. manque de bénévoles) et propose un plan B précis (qui fait quoi, quand)."},
       {t:'Crée une mini‑interview d’un bénévole (3 Q/R).'},
       {t:'Exprime de la gratitude envers des partenaires.'},
       {t:'Rédige un texte pour convaincre un parent.'},
@@ -303,6 +330,34 @@
 
     // ---------- Tabs ----------
     document.querySelectorAll('.tabBtn').forEach(btn=>btn.addEventListener('click',()=>{
+      document.querySelectorAll('.tabBtn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tabContent').forEach(c=>c.classList.remove('active'));
+      btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active');
+    }));
+
+    // ---------- Image Zoom ----------
+    const zoomOpen=document.getElementById('zoomOpen');
+    const zoomClose=document.getElementById('zoomClose');
+    const imgZoom=document.getElementById('imgZoom');
+    const zoomImg=document.getElementById('zoomImg');
+    const zIn=document.getElementById('zIn');
+    const zOut=document.getElementById('zOut');
+    const zReset=document.getElementById('zReset');
+    let zScale=1, zX=0, zY=0, dragging=false, pX=0, pY=0;
+    function applyZoom(){ zoomImg.style.transform=`translate(${zX}px, ${zY}px) scale(${zScale})`; zoomImg.style.transformOrigin='0 0'; }
+    function resetZoom(){ zScale=1; zX=0; zY=0; applyZoom(); }
+    function clamp(val,min,max){ return Math.max(min, Math.min(max,val)); }
+    function zoomAt(cx,cy,delta){ const prev=zScale; zScale=clamp(zScale*(delta>0?1.15:1/1.15), 1, 6); const rect=zoomImg.getBoundingClientRect(); const dx=cx-rect.left; const dy=cy-rect.top; zX = dx - (zScale/prev)*(dx - zX); zY = dy - (zScale/prev)*(dy - zY); applyZoom(); }
+    zoomOpen?.addEventListener('click',()=>{ if(!imgZoom.open) imgZoom.showModal(); setTimeout(resetZoom,0); });
+    zoomClose?.addEventListener('click',()=>imgZoom.close());
+    zIn?.addEventListener('click',()=>{ zScale=Math.min(6, zScale*1.2); applyZoom(); });
+    zOut?.addEventListener('click',()=>{ zScale=Math.max(1, zScale/1.2); applyZoom(); });
+    zReset?.addEventListener('click',resetZoom);
+    zoomImg?.addEventListener('wheel',(e)=>{ e.preventDefault(); zoomAt(e.clientX,e.clientY, e.deltaY); }, {passive:false});
+    zoomImg?.addEventListener('pointerdown',(e)=>{ dragging=true; pX=e.clientX; pY=e.clientY; zoomImg.setPointerCapture(e.pointerId); });
+    zoomImg?.addEventListener('pointermove',(e)=>{ if(!dragging) return; zX += e.clientX - pX; zY += e.clientY - pY; pX=e.clientX; pY=e.clientY; applyZoom(); });
+    zoomImg?.addEventListener('pointerup',()=>{ dragging=false; });
+    zoomImg?.addEventListener('dblclick',()=>resetZoom());(btn=>btn.addEventListener('click',()=>{
       document.querySelectorAll('.tabBtn').forEach(b=>b.classList.remove('active'));
       document.querySelectorAll('.tabContent').forEach(c=>c.classList.remove('active'));
       btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active');
