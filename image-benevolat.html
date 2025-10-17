@@ -24,7 +24,7 @@
     .imgCard{position:relative; overflow:hidden}
     .imgCard img{display:block; width:100%; height:100%; object-fit:cover; border-radius:16px}
     .imgInfo{position:absolute; inset:auto 12px 12px 12px; background:rgba(0,0,0,.5); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; font-size:.92rem}
-    .zoomBtn{position:absolute; top:12px; right:12px; z-index:2}
+    .zoomBtn{position:absolute; top:12px; right:12px; z-index:5}
     .zoomCanvas{cursor:grab}
     .zoomCanvas:active{cursor:grabbing}
     .zoomToolbar{display:flex; gap:8px; justify-content:flex-end; padding:10px}
@@ -348,8 +348,12 @@
     function resetZoom(){ zScale=1; zX=0; zY=0; applyZoom(); }
     function clamp(val,min,max){ return Math.max(min, Math.min(max,val)); }
     function zoomAt(cx,cy,delta){ const prev=zScale; zScale=clamp(zScale*(delta>0?1.15:1/1.15), 1, 6); const rect=zoomImg.getBoundingClientRect(); const dx=cx-rect.left; const dy=cy-rect.top; zX = dx - (zScale/prev)*(dx - zX); zY = dy - (zScale/prev)*(dy - zY); applyZoom(); }
-    zoomOpen?.addEventListener('click',()=>{ if(!imgZoom.open) imgZoom.showModal(); setTimeout(resetZoom,0); });
-    zoomClose?.addEventListener('click',()=>imgZoom.close());
+    zoomOpen?.addEventListener('click',()=>{ try{ if(!imgZoom.open && imgZoom.showModal) imgZoom.showModal(); else imgZoom.setAttribute('open',''); }catch(e){ imgZoom.setAttribute('open',''); imgZoom.style.display='block'; }
+      setTimeout(resetZoom,0);
+    });
+    zoomClose?.addEventListener('click',()=>{ try{ imgZoom.close?.(); }catch(e){}
+      imgZoom.removeAttribute('open'); imgZoom.style.display='none';
+    });
     zIn?.addEventListener('click',()=>{ zScale=Math.min(6, zScale*1.2); applyZoom(); });
     zOut?.addEventListener('click',()=>{ zScale=Math.max(1, zScale/1.2); applyZoom(); });
     zReset?.addEventListener('click',resetZoom);
@@ -357,11 +361,7 @@
     zoomImg?.addEventListener('pointerdown',(e)=>{ dragging=true; pX=e.clientX; pY=e.clientY; zoomImg.setPointerCapture(e.pointerId); });
     zoomImg?.addEventListener('pointermove',(e)=>{ if(!dragging) return; zX += e.clientX - pX; zY += e.clientY - pY; pX=e.clientX; pY=e.clientY; applyZoom(); });
     zoomImg?.addEventListener('pointerup',()=>{ dragging=false; });
-    zoomImg?.addEventListener('dblclick',()=>resetZoom());(btn=>btn.addEventListener('click',()=>{
-      document.querySelectorAll('.tabBtn').forEach(b=>b.classList.remove('active'));
-      document.querySelectorAll('.tabContent').forEach(c=>c.classList.remove('active'));
-      btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active');
-    }));
+    zoomImg?.addEventListener('dblclick',()=>resetZoom());
 
     // ---------- Modal & keyboard ----------
     const dlg=document.getElementById('dlg'); const resp=document.getElementById('resp'); const closeDlg=document.getElementById('closeDlg'); const saveBtn=document.getElementById('save'); const clearCellBtn=document.getElementById('clearCell'); const count=document.getElementById('count'); const kbd=document.getElementById('kbd'); let currentId=null;
