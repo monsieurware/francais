@@ -1,0 +1,2398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the French</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --forest-canopy: #264E36;
+            --mossy-grove: #3B6A4A;
+            --leaf-vein: #4F8A5D;
+            --sage-mist: #8BAF8D;
+            --fern-light: #BFD8B8;
+            --sprout-tint: #E3EED4;
+            --soil-base: #5A4E3C;
+            --clay-neutral: #DCCEB2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comfortaa', cursive;
+            background: linear-gradient(135deg, var(--mossy-grove) 0%, var(--forest-canopy) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 80px;
+            color: var(--soil-base);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 10px 30px rgba(38, 78, 54, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--mossy-grove) 0%, var(--forest-canopy) 100%);
+            color: white;
+            padding: 30px 30px 20px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://i.pinimg.com/originals/9f/32/b4/9f32b44b83c3e8f46fd7c501df3de621.gif');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.35;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .header > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .music-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .music-btn {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .music-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .volume-icon {
+            font-size: 18px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-shadow: 
+                -0.5px -0.5px 0 #000,
+                0.5px -0.5px 0 #000,
+                -0.5px 0.5px 0 #000,
+                0.5px 0.5px 0 #000,
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000,
+                1px 1px 0 #000;
+        }
+
+        .header-icon {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-top: 20px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            color: rgba(255,255,255,0.8);
+            font-size: 1.05em;
+            font-family: 'Comfortaa', cursive;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tab:last-child {
+            border-right: none;
+        }
+
+        .tab:hover {
+            color: white;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .tab.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            border-bottom-color: var(--fern-light);
+            font-weight: 600;
+            box-shadow: inset 0 -3px 0 var(--fern-light);
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            margin-top: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--fern-light);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .game-area {
+            padding: 40px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .stat-box {
+            flex: 1;
+            background: var(--sprout-tint);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid var(--fern-light);
+            box-shadow: 0 3px 10px rgba(38, 78, 54, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--mossy-grove);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--forest-canopy);
+        }
+
+        .target-box {
+            background: var(--fern-light);
+            border: 3px solid var(--leaf-vein);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 20px rgba(79, 138, 93, 0.2);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .target-label {
+            font-size: 0.9em;
+            color: var(--forest-canopy);
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .target-text {
+            font-size: 1.3em;
+            color: var(--soil-base);
+            font-weight: 600;
+        }
+
+        .audio-target-box {
+            background: var(--fern-light);
+            border: 3px solid var(--leaf-vein);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(79, 138, 93, 0.2);
+            text-align: center;
+        }
+
+        .play-audio-btn {
+            background: linear-gradient(135deg, var(--leaf-vein) 0%, var(--mossy-grove) 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 138, 93, 0.3);
+            font-family: 'Comfortaa', cursive;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .play-audio-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(79, 138, 93, 0.4);
+        }
+
+        .play-audio-btn:active {
+            transform: scale(0.98);
+        }
+
+        .audio-hint {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: var(--forest-canopy);
+            font-style: italic;
+        }
+
+        .french-text, .english-text {
+            background: var(--sprout-tint);
+            padding: 30px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            line-height: 1.8;
+            border: 2px solid var(--fern-light);
+            box-shadow: 0 4px 15px rgba(38, 78, 54, 0.08);
+        }
+
+        .chunk {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .chunk:hover {
+            background: var(--fern-light);
+        }
+
+        .chunk.correct {
+            background: var(--leaf-vein);
+            color: white;
+            font-weight: 600;
+            cursor: default;
+            animation: correctPulse 0.5s ease;
+        }
+
+        .chunk.wrong {
+            background: #ef9a9a;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .next-btn {
+            display: none;
+            width: 100%;
+            padding: 20px;
+            margin-top: 30px;
+            background: linear-gradient(135deg, var(--leaf-vein) 0%, var(--mossy-grove) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            box-shadow: 0 6px 20px rgba(79, 138, 93, 0.3);
+            font-family: 'Comfortaa', cursive;
+        }
+
+        .next-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(79, 138, 93, 0.4);
+        }
+
+        .next-btn.show {
+            display: block;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .completion {
+            display: none;
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .completion.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .completion h2 {
+            font-size: 3em;
+            color: var(--forest-canopy);
+            margin-bottom: 20px;
+        }
+
+        .completion p {
+            font-size: 1.3em;
+            color: var(--mossy-grove);
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--leaf-vein) 0%, var(--mossy-grove) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            box-shadow: 0 6px 20px rgba(79, 138, 93, 0.3);
+            font-family: 'Comfortaa', cursive;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(79, 138, 93, 0.4);
+        }
+
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 30px 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            font-size: 2em;
+            font-weight: bold;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .feedback.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .feedback.correct {
+            color: var(--forest-canopy);
+            border: 4px solid var(--leaf-vein);
+        }
+
+        .feedback.wrong {
+            color: #c62828;
+            border: 4px solid #ef9a9a;
+        }
+
+        .tips-section {
+            padding: 40px;
+        }
+
+        .tips-section h2 {
+            color: var(--forest-canopy);
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .tips-section h3 {
+            color: var(--mossy-grove);
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .tip-card {
+            background: var(--sprout-tint);
+            border-left: 4px solid var(--leaf-vein);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 12px rgba(38, 78, 54, 0.1);
+        }
+
+        .tip-card h4 {
+            color: var(--forest-canopy);
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .tip-card p, .tip-card ul {
+            color: var(--soil-base);
+            line-height: 1.8;
+        }
+
+        .tip-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .tip-card li {
+            margin-bottom: 8px;
+        }
+
+        .highlight {
+            background: var(--fern-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .chunk-logger {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 3px solid var(--leaf-vein);
+            box-shadow: 0 -5px 20px rgba(38, 78, 54, 0.2);
+            transition: transform 0.3s ease;
+            z-index: 100;
+            max-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chunk-logger.collapsed {
+            transform: translateY(calc(100% - 50px));
+        }
+
+        .logger-header {
+            background: linear-gradient(135deg, var(--leaf-vein) 0%, var(--mossy-grove) 100%);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .logger-header:hover {
+            background: linear-gradient(135deg, var(--mossy-grove) 0%, var(--forest-canopy) 100%);
+        }
+
+        .logger-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .logger-badge {
+            background: #fbbf24;
+            color: var(--forest-canopy);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+            transition: opacity 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .logger-toggle {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .chunk-logger.collapsed .logger-toggle {
+            transform: rotate(180deg);
+        }
+
+        .logger-content {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .logger-stats {
+            background: var(--sprout-tint);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 20px;
+            font-size: 0.9em;
+            color: var(--forest-canopy);
+            font-weight: 500;
+        }
+
+        .logger-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .logger-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--leaf-vein) 0%, var(--mossy-grove) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Comfortaa', cursive;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(79, 138, 93, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logger-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 138, 93, 0.4);
+        }
+
+        .logger-btn.clear {
+            background: linear-gradient(135deg, #ef9a9a 0%, #c62828 100%);
+        }
+
+        .logger-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid var(--fern-light);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            resize: vertical;
+            background: var(--sprout-tint);
+            color: var(--soil-base);
+        }
+
+        .logger-textarea:focus {
+            outline: none;
+            border-color: var(--leaf-vein);
+        }
+    </style>
+</head>
+<body>
+    <audio id="backgroundMusic" loop preload="metadata">
+        <source src="https://audio.jukehost.co.uk/SjzEFG54jRgdLIxGGH5pAYnoHPH5Dsc4" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="container">
+        <div class="header">
+            <div class="music-controls">
+                <button class="music-btn" id="musicToggle" onclick="toggleMusic()">🎵</button>
+                <div class="volume-control">
+                    <span class="volume-icon">🔊</span>
+                    <input type="range" min="0" max="100" value="50" class="volume-slider" id="volumeSlider" oninput="changeVolume(this.value)">
+                </div>
+            </div>
+
+            <h1>
+                <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWwwbjR2NmRtbzVwcG9nM3htcWx4YXJkYnRiaWNmeTN4YTVhbWNxbSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/kpHjppnhpk1cRyF6qg/giphy.gif" alt="Search" class="header-icon">
+                Find the French
+            </h1>
+            <p>Master IB French B Paper 1 Writing Prompts</p>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('frenchGame')">Find the French</button>
+                <button class="tab" onclick="switchTab('englishGame')">Find the English</button>
+                <button class="tab" onclick="switchTab('tips')">IB Paper 1 Tips</button>
+            </div>
+
+            <div class="progress-bar" id="progressBarContainer">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Find the French Game -->
+        <div id="frenchGameTab" class="tab-content active">
+            <div class="game-area" id="frenchGameArea">
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Prompt</div>
+                        <div class="stat-value" id="frenchPromptNum">1</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Found</div>
+                        <div class="stat-value" id="frenchFoundCount">0/6</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Score</div>
+                        <div class="stat-value" id="frenchScore">0</div>
+                    </div>
+                </div>
+
+                <div class="target-box">
+                    <div class="target-label">Find this in French:</div>
+                    <div class="target-text" id="frenchTargetText"></div>
+                </div>
+
+                <div class="french-text" id="frenchText"></div>
+
+                <button class="next-btn" id="frenchNextBtn">Next Prompt →</button>
+            </div>
+
+            <div class="completion" id="frenchCompletion">
+                <h2>🎉 Bravo!</h2>
+                <p>You've completed all the French prompts!</p>
+                <div style="font-size: 2em; margin: 20px 0; color: var(--forest-canopy);">Final Score: <span id="frenchFinalScore">0</span></div>
+                <button class="restart-btn" onclick="restartFrenchGame()">Play Again</button>
+            </div>
+        </div>
+
+        <!-- Find the English Game -->
+        <div id="englishGameTab" class="tab-content">
+            <div class="game-area" id="englishGameArea">
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Prompt</div>
+                        <div class="stat-value" id="englishPromptNum">1</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Found</div>
+                        <div class="stat-value" id="englishFoundCount">0/6</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Score</div>
+                        <div class="stat-value" id="englishScore">0</div>
+                    </div>
+                </div>
+
+                <div class="audio-target-box">
+                    <div class="target-label">Listen and find this in English:</div>
+                    <button class="play-audio-btn" id="playAudioBtn" onclick="playFrenchAudio()">
+                        <span>🔊</span>
+                        <span>Play French Audio</span>
+                    </button>
+                    <div class="audio-hint">Click to hear the French phrase</div>
+                </div>
+
+                <div class="english-text" id="englishText"></div>
+
+                <button class="next-btn" id="englishNextBtn">Next Prompt →</button>
+            </div>
+
+            <div class="completion" id="englishCompletion">
+                <h2>🎉 Excellent!</h2>
+                <p>You've completed all the English prompts!</p>
+                <div style="font-size: 2em; margin: 20px 0; color: var(--forest-canopy);">Final Score: <span id="englishFinalScore">0</span></div>
+                <button class="restart-btn" onclick="restartEnglishGame()">Play Again</button>
+            </div>
+        </div>
+
+        <!-- Tips Tab -->
+        <div id="tipsTab" class="tab-content">
+            <div class="tips-section">
+                <h2>📚 IB French B Paper 1 Writing Tips</h2>
+                
+                <div class="tip-card">
+                    <h4>Understanding Paper 1 Format</h4>
+                    <p>Paper 1 consists of <span class="highlight">productive writing tasks</span> based on one of the five prescribed themes. You will choose ONE task from a selection and write 250-400 words (SL) or 450-600 words (HL).</p>
+                </div>
+
+                <div class="tip-card">
+                    <h4>Text Types You Must Know</h4>
+                    <ul>
+                        <li><strong>Article (Article)</strong> - Informative, objective tone for newspapers/magazines</li>
+                        <li><strong>Blog (Blog)</strong> - Personal, informal, first-person perspective</li>
+                        <li><strong>Brochure (Dépliant/Brochure)</strong> - Persuasive, promotional, clear sections</li>
+                        <li><strong>Diary Entry (Journal intime)</strong> - Very personal, emotional, reflective</li>
+                        <li><strong>Email (Courriel)</strong> - Appropriate greeting/closing, clear purpose</li>
+                        <li><strong>Essay (Essai)</strong> - Formal, structured arguments with introduction and conclusion</li>
+                        <li><strong>Interview (Interview)</strong> - Question-answer format, natural conversation flow</li>
+                        <li><strong>Letter (Lettre)</strong> - Formal or informal, proper letter conventions</li>
+                        <li><strong>Report (Rapport)</strong> - Objective, structured, factual information</li>
+                        <li><strong>Review (Critique)</strong> - Evaluative, balanced positive and negative points</li>
+                        <li><strong>Speech (Discours)</strong> - Persuasive, direct address to audience, rhetorical devices</li>
+                    </ul>
+                </div>
+
+                <div class="tip-card">
+                    <h4>Essential Writing Strategies</h4>
+                    <ul>
+                        <li><strong>Understand the prompt thoroughly</strong> - Identify the purpose, audience, and text type</li>
+                        <li><strong>Plan before writing</strong> - Spend 5-10 minutes organizing your ideas</li>
+                        <li><strong>Match the register</strong> - Formal (vous) vs informal (tu) based on context</li>
+                        <li><strong>Use appropriate conventions</strong> - Each text type has specific formatting requirements</li>
+                        <li><strong>Vary your vocabulary</strong> - Demonstrate range and avoid repetition</li>
+                        <li><strong>Include complex structures</strong> - Use subjunctive, conditionals, relative clauses</li>
+                        <li><strong>Stay on topic</strong> - Address all parts of the prompt</li>
+                        <li><strong>Watch your word count</strong> - Too short or too long will affect your grade</li>
+                    </ul>
+                </div>
+
+                <div class="tip-card">
+                    <h4>Assessment Criteria</h4>
+                    <p>Your writing is assessed on:</p>
+                    <ul>
+                        <li><strong>Criterion A - Language</strong> (12 points): Range and accuracy of vocabulary and grammar</li>
+                        <li><strong>Criterion B - Message</strong> (8 points): How well you fulfill the task and develop ideas</li>
+                        <li><strong>Criterion C - Conceptual Understanding</strong> (5 points): Appropriate text type, register, and audience awareness</li>
+                    </ul>
+                </div>
+
+                <div class="tip-card">
+                    <h4>Time Management</h4>
+                    <ul>
+                        <li><strong>5 minutes:</strong> Read all options and choose your task</li>
+                        <li><strong>10 minutes:</strong> Plan your response with key ideas</li>
+                        <li><strong>50 minutes:</strong> Write your response</li>
+                        <li><strong>10 minutes:</strong> Proofread and correct errors</li>
+                    </ul>
+                </div>
+
+                <div class="tip-card">
+                    <h4>Common Mistakes to Avoid</h4>
+                    <ul>
+                        <li>❌ Using English words or "franglais"</li>
+                        <li>❌ Mixing formal and informal registers</li>
+                        <li>❌ Forgetting text type conventions</li>
+                        <li>❌ Writing too much or too little</li>
+                        <li>❌ Not addressing all aspects of the prompt</li>
+                        <li>❌ Poor handwriting that's difficult to read</li>
+                        <li>❌ Overly simple sentence structures</li>
+                    </ul>
+                </div>
+
+                <div class="tip-card">
+                    <h4>Pro Tips for Success</h4>
+                    <ul>
+                        <li>✅ Practice writing different text types regularly</li>
+                        <li>✅ Read authentic French texts to learn natural expressions</li>
+                        <li>✅ Create a personal "phrase bank" for each text type</li>
+                        <li>✅ Get feedback from teachers on practice tasks</li>
+                        <li>✅ Learn connecting words and transitions by heart</li>
+                        <li>✅ Study past paper prompts to familiarize yourself with patterns</li>
+                        <li>✅ Time yourself during practice to build exam stamina</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <!-- Chunk Logger Panel -->
+    <div class="chunk-logger collapsed" id="chunkLogger">
+        <div class="logger-header" onclick="toggleLogger()">
+            <div class="logger-title">
+                <span>📋</span>
+                <span>Session Chunk Log</span>
+                <span class="logger-badge" id="loggerBadge" style="display: none;">0</span>
+            </div>
+            <div class="logger-toggle">▼</div>
+        </div>
+        <div class="logger-content">
+            <div class="logger-stats">
+                <span>Total Chunks Learned: <strong id="totalChunks">0</strong></span>
+                <span>From Find the French: <strong id="frenchModeChunks">0</strong></span>
+                <span>From Find the English: <strong id="englishModeChunks">0</strong></span>
+            </div>
+            <div class="logger-actions">
+                <button class="logger-btn" onclick="copyToClipboard()">
+                    <span>📋</span>
+                    <span>Copy to Clipboard</span>
+                </button>
+                <button class="logger-btn" onclick="exportTSV()">
+                    <span>💾</span>
+                    <span>Export as TSV</span>
+                </button>
+                <button class="logger-btn clear" onclick="clearLog()">
+                    <span>🗑️</span>
+                    <span>Clear Log</span>
+                </button>
+            </div>
+            <textarea class="logger-textarea" id="chunkLogArea" readonly placeholder="Correctly answered chunks will appear here in TSV format...&#10;&#10;English → [TAB] → French&#10;&#10;Perfect for importing into Anki, Quizlet, or Excel!"></textarea>
+        </div>
+    </div>
+
+    <script>
+        const prompts = [
+            {
+                french: "Vous êtes moniteur (monitrice) dans un camp de vacances sportives et vous accueillez votre groupe. Dans un petit discours à leur arrivée, vous attirez l'attention des participants sur les dangers possibles et vous leur faites des recommandations pour créer une bonne entente générale.",
+                chunks: [
+                    { fr: "Vous êtes moniteur (monitrice)", en: "You are a counselor" },
+                    { fr: "dans un camp de vacances sportives", en: "in a sports vacation camp" },
+                    { fr: "vous accueillez votre groupe", en: "you welcome your group" },
+                    { fr: "Dans un petit discours", en: "In a short speech" },
+                    { fr: "vous attirez l'attention des participants", en: "you draw the participants' attention" },
+                    { fr: "sur les dangers possibles", en: "to the possible dangers" },
+                    { fr: "vous leur faites des recommandations", en: "you make recommendations to them" },
+                    { fr: "pour créer une bonne entente générale", en: "to create good general understanding" }
+                ]
+            },
+            {
+                french: "Après avoir vu un film d'horreur, vous faites un cauchemar affreux qui vous réveille. Vous écrivez vos impressions dans votre journal intime.",
+                chunks: [
+                    { fr: "Après avoir vu", en: "After watching" },
+                    { fr: "un film d'horreur", en: "a horror film" },
+                    { fr: "vous faites un cauchemar affreux", en: "you have a terrible nightmare" },
+                    { fr: "qui vous réveille", en: "that wakes you up" },
+                    { fr: "Vous écrivez vos impressions", en: "You write your impressions" },
+                    { fr: "dans votre journal intime", en: "in your diary" }
+                ]
+            },
+            {
+                french: "Dans le cadre d'une exposition dont le titre serait « Les objets de notre enfance », vous présentez un objet qui a joué un rôle très important dans votre vie. Rédigez le texte qui présentera l'objet et son histoire aux visiteurs.",
+                chunks: [
+                    { fr: "Dans le cadre d'une exposition", en: "As part of an exhibition" },
+                    { fr: "dont le titre serait", en: "whose title would be" },
+                    { fr: "Les objets de notre enfance", en: "The objects of our childhood" },
+                    { fr: "vous présentez un objet", en: "you present an object" },
+                    { fr: "qui a joué un rôle très important", en: "that played a very important role" },
+                    { fr: "dans votre vie", en: "in your life" },
+                    { fr: "Rédigez le texte", en: "Write the text" },
+                    { fr: "qui présentera l'objet et son histoire", en: "that will present the object and its story" }
+                ]
+            },
+            {
+                french: "Vous avez été sélectionné(e) pour faire partie du premier groupe de touristes à séjourner à bord de la station spatiale internationale. Avant votre départ, vous écrivez vos sentiments (attentes, espoirs, inquiétudes…) dans une page de votre journal intime.",
+                chunks: [
+                    { fr: "Vous avez été sélectionné(e)", en: "You have been selected" },
+                    { fr: "pour faire partie du premier groupe", en: "to be part of the first group" },
+                    { fr: "de touristes à séjourner", en: "of tourists to stay" },
+                    { fr: "à bord de la station spatiale internationale", en: "aboard the international space station" },
+                    { fr: "Avant votre départ", en: "Before your departure" },
+                    { fr: "vous écrivez vos sentiments", en: "you write your feelings" },
+                    { fr: "attentes, espoirs, inquiétudes", en: "expectations, hopes, worries" }
+                ]
+            },
+            {
+                french: "Un commentateur sportif a déclaré : « Le sport est corrompu pour toujours par l'argent ». Dans un article pour le journal de votre école, donnez vos opinions sur cette remarque.",
+                chunks: [
+                    { fr: "Un commentateur sportif a déclaré", en: "A sports commentator stated" },
+                    { fr: "Le sport est corrompu pour toujours", en: "Sport is corrupted forever" },
+                    { fr: "par l'argent", en: "by money" },
+                    { fr: "Dans un article", en: "In an article" },
+                    { fr: "pour le journal de votre école", en: "for your school newspaper" },
+                    { fr: "donnez vos opinions", en: "give your opinions" },
+                    { fr: "sur cette remarque", en: "on this remark" }
+                ]
+            },
+            {
+                french: "Le manque d'eau sera bientôt un grand problème sur notre planète. Pour le journal de votre école, vous écrivez un article exposant la situation et donnant une série de conseils pour aider vos camarades à limiter leur consommation d'eau.",
+                chunks: [
+                    { fr: "Le manque d'eau", en: "The lack of water" },
+                    { fr: "sera bientôt un grand problème", en: "will soon be a major problem" },
+                    { fr: "sur notre planète", en: "on our planet" },
+                    { fr: "vous écrivez un article", en: "you write an article" },
+                    { fr: "exposant la situation", en: "explaining the situation" },
+                    { fr: "donnant une série de conseils", en: "giving a series of tips" },
+                    { fr: "pour aider vos camarades", en: "to help your classmates" },
+                    { fr: "à limiter leur consommation d'eau", en: "to limit their water consumption" }
+                ]
+            },
+            {
+                french: "L'université francophone à laquelle un(e) ami(e) a demandé l'inscription veut avoir une recommandation de ses futurs étudiants écrite par un jeune. Vous rédigez un portrait physique et moral de votre ami(e) afin qu'il ou elle soit accepté(e).",
+                chunks: [
+                    { fr: "L'université francophone", en: "The French-speaking university" },
+                    { fr: "à laquelle un(e) ami(e) a demandé l'inscription", en: "to which a friend has applied" },
+                    { fr: "veut avoir une recommandation", en: "wants to have a recommendation" },
+                    { fr: "de ses futurs étudiants", en: "of its future students" },
+                    { fr: "écrite par un jeune", en: "written by a young person" },
+                    { fr: "Vous rédigez un portrait", en: "You write a portrait" },
+                    { fr: "physique et moral", en: "physical and moral" }
+                ]
+            },
+            {
+                french: "Vous avez l'intention de créer un nouveau magazine pour votre école mais ce projet a été rejeté par le Comité des élèves. Rédigez la lettre de protestation que vous leur adresseriez pour défendre votre projet.",
+                chunks: [
+                    { fr: "Vous avez l'intention de créer", en: "You intend to create" },
+                    { fr: "un nouveau magazine", en: "a new magazine" },
+                    { fr: "pour votre école", en: "for your school" },
+                    { fr: "ce projet a été rejeté", en: "this project has been rejected" },
+                    { fr: "par le Comité des élèves", en: "by the Student Committee" },
+                    { fr: "Rédigez la lettre de protestation", en: "Write the letter of protest" },
+                    { fr: "pour défendre votre projet", en: "to defend your project" }
+                ]
+            },
+            {
+                french: "Avec un groupe d'élèves, vous voulez réaliser un projet collectif de peinture sur un mur de votre école. Vous devez obtenir la permission du directeur de votre école pour pouvoir réaliser ce projet. Vous lui écrivez une lettre pour tenter de le convaincre.",
+                chunks: [
+                    { fr: "Avec un groupe d'élèves", en: "With a group of students" },
+                    { fr: "vous voulez réaliser un projet collectif", en: "you want to carry out a collective project" },
+                    { fr: "de peinture sur un mur", en: "of painting on a wall" },
+                    { fr: "Vous devez obtenir la permission", en: "You must obtain permission" },
+                    { fr: "du directeur de votre école", en: "from the director of your school" },
+                    { fr: "Vous lui écrivez une lettre", en: "You write him/her a letter" },
+                    { fr: "pour tenter de le convaincre", en: "to try to convince him/her" }
+                ]
+            },
+            {
+                french: "Votre école reçoit un groupe d'étudiants étrangers. Pendant leur séjour, vous organisez la projection d'un film représentatif du pays où vous vivez. Vous allez faire un petit discours pour présenter ce film et pour expliquer pourquoi vous l'avez choisi.",
+                chunks: [
+                    { fr: "Votre école reçoit un groupe", en: "Your school receives a group" },
+                    { fr: "d'étudiants étrangers", en: "of foreign students" },
+                    { fr: "Pendant leur séjour", en: "During their stay" },
+                    { fr: "vous organisez la projection d'un film", en: "you organize the screening of a film" },
+                    { fr: "représentatif du pays", en: "representative of the country" },
+                    { fr: "où vous vivez", en: "where you live" },
+                    { fr: "pour expliquer pourquoi", en: "to explain why" }
+                ]
+            },
+            {
+                french: "Avec un groupe d'amis, vous décidez d'encourager les jeunes de votre quartier à participer à une activité offerte par la Maison des Jeunes. Cette activité permettra à tous de faire connaissance et d'échanger leurs propres expériences.",
+                chunks: [
+                    { fr: "Avec un groupe d'amis", en: "With a group of friends" },
+                    { fr: "vous décidez d'encourager les jeunes", en: "you decide to encourage young people" },
+                    { fr: "de votre quartier", en: "from your neighborhood" },
+                    { fr: "à participer à une activité", en: "to participate in an activity" },
+                    { fr: "offerte par la Maison des Jeunes", en: "offered by the Youth Center" },
+                    { fr: "permettra à tous", en: "will allow everyone" },
+                    { fr: "de faire connaissance", en: "to get to know each other" }
+                ]
+            },
+            {
+                french: "Votre oncle (ou votre tante), que vous aimez bien, habite loin de chez vous. Dans sa dernière lettre, il (ou elle) a écrit : « Moi, à mon âge, je n'ai pas besoin d'ordinateur ». Vous lui écrivez une lettre pour lui expliquer comment l'ordinateur pourrait lui faciliter la vie.",
+                chunks: [
+                    { fr: "Votre oncle (ou votre tante)", en: "Your uncle (or your aunt)" },
+                    { fr: "que vous aimez bien", en: "whom you like" },
+                    { fr: "habite loin de chez vous", en: "lives far from your home" },
+                    { fr: "Dans sa dernière lettre", en: "In his/her last letter" },
+                    { fr: "je n'ai pas besoin d'ordinateur", en: "I don't need a computer" },
+                    { fr: "Vous lui écrivez une lettre", en: "You write him/her a letter" },
+                    { fr: "l'ordinateur pourrait lui faciliter la vie", en: "the computer could make life easier" }
+                ]
+            },
+            {
+                french: "Pour l'inauguration de nouveaux bâtiments scolaires, la direction a décidé de mettre dans un mur une capsule qui sera ouverte dans 100 ans. Elle contient des objets représentatifs du début du 21ème siècle.",
+                chunks: [
+                    { fr: "Pour l'inauguration", en: "For the inauguration" },
+                    { fr: "de nouveaux bâtiments scolaires", en: "of new school buildings" },
+                    { fr: "la direction a décidé", en: "the administration decided" },
+                    { fr: "de mettre dans un mur une capsule", en: "to put a capsule in a wall" },
+                    { fr: "qui sera ouverte dans 100 ans", en: "that will be opened in 100 years" },
+                    { fr: "Elle contient des objets représentatifs", en: "It contains representative objects" },
+                    { fr: "du début du 21ème siècle", en: "from the beginning of the 21st century" }
+                ]
+            },
+            {
+                french: "Un journaliste étranger à votre région a rédigé un article qui fait des commentaires négatifs sur la qualité de vie et l'économie de votre région. Vous écrivez une lettre au journal pour donner votre opinion sur son article.",
+                chunks: [
+                    { fr: "Un journaliste étranger", en: "A foreign journalist" },
+                    { fr: "à votre région", en: "to your region" },
+                    { fr: "a rédigé un article", en: "wrote an article" },
+                    { fr: "qui fait des commentaires négatifs", en: "that makes negative comments" },
+                    { fr: "sur la qualité de vie", en: "about the quality of life" },
+                    { fr: "et l'économie de votre région", en: "and the economy of your region" },
+                    { fr: "pour donner votre opinion", en: "to give your opinion" }
+                ]
+            },
+            {
+                french: "Vos camarades de 1ère année du BI sont inquiets à l'idée de rédiger leur mémoire de 4000 mots. On vous a demandé de participer à une assemblée pendant laquelle vous essayerez de les rassurer en partageant votre expérience avec eux.",
+                chunks: [
+                    { fr: "Vos camarades de 1ère année", en: "Your first-year classmates" },
+                    { fr: "du BI", en: "of IB" },
+                    { fr: "sont inquiets à l'idée", en: "are worried about the idea" },
+                    { fr: "de rédiger leur mémoire", en: "of writing their essay" },
+                    { fr: "de 4000 mots", en: "of 4000 words" },
+                    { fr: "vous essayerez de les rassurer", en: "you will try to reassure them" },
+                    { fr: "en partageant votre expérience", en: "by sharing your experience" }
+                ]
+            },
+            {
+                french: "Vous et quelques-uns de vos amis avez organisé un voyage en groupe pour fêter la fin du BI. Les parents de votre meilleur(e) ami(e) refusent de donner leur permission. Pour les convaincre de changer leur décision, vous leur écrivez une lettre.",
+                chunks: [
+                    { fr: "Vous et quelques-uns de vos amis", en: "You and some of your friends" },
+                    { fr: "avez organisé un voyage", en: "have organized a trip" },
+                    { fr: "en groupe", en: "in a group" },
+                    { fr: "pour fêter la fin du BI", en: "to celebrate the end of IB" },
+                    { fr: "refusent de donner leur permission", en: "refuse to give their permission" },
+                    { fr: "Pour les convaincre", en: "To convince them" },
+                    { fr: "de changer leur décision", en: "to change their decision" }
+                ]
+            },
+            {
+                french: "À votre école, les sports de compétition dominent et de nombreux élèves voudraient seulement s'amuser en faisant du sport. Vous décidez d'être leur porte-parole et vous rédigez une proposition que vous adressez au professeur de sport.",
+                chunks: [
+                    { fr: "À votre école", en: "At your school" },
+                    { fr: "les sports de compétition dominent", en: "competitive sports dominate" },
+                    { fr: "de nombreux élèves voudraient", en: "many students would like" },
+                    { fr: "seulement s'amuser", en: "only to have fun" },
+                    { fr: "en faisant du sport", en: "playing sports" },
+                    { fr: "Vous décidez d'être leur porte-parole", en: "You decide to be their spokesperson" },
+                    { fr: "vous rédigez une proposition", en: "you write a proposal" }
+                ]
+            },
+            {
+                french: "Les jeunes protestent souvent contre les règles familiales. Vous écrivez un article pour le journal de votre école dans lequel vous examinez la nécessité de ces règles dans les familles d'aujourd'hui.",
+                chunks: [
+                    { fr: "Les jeunes protestent souvent", en: "Young people often protest" },
+                    { fr: "contre les règles familiales", en: "against family rules" },
+                    { fr: "Vous écrivez un article", en: "You write an article" },
+                    { fr: "pour le journal de votre école", en: "for your school newspaper" },
+                    { fr: "dans lequel vous examinez", en: "in which you examine" },
+                    { fr: "la nécessité de ces règles", en: "the necessity of these rules" },
+                    { fr: "dans les familles d'aujourd'hui", en: "in today's families" }
+                ]
+            },
+            {
+                french: "C'était la fin de la journée, j'avais l'intention de me reposer et de rêver, quand tout à coup… Continuez cette histoire qui paraîtra dans un mensuel pour adolescents sous la rubrique « Mystères et aventures ».",
+                chunks: [
+                    { fr: "C'était la fin de la journée", en: "It was the end of the day" },
+                    { fr: "j'avais l'intention", en: "I intended" },
+                    { fr: "de me reposer", en: "to rest" },
+                    { fr: "et de rêver", en: "and to dream" },
+                    { fr: "quand tout à coup", en: "when suddenly" },
+                    { fr: "Continuez cette histoire", en: "Continue this story" },
+                    { fr: "dans un mensuel pour adolescents", en: "in a monthly magazine for teenagers" }
+                ]
+            },
+            {
+                french: "Un film vient de sortir et tous les journaux encouragent les jeunes à le voir. Vous l'avez vu et vous pensez qu'il pourrait avoir une mauvaise influence sur un jeune public. Exprimez vos opinions dans une lettre que vous adressez au courrier des lecteurs.",
+                chunks: [
+                    { fr: "Un film vient de sortir", en: "A film has just come out" },
+                    { fr: "tous les journaux encouragent", en: "all the newspapers encourage" },
+                    { fr: "les jeunes à le voir", en: "young people to see it" },
+                    { fr: "Vous l'avez vu", en: "You have seen it" },
+                    { fr: "une mauvaise influence", en: "a bad influence" },
+                    { fr: "sur un jeune public", en: "on a young audience" },
+                    { fr: "Exprimez vos opinions", en: "Express your opinions" }
+                ]
+            },
+            {
+                french: "Votre ville a récemment organisé une activité pour les jeunes qui vous a beaucoup plu. Écrivez un compte rendu pour le journal local dans lequel vous encouragez d'autres jeunes à participer au même genre d'activité.",
+                chunks: [
+                    { fr: "Votre ville a récemment organisé", en: "Your city recently organized" },
+                    { fr: "une activité pour les jeunes", en: "an activity for young people" },
+                    { fr: "qui vous a beaucoup plu", en: "that you really enjoyed" },
+                    { fr: "Écrivez un compte rendu", en: "Write a report" },
+                    { fr: "pour le journal local", en: "for the local newspaper" },
+                    { fr: "vous encouragez d'autres jeunes", en: "you encourage other young people" },
+                    { fr: "au même genre d'activité", en: "in the same type of activity" }
+                ]
+            },
+            {
+                french: "La communication entre parents et enfants est parfois difficile. Composez un guide de recommandations à l'intention des adolescents afin d'encourager une meilleure communication entre les générations.",
+                chunks: [
+                    { fr: "La communication", en: "Communication" },
+                    { fr: "entre parents et enfants", en: "between parents and children" },
+                    { fr: "est parfois difficile", en: "is sometimes difficult" },
+                    { fr: "Composez un guide", en: "Compose a guide" },
+                    { fr: "de recommandations", en: "of recommendations" },
+                    { fr: "à l'intention des adolescents", en: "for teenagers" },
+                    { fr: "une meilleure communication", en: "better communication" }
+                ]
+            },
+            {
+                french: "Votre professeur de français vous a annoncé qu'il y aurait des examens supplémentaires au trimestre suivant. La nouvelle vous a contrarié(e) et vous a amené(e) à écrire une lettre de protestation au professeur.",
+                chunks: [
+                    { fr: "Votre professeur de français", en: "Your French teacher" },
+                    { fr: "vous a annoncé", en: "announced to you" },
+                    { fr: "qu'il y aurait", en: "that there would be" },
+                    { fr: "des examens supplémentaires", en: "additional exams" },
+                    { fr: "au trimestre suivant", en: "the following term" },
+                    { fr: "La nouvelle vous a contrarié(e)", en: "The news upset you" },
+                    { fr: "une lettre de protestation", en: "a letter of protest" }
+                ]
+            },
+            {
+                french: "Vous avez joué dans une pièce de théâtre, un opéra ou une comédie musicale présenté(e) par votre école. La représentation a eu beaucoup de succès. Écrivez une page de votre journal intime dans laquelle vous faites part de vos réflexions.",
+                chunks: [
+                    { fr: "Vous avez joué", en: "You played" },
+                    { fr: "dans une pièce de théâtre", en: "in a play" },
+                    { fr: "un opéra ou une comédie musicale", en: "an opera or a musical" },
+                    { fr: "présenté(e) par votre école", en: "presented by your school" },
+                    { fr: "La représentation a eu", en: "The performance had" },
+                    { fr: "beaucoup de succès", en: "great success" },
+                    { fr: "vous faites part de vos réflexions", en: "you share your reflections" }
+                ]
+            },
+            {
+                french: "Dans le cadre de la semaine de la francophonie, vous devrez faire un discours devant vos camarades sur le sujet suivant : « En quoi la culture francophone que vous avez découverte au cours de votre scolarité est-elle différente de la culture du pays dans lequel vous vivez ? »",
+                chunks: [
+                    { fr: "Dans le cadre de", en: "As part of" },
+                    { fr: "la semaine de la francophonie", en: "francophone week" },
+                    { fr: "vous devrez faire un discours", en: "you will have to give a speech" },
+                    { fr: "devant vos camarades", en: "in front of your classmates" },
+                    { fr: "la culture francophone", en: "francophone culture" },
+                    { fr: "que vous avez découverte", en: "that you discovered" },
+                    { fr: "au cours de votre scolarité", en: "during your schooling" }
+                ]
+            },
+            {
+                french: "L'animal domestique que vous avez depuis votre enfance est très malade et vous êtes inquiet. Écrivez une page de votre journal intime dans laquelle vous expliquez la place que tient cet animal dans votre vie.",
+                chunks: [
+                    { fr: "L'animal domestique", en: "The pet" },
+                    { fr: "que vous avez depuis votre enfance", en: "that you've had since childhood" },
+                    { fr: "est très malade", en: "is very sick" },
+                    { fr: "vous êtes inquiet", en: "you are worried" },
+                    { fr: "Écrivez une page", en: "Write a page" },
+                    { fr: "de votre journal intime", en: "of your diary" },
+                    { fr: "la place que tient cet animal", en: "the place this animal holds" }
+                ]
+            },
+            {
+                french: "Un(e) de vos ami(e)s a un gros problème. Vous écrivez une lettre à un(e) psychologue que vous connaissez bien et qui s'occupe beaucoup des jeunes. Vous lui donnez des détails sur le problème de votre ami(e) et lui demandez comment vous pouvez l'aider.",
+                chunks: [
+                    { fr: "Un(e) de vos ami(e)s", en: "One of your friends" },
+                    { fr: "a un gros problème", en: "has a big problem" },
+                    { fr: "Vous écrivez une lettre", en: "You write a letter" },
+                    { fr: "à un(e) psychologue", en: "to a psychologist" },
+                    { fr: "que vous connaissez bien", en: "whom you know well" },
+                    { fr: "qui s'occupe beaucoup des jeunes", en: "who works a lot with young people" },
+                    { fr: "comment vous pouvez l'aider", en: "how you can help him/her" }
+                ]
+            },
+            {
+                french: "Vous avez fait partie du premier groupe de colons qui est allé vivre sur Mars. Pour l'Agence spatiale internationale, vous rédigez un compte rendu sur la première année de votre nouvelle vie.",
+                chunks: [
+                    { fr: "Vous avez fait partie", en: "You were part" },
+                    { fr: "du premier groupe de colons", en: "of the first group of colonists" },
+                    { fr: "qui est allé vivre", en: "who went to live" },
+                    { fr: "sur Mars", en: "on Mars" },
+                    { fr: "Pour l'Agence spatiale internationale", en: "For the International Space Agency" },
+                    { fr: "vous rédigez un compte rendu", en: "you write a report" },
+                    { fr: "la première année", en: "the first year" }
+                ]
+            },
+            {
+                french: "À cause du grand nombre d'accidents de la route dans lesquels sont impliqués les jeunes, votre école organise un débat sur le thème : « Le permis de conduire : pas avant 21 ans ? » Choisissez le point de vue pour ou le point de vue contre.",
+                chunks: [
+                    { fr: "À cause du grand nombre", en: "Because of the large number" },
+                    { fr: "d'accidents de la route", en: "of road accidents" },
+                    { fr: "dans lesquels sont impliqués les jeunes", en: "in which young people are involved" },
+                    { fr: "votre école organise un débat", en: "your school organizes a debate" },
+                    { fr: "sur le thème", en: "on the theme" },
+                    { fr: "Le permis de conduire", en: "The driver's license" },
+                    { fr: "pas avant 21 ans", en: "not before 21 years old" }
+                ]
+            },
+            {
+                french: "Un chanteur ou une chanteuse très populaire vient de donner un concert dans votre ville. Vous y avez assisté, mais vous n'avez pas du tout apprécié. Rédigez une critique négative de ce concert pour le magazine de votre école.",
+                chunks: [
+                    { fr: "Un chanteur ou une chanteuse", en: "A male or female singer" },
+                    { fr: "très populaire", en: "very popular" },
+                    { fr: "vient de donner un concert", en: "has just given a concert" },
+                    { fr: "dans votre ville", en: "in your city" },
+                    { fr: "Vous y avez assisté", en: "You attended it" },
+                    { fr: "vous n'avez pas du tout apprécié", en: "you didn't appreciate it at all" },
+                    { fr: "Rédigez une critique négative", en: "Write a negative review" }
+                ]
+            },
+            {
+                french: "Vos parents n'aiment pas la manière dont vous vous habillez et vous font constamment des reproches à ce sujet. Rédigez une page de votre journal intime dans laquelle vous exprimez vos sentiments face à cette situation.",
+                chunks: [
+                    { fr: "Vos parents n'aiment pas", en: "Your parents don't like" },
+                    { fr: "la manière dont vous vous habillez", en: "the way you dress" },
+                    { fr: "vous font constamment des reproches", en: "constantly criticize you" },
+                    { fr: "à ce sujet", en: "about this" },
+                    { fr: "Rédigez une page", en: "Write a page" },
+                    { fr: "de votre journal intime", en: "of your diary" },
+                    { fr: "vous exprimez vos sentiments", en: "you express your feelings" }
+                ]
+            },
+            {
+                french: "Pour des raisons budgétaires, la Maison des Jeunes de votre ville va fermer ses portes. Écrivez une lettre au maire de votre ville pour protester contre cette décision.",
+                chunks: [
+                    { fr: "Pour des raisons budgétaires", en: "For budgetary reasons" },
+                    { fr: "la Maison des Jeunes", en: "the Youth Center" },
+                    { fr: "de votre ville", en: "of your city" },
+                    { fr: "va fermer ses portes", en: "is going to close its doors" },
+                    { fr: "Écrivez une lettre au maire", en: "Write a letter to the mayor" },
+                    { fr: "pour protester", en: "to protest" },
+                    { fr: "contre cette décision", en: "against this decision" }
+                ]
+            },
+            {
+                french: "Dans le cadre des services communautaires, votre école est venue en aide à un village durement touché par une catastrophe naturelle. Pour le journal de votre école, rédigez un compte rendu dans lequel vous décrivez les différentes étapes de votre projet.",
+                chunks: [
+                    { fr: "Dans le cadre des services communautaires", en: "As part of community service" },
+                    { fr: "votre école est venue en aide", en: "your school came to help" },
+                    { fr: "à un village", en: "a village" },
+                    { fr: "durement touché", en: "severely affected" },
+                    { fr: "par une catastrophe naturelle", en: "by a natural disaster" },
+                    { fr: "rédigez un compte rendu", en: "write a report" },
+                    { fr: "les différentes étapes", en: "the different stages" }
+                ]
+            },
+            {
+                french: "Dans le cadre de la « Semaine sans télé », les élèves de votre école ont été encouragés à ne pas regarder la télévision pendant une semaine afin de réfléchir à l'importance de la télévision dans leur vie quotidienne. Rédigez un article pour le journal de votre école.",
+                chunks: [
+                    { fr: "Dans le cadre de", en: "As part of" },
+                    { fr: "la Semaine sans télé", en: "TV-free week" },
+                    { fr: "les élèves de votre école", en: "the students of your school" },
+                    { fr: "ont été encouragés", en: "have been encouraged" },
+                    { fr: "à ne pas regarder la télévision", en: "not to watch television" },
+                    { fr: "pendant une semaine", en: "for a week" },
+                    { fr: "dans leur vie quotidienne", en: "in their daily life" }
+                ]
+            },
+            {
+                french: "Votre école organise un débat sur le thème : « Les jeunes d'aujourd'hui ont la vie plus facile que leurs parents au même âge ». Choisissez le point de vue pour ou contre cette affirmation et rédigez le texte de votre discours.",
+                chunks: [
+                    { fr: "Votre école organise un débat", en: "Your school organizes a debate" },
+                    { fr: "sur le thème", en: "on the theme" },
+                    { fr: "Les jeunes d'aujourd'hui", en: "Young people today" },
+                    { fr: "ont la vie plus facile", en: "have an easier life" },
+                    { fr: "que leurs parents", en: "than their parents" },
+                    { fr: "au même âge", en: "at the same age" },
+                    { fr: "rédigez le texte de votre discours", en: "write the text of your speech" }
+                ]
+            },
+            {
+                french: "Vous avez participé à un programme d'échange dans un pays francophone. Quelques jours après votre retour, vous envoyez un courriel pour remercier votre famille d'accueil.",
+                chunks: [
+                    { fr: "Vous avez participé", en: "You participated" },
+                    { fr: "à un programme d'échange", en: "in an exchange program" },
+                    { fr: "dans un pays francophone", en: "in a French-speaking country" },
+                    { fr: "Quelques jours après votre retour", en: "A few days after your return" },
+                    { fr: "vous envoyez un courriel", en: "you send an email" },
+                    { fr: "pour remercier", en: "to thank" },
+                    { fr: "votre famille d'accueil", en: "your host family" }
+                ]
+            },
+            {
+                french: "Au cours de votre dernier voyage en avion, vous avez eu la surprise de vous retrouver assis(e) à côté de votre acteur préféré. Racontez cette rencontre dans une page de votre journal intime.",
+                chunks: [
+                    { fr: "Au cours de votre dernier voyage", en: "During your last trip" },
+                    { fr: "en avion", en: "by plane" },
+                    { fr: "vous avez eu la surprise", en: "you had the surprise" },
+                    { fr: "de vous retrouver assis(e)", en: "to find yourself sitting" },
+                    { fr: "à côté de", en: "next to" },
+                    { fr: "votre acteur préféré", en: "your favorite actor" },
+                    { fr: "Racontez cette rencontre", en: "Tell about this encounter" }
+                ]
+            },
+            {
+                french: "Vous venez de quitter la maison familiale et de prendre un appartement que vous partagez avec trois de vos ami(e)s. La cohabitation est très difficile. Écrivez une page de votre journal intime dans laquelle vous vous plaignez des difficultés rencontrées.",
+                chunks: [
+                    { fr: "Vous venez de quitter", en: "You have just left" },
+                    { fr: "la maison familiale", en: "the family home" },
+                    { fr: "et de prendre un appartement", en: "and taken an apartment" },
+                    { fr: "que vous partagez", en: "that you share" },
+                    { fr: "avec trois de vos ami(e)s", en: "with three of your friends" },
+                    { fr: "La cohabitation est très difficile", en: "Living together is very difficult" },
+                    { fr: "vous vous plaignez", en: "you complain" }
+                ]
+            },
+            {
+                french: "Vous avez lu dans un journal un article affirmant que le Baccalauréat International est un programme élitiste réservé aux élèves obsédés par leurs résultats scolaires. Vous n'êtes pas d'accord avec l'opinion du journaliste.",
+                chunks: [
+                    { fr: "Vous avez lu dans un journal", en: "You read in a newspaper" },
+                    { fr: "un article affirmant que", en: "an article claiming that" },
+                    { fr: "le Baccalauréat International", en: "the International Baccalaureate" },
+                    { fr: "est un programme élitiste", en: "is an elitist program" },
+                    { fr: "réservé aux élèves", en: "reserved for students" },
+                    { fr: "obsédés par leurs résultats scolaires", en: "obsessed with their academic results" },
+                    { fr: "Vous n'êtes pas d'accord", en: "You don't agree" }
+                ]
+            },
+            {
+                french: "Pas facile de changer d'école : tout est nouveau, tout est inconnu ! En tant que président(e) du comité des élèves, vous rédigez à l'intention des nouveaux élèves de votre école un guide de recommandations pour faciliter leur intégration.",
+                chunks: [
+                    { fr: "Pas facile de changer d'école", en: "Not easy to change schools" },
+                    { fr: "tout est nouveau", en: "everything is new" },
+                    { fr: "tout est inconnu", en: "everything is unknown" },
+                    { fr: "En tant que président(e)", en: "As president" },
+                    { fr: "du comité des élèves", en: "of the student committee" },
+                    { fr: "vous rédigez un guide", en: "you write a guide" },
+                    { fr: "pour faciliter leur intégration", en: "to facilitate their integration" }
+                ]
+            },
+            {
+                french: "Dans le cadre de la Semaine de la citoyenneté, votre école organise un débat sur le thème : « Les jeunes devraient-ils avoir le droit de vote dès l'âge de 16 ans ? » Choisissez le point de vue pour ou contre.",
+                chunks: [
+                    { fr: "Dans le cadre de", en: "As part of" },
+                    { fr: "la Semaine de la citoyenneté", en: "Citizenship Week" },
+                    { fr: "votre école organise un débat", en: "your school organizes a debate" },
+                    { fr: "Les jeunes devraient-ils avoir", en: "Should young people have" },
+                    { fr: "le droit de vote", en: "the right to vote" },
+                    { fr: "dès l'âge de 16 ans", en: "from the age of 16" },
+                    { fr: "Choisissez le point de vue", en: "Choose the viewpoint" }
+                ]
+            },
+            {
+                french: "Depuis quelques mois, vous travaillez à temps partiel après l'école. Afin de faire profiter vos camarades de votre expérience, rédigez un guide de recommandations intitulé « Comment concilier travail et études ».",
+                chunks: [
+                    { fr: "Depuis quelques mois", en: "For a few months" },
+                    { fr: "vous travaillez à temps partiel", en: "you work part-time" },
+                    { fr: "après l'école", en: "after school" },
+                    { fr: "Afin de faire profiter", en: "In order to benefit" },
+                    { fr: "vos camarades", en: "your classmates" },
+                    { fr: "de votre expérience", en: "from your experience" },
+                    { fr: "Comment concilier travail et études", en: "How to balance work and studies" }
+                ]
+            },
+            {
+                french: "La bibliothèque de votre école vient de recevoir un nouveau magazine francophone. Vous rédigez la critique de ce magazine pour le journal de votre école.",
+                chunks: [
+                    { fr: "La bibliothèque de votre école", en: "Your school library" },
+                    { fr: "vient de recevoir", en: "has just received" },
+                    { fr: "un nouveau magazine", en: "a new magazine" },
+                    { fr: "francophone", en: "French-speaking" },
+                    { fr: "Vous rédigez la critique", en: "You write the review" },
+                    { fr: "de ce magazine", en: "of this magazine" },
+                    { fr: "pour le journal de votre école", en: "for your school newspaper" }
+                ]
+            },
+            {
+                french: "Dans le cadre d'un concours pour jeunes écrivains, racontez une anecdote se terminant ainsi : « C'est comme ça que, par hasard, je suis devenu(e) célèbre. » Cette anecdote sera publiée dans un magazine pour jeunes.",
+                chunks: [
+                    { fr: "Dans le cadre d'un concours", en: "As part of a contest" },
+                    { fr: "pour jeunes écrivains", en: "for young writers" },
+                    { fr: "racontez une anecdote", en: "tell an anecdote" },
+                    { fr: "se terminant ainsi", en: "ending like this" },
+                    { fr: "C'est comme ça que", en: "That's how" },
+                    { fr: "par hasard", en: "by chance" },
+                    { fr: "je suis devenu(e) célèbre", en: "I became famous" }
+                ]
+            },
+            {
+                french: "Vous avez vu, à la télévision ou dans un magazine, une publicité qui vous a choqué(e). Vous décidez d'écrire une lettre au courrier des lecteurs de votre journal préféré afin de protester contre cette publicité.",
+                chunks: [
+                    { fr: "Vous avez vu", en: "You saw" },
+                    { fr: "à la télévision ou dans un magazine", en: "on television or in a magazine" },
+                    { fr: "une publicité", en: "an advertisement" },
+                    { fr: "qui vous a choqué(e)", en: "that shocked you" },
+                    { fr: "Vous décidez d'écrire", en: "You decide to write" },
+                    { fr: "au courrier des lecteurs", en: "to the letters section" },
+                    { fr: "afin de protester", en: "in order to protest" }
+                ]
+            },
+            {
+                french: "Dans un discours, le directeur de votre établissement scolaire a critiqué les élèves qui choisissent une profession manuelle au lieu d'aller à l'université. Vous lui écrivez une lettre, dans laquelle vous exprimez votre désaccord.",
+                chunks: [
+                    { fr: "Dans un discours", en: "In a speech" },
+                    { fr: "le directeur de votre établissement", en: "the director of your institution" },
+                    { fr: "a critiqué les élèves", en: "criticized the students" },
+                    { fr: "qui choisissent une profession manuelle", en: "who choose a manual profession" },
+                    { fr: "au lieu d'aller à l'université", en: "instead of going to university" },
+                    { fr: "Vous lui écrivez une lettre", en: "You write him/her a letter" },
+                    { fr: "vous exprimez votre désaccord", en: "you express your disagreement" }
+                ]
+            },
+            {
+                french: "Vous aimez lire des bandes dessinées. Pour le journal du lycée, le bibliothécaire de votre lycée vous a demandé d'écrire la critique d'une bande dessinée.",
+                chunks: [
+                    { fr: "Vous aimez lire", en: "You like to read" },
+                    { fr: "des bandes dessinées", en: "comic books" },
+                    { fr: "Pour le journal du lycée", en: "For the high school newspaper" },
+                    { fr: "le bibliothécaire", en: "the librarian" },
+                    { fr: "de votre lycée", en: "of your high school" },
+                    { fr: "vous a demandé d'écrire", en: "asked you to write" },
+                    { fr: "la critique d'une bande dessinée", en: "the review of a comic book" }
+                ]
+            },
+            {
+                french: "Une société de cinéma francophone organise un concours qui a pour but d'encourager une meilleure compréhension entre jeunes de cultures différentes. Vous rédigez le résumé du film que vous soumettrez à ce concours.",
+                chunks: [
+                    { fr: "Une société de cinéma", en: "A film company" },
+                    { fr: "francophone", en: "French-speaking" },
+                    { fr: "organise un concours", en: "organizes a contest" },
+                    { fr: "qui a pour but", en: "which aims" },
+                    { fr: "d'encourager une meilleure compréhension", en: "to encourage better understanding" },
+                    { fr: "entre jeunes de cultures différentes", en: "between young people of different cultures" },
+                    { fr: "Vous rédigez le résumé", en: "You write the summary" }
+                ]
+            },
+            {
+                french: "Vous travaillez pour une association qui propose des séjours de plusieurs mois à l'étranger. Vous savez que beaucoup de jeunes hésitent à aller vivre aussi longtemps dans un pays qu'ils ne connaissent pas. Rédigez un guide de recommandations.",
+                chunks: [
+                    { fr: "Vous travaillez pour une association", en: "You work for an organization" },
+                    { fr: "qui propose des séjours", en: "that offers stays" },
+                    { fr: "de plusieurs mois", en: "of several months" },
+                    { fr: "à l'étranger", en: "abroad" },
+                    { fr: "beaucoup de jeunes hésitent", en: "many young people hesitate" },
+                    { fr: "aussi longtemps", en: "for so long" },
+                    { fr: "dans un pays qu'ils ne connaissent pas", en: "in a country they don't know" }
+                ]
+            },
+            {
+                french: "À cause de tous les problèmes liés à la présence de téléphones portables à l'école, le directeur a l'intention de les interdire. En tant que représentant des élèves auprès des professeurs vous décidez de leur faire part des opinions des élèves.",
+                chunks: [
+                    { fr: "À cause de tous les problèmes", en: "Because of all the problems" },
+                    { fr: "liés à la présence", en: "linked to the presence" },
+                    { fr: "de téléphones portables", en: "of mobile phones" },
+                    { fr: "à l'école", en: "at school" },
+                    { fr: "le directeur a l'intention", en: "the director intends" },
+                    { fr: "de les interdire", en: "to ban them" },
+                    { fr: "En tant que représentant des élèves", en: "As student representative" }
+                ]
+            },
+            {
+                french: "Le mois dernier, une nouvelle loi anti-tabac interdisant de fumer dans tous les lieux publics a été adoptée. Pour le journal « La Voix des Jeunes », vous rédigez un article dans lequel vous exposez les effets positifs de cette loi.",
+                chunks: [
+                    { fr: "Le mois dernier", en: "Last month" },
+                    { fr: "une nouvelle loi anti-tabac", en: "a new anti-smoking law" },
+                    { fr: "interdisant de fumer", en: "prohibiting smoking" },
+                    { fr: "dans tous les lieux publics", en: "in all public places" },
+                    { fr: "a été adoptée", en: "was adopted" },
+                    { fr: "vous rédigez un article", en: "you write an article" },
+                    { fr: "les effets positifs", en: "the positive effects" }
+                ]
+            },
+            {
+                french: "Suite à une catastrophe naturelle, le comité des élèves de votre école a décidé d'organiser un concert afin de collecter de l'argent pour venir en aide aux sinistrés. Écrivez une lettre à un artiste célèbre afin de le convaincre de venir chanter gratuitement.",
+                chunks: [
+                    { fr: "Suite à une catastrophe naturelle", en: "Following a natural disaster" },
+                    { fr: "le comité des élèves", en: "the student committee" },
+                    { fr: "a décidé d'organiser un concert", en: "decided to organize a concert" },
+                    { fr: "afin de collecter de l'argent", en: "in order to collect money" },
+                    { fr: "pour venir en aide", en: "to help" },
+                    { fr: "aux sinistrés", en: "the disaster victims" },
+                    { fr: "de venir chanter gratuitement", en: "to come sing for free" }
+                ]
+            },
+            {
+                french: "Vous êtes le président du « Club des Inventeurs » de votre école. Vous avez imaginé un objet révolutionnaire. Pour le journal de votre école, vous rédigez un article dans lequel vous décrivez cet objet et ses avantages.",
+                chunks: [
+                    { fr: "Vous êtes le président", en: "You are the president" },
+                    { fr: "du Club des Inventeurs", en: "of the Inventors' Club" },
+                    { fr: "de votre école", en: "of your school" },
+                    { fr: "Vous avez imaginé", en: "You imagined" },
+                    { fr: "un objet révolutionnaire", en: "a revolutionary object" },
+                    { fr: "vous décrivez cet objet", en: "you describe this object" },
+                    { fr: "et ses avantages", en: "and its advantages" }
+                ]
+            },
+            {
+                french: "Lors d'un examen de fin d'année, vous voyez l'un de vos camarades tricher ; il obtient ensuite la meilleure note de la classe. Rédigez une page de votre journal intime dans laquelle vous exprimez vos sentiments sur ce comportement.",
+                chunks: [
+                    { fr: "Lors d'un examen de fin d'année", en: "During an end-of-year exam" },
+                    { fr: "vous voyez l'un de vos camarades", en: "you see one of your classmates" },
+                    { fr: "tricher", en: "cheat" },
+                    { fr: "il obtient ensuite", en: "he then gets" },
+                    { fr: "la meilleure note de la classe", en: "the best grade in the class" },
+                    { fr: "Rédigez une page", en: "Write a page" },
+                    { fr: "vous exprimez vos sentiments", en: "you express your feelings" }
+                ]
+            },
+            {
+                french: "Chaque été, de nombreux animaux domestiques sont abandonnés par leur propriétaire au moment des vacances. En tant que responsable de la Société Protectrice des Animaux de votre ville, vous rédigez un guide de recommandations.",
+                chunks: [
+                    { fr: "Chaque été", en: "Every summer" },
+                    { fr: "de nombreux animaux domestiques", en: "many pets" },
+                    { fr: "sont abandonnés", en: "are abandoned" },
+                    { fr: "par leur propriétaire", en: "by their owner" },
+                    { fr: "au moment des vacances", en: "at vacation time" },
+                    { fr: "En tant que responsable", en: "As the person in charge" },
+                    { fr: "de la Société Protectrice des Animaux", en: "of the Animal Protection Society" }
+                ]
+            },
+            {
+                french: "Vous avez remarqué que l'utilisation du téléphone mobile pose des problèmes de politesse dans la vie de tous les jours. Dans un guide, vous proposez des recommandations pour utiliser le téléphone mobile de manière polie.",
+                chunks: [
+                    { fr: "Vous avez remarqué que", en: "You have noticed that" },
+                    { fr: "l'utilisation du téléphone mobile", en: "the use of mobile phones" },
+                    { fr: "pose des problèmes de politesse", en: "causes politeness problems" },
+                    { fr: "dans la vie de tous les jours", en: "in everyday life" },
+                    { fr: "Dans un guide", en: "In a guide" },
+                    { fr: "vous proposez des recommandations", en: "you propose recommendations" },
+                    { fr: "de manière polie", en: "in a polite manner" }
+                ]
+            },
+            {
+                french: "Vous avez observé un vol de vélo devant votre école. Vous rédigez une déclaration pour la police.",
+                chunks: [
+                    { fr: "Vous avez observé", en: "You observed" },
+                    { fr: "un vol de vélo", en: "a bicycle theft" },
+                    { fr: "devant votre école", en: "in front of your school" },
+                    { fr: "Vous rédigez", en: "You write" },
+                    { fr: "une déclaration", en: "a statement" },
+                    { fr: "pour la police", en: "for the police" }
+                ]
+            },
+            {
+                french: "Avec quelques amis, vous voulez créer une émission de radio. Dans une lettre, vous devez convaincre le directeur de la radio de la qualité de votre projet d'émission.",
+                chunks: [
+                    { fr: "Avec quelques amis", en: "With some friends" },
+                    { fr: "vous voulez créer", en: "you want to create" },
+                    { fr: "une émission de radio", en: "a radio show" },
+                    { fr: "Dans une lettre", en: "In a letter" },
+                    { fr: "vous devez convaincre", en: "you must convince" },
+                    { fr: "le directeur de la radio", en: "the radio director" },
+                    { fr: "de la qualité de votre projet", en: "of the quality of your project" }
+                ]
+            },
+            {
+                french: "Au cours d'une discussion, un élève de votre classe a répondu à la question « Que veux-tu faire plus tard ? » par « Je veux seulement gagner beaucoup d'argent. » Écrivez-lui un courriel dans lequel vous réagissez à cette réponse.",
+                chunks: [
+                    { fr: "Au cours d'une discussion", en: "During a discussion" },
+                    { fr: "un élève de votre classe", en: "a student in your class" },
+                    { fr: "a répondu à la question", en: "answered the question" },
+                    { fr: "Que veux-tu faire plus tard", en: "What do you want to do later" },
+                    { fr: "Je veux seulement gagner", en: "I only want to earn" },
+                    { fr: "beaucoup d'argent", en: "a lot of money" },
+                    { fr: "vous réagissez à cette réponse", en: "you react to this answer" }
+                ]
+            },
+            {
+                french: "Vous êtes en vacances dans la famille de votre correspondant étranger. Vous constatez d'importantes différences culturelles entre vous-même et votre famille d'accueil. Dans un courriel destiné à votre meilleur ami, racontez cette expérience en insistant sur vos sentiments.",
+                chunks: [
+                    { fr: "Vous êtes en vacances", en: "You are on vacation" },
+                    { fr: "dans la famille de votre correspondant", en: "with your pen pal's family" },
+                    { fr: "étranger", en: "foreign" },
+                    { fr: "Vous constatez", en: "You notice" },
+                    { fr: "d'importantes différences culturelles", en: "significant cultural differences" },
+                    { fr: "votre famille d'accueil", en: "your host family" },
+                    { fr: "en insistant sur vos sentiments", en: "emphasizing your feelings" }
+                ]
+            },
+            {
+                french: "Pour mieux préparer les élèves de dernière année aux examens, la direction de votre école veut organiser des cours du soir supplémentaires et obligatoires. Comme vos camarades, vous n'êtes pas d'accord. En tant que président du comité des élèves, vous écrivez une lettre à la direction.",
+                chunks: [
+                    { fr: "Pour mieux préparer", en: "To better prepare" },
+                    { fr: "les élèves de dernière année", en: "final year students" },
+                    { fr: "aux examens", en: "for exams" },
+                    { fr: "la direction de votre école", en: "your school administration" },
+                    { fr: "veut organiser", en: "wants to organize" },
+                    { fr: "des cours du soir", en: "evening classes" },
+                    { fr: "supplémentaires et obligatoires", en: "additional and mandatory" }
+                ]
+            },
+            {
+                french: "Par hasard, vous rencontrez une personne qui porte les mêmes nom et prénom que vous. Rédigez une page de votre journal intime dans laquelle vous racontez cette expérience et présentez les réflexions qu'elle vous inspire.",
+                chunks: [
+                    { fr: "Par hasard", en: "By chance" },
+                    { fr: "vous rencontrez une personne", en: "you meet a person" },
+                    { fr: "qui porte les mêmes nom et prénom", en: "who has the same first and last name" },
+                    { fr: "que vous", en: "as you" },
+                    { fr: "Rédigez une page", en: "Write a page" },
+                    { fr: "vous racontez cette expérience", en: "you tell about this experience" },
+                    { fr: "les réflexions qu'elle vous inspire", en: "the thoughts it inspires in you" }
+                ]
+            },
+            {
+                french: "Vous participez à un concours vous invitant à concevoir un projet innovatif pour préserver les espaces verts dans votre ville. Vous communiquez vos idées aux organisateurs du concours. Rédigez un texte où vous décrivez votre projet et expliquez pourquoi il devrait être choisi.",
+                chunks: [
+                    { fr: "Vous participez à un concours", en: "You participate in a contest" },
+                    { fr: "vous invitant à concevoir", en: "inviting you to design" },
+                    { fr: "un projet innovatif", en: "an innovative project" },
+                    { fr: "pour préserver les espaces verts", en: "to preserve green spaces" },
+                    { fr: "dans votre ville", en: "in your city" },
+                    { fr: "Vous communiquez vos idées", en: "You communicate your ideas" },
+                    { fr: "aux organisateurs du concours", en: "to the contest organizers" },
+                    { fr: "pourquoi il devrait être choisi", en: "why it should be chosen" }
+                ]
+            },
+            {
+                french: "Comme chaque élève de votre classe, vous venez de faire un stage d'une semaine dans une entreprise. Vous devez raconter votre expérience à votre professeur principal. Écrivez un texte dans lequel vous décrivez cette expérience et expliquez pourquoi elle vous a été bénéfique.",
+                chunks: [
+                    { fr: "Comme chaque élève", en: "Like every student" },
+                    { fr: "de votre classe", en: "in your class" },
+                    { fr: "vous venez de faire un stage", en: "you just did an internship" },
+                    { fr: "d'une semaine", en: "of one week" },
+                    { fr: "dans une entreprise", en: "in a company" },
+                    { fr: "Vous devez raconter votre expérience", en: "You must tell about your experience" },
+                    { fr: "à votre professeur principal", en: "to your main teacher" },
+                    { fr: "pourquoi elle vous a été bénéfique", en: "why it was beneficial to you" }
+                ]
+            },
+            {
+                french: "Vous venez de lire un rapport qui démontre que le redoublement scolaire n'est pas une bonne solution. Vous voulez partager votre avis avec vos camarades de classe. Rédigez un texte où vous donnez votre opinion sur le redoublement et suggérez au moins une solution pour encourager la réussite des élèves à l'école.",
+                chunks: [
+                    { fr: "Vous venez de lire un rapport", en: "You just read a report" },
+                    { fr: "qui démontre que", en: "that demonstrates that" },
+                    { fr: "le redoublement scolaire", en: "grade repetition" },
+                    { fr: "n'est pas une bonne solution", en: "is not a good solution" },
+                    { fr: "Vous voulez partager votre avis", en: "You want to share your opinion" },
+                    { fr: "avec vos camarades de classe", en: "with your classmates" },
+                    { fr: "suggérez au moins une solution", en: "suggest at least one solution" },
+                    { fr: "pour encourager la réussite des élèves", en: "to encourage student success" }
+                ]
+            },
+            {
+                french: "À cause du très faible nombre d'étudiants intéressés, la direction de votre école a annoncé son intention de supprimer les cours de français l'année prochaine. Vous n'êtes pas d'accord. Afin d'encourager plus d'étudiants à suivre les cours de français, vous écrivez un dépliant dans lequel vous mettez en valeur les avantages de la connaissance du français.",
+                chunks: [
+                    { fr: "À cause du très faible nombre", en: "Because of the very low number" },
+                    { fr: "d'étudiants intéressés", en: "of interested students" },
+                    { fr: "la direction de votre école", en: "your school administration" },
+                    { fr: "a annoncé son intention", en: "announced its intention" },
+                    { fr: "de supprimer les cours de français", en: "to eliminate French classes" },
+                    { fr: "l'année prochaine", en: "next year" },
+                    { fr: "Vous n'êtes pas d'accord", en: "You don't agree" },
+                    { fr: "vous mettez en valeur les avantages", en: "you highlight the advantages" }
+                ]
+            },
+            {
+                french: "Vos parents disent constamment que vous passez trop de temps à jouer à des jeux vidéo. Vous reconnaissez qu'ils ont raison sur certains points, mais leur attitude négative vous déplaît. Dans une page de votre blog, vous écrivez vos réflexions sur le côté positif des jeux vidéo, à la fois sur le plan personnel, social et scolaire.",
+                chunks: [
+                    { fr: "Vos parents disent constamment", en: "Your parents constantly say" },
+                    { fr: "que vous passez trop de temps", en: "that you spend too much time" },
+                    { fr: "à jouer à des jeux vidéo", en: "playing video games" },
+                    { fr: "Vous reconnaissez qu'ils ont raison", en: "You acknowledge they are right" },
+                    { fr: "sur certains points", en: "on certain points" },
+                    { fr: "leur attitude négative vous déplaît", en: "their negative attitude displeases you" },
+                    { fr: "le côté positif des jeux vidéo", en: "the positive side of video games" },
+                    { fr: "sur le plan personnel, social et scolaire", en: "on a personal, social and academic level" }
+                ]
+            },
+            {
+                french: "Un restaurant fast-food de votre ville offre maintenant des tarifs réduits aux étudiants de votre école. Vous vous inquiétez des effets négatifs de cette nourriture sur leur santé. En tant que représentant du conseil des étudiants, vous écrivez une brochure pour souligner à vos camarades les dangers que représente la nourriture fast-food, et pour suggérer comment consommer ce type de nourriture de façon responsable.",
+                chunks: [
+                    { fr: "Un restaurant fast-food", en: "A fast-food restaurant" },
+                    { fr: "de votre ville", en: "in your city" },
+                    { fr: "offre maintenant des tarifs réduits", en: "now offers reduced rates" },
+                    { fr: "aux étudiants de votre école", en: "to students of your school" },
+                    { fr: "Vous vous inquiétez", en: "You worry" },
+                    { fr: "des effets négatifs", en: "about the negative effects" },
+                    { fr: "les dangers que représente", en: "the dangers that represents" },
+                    { fr: "de façon responsable", en: "in a responsible way" }
+                ]
+            },
+            {
+                french: "Pendant vos vacances dans un pays francophone, vous avez travaillé pour une organisation qui imposait un code vestimentaire. Dans votre blog, expliquez les règles de ce code vestimentaire et exprimez ce que vous avez ressenti en les respectant.",
+                chunks: [
+                    { fr: "Pendant vos vacances", en: "During your vacation" },
+                    { fr: "dans un pays francophone", en: "in a French-speaking country" },
+                    { fr: "vous avez travaillé", en: "you worked" },
+                    { fr: "pour une organisation", en: "for an organization" },
+                    { fr: "qui imposait un code vestimentaire", en: "that imposed a dress code" },
+                    { fr: "Dans votre blog", en: "In your blog" },
+                    { fr: "expliquez les règles", en: "explain the rules" },
+                    { fr: "ce que vous avez ressenti", en: "what you felt" }
+                ]
+            },
+            {
+                french: "Vous souhaitez que votre école offre des cours de secourisme à tous les étudiants, parce que savoir porter assistance à des personnes en danger peut être utile aux étudiants et à l'école. Vous écrivez à la direction pour demander la mise en place de cours de secourisme et présenter vos arguments. Rédigez la lettre.",
+                chunks: [
+                    { fr: "Vous souhaitez que votre école offre", en: "You wish that your school would offer" },
+                    { fr: "des cours de secourisme", en: "first aid courses" },
+                    { fr: "à tous les étudiants", en: "to all students" },
+                    { fr: "savoir porter assistance", en: "knowing how to provide assistance" },
+                    { fr: "à des personnes en danger", en: "to people in danger" },
+                    { fr: "peut être utile", en: "can be useful" },
+                    { fr: "Vous écrivez à la direction", en: "You write to the administration" },
+                    { fr: "la mise en place de cours", en: "the implementation of courses" }
+                ]
+            },
+            {
+                french: "La direction de votre école s'inquiète du comportement inapproprié de nombreux étudiants lors d'un événement organisé récemment dans l'établissement. Dans un rapport, en tant que membre du Conseil des Étudiants, vous exposez à la direction les problèmes rencontrés, pourquoi ils se sont produits, et comment ils pourraient être évités à l'avenir. Rédigez ce rapport.",
+                chunks: [
+                    { fr: "La direction de votre école", en: "Your school administration" },
+                    { fr: "s'inquiète du comportement inapproprié", en: "is worried about inappropriate behavior" },
+                    { fr: "de nombreux étudiants", en: "of many students" },
+                    { fr: "lors d'un événement", en: "during an event" },
+                    { fr: "organisé récemment", en: "recently organized" },
+                    { fr: "en tant que membre du Conseil", en: "as a Council member" },
+                    { fr: "les problèmes rencontrés", en: "the problems encountered" },
+                    { fr: "comment ils pourraient être évités", en: "how they could be avoided" }
+                ]
+            }
+        ];
+
+        // Game state for Find the French
+        let frenchCurrentPromptIndex = 0;
+        let frenchCurrentChunkIndex = 0;
+        let frenchFoundChunks = [];
+        let frenchScore = 0;
+        let frenchShuffledPrompts = [];
+        let frenchShuffledChunks = [];
+
+        // Game state for Find the English
+        let englishCurrentPromptIndex = 0;
+        let englishCurrentChunkIndex = 0;
+        let englishFoundChunks = [];
+        let englishScore = 0;
+        let englishShuffledPrompts = [];
+        let englishShuffledChunks = [];
+        let currentFrenchAudio = null;
+
+        // Chunk logging
+        let sessionChunks = [];
+        let frenchModeCount = 0;
+        let englishModeCount = 0;
+
+        let isPlaying = false;
+        const music = document.getElementById('backgroundMusic');
+        music.volume = 0.5;
+
+        // Speech Synthesis for French audio
+        let frenchVoice = null;
+        window.speechSynthesis.onvoiceschanged = () => {
+            const voices = window.speechSynthesis.getVoices();
+            frenchVoice = voices.find(voice => voice.lang.startsWith('fr')) || voices[0];
+        };
+
+        // Audio Context for feedback sounds
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playCorrectSound() {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+            
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.4);
+        }
+
+        function playIncorrectSound() {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(392.00, audioContext.currentTime); // G4
+            oscillator.frequency.setValueAtTime(329.63, audioContext.currentTime + 0.15); // E4
+            
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        function toggleMusic() {
+            const btn = document.getElementById('musicToggle');
+            
+            if (isPlaying) {
+                music.pause();
+                btn.textContent = '🎵';
+                isPlaying = false;
+            } else {
+                const playPromise = music.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        btn.textContent = '⏸️';
+                        isPlaying = true;
+                    }).catch(error => {
+                        console.error('Playback error:', error);
+                        btn.textContent = '🎵';
+                        isPlaying = false;
+                        
+                        if (error.name === 'NotAllowedError') {
+                            alert('🎵 Music playback blocked by browser. Click again to play!');
+                        } else {
+                            alert('⚠️ Unable to play music: ' + error.message);
+                        }
+                    });
+                }
+            }
+        }
+
+        function changeVolume(value) {
+            music.volume = value / 100;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tabName === 'frenchGame') {
+                document.querySelector('.tab:nth-child(1)').classList.add('active');
+                document.getElementById('frenchGameTab').classList.add('active');
+                document.getElementById('progressBarContainer').style.display = 'block';
+                updateFrenchProgress();
+            } else if (tabName === 'englishGame') {
+                document.querySelector('.tab:nth-child(2)').classList.add('active');
+                document.getElementById('englishGameTab').classList.add('active');
+                document.getElementById('progressBarContainer').style.display = 'block';
+                updateEnglishProgress();
+            } else {
+                document.querySelector('.tab:nth-child(3)').classList.add('active');
+                document.getElementById('tipsTab').classList.add('active');
+                document.getElementById('progressBarContainer').style.display = 'none';
+            }
+        }
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // === FIND THE FRENCH GAME ===
+
+        function initFrenchGame() {
+            frenchShuffledPrompts = shuffleArray(prompts);
+            frenchCurrentPromptIndex = 0;
+            frenchScore = 0;
+            document.getElementById('frenchScore').textContent = frenchScore;
+            document.getElementById('frenchCompletion').classList.remove('show');
+            document.getElementById('frenchGameArea').style.display = 'block';
+            loadFrenchPrompt();
+        }
+
+        function loadFrenchPrompt() {
+            if (frenchCurrentPromptIndex >= frenchShuffledPrompts.length) {
+                showFrenchCompletion();
+                return;
+            }
+
+            const prompt = frenchShuffledPrompts[frenchCurrentPromptIndex];
+            frenchShuffledChunks = shuffleArray([...prompt.chunks]).slice(0, 6);
+            frenchFoundChunks = [];
+            frenchCurrentChunkIndex = 0;
+
+            document.getElementById('frenchPromptNum').textContent = frenchCurrentPromptIndex + 1;
+            document.getElementById('frenchFoundCount').textContent = '0/6';
+            document.getElementById('frenchNextBtn').classList.remove('show');
+
+            displayFrenchText();
+            showNextFrenchTarget();
+            updateFrenchProgress();
+        }
+
+        function displayFrenchText() {
+            const prompt = frenchShuffledPrompts[frenchCurrentPromptIndex];
+            
+            let chunkPositions = [];
+            prompt.chunks.forEach((chunk, index) => {
+                let pos = 0;
+                let searchPos = 0;
+                while ((pos = prompt.french.indexOf(chunk.fr, searchPos)) !== -1) {
+                    chunkPositions.push({
+                        start: pos,
+                        end: pos + chunk.fr.length,
+                        text: chunk.fr,
+                        index: index
+                    });
+                    searchPos = pos + 1;
+                }
+            });
+
+            chunkPositions.sort((a, b) => a.start - b.start);
+
+            let filteredChunks = [];
+            chunkPositions.forEach(chunk => {
+                let overlaps = filteredChunks.some(existing => 
+                    (chunk.start >= existing.start && chunk.start < existing.end) ||
+                    (chunk.end > existing.start && chunk.end <= existing.end) ||
+                    (chunk.start <= existing.start && chunk.end >= existing.end)
+                );
+                if (!overlaps) {
+                    filteredChunks.push(chunk);
+                }
+            });
+
+            filteredChunks.sort((a, b) => a.start - b.start);
+
+            let html = '';
+            let lastPos = 0;
+            filteredChunks.forEach(chunk => {
+                html += prompt.french.substring(lastPos, chunk.start);
+                html += `<span class="chunk" data-chunk="${chunk.index}">${chunk.text}</span>`;
+                lastPos = chunk.end;
+            });
+            html += prompt.french.substring(lastPos);
+
+            document.getElementById('frenchText').innerHTML = html;
+
+            document.querySelectorAll('#frenchText .chunk').forEach(chunk => {
+                chunk.addEventListener('click', handleFrenchChunkClick);
+            });
+        }
+
+        function showNextFrenchTarget() {
+            if (frenchCurrentChunkIndex < frenchShuffledChunks.length) {
+                document.getElementById('frenchTargetText').textContent = frenchShuffledChunks[frenchCurrentChunkIndex].en;
+            }
+        }
+
+        function handleFrenchChunkClick(e) {
+            const clickedChunk = e.target;
+            const chunkIndex = parseInt(clickedChunk.dataset.chunk);
+            const prompt = frenchShuffledPrompts[frenchCurrentPromptIndex];
+            const targetChunk = frenchShuffledChunks[frenchCurrentChunkIndex];
+
+            if (prompt.chunks[chunkIndex].en === targetChunk.en) {
+                clickedChunk.classList.add('correct');
+                clickedChunk.removeEventListener('click', handleFrenchChunkClick);
+                frenchFoundChunks.push(chunkIndex);
+                frenchScore += 10;
+                playCorrectSound();
+                showFeedback('✓ Correct!', 'correct');
+                
+                // Log the chunk
+                logChunk(targetChunk.en, targetChunk.fr, 'french');
+                
+                frenchCurrentChunkIndex++;
+                document.getElementById('frenchFoundCount').textContent = `${frenchCurrentChunkIndex}/6`;
+                document.getElementById('frenchScore').textContent = frenchScore;
+                updateFrenchProgress();
+
+                setTimeout(() => {
+                    if (frenchCurrentChunkIndex < 6) {
+                        showNextFrenchTarget();
+                    } else {
+                        document.getElementById('frenchNextBtn').classList.add('show');
+                    }
+                }, 500);
+            } else {
+                clickedChunk.classList.add('wrong');
+                playIncorrectSound();
+                showFeedback('✗ Try again', 'wrong');
+                setTimeout(() => {
+                    clickedChunk.classList.remove('wrong');
+                }, 500);
+            }
+        }
+
+        function updateFrenchProgress() {
+            const totalChunks = frenchShuffledPrompts.length * 6;
+            const completedChunks = (frenchCurrentPromptIndex * 6) + frenchCurrentChunkIndex;
+            const percentage = (completedChunks / totalChunks) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        function showFrenchCompletion() {
+            document.getElementById('frenchGameArea').style.display = 'none';
+            document.getElementById('frenchCompletion').classList.add('show');
+            document.getElementById('frenchFinalScore').textContent = frenchScore;
+        }
+
+        function restartFrenchGame() {
+            initFrenchGame();
+        }
+
+        document.getElementById('frenchNextBtn').addEventListener('click', () => {
+            frenchCurrentPromptIndex++;
+            loadFrenchPrompt();
+        });
+
+        // === FIND THE ENGLISH GAME ===
+
+        function initEnglishGame() {
+            englishShuffledPrompts = shuffleArray(prompts);
+            englishCurrentPromptIndex = 0;
+            englishScore = 0;
+            document.getElementById('englishScore').textContent = englishScore;
+            document.getElementById('englishCompletion').classList.remove('show');
+            document.getElementById('englishGameArea').style.display = 'block';
+            loadEnglishPrompt();
+        }
+
+        function loadEnglishPrompt() {
+            if (englishCurrentPromptIndex >= englishShuffledPrompts.length) {
+                showEnglishCompletion();
+                return;
+            }
+
+            const prompt = englishShuffledPrompts[englishCurrentPromptIndex];
+            englishShuffledChunks = shuffleArray([...prompt.chunks]).slice(0, 6);
+            englishFoundChunks = [];
+            englishCurrentChunkIndex = 0;
+
+            document.getElementById('englishPromptNum').textContent = englishCurrentPromptIndex + 1;
+            document.getElementById('englishFoundCount').textContent = '0/6';
+            document.getElementById('englishNextBtn').classList.remove('show');
+
+            displayEnglishText();
+            updateEnglishProgress();
+        }
+
+        function displayEnglishText() {
+            const prompt = englishShuffledPrompts[englishCurrentPromptIndex];
+            
+            // Create full English text from all chunks
+            let englishFullText = prompt.chunks.map(c => c.en).join(' · ');
+            
+            let chunkPositions = [];
+            prompt.chunks.forEach((chunk, index) => {
+                let pos = 0;
+                let searchPos = 0;
+                while ((pos = englishFullText.indexOf(chunk.en, searchPos)) !== -1) {
+                    chunkPositions.push({
+                        start: pos,
+                        end: pos + chunk.en.length,
+                        text: chunk.en,
+                        index: index
+                    });
+                    searchPos = pos + 1;
+                }
+            });
+
+            chunkPositions.sort((a, b) => a.start - b.start);
+
+            let filteredChunks = [];
+            chunkPositions.forEach(chunk => {
+                let overlaps = filteredChunks.some(existing => 
+                    (chunk.start >= existing.start && chunk.start < existing.end) ||
+                    (chunk.end > existing.start && chunk.end <= existing.end) ||
+                    (chunk.start <= existing.start && chunk.end >= existing.end)
+                );
+                if (!overlaps) {
+                    filteredChunks.push(chunk);
+                }
+            });
+
+            filteredChunks.sort((a, b) => a.start - b.start);
+
+            let html = '';
+            let lastPos = 0;
+            filteredChunks.forEach(chunk => {
+                html += englishFullText.substring(lastPos, chunk.start);
+                html += `<span class="chunk" data-chunk="${chunk.index}">${chunk.text}</span>`;
+                lastPos = chunk.end;
+            });
+            html += englishFullText.substring(lastPos);
+
+            document.getElementById('englishText').innerHTML = html;
+
+            document.querySelectorAll('#englishText .chunk').forEach(chunk => {
+                chunk.addEventListener('click', handleEnglishChunkClick);
+            });
+        }
+
+        function playFrenchAudio() {
+            if (englishCurrentChunkIndex >= englishShuffledChunks.length) return;
+
+            const targetChunk = englishShuffledChunks[englishCurrentChunkIndex];
+            let frenchText = targetChunk.fr;
+
+            // Remove parenthetical content (like (e), (ne), (rice), etc.) for pronunciation
+            frenchText = frenchText.replace(/\([^)]*\)/g, '');
+
+            // Cancel any ongoing speech
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(frenchText);
+            utterance.lang = 'fr-FR';
+            utterance.rate = 0.8;
+            utterance.pitch = 1;
+            
+            if (frenchVoice) {
+                utterance.voice = frenchVoice;
+            }
+
+            // Visual feedback
+            const btn = document.getElementById('playAudioBtn');
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+            }, 200);
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function handleEnglishChunkClick(e) {
+            const clickedChunk = e.target;
+            const chunkIndex = parseInt(clickedChunk.dataset.chunk);
+            const prompt = englishShuffledPrompts[englishCurrentPromptIndex];
+            const targetChunk = englishShuffledChunks[englishCurrentChunkIndex];
+
+            if (prompt.chunks[chunkIndex].fr === targetChunk.fr) {
+                clickedChunk.classList.add('correct');
+                clickedChunk.removeEventListener('click', handleEnglishChunkClick);
+                englishFoundChunks.push(chunkIndex);
+                englishScore += 10;
+                playCorrectSound();
+                showFeedback('✓ Correct!', 'correct');
+                
+                // Log the chunk
+                logChunk(targetChunk.en, targetChunk.fr, 'english');
+                
+                englishCurrentChunkIndex++;
+                document.getElementById('englishFoundCount').textContent = `${englishCurrentChunkIndex}/6`;
+                document.getElementById('englishScore').textContent = englishScore;
+                updateEnglishProgress();
+
+                setTimeout(() => {
+                    if (englishCurrentChunkIndex < 6) {
+                        // Auto-play next audio
+                        playFrenchAudio();
+                    } else {
+                        document.getElementById('englishNextBtn').classList.add('show');
+                    }
+                }, 500);
+            } else {
+                clickedChunk.classList.add('wrong');
+                playIncorrectSound();
+                showFeedback('✗ Try again', 'wrong');
+                setTimeout(() => {
+                    clickedChunk.classList.remove('wrong');
+                }, 500);
+            }
+        }
+
+        function updateEnglishProgress() {
+            const totalChunks = englishShuffledPrompts.length * 6;
+            const completedChunks = (englishCurrentPromptIndex * 6) + englishCurrentChunkIndex;
+            const percentage = (completedChunks / totalChunks) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        function showEnglishCompletion() {
+            document.getElementById('englishGameArea').style.display = 'none';
+            document.getElementById('englishCompletion').classList.add('show');
+            document.getElementById('englishFinalScore').textContent = englishScore;
+        }
+
+        function restartEnglishGame() {
+            initEnglishGame();
+        }
+
+        document.getElementById('englishNextBtn').addEventListener('click', () => {
+            englishCurrentPromptIndex++;
+            loadEnglishPrompt();
+        });
+
+        // === SHARED FUNCTIONS ===
+
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = message;
+            feedback.className = `feedback ${type} show`;
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 800);
+        }
+
+        // === CHUNK LOGGER FUNCTIONS ===
+
+        function toggleLogger() {
+            const logger = document.getElementById('chunkLogger');
+            const badge = document.getElementById('loggerBadge');
+            const isCollapsed = logger.classList.toggle('collapsed');
+            
+            // Hide badge when expanded (user can see the content)
+            if (!isCollapsed && sessionChunks.length > 0) {
+                badge.style.opacity = '0.3';
+            } else if (sessionChunks.length > 0) {
+                badge.style.opacity = '1';
+            }
+        }
+
+        function logChunk(english, french, mode) {
+            // Avoid duplicates
+            const exists = sessionChunks.some(c => c.english === english && c.french === french);
+            if (exists) return;
+
+            sessionChunks.push({ english, french, mode });
+            
+            if (mode === 'french') {
+                frenchModeCount++;
+            } else {
+                englishModeCount++;
+            }
+
+            updateLogDisplay();
+        }
+
+        function updateLogDisplay() {
+            const logArea = document.getElementById('chunkLogArea');
+            const tsvContent = sessionChunks.map(chunk => `${chunk.english}\t${chunk.french}`).join('\n');
+            logArea.value = tsvContent;
+
+            document.getElementById('totalChunks').textContent = sessionChunks.length;
+            document.getElementById('frenchModeChunks').textContent = frenchModeCount;
+            document.getElementById('englishModeChunks').textContent = englishModeCount;
+
+            // Update badge
+            const badge = document.getElementById('loggerBadge');
+            if (sessionChunks.length > 0) {
+                badge.textContent = sessionChunks.length;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function copyToClipboard() {
+            const logArea = document.getElementById('chunkLogArea');
+            const content = logArea.value;
+            
+            if (!content) {
+                showFeedback('❌ No chunks to copy', 'wrong');
+                return;
+            }
+
+            // Try modern clipboard API first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(content).then(() => {
+                    showFeedback('📋 Copied!', 'correct');
+                }).catch(() => {
+                    // Fallback to old method
+                    fallbackCopy(logArea);
+                });
+            } else {
+                fallbackCopy(logArea);
+            }
+        }
+
+        function fallbackCopy(logArea) {
+            logArea.select();
+            try {
+                document.execCommand('copy');
+                showFeedback('📋 Copied!', 'correct');
+            } catch (err) {
+                showFeedback('❌ Copy failed', 'wrong');
+            }
+        }
+
+        function exportTSV() {
+            const logArea = document.getElementById('chunkLogArea');
+            const content = logArea.value;
+            
+            if (!content) {
+                showFeedback('❌ No chunks to export', 'wrong');
+                return;
+            }
+
+            const blob = new Blob([content], { type: 'text/tab-separated-values' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `french-chunks-${new Date().toISOString().split('T')[0]}.tsv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            showFeedback('💾 Exported!', 'correct');
+        }
+
+        function clearLog() {
+            if (sessionChunks.length === 0) {
+                showFeedback('⚠️ Log is already empty', 'wrong');
+                return;
+            }
+
+            if (confirm('Are you sure you want to clear the chunk log?')) {
+                sessionChunks = [];
+                frenchModeCount = 0;
+                englishModeCount = 0;
+                updateLogDisplay();
+                showFeedback('🗑️ Log cleared', 'correct');
+            }
+        }
+
+        // Initialize both games on load
+        initFrenchGame();
+        initEnglishGame();
+    </script>
+</body>
+</html>
