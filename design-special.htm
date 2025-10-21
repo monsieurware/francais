@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designing Powerful Special Person Stories</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            font-style: italic;
+        }
+
+        .content {
+            padding: 50px 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            color: #11998e;
+            font-size: 2em;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .intro-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-left: 5px solid #e17055;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 25px 0;
+            color: #2d3436;
+            line-height: 1.8;
+        }
+
+        .intro-box strong {
+            color: #d63031;
+        }
+
+        .principle-card {
+            background: #f0fdf4;
+            border-left: 4px solid #11998e;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            transition: transform 0.3s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(17, 153, 142, 0.2);
+        }
+
+        .principle-card h3 {
+            color: #0f766e;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .principle-card p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .example-box {
+            background: white;
+            border: 2px solid #11998e;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .example-header {
+            color: #0f766e;
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .story-sample {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            font-style: italic;
+            color: #334155;
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+
+        .annotation {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #78350f;
+            font-size: 0.95em;
+        }
+
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .format-card {
+            background: white;
+            border: 2px solid #11998e;
+            padding: 30px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .format-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.2);
+            border-color: #0f766e;
+        }
+
+        .format-card h4 {
+            color: #0f766e;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .format-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .format-card li {
+            padding: 8px 0;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .format-card li:before {
+            content: "✓ ";
+            color: #11998e;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .proficiency-section {
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            padding: 35px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 3px solid #6366f1;
+        }
+
+        .proficiency-title {
+            color: #4338ca;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .level-card {
+            background: white;
+            padding: 25px;
+            margin: 15px 0;
+            border-radius: 12px;
+            border-left: 5px solid #6366f1;
+        }
+
+        .level-card h5 {
+            color: #4338ca;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+
+        .descriptor-list {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .descriptor-list li {
+            color: #475569;
+            padding: 5px 0;
+            line-height: 1.6;
+        }
+
+        .culture-section {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 35px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 3px solid #f59e0b;
+        }
+
+        .culture-title {
+            color: #92400e;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .warning-banner {
+            background: #fee2e2;
+            border-left: 4px solid #dc2626;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            color: #7f1d1d;
+        }
+
+        .warning-banner h4 {
+            color: #991b1b;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .do-dont-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .do-card {
+            background: #d1fae5;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #059669;
+        }
+
+        .do-card h5 {
+            color: #065f46;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .dont-card {
+            background: #fee2e2;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #dc2626;
+        }
+
+        .dont-card h5 {
+            color: #991b1b;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tprs-box {
+            background: #fae8ff;
+            border: 2px solid #a855f7;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 25px 0;
+        }
+
+        .tprs-box h4 {
+            color: #7e22ce;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .keyword-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .keyword-tag {
+            background: white;
+            padding: 12px 18px;
+            border-radius: 20px;
+            text-align: center;
+            color: #7e22ce;
+            font-weight: 600;
+            border: 2px solid #a855f7;
+            transition: all 0.3s ease;
+        }
+
+        .keyword-tag:hover {
+            background: #7e22ce;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .checklist-box {
+            background: #f0f9ff;
+            border: 2px solid #0284c7;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 25px 0;
+        }
+
+        .checklist-box h4 {
+            color: #075985;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .checklist-item {
+            padding: 12px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-top: 5px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .prompt-builder {
+            background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+            padding: 35px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 3px solid #8b5cf6;
+        }
+
+        .prompt-builder h4 {
+            color: #5b21b6;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .prompt-template {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            color: #1e293b;
+            line-height: 1.8;
+        }
+
+        .template-variable {
+            background: #fef3c7;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #92400e;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .do-dont-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .format-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✍️ Designing Powerful Special Person Stories</h1>
+            <p>The Art and Science of Crafting Compelling, Proficiency-Aligned Narratives</p>
+        </div>
+
+        <div class="content">
+            <div class="intro-box">
+                <strong>The truth about story design:</strong> A mediocre story about a student's genuine interest will outperform a technically perfect story about a generic topic every time. But when we combine authentic student voice with intentional craft, we create something extraordinary—stories that students want to read repeatedly, that model target structures organically, and that honor both linguistic development and human complexity.
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🎯 The Five Non-Negotiables of Special Person Stories</h2>
+                
+                <div class="principle-card">
+                    <h3>1. Jump Right Into the Action</h3>
+                    <p>
+                        <strong>The principle:</strong> Skip the exposition. Begin in the middle of a moment, a feeling, a decision. Students lose interest when stories begin with "María is 16 years old. She lives in Chicago. She has brown hair." They engage when stories begin with "María stares at her overflowing closet, suddenly disgusted."
+                    </p>
+                    <p style="margin-top: 12px;">
+                        <strong>Why this matters linguistically:</strong> Action-driven openings immediately provide context clues for comprehension. Students infer meaning from verbs and situations rather than wading through static descriptions. This aligns with how brains naturally acquire language—through dynamic context, not vocabulary lists.
+                    </p>
+                    
+                    <div class="example-box">
+                        <div class="example-header">❌ Weak Opening (Static Description)</div>
+                        <div class="story-sample">
+                            "Elena is a student. She is 15 years old. She lives in Miami with her family. She likes to cook."
+                        </div>
+                        <div class="annotation">
+                            Problem: No momentum, no intrigue, no reason to keep reading. Pure exposition tells rather than shows.
+                        </div>
+
+                        <div class="example-header" style="margin-top: 20px;">✅ Strong Opening (Immediate Action)</div>
+                        <div class="story-sample">
+                            "Elena burns the rice. Again. Her abuela watches from the doorway, arms crossed, saying nothing. This is the third time this week."
+                        </div>
+                        <div class="annotation">
+                            Success: Immediate conflict, sensory detail, relationship dynamics, and forward momentum. We instantly know something matters to Elena—and we want to know what happens next.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <h3>2. Rich Sensory Details That Anchor Meaning</h3>
+                    <p>
+                        <strong>The principle:</strong> Abstract language is harder to acquire than concrete, sensory language. When we write "Marcus feels nervous," we miss an opportunity. When we write "Marcus's hands shake as he reaches for the microphone," students see the nervousness—and acquire language through imagery rather than translation.
+                    </p>
+                    <p style="margin-top: 12px;">
+                        <strong>The neuroscience:</strong> Mirror neurons fire when we read sensory details, creating embodied understanding. Students don't just decode words—they experience the story physically, which accelerates acquisition and retention.
+                    </p>
+
+                    <div class="example-box">
+                        <div class="example-header">❌ Weak Detail (Abstract)</div>
+                        <div class="story-sample">
+                            "Jamal was excited about the basketball game. He played well and his team won."
+                        </div>
+                        <div class="annotation">
+                            Problem: "Excited" and "played well" tell us nothing. Students can't see, hear, or feel anything. No acquisition hooks.
+                        </div>
+
+                        <div class="example-header" style="margin-top: 20px;">✅ Strong Detail (Sensory)</div>
+                        <div class="story-sample">
+                            "Jamal's shoes squeak on the polished floor. Sweat drips into his eyes. The ball leaves his hands—slow motion—and the gym goes silent. Swish. The crowd explodes."
+                        </div>
+                        <div class="annotation">
+                            Success: Sound (squeak, swish), touch (sweat), sight (slow motion), emotion (silence, explosion). Students acquire "squeak," "drips," "swish" because they're experiencing the moment, not translating abstract concepts.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <h3>3. Strong Writer's Voice (Personality on the Page)</h3>
+                    <p>
+                        <strong>The principle:</strong> Stories should sound like they're told by a real human with opinions, quirks, and a distinct way of seeing the world—not generated by a committee or a textbook publishing house. Voice creates connection, and connection drives acquisition.
+                    </p>
+                    <p style="margin-top: 12px;">
+                        <strong>What this looks like:</strong> Sentence fragments for emphasis. Occasional rhetorical questions. Specific word choices that reveal character. The narrator's (or character's) personality should be palpable.
+                    </p>
+
+                    <div class="example-box">
+                        <div class="example-header">❌ Weak Voice (Generic)</div>
+                        <div class="story-sample">
+                            "Sophia likes art. She thinks art is important. She wants to be an artist when she grows up."
+                        </div>
+                        <div class="annotation">
+                            Problem: Could be anyone talking about anything. No personality, no conviction, no humanity.
+                        </div>
+
+                        <div class="example-header" style="margin-top: 20px;">✅ Strong Voice (Distinctive)</div>
+                        <div class="story-sample">
+                            "Here's what Sophia knows: blank walls are lies. Every empty space is a missed opportunity to say something true. So she carries markers everywhere. Just in case."
+                        </div>
+                        <div class="annotation">
+                            Success: The voice has attitude ("blank walls are lies"), urgency ("just in case"), and reveals character through specific actions (carries markers). We know Sophia before we're told anything about her.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <h3>4. Effective Dialogue (How People Actually Talk)</h3>
+                    <p>
+                        <strong>The principle:</strong> Dialogue shouldn't sound like written language read aloud. It should sound like actual speech—with interruptions, contractions, fragments, and the messy authenticity of real conversation. This is where students hear language in use, not language on display.
+                    </p>
+                    <p style="margin-top: 12px;">
+                        <strong>The pedagogical value:</strong> Dialogue naturally provides repetition, circumlocution, and negotiation of meaning—exactly what drives acquisition. Plus, students love reading dialogue because it feels immediate and accessible.
+                    </p>
+
+                    <div class="example-box">
+                        <div class="example-header">❌ Weak Dialogue (Stiff, Formal)</div>
+                        <div class="story-sample">
+                            "Hello, Marcus. How are you today?" asks his father.<br>
+                            "I am fine, thank you. How are you?" responds Marcus.<br>
+                            "I am well. What are your plans for this evening?"
+                        </div>
+                        <div class="annotation">
+                            Problem: Nobody talks like this. It's textbook dialogue—useful for pattern practice, terrible for storytelling. Students disengage.
+                        </div>
+
+                        <div class="example-header" style="margin-top: 20px;">✅ Strong Dialogue (Natural Speech)</div>
+                        <div class="story-sample">
+                            "You good?" Dad glances up from his phone.<br>
+                            Marcus shrugs. "Yeah. Just... thinking."<br>
+                            "About?"<br>
+                            "Nothing. Everything. I don't know." Marcus drops his backpack. "The audition's tomorrow."<br>
+                            Dad puts down his phone. "Ah."
+                        </div>
+                        <div class="annotation">
+                            Success: Fragments ("About?"), hesitations ("Just... thinking"), body language (glances up, drops backpack), and the rhythm of real conversation. Students acquire natural speech patterns, not just vocabulary.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <h3>5. Meaningful Endings (Not "The End")</h3>
+                    <p>
+                        <strong>The principle:</strong> Stories should end with resonance—a moment of insight, a decision, a change, a question that lingers. Avoid the "and then I went home and went to sleep" ending that drains all meaning from what came before.
+                    </p>
+                    <p style="margin-top: 12px;">
+                        <strong>The pedagogical opportunity:</strong> Meaningful endings create cognitive "stickiness." Students remember stories that made them feel something or think differently. That emotional resonance becomes the hook for all the language structures embedded in the story.
+                    </p>
+
+                    <div class="example-box">
+                        <div class="example-header">❌ Weak Ending (Flat Conclusion)</div>
+                        <div class="story-sample">
+                            "And that's how I learned to cook. Now I can make rice perfectly. It was a good experience. The end."
+                        </div>
+                        <div class="annotation">
+                            Problem: Summarizes rather than concludes. No emotional payoff, no insight, nothing memorable. Students forget this story immediately.
+                        </div>
+
+                        <div class="example-header" style="margin-top: 20px;">✅ Strong Ending (Resonant)</div>
+                        <div class="story-sample">
+                            "Elena serves the rice. Perfect. Golden. Her abuela takes a bite, nods once. Says nothing. But when Elena turns to leave the kitchen, she hears it—soft, almost a whisper: 'Now you're ready.' Ready for what? Elena doesn't ask. She already knows."
+                        </div>
+                        <div class="annotation">
+                            Success: Emotional payoff (abuela's approval), thematic resonance (readiness), and a hint of mystery (ready for what?). Students will remember this—and discuss it, and wonder about it. That's when deep processing happens.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">📊 Proficiency-Aligned Story Design: ACTFL Descriptors in Action</h2>
+                
+                <div class="proficiency-section">
+                    <div class="proficiency-title">Matching Story Complexity to Student Ability</div>
+                    <p style="color: #4338ca; margin-bottom: 25px; font-size: 1.05em;">
+                        The same student interest can be rendered at multiple proficiency levels without losing authenticity or emotional resonance. The key: adjust linguistic complexity and text length, but never sacrifice narrative quality. A good story is compelling at any level.
+                    </p>
+
+                    <div class="level-card">
+                        <h5>Novice Low/Mid: Present Tense Foundation</h5>
+                        <p style="color: #555; margin-bottom: 15px;">
+                            <strong>ACTFL Descriptors:</strong> Highly practiced words and phrases, present tense primarily, simple sentences connected with "and."
+                        </p>
+                        
+                        <div class="descriptor-list">
+                            <strong>Story Design Implications:</strong>
+                            <ul>
+                                <li>Use high-frequency verbs (is, has, wants, likes, goes)</li>
+                                <li>Keep sentences short but varied in structure</li>
+                                <li>Limit vocabulary to 50-75 unique words for a 100-150 word story</li>
+                                <li>Repeat key vocabulary naturally through the narrative</li>
+                                <li>Use cognates strategically for comprehension support</li>
+                            </ul>
+                        </div>
+
+                        <div class="example-box">
+                            <div class="example-header">Sample Novice Story Opening</div>
+                            <div class="story-sample">
+                                "Mia looks at her phone. A new message. Her heart beats fast. It's from the dance team. She opens it. Her hands shake."
+                            </div>
+                            <div class="annotation">
+                                Notice: All present tense, high-frequency verbs (looks, opens, beats, shake), but still creates tension and forward momentum. The simplicity serves the drama.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="level-card">
+                        <h5>Novice High/Intermediate Low: Expanding Timeframes</h5>
+                        <p style="color: #555; margin-bottom: 15px;">
+                            <strong>ACTFL Descriptors:</strong> Can create with language, simple descriptions, beginning to narrate in present and near past/future.
+                        </p>
+                        
+                        <div class="descriptor-list">
+                            <strong>Story Design Implications:</strong>
+                            <ul>
+                                <li>Introduce near past (preterite/passé composé) for key action verbs</li>
+                                <li>Mix present and past to show backstory</li>
+                                <li>Expand vocabulary range to 100-125 unique words for 200-250 word story</li>
+                                <li>Use simple connecting words (because, but, when)</li>
+                                <li>Include more description and internal thought</li>
+                            </ul>
+                        </div>
+
+                        <div class="example-box">
+                            <div class="example-header">Sample Intermediate Low Story Opening</div>
+                            <div class="story-sample">
+                                "Mia remembers when she started dancing. She was only six. Now she looks at her phone—a message from the dance team. Her heart beats fast because this matters. She opens it. She sees one word: 'Welcome.'"
+                            </div>
+                            <div class="annotation">
+                                Notice: Mix of present (looks, beats, opens, sees) and past (remembers, started, was) allows for backstory. Causal connection (because). Still accessible but more textured.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="level-card">
+                        <h5>Intermediate Mid/High: Paragraph-Level Narration</h5>
+                        <p style="color: #555; margin-bottom: 15px;">
+                            <strong>ACTFL Descriptors:</strong> Connected sentences and paragraphs, narration and description in major time frames, emerging detail and complexity.
+                        </p>
+                        
+                        <div class="descriptor-list">
+                            <strong>Story Design Implications:</strong>
+                            <ul>
+                                <li>Full range of past tenses (preterite and imperfect working together)</li>
+                                <li>Sophisticated connectors (although, while, as soon as)</li>
+                                <li>Vocabulary range 150-200 unique words for 300-400 word story</li>
+                                <li>Multiple perspectives or time shifts possible</li>
+                                <li>Nuanced emotion and motivation</li>
+                            </ul>
+                        </div>
+
+                        <div class="example-box">
+                            <div class="example-header">Sample Intermediate Mid Story Opening</div>
+                            <div class="story-sample">
+                                "Mia had been checking her phone obsessively for three days. She knew the dance team met on Wednesdays, and by Thursday afternoon, she couldn't focus on anything else. When the notification finally appeared, her hands were shaking so badly she almost dropped her phone. She took a breath before opening it because, somehow, she understood that this single word—whatever it was—would change everything."
+                            </div>
+                            <div class="annotation">
+                                Notice: Imperfect (had been checking, knew, was) sets the scene; preterite (appeared, took, understood) advances the action. Complex sentence structures, but still comprehensible. Psychological depth emerges.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="level-card">
+                        <h5>Advanced Low/Mid: Sophisticated Narration + Analysis</h5>
+                        <p style="color: #555; margin-bottom: 15px;">
+                            <strong>ACTFL Descriptors:</strong> Extended discourse, hypotheticals, supported opinion, abstract ideas, precise vocabulary choices.
+                        </p>
+                        
+                        <div class="descriptor-list">
+                            <strong>Story Design Implications:</strong>
+                            <ul>
+                                <li>Subjunctive mood for uncertainty, emotion, doubt</li>
+                                <li>Conditional tenses for hypotheticals</li>
+                                <li>Rich vocabulary with precise word choices</li>
+                                <li>Thematic complexity—stories can explore abstract concepts</li>
+                                <li>Metalinguistic awareness (playing with tone, irony, layered meaning)</li>
+                            </ul>
+                        </div>
+
+                        <div class="example-box">
+                            <div class="example-header">Sample Advanced Story Opening</div>
+                            <div class="story-sample">
+                                "If someone had told Mia three years ago that she'd obsess over a dance team acceptance message, she would have laughed. Back then, dance was just movement—a way to burn energy, nothing more. But somewhere between the endless practices and the ache in her muscles, something shifted. It wasn't that dance became important; it's that Mia couldn't imagine who she'd be without it. So when the notification appeared, what terrified her wasn't rejection—it was the possibility that they'd seen something in her she wasn't sure existed."
+                            </div>
+                            <div class="annotation">
+                                Notice: Conditional (would have laughed), subjunctive implied (something she wasn't sure existed), sophisticated connectors (somewhere between, it's that), abstract concepts (identity, possibility, self-perception). This is AP/IB-level complexity while maintaining narrative drive.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🗣️ TPRS-Style Keywords: Building Stories Around High-Impact Language</h2>
+                
+                <div class="tprs-box">
+                    <h4>The TPRS Principle: Repetition Through Meaningful Context</h4>
+                    <p style="color: #555; margin-bottom: 20px; line-height: 1.8;">
+                        In TPRS (Teaching Proficiency through Reading and Storytelling), we target 1-3 high-frequency structures and recycle them throughout a compelling narrative. Special Person stories can incorporate this principle: identify key verbs, phrases, or structures you want students to acquire, then weave them naturally through the student's authentic story.
+                    </p>
+
+                    <p style="color: #555; margin-bottom: 20px; line-height: 1.8;">
+                        <strong>The critical balance

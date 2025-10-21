@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Person Interview Question Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 24px;
+            letter-spacing: -0.01em;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+
+        /* COMMANDMENT 1: CREATE A STORY */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 48px 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.25em;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 1.125em;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* COMMANDMENT 9: MASTER MINIMALISM - More whitespace */
+        .controls {
+            padding: 48px 40px;
+            background: #fafbfc;
+        }
+
+        /* COMMANDMENT 2: STREAMLINE NAVIGATION - Visual hierarchy */
+        .control-group {
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .control-group:last-of-type {
+            margin-bottom: 32px;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.875em;
+            font-weight: 700;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .control-group label {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1f36;
+            font-size: 1.125em;
+            letter-spacing: -0.01em;
+        }
+
+        /* COMMANDMENT 4: ENSURE ACCESSIBILITY - Better contrast */
+        .help-text {
+            font-size: 0.875em;
+            color: #6b7280;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        /* COMMANDMENT 5: FORM FOLLOWS FUNCTION - Enhanced buttons */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .language-btn,
+        .proficiency-btn {
+            flex: 1;
+            min-width: 110px;
+            padding: 14px 20px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            color: #374151;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.9375em;
+            font-weight: 600;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Accessibility: Focus states */
+        .language-btn:focus,
+        .proficiency-btn:focus {
+            outline: 3px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        .language-btn:hover,
+        .proficiency-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            border-color: #667eea;
+        }
+
+        .language-btn.active {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .proficiency-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .proficiency-btn small {
+            display: block;
+            font-size: 0.75em;
+            font-weight: 400;
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+
+        /* COMMANDMENT 6: USE PLEASANT COLOR THEMES - Cohesive palette */
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+            gap: 12px;
+        }
+
+        .topic-checkbox {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .topic-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 12px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9375em;
+            color: #374151;
+            min-height: 64px;
+        }
+
+        .topic-label:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        .topic-checkbox:checked + .topic-label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .topic-checkbox:focus + .topic-label {
+            outline: 3px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        /* COMMANDMENT 10: ELIMINATE ERRORS - Validation feedback */
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.875em;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.125em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: -0.01em;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .generate-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .generate-btn:focus {
+            outline: 3px solid #667eea;
+            outline-offset: 3px;
+        }
+
+        /* Loading state */
+        .generate-btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .generate-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .questions-section {
+            padding: 48px 40px;
+            min-height: 300px;
+            background: white;
+        }
+
+        .questions-section h2 {
+            color: #1a1f36;
+            margin-bottom: 24px;
+            font-size: 1.75em;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* COMMANDMENT 9: MASTER MINIMALISM - Clean cards */
+        .question-card {
+            background: #fafbfc;
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid #667eea;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .question-card:hover {
+            background: #f3f4f6;
+            border-left-color: #764ba2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .question-main {
+            flex: 1;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: 700;
+            margin-right: 12px;
+            font-size: 1.125em;
+        }
+
+        .question-text {
+            color: #1a1f36;
+            font-size: 1.0625em;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .question-type {
+            display: inline-block;
+            font-size: 0.8125em;
+            padding: 4px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 16px;
+            margin-left: 12px;
+            font-weight: 600;
+        }
+
+        .chunks-toggle {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.875em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .chunks-toggle:hover {
+            background: #e5e7eb;
+            border-color: #667eea;
+        }
+
+        .chunks-toggle.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .helpful-chunks {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .helpful-chunks.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chunk-section {
+            margin-bottom: 12px;
+        }
+
+        .chunk-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .chunk-label {
+            font-size: 0.75em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #667eea;
+            margin-bottom: 6px;
+        }
+
+        .chunk-content {
+            font-size: 0.9375em;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .chunk-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .chunk-item {
+            background: #f3f4f6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.875em;
+            color: #1a1f36;
+            border: 1px solid #e5e7eb;
+        }
+
+        .chunk-example {
+            background: #fef3c7;
+            border-left: 3px solid #f59e0b;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.875em;
+            color: #78350f;
+            font-style: italic;
+            margin-top: 6px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 24px;
+            opacity: 0.4;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25em;
+            color: #374151;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            font-size: 0.9375em;
+            color: #6b7280;
+        }
+
+        .framework-badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.8125em;
+            padding: 6px 14px;
+            background: #f3f4f6;
+            color: #374151;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            .header {
+                padding: 32px 24px;
+            }
+
+            .header h1 {
+                font-size: 1.75em;
+            }
+
+            .controls,
+            .questions-section {
+                padding: 32px 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .topic-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Special Person Interview Generator</h1>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>
+                    <span class="step-number">1</span>
+                    Target Language
+                </label>
+                <div class="button-group">
+                    <button class="language-btn active" data-lang="spanish" aria-pressed="true">
+                        🇪🇸 Spanish
+                    </button>
+                    <button class="language-btn" data-lang="french" aria-pressed="false">
+                        🇫🇷 French
+                    </button>
+                    <button class="language-btn" data-lang="german" aria-pressed="false">
+                        🇩🇪 German
+                    </button>
+                    <button class="language-btn" data-lang="italian" aria-pressed="false">
+                        🇮🇹 Italian
+                    </button>
+                    <button class="language-btn" data-lang="chinese" aria-pressed="false">
+                        🇨🇳 Chinese
+                    </button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>
+                    <span class="step-number">2</span>
+                    Proficiency Level
+                </label>
+                <div class="button-group">
+                    <button class="proficiency-btn active" data-level="novice" aria-pressed="true">
+                        Novice
+                        <small>Recognize/Respond</small>
+                    </button>
+                    <button class="proficiency-btn" data-level="intermediate" aria-pressed="false">
+                        Intermediate
+                        <small>Relate/Extend</small>
+                    </button>
+                    <button class="proficiency-btn" data-level="advanced" aria-pressed="false">
+                        Advanced
+                        <small>Analyze/Create</small>
+                    </button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>
+                    <span class="step-number">3</span>
+                    Topic Focus
+                </label>
+                <p class="help-text">Select one or more topics for your interview questions</p>
+                <div class="topic-grid">
+                    <input type="checkbox" id="topic-family" class="topic-checkbox" checked>
+                    <label for="topic-family" class="topic-label">👨‍👩‍👧‍👦 Family</label>
+
+                    <input type="checkbox" id="topic-sports" class="topic-checkbox">
+                    <label for="topic-sports" class="topic-label">⚽ Sports</label>
+
+                    <input type="checkbox" id="topic-music" class="topic-checkbox">
+                    <label for="topic-music" class="topic-label">🎵 Music</label>
+
+                    <input type="checkbox" id="topic-food" class="topic-checkbox">
+                    <label for="topic-food" class="topic-label">🍕 Food</label>
+
+                    <input type="checkbox" id="topic-hobbies" class="topic-checkbox">
+                    <label for="topic-hobbies" class="topic-label">🎨 Hobbies</label>
+
+                    <input type="checkbox" id="topic-travel" class="topic-checkbox">
+                    <label for="topic-travel" class="topic-label">✈️ Travel</label>
+
+                    <input type="checkbox" id="topic-school" class="topic-checkbox">
+                    <label for="topic-school" class="topic-label">📚 School</label>
+
+                    <input type="checkbox" id="topic-pets" class="topic-checkbox">
+                    <label for="topic-pets" class="topic-label">🐕 Pets</label>
+
+                    <input type="checkbox" id="topic-media" class="topic-checkbox">
+                    <label for="topic-media" class="topic-label">📺 Media</label>
+
+                    <input type="checkbox" id="topic-daily" class="topic-checkbox">
+                    <label for="topic-daily" class="topic-label">🏠 Daily Life</label>
+                </div>
+                <div class="error-message" id="topicError">
+                    ⚠️ Please select at least one topic to generate questions
+                </div>
+            </div>
+
+            <button class="generate-btn" onclick="generateQuestions(event)" aria-label="Generate interview questions">
+                ✨ Generate Questions
+            </button>
+        </div>
+
+        <div class="questions-section" id="questionsSection">
+            <div class="empty-state">
+                <div class="empty-state-icon">💬</div>
+                <h3>Ready to generate questions!</h3>
+                <p>Select your preferences above and click "Generate Questions"</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedLevel = 'novice';
+        let selectedLanguage = 'spanish';
+        let userInitiated = false; // Track if user clicked the button
+
+        // Handle language selection with ARIA
+        document.querySelectorAll('.language-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.language-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
+                this.classList.add('active');
+                this.setAttribute('aria-pressed', 'true');
+                selectedLanguage = this.dataset.lang;
+            });
+        });
+
+        // Handle proficiency level selection with ARIA
+        document.querySelectorAll('.proficiency-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.proficiency-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
+                this.classList.add('active');
+                this.setAttribute('aria-pressed', 'true');
+                selectedLevel = this.dataset.level;
+            });
+        });
+
+        // Condensed question bank with helpful chunks
+        const questions = {
+            spanish: {
+                novice: {
+                    family: [
+                        { q: "¿Tienes hermanos?", t: "Sí/No", chunks: { vocab: ["hermanos (siblings)", "tener (to have)"], starters: ["Sí, tengo...", "No, no tengo...", "Tengo un hermano/una hermana"], examples: ["Sí, tengo dos hermanos.", "No, soy hijo único."] } },
+                        { q: "¿Cuántas personas hay en tu familia?", t: "Número", chunks: { vocab: ["cuántas (how many)", "personas (people)", "familia (family)"], starters: ["Hay... personas", "En mi familia hay..."], examples: ["Hay cinco personas en mi familia."] } },
+                        { q: "¿Vives con tus padres o con tus abuelos?", t: "O/O", chunks: { vocab: ["vivir (to live)", "padres (parents)", "abuelos (grandparents)"], starters: ["Vivo con...", "Vivo con mis..."], examples: ["Vivo con mis padres."] } },
+                        { q: "¿Tu familia es grande o pequeña?", t: "O/O", chunks: { vocab: ["grande (big)", "pequeña (small)", "familia (family)"], starters: ["Mi familia es...", "Es..."], examples: ["Mi familia es grande."] } }
+                    ],
+                    sports: [
+                        { q: "¿Practicas deportes?", t: "Sí/No", chunks: { vocab: ["practicar (to practice)", "deportes (sports)"], starters: ["Sí, practico...", "No, no practico..."], examples: ["Sí, practico fútbol.", "No, no practico deportes."] } },
+                        { q: "¿Te gusta el fútbol o el baloncesto?", t: "O/O", chunks: { vocab: ["gustar (to like)", "fútbol (soccer)", "baloncesto (basketball)"], starters: ["Me gusta...", "Me gusta más..."], examples: ["Me gusta el fútbol."] } },
+                        { q: "¿Cuál es tu deporte favorito?", t: "Dato simple", chunks: { vocab: ["cuál (which)", "favorito (favorite)", "deporte (sport)"], starters: ["Mi deporte favorito es...", "Es..."], examples: ["Mi deporte favorito es el tenis."] } },
+                        { q: "¿Juegas en un equipo?", t: "Sí/No", chunks: { vocab: ["jugar (to play)", "equipo (team)"], starters: ["Sí, juego en...", "No, no juego..."], examples: ["Sí, juego en un equipo de fútbol."] } }
+                    ],
+                    music: [
+                        { q: "¿Te gusta la música?", t: "Sí/No", chunks: { vocab: ["gustar (to like)", "música (music)"], starters: ["Sí, me gusta...", "No, no me gusta..."], examples: ["Sí, me gusta mucho la música."] } },
+                        { q: "¿Tocas un instrumento?", t: "Sí/No", chunks: { vocab: ["tocar (to play instrument)", "instrumento (instrument)"], starters: ["Sí, toco...", "No, no toco..."], examples: ["Sí, toco la guitarra."] } },
+                        { q: "¿Quién es tu cantante favorito?", t: "Dato simple", chunks: { vocab: ["quién (who)", "cantante (singer)", "favorito (favorite)"], starters: ["Mi cantante favorito es...", "Es..."], examples: ["Mi cantante favorito es Shakira."] } },
+                        { q: "¿Qué música te gusta?", t: "Dato simple", chunks: { vocab: ["qué (what)", "música (music)", "gustar (to like)"], starters: ["Me gusta...", "Me gusta la música..."], examples: ["Me gusta la música pop."] } }
+                    ],
+                    food: [
+                        { q: "¿Te gusta la pizza?", t: "Sí/No", chunks: { vocab: ["gustar (to like)", "pizza (pizza)"], starters: ["Sí, me gusta...", "No, no me gusta..."], examples: ["Sí, me gusta mucho la pizza."] } },
+                        { q: "¿Cuál es tu comida favorita?", t: "Dato simple", chunks: { vocab: ["cuál (which)", "comida (food)", "favorita (favorite)"], starters: ["Mi comida favorita es...", "Es..."], examples: ["Mi comida favorita es la pasta."] } },
+                        { q: "¿Prefieres hamburguesas o tacos?", t: "O/O", chunks: { vocab: ["preferir (to prefer)", "hamburguesas (hamburgers)", "tacos (tacos)"], starters: ["Prefiero...", "Me gustan más..."], examples: ["Prefiero los tacos."] } },
+                        { q: "¿Te gusta el helado?", t: "Sí/No", chunks: { vocab: ["gustar (to like)", "helado (ice cream)"], starters: ["Sí, me gusta...", "No, no me gusta..."], examples: ["Sí, me encanta el helado."] } }
+                    ],
+                    hobbies: [
+                        { q: "¿Tienes pasatiempos?", t: "Sí/No", chunks: { vocab: ["tener (to have)", "pasatiempos (hobbies)"], starters: ["Sí, tengo...", "No, no tengo..."], examples: ["Sí, tengo muchos pasatiempos."] } },
+                        { q: "¿Te gusta leer?", t: "Sí/No", chunks: { vocab: ["gustar (to like)", "leer (to read)"], starters: ["Sí, me gusta...", "No, no me gusta..."], examples: ["Sí, me gusta leer libros."] } },
+                        { q: "¿Qué haces para divertirte?", t: "Dato simple", chunks: { vocab: ["hacer (to do)", "divertirse (to have fun)"], starters: ["Me gusta...", "Para divertirme..."], examples: ["Me gusta jugar videojuegos."] } },
+                        { q: "¿Prefieres videojuegos o juegos de mesa?", t: "O/O", chunks: { vocab: ["preferir (to prefer)", "videojuegos (video games)", "juegos de mesa (board games)"], starters: ["Prefiero...", "Me gustan más..."], examples: ["Prefiero los videojuegos."] } }
+                    ],
+                    travel: [
+                        { q: "¿Te gusta viajar?", t: "Sí/No", chunks: { vocab: ["gustar (to like)", "viajar (to travel)"], starters: ["Sí, me gusta...", "No, no me gusta..."], examples: ["Sí, me gusta viajar mucho."] } },
+                        { q: "¿Has ido a la playa?", t: "Sí/No", chunks: { vocab: ["ir (to go)", "playa (beach)"], starters: ["Sí, he ido...", "No, no he ido..."], examples: ["Sí, he ido muchas veces."] } },
+                        { q: "¿Prefieres la playa o las montañas?", t: "O/O", chunks: { vocab: ["preferir (to prefer)", "playa (beach)", "montañas (mountains)"], starters: ["Prefiero...", "Me gusta más..."], examples: ["Prefiero la playa."] } },
+                        { q: "¿Adónde quieres ir?", t: "Dato simple", chunks: { vocab: ["adónde (where to)", "querer (to want)", "ir (to go)"], starters: ["Quiero ir a...", "Me gustaría ir a..."], examples: ["Quiero ir a España."] } }
+                    ],
+                    school: [
+                        { q: "¿Te gusta la escuela?", t: "Sí/No", chunks: { vocab: ["gustar (to like)", "escuela (school)"], starters: ["Sí, me gusta...", "No, no me gusta..."], examples: ["Sí, me gusta la escuela."] } },
+                        { q: "¿Cuál es tu materia favorita?", t: "Dato simple", chunks: { vocab: ["cuál (which)", "materia (subject)", "favorita (favorite)"], starters: ["Mi materia favorita es...", "Es..."], examples: ["Mi materia favorita es matemáticas."] } },
+                        { q: "¿Prefieres matemáticas o ciencias?", t: "O/O", chunks: { vocab: ["preferir (to prefer)", "matemáticas (math)", "ciencias (science)"], starters: ["Prefiero...", "Me gusta más..."], examples: ["Prefiero las ciencias."] } },
+                        { q: "¿Tienes mucha tarea?", t: "Sí/No", chunks: { vocab: ["tener (to have)", "mucha (a lot)", "tarea (homework)"], starters: ["Sí, tengo...", "No, no tengo..."], examples: ["Sí, tengo mucha tarea."] } }
+                    ],
+                    pets: [
+                        { q: "¿Tienes mascotas?", t: "Sí/No", chunks: { vocab: ["tener (to have)", "mascotas (pets)"], starters: ["Sí, tengo...", "No, no tengo..."], examples: ["Sí, tengo un perro."] } },
+                        { q: "¿Tienes un perro o un gato?", t: "O/O", chunks: { vocab: ["tener (to have)", "perro (dog)", "gato (cat)"], starters: ["Tengo un...", "Tengo una..."], examples: ["Tengo un perro."] } },
+                        { q: "¿Cómo se llama tu mascota?", t: "Dato simple", chunks: { vocab: ["llamarse (to be called)", "mascota (pet)"], starters: ["Se llama...", "Mi mascota se llama..."], examples: ["Se llama Max."] } },
+                        { q: "¿Cuál es tu animal favorito?", t: "Dato simple", chunks: { vocab: ["cuál (which)", "animal (animal)", "favorito (favorite)"], starters: ["Mi animal favorito es...", "Es..."], examples: ["Mi animal favorito es el perro."] } }
+                    ],
+                    media: [
+                        { q: "¿Ves la televisión?", t: "Sí/No", chunks: { vocab: ["ver (to watch)", "televisión (television)"], starters: ["Sí, veo...", "No, no veo..."], examples: ["Sí, veo la televisión todos los días."] } },
+                        { q: "¿Cuál es tu programa favorito?", t: "Dato simple", chunks: { vocab: ["cuál (which)", "programa (show)", "favorito (favorite)"], starters: ["Mi programa favorito es...", "Es..."], examples: ["Mi programa favorito es Friends."] } },
+                        { q: "¿Prefieres películas o series?", t: "O/O", chunks: { vocab: ["preferir (to prefer)", "películas (movies)", "series (series)"], starters: ["Prefiero...", "Me gustan más..."], examples: ["Prefiero las películas."] } },
+                        { q: "¿Juegas videojuegos?", t: "Sí/No", chunks: { vocab: ["jugar (to play)", "videojuegos (video games)"], starters: ["Sí, juego...", "No, no juego..."], examples: ["Sí, juego videojuegos con mis amigos."] } }
+                    ],
+                    daily: [
+                        { q: "¿A qué hora te despiertas?", t: "Dato simple", chunks: { vocab: ["hora (time)", "despertarse (to wake up)"], starters: ["Me despierto a...", "Me despierto a las..."], examples: ["Me despierto a las siete."] } },
+                        { q: "¿Te despiertas temprano o tarde?", t: "O/O", chunks: { vocab: ["despertarse (to wake up)", "temprano (early)", "tarde (late)"], starters: ["Me despierto...", "Normalmente..."], examples: ["Me despierto temprano."] } },
+                        { q: "¿Qué haces después de la escuela?", t: "Dato simple", chunks: { vocab: ["hacer (to do)", "después (after)", "escuela (school)"], starters: ["Después de la escuela...", "Hago..."], examples: ["Después de la escuela hago la tarea."] } },
+                        { q: "¿Qué haces los fines de semana?", t: "Dato simple", chunks: { vocab: ["hacer (to do)", "fines de semana (weekends)"], starters: ["Los fines de semana...", "Me gusta..."], examples: ["Los fines de semana juego con mis amigos."] } }
+                    ]
+                },
+                intermediate: {
+                    family: [
+                        { q: "Háblame de tu familia. ¿Con quién vives?", t: "Descripción", chunks: { vocab: ["hablar (to talk)", "vivir (to live)", "con quién (with whom)"], starters: ["Vivo con...", "En mi familia somos...", "Tengo..."], examples: ["Vivo con mis padres y mi hermana mayor. Somos cuatro en total."] } },
+                        { q: "¿A qué se dedica tu mamá/papá?", t: "Detalle", chunks: { vocab: ["dedicarse (to work as)", "trabajo (job)", "profesión (profession)"], starters: ["Mi mamá/papá es...", "Trabaja como...", "Se dedica a..."], examples: ["Mi papá es profesor de matemáticas en una escuela secundaria."] } },
+                        { q: "¿Con quién eres más cercano/a en tu familia y por qué?", t: "Comparación", chunks: { vocab: ["cercano (close)", "porque (because)", "relación (relationship)"], starters: ["Soy más cercano/a a...", "Me llevo mejor con...", "Tengo una buena relación con..."], examples: ["Soy más cercana a mi hermano porque compartimos muchos intereses."] } },
+                        { q: "Describe un fin de semana típico con tu familia.", t: "Narrativa", chunks: { vocab: ["fin de semana (weekend)", "típico (typical)", "normalmente (normally)"], starters: ["Los fines de semana...", "Normalmente...", "Solemos..."], examples: ["Los fines de semana desayunamos juntos y luego vamos al parque."] } }
+                    ],
+                    sports: [
+                        { q: "¿Qué deportes practicas y con qué frecuencia?", t: "Detalle", chunks: { vocab: ["practicar (to practice)", "frecuencia (frequency)", "veces (times)"], starters: ["Practico... veces por semana", "Juego al... regularmente", "Entreno..."], examples: ["Practico natación tres veces por semana después de la escuela."] } },
+                        { q: "Háblame de tu equipo o tus compañeros de equipo.", t: "Descripción", chunks: { vocab: ["equipo (team)", "compañeros (teammates)", "entrenador (coach)"], starters: ["Mi equipo es...", "Mis compañeros son...", "Tenemos un entrenador..."], examples: ["Mi equipo es muy unido y mis compañeros son muy amigables."] } },
+                        { q: "¿Por qué te gusta este deporte más que otros?", t: "Comparación", chunks: { vocab: ["porque (because)", "más que (more than)", "divertido (fun)"], starters: ["Me gusta porque...", "Prefiero este deporte porque...", "Lo encuentro..."], examples: ["Me gusta porque es muy emocionante y me mantiene activo."] } },
+                        { q: "Describe un entrenamiento o partido típico.", t: "Narrativa", chunks: { vocab: ["entrenamiento (training)", "partido (game)", "primero (first)", "luego (then)"], starters: ["Primero...", "Durante el entrenamiento...", "Normalmente empezamos con..."], examples: ["Primero calentamos durante 15 minutos, luego practicamos técnicas."] } }
+                    ],
+                    music: [
+                        { q: "¿Qué tipo de música escuchas más y por qué?", t: "Opinión", chunks: { vocab: ["tipo (type)", "género (genre)", "ritmo (rhythm)"], starters: ["Escucho principalmente...", "Me gusta más... porque...", "Prefiero..."], examples: ["Escucho principalmente pop porque tiene melodías pegajosas."] } },
+                        { q: "Háblame sobre aprender tu instrumento.", t: "Narrativa", chunks: { vocab: ["aprender (to learn)", "practicar (to practice)", "difícil (difficult)"], starters: ["Empecé a aprender...", "Llevo... años tocando", "Al principio fue..."], examples: ["Empecé a aprender piano hace cinco años. Al principio fue difícil."] } },
+                        { q: "¿Cómo es diferente tu gusto musical del de tus padres?", t: "Comparar", chunks: { vocab: ["diferente (different)", "mientras (while)", "en cambio (on the other hand)"], starters: ["A mí me gusta... pero ellos...", "Yo prefiero... mientras que mis padres..."], examples: ["Yo prefiero el rap mientras que mis padres escuchan música clásica."] } },
+                        { q: "Describe un concierto o actuación a la que fuiste.", t: "Descripción", chunks: { vocab: ["concierto (concert)", "actuación (performance)", "increíble (amazing)"], starters: ["Fui a un concierto de...", "La atmósfera era...", "Fue..."], examples: ["Fui a un concierto de rock el año pasado. La atmósfera era increíble."] } }
+                    ],
+                    food: [
+                        { q: "¿Cuál es tu comida favorita y por qué te gusta?", t: "Opinión", chunks: { vocab: ["favorita (favorite)", "sabor (flavor)", "delicioso (delicious)"], starters: ["Mi comida favorita es... porque...", "Me encanta... por su...", "Disfruto..."], examples: ["Mi comida favorita es la pasta porque me encanta su sabor cremoso."] } },
+                        { q: "Háblame de una comida de tu cultura o familia.", t: "Descripción", chunks: { vocab: ["tradicional (traditional)", "preparar (to prepare)", "ingredientes (ingredients)"], starters: ["En mi familia preparamos...", "Una comida tradicional es...", "Mi familia hace..."], examples: ["En mi familia preparamos tamales en las fiestas. Es una tradición."] } },
+                        { q: "Describe lo que típicamente comes en un día.", t: "Detalle", chunks: { vocab: ["desayuno (breakfast)", "almuerzo (lunch)", "cena (dinner)"], starters: ["Para el desayuno...", "Normalmente como...", "Durante el día..."], examples: ["Para el desayuno como cereal, almuerzo en la escuela y ceno con mi familia."] } },
+                        { q: "Háblame de una vez que probaste una comida nueva.", t: "Narrativa", chunks: { vocab: ["probar (to try)", "primera vez (first time)", "experiencia (experience)"], starters: ["Una vez probé...", "La primera vez que comí...", "Recuerdo cuando..."], examples: ["Una vez probé sushi por primera vez. Me sorprendió lo fresco que estaba."] } }
+                    ],
+                    hobbies: [
+                        { q: "¿Qué pasatiempos tienes y cómo los empezaste?", t: "Narrativa", chunks: { vocab: ["pasatiempos (hobbies)", "empezar (to start)", "interés (interest)"], starters: ["Empecé... cuando...", "Me interesé en... porque...", "Mis pasatiempos incluyen..."], examples: ["Empecé a pintar cuando tenía 10 años después de una clase de arte."] } },
+                        { q: "Háblame de tu pasatiempo favorito en detalle.", t: "Descripción", chunks: { vocab: ["favorito (favorite)", "disfrutar (to enjoy)", "dedicar tiempo (to dedicate time)"], starters: ["Mi pasatiempo favorito es...", "Disfruto mucho...", "Me encanta... porque..."], examples: ["Mi pasatiempo favorito es la fotografía. Disfruto capturar momentos especiales."] } },
+                        { q: "¿Por qué prefieres este pasatiempo sobre otros?", t: "Comparación", chunks: { vocab: ["preferir (to prefer)", "relajante (relaxing)", "creativo (creative)"], starters: ["Lo prefiero porque...", "Me resulta más...", "A diferencia de otros..."], examples: ["Lo prefiero porque me resulta más relajante y creativo que otros."] } },
+                        { q: "¿Cuánto tiempo pasas en tus pasatiempos cada semana?", t: "Detalle", chunks: { vocab: ["tiempo (time)", "horas (hours)", "cada semana (each week)"], starters: ["Paso aproximadamente...", "Dedico... horas", "Cada semana..."], examples: ["Paso aproximadamente 10 horas cada semana practicando mis pasatiempos."] } }
+                    ],
+                    travel: [
+                        { q: "Háblame del mejor viaje que has hecho.", t: "Narrativa", chunks: { vocab: ["viaje (trip)", "mejor (best)", "memorable (memorable)"], starters: ["El mejor viaje fue...", "Viajé a... y fue...", "Recuerdo cuando fui a..."], examples: ["El mejor viaje fue a México. Conocí la cultura y la comida increíble."] } },
+                        { q: "¿Adónde quieres viajar y por qué?", t: "Opinión", chunks: { vocab: ["querer (to want)", "sueño (dream)", "conocer (to get to know)"], starters: ["Quiero viajar a... porque...", "Me gustaría conocer...", "Sueño con visitar..."], examples: ["Quiero viajar a Japón porque me fascina su cultura tradicional."] } },
+                        { q: "Describe un lugar que visitaste que te sorprendió.", t: "Descripción", chunks: { vocab: ["sorprender (to surprise)", "impresionante (impressive)", "diferente (different)"], starters: ["Me sorprendió... porque...", "No esperaba que...", "Fue impresionante..."], examples: ["Me sorprendió Barcelona porque su arquitectura es completamente única."] } },
+                        { q: "¿Qué sueles hacer cuando viajas?", t: "Detalle", chunks: { vocab: ["soler (to usually)", "explorar (to explore)", "actividades (activities)"], starters: ["Suelo...", "Me gusta explorar...", "Normalmente..."], examples: ["Suelo explorar los sitios históricos y probar la comida local."] } }
+                    ],
+                    school: [
+                        { q: "¿Cuál es tu clase favorita y qué aprendes allí?", t: "Descripción", chunks: { vocab: ["clase (class)", "aprender (to learn)", "materia (subject)"], starters: ["Mi clase favorita es... porque...", "En esa clase aprendemos...", "Me gusta... porque..."], examples: ["Mi clase favorita es historia porque aprendemos sobre diferentes culturas."] } },
+                        { q: "Háblame de tu día escolar de principio a fin.", t: "Narrativa", chunks: { vocab: ["día escolar (school day)", "principio (beginning)", "fin (end)"], starters: ["Mi día empieza...", "Primero tengo...", "Después de..."], examples: ["Mi día empieza a las 8. Primero tengo matemáticas, luego inglés."] } },
+                        { q: "¿Qué encuentras más desafiante de la escuela y por qué?", t: "Opinión", chunks: { vocab: ["desafiante (challenging)", "difícil (difficult)", "esfuerzo (effort)"], starters: ["Lo más desafiante es...", "Encuentro difícil... porque...", "Me cuesta..."], examples: ["Lo más desafiante es química porque requiere mucha memorización."] } },
+                        { q: "Describe a tu maestro/a favorito/a y su clase.", t: "Descripción", chunks: { vocab: ["maestro (teacher)", "enseñar (to teach)", "explicar (to explain)"], starters: ["Mi maestro/a favorito/a es...", "Es... porque...", "Sus clases son..."], examples: ["Mi maestra favorita es la Sra. García. Explica todo muy claramente."] } }
+                    ],
+                    pets: [
+                        { q: "Háblame todo sobre tu mascota - ¿cómo es?", t: "Descripción", chunks: { vocab: ["mascota (pet)", "personalidad (personality)", "aspecto (appearance)"], starters: ["Mi mascota es...", "Tiene...", "Es muy..."], examples: ["Mi mascota es un perro labrador. Es muy amigable y le encanta jugar."] } },
+                        { q: "¿Qué responsabilidades tienes para cuidar a tu mascota?", t: "Detalle", chunks: { vocab: ["responsabilidades (responsibilities)", "cuidar (to care for)", "alimentar (to feed)"], starters: ["Tengo que...", "Soy responsable de...", "Cada día..."], examples: ["Tengo que alimentarlo dos veces al día y sacarlo a pasear."] } },
+                        { q: "Describe un momento divertido o memorable con tu mascota.", t: "Narrativa", chunks: { vocab: ["divertido (funny)", "memorable (memorable)", "recuerdo (memory)"], starters: ["Una vez...", "Recuerdo cuando...", "Fue divertido cuando..."], examples: ["Recuerdo cuando mi gato persiguió su propia cola durante 10 minutos."] } },
+                        { q: "¿Cómo es la personalidad de tu mascota?", t: "Descripción", chunks: { vocab: ["personalidad (personality)", "carácter (character)", "comportamiento (behavior)"], starters: ["Mi mascota es...", "Tiene una personalidad...", "Se comporta..."], examples: ["Mi mascota es muy juguetona pero también le gusta dormir mucho."] } }
+                    ],
+                    media: [
+                        { q: "¿Qué tipo de programas o películas te gustan y por qué?", t: "Opinión", chunks: { vocab: ["tipo (type)", "género (genre)", "entretenimiento (entertainment)"], starters: ["Me gustan... porque...", "Prefiero... porque...", "Disfruto viendo..."], examples: ["Me gustan las comedias porque me hacen reír y olvidar el estrés."] } },
+                        { q: "Háblame de tu programa favorito. ¿De qué se trata?", t: "Descripción", chunks: { vocab: ["programa (show)", "trata de (it's about)", "personajes (characters)"], starters: ["Mi programa favorito es...", "Se trata de...", "La historia es sobre..."], examples: ["Mi programa favorito es Stranger Things. Se trata de niños con poderes."] } },
+                        { q: "¿Cuánto tiempo pasas frente a pantallas cada día?", t: "Detalle", chunks: { vocab: ["tiempo (time)", "pantallas (screens)", "horas (hours)"], starters: ["Paso aproximadamente...", "Cada día uso...", "Entre... y... horas"], examples: ["Paso aproximadamente 3 horas al día entre mi teléfono y la computadora."] } },
+                        { q: "Describe la última película que viste. ¿De qué se trataba?", t: "Narrativa", chunks: { vocab: ["última (last)", "película (movie)", "trama (plot)"], starters: ["La última película fue...", "Se trataba de...", "La historia era sobre..."], examples: ["La última película fue Coco. Se trataba de la tradición del Día de Muertos."] } }
+                    ],
+                    daily: [
+                        { q: "Describe tu día perfecto de la mañana a la noche.", t: "Narrativa", chunks: { vocab: ["perfecto (perfect)", "mañana (morning)", "noche (night)"], starters: ["Mi día perfecto empezaría...", "Por la mañana...", "Durante el día..."], examples: ["Mi día perfecto empezaría tarde, desayunaría con mi familia y saldría con amigos."] } },
+                        { q: "¿Cómo es tu rutina matutina?", t: "Descripción", chunks: { vocab: ["rutina (routine)", "matutina (morning)", "despertarse (to wake up)"], starters: ["Mi rutina matutina consiste en...", "Primero...", "Normalmente..."], examples: ["Mi rutina matutina consiste en despertarme, ducharme y desayunar rápido."] } },
+                        { q: "¿Qué haces para relajarte después de la escuela?", t: "Detalle", chunks: { vocab: ["relajarse (to relax)", "descansar (to rest)", "actividades (activities)"], starters: ["Para relajarme...", "Me gusta...", "Normalmente..."], examples: ["Para relajarme escucho música o veo videos en mi teléfono."] } },
+                        { q: "Háblame de la parte más importante de tu día.", t: "Opinión", chunks: { vocab: ["importante (important)", "parte (part)", "significativo (significant)"], starters: ["La parte más importante es...", "Lo que más valoro es...", "Para mí..."], examples: ["La parte más importante es la cena porque toda mi familia se reúne."] } }
+                    ]
+                },
+                advanced: {
+                    family: [
+                        { q: "¿Cómo ha cambiado tu relación con tu familia a medida que has crecido?", t: "Análisis", chunks: { vocab: ["cambiar (to change)", "relación (relationship)", "madurar (to mature)"], starters: ["A medida que he crecido...", "La relación ha evolucionado...", "Antes... pero ahora..."], examples: ["A medida que he crecido, entiendo mejor las decisiones de mis padres y nuestra comunicación ha mejorado significativamente."] } },
+                        { q: "¿Qué valores o lecciones has aprendido de tu familia?", t: "Reflexión", chunks: { vocab: ["valores (values)", "lecciones (lessons)", "enseñar (to teach)"], starters: ["Mi familia me ha enseñado...", "He aprendido la importancia de...", "Los valores que..."], examples: ["Mi familia me ha enseñado la importancia del respeto y la perseverancia ante las dificultades."] } },
+                        { q: "¿Cómo influyen las tradiciones culturales en la vida de tu familia?", t: "Análisis cultural", chunks: { vocab: ["influir (to influence)", "tradiciones (traditions)", "identidad (identity)"], starters: ["Las tradiciones culturales...", "En mi familia...", "Estas tradiciones nos..."], examples: ["Las tradiciones culturales forman el núcleo de nuestra identidad familiar y nos mantienen conectados con nuestras raíces."] } },
+                        { q: "¿Cómo crees que tu familia ha moldeado quién eres hoy?", t: "Reflexión", chunks: { vocab: ["moldear (to shape)", "influencia (influence)", "personalidad (personality)"], starters: ["Creo que mi familia ha...", "Su influencia se refleja en...", "Gracias a ellos..."], examples: ["Creo que mi familia ha moldeado mi ética de trabajo y mi capacidad para empatizar con los demás."] } }
+                    ],
+                    sports: [
+                        { q: "¿Cómo ha influido practicar deportes en tu carácter o valores?", t: "Reflexión", chunks: { vocab: ["influir (to influence)", "carácter (character)", "disciplina (discipline)"], starters: ["El deporte me ha enseñado...", "Ha desarrollado en mí...", "Gracias al deporte..."], examples: ["El deporte me ha enseñado disciplina, resiliencia y la importancia del trabajo en equipo."] } },
+                        { q: "¿Qué lecciones de vida has aprendido a través de los deportes?", t: "Análisis", chunks: { vocab: ["lecciones (lessons)", "perseverancia (perseverance)", "fracaso (failure)"], starters: ["He aprendido que...", "Los deportes me enseñaron...", "Una lección importante es..."], examples: ["He aprendido que el fracaso es temporal y que la perseverancia siempre trae resultados."] } },
+                        { q: "¿Qué significa ser un buen compañero de equipo, en tu opinión?", t: "Opinión/Valores", chunks: { vocab: ["significa (means)", "apoyo (support)", "comunicación (communication)"], starters: ["Para mí, ser un buen compañero significa...", "Implica...", "Requiere..."], examples: ["Para mí, ser un buen compañero significa apoyar a otros incluso cuando pierden y comunicarse honestamente."] } },
+                        { q: "¿Cómo equilibras los aspectos competitivos y divertidos de los deportes?", t: "Análisis", chunks: { vocab: ["equilibrar (to balance)", "competitivo (competitive)", "disfrutar (to enjoy)"], starters: ["Trato de equilibrar...", "Es importante mantener...", "Para mí el balance está en..."], examples: ["Trato de equilibrar tomando la competencia en serio pero recordando que lo fundamental es disfrutar el proceso."] } }
+                    ],
+                    music: [
+                        { q: "¿Cómo sirve la música a diferentes propósitos en tu vida?", t: "Análisis", chunks: { vocab: ["propósitos (purposes)", "emociones (emotions)", "expresión (expression)"], starters: ["La música sirve para...", "Dependiendo del momento...", "Uso la música para..."], examples: ["La música sirve para procesar emociones, motivarme al estudiar y conectar con otros."] } },
+                        { q: "¿Qué crees que revela la música sobre una cultura o generación?", t: "Análisis cultural", chunks: { vocab: ["revelar (to reveal)", "reflejar (to reflect)", "época (era)"], starters: ["Creo que la música refleja...", "Revela los valores...", "Es un espejo de..."], examples: ["Creo que la música refleja las luchas, esperanzas y valores de cada generación."] } },
+                        { q: "¿Qué papel juega la música en tu identidad o cómo te expresas?", t: "Autoanálisis", chunks: { vocab: ["identidad (identity)", "expresión (expression)", "auténtico (authentic)"], starters: ["La música es parte de...", "Me ayuda a expresar...", "A través de la música..."], examples: ["La música es parte fundamental de mi identidad y me ayuda a expresar emociones que no puedo verbalizar."] } },
+                        { q: "¿Qué significa realmente escuchar música en lugar de solo oírla?", t: "Filosófico", chunks: { vocab: ["escuchar vs oír (to listen vs to hear)", "atención (attention)", "profundo (deep)"], starters: ["Escuchar implica...", "La diferencia está en...", "Significa prestar..."], examples: ["Escuchar implica conexión emocional y atención consciente, mientras que oír es meramente físico."] } }
+                    ],
+                    food: [
+                        { q: "¿Cómo se conecta la comida con tu identidad cultural o herencia?", t: "Análisis cultural", chunks: { vocab: ["identidad (identity)", "herencia (heritage)", "raíces (roots)"], starters: ["La comida conecta con...", "Es un vínculo con...", "A través de la comida..."], examples: ["La comida conecta con mis raíces mexicanas y mantiene viva la memoria de mis abuelos."] } },
+                        { q: "¿Qué papel juega la comida en tu familia más allá de solo la nutrición?", t: "Análisis", chunks: { vocab: ["papel (role)", "unir (to unite)", "ritual (ritual)"], starters: ["La comida es un medio para...", "Va más allá de... porque...", "Sirve para..."], examples: ["La comida es un medio para unirnos, compartir historias y crear momentos memorables juntos."] } },
+                        { q: "Describe un recuerdo relacionado con comida que tenga significado emocional.", t: "Narrativa reflexiva", chunks: { vocab: ["recuerdo (memory)", "significado (meaning)", "evocar (to evoke)"], starters: ["Recuerdo vívidamente...", "Hay un momento que...", "Cada vez que..."], examples: ["Recuerdo vívidamente hacer tamales con mi abuela. Ese aroma siempre evoca su presencia y amor."] } },
+                        { q: "¿Cuál es tu filosofía sobre probar comidas nuevas?", t: "Opinión/Valores", chunks: { vocab: ["filosofía (philosophy)", "aventura (adventure)", "mente abierta (open mind)"], starters: ["Mi filosofía es...", "Creo en...", "Para mí es importante..."], examples: ["Mi filosofía es mantener la mente abierta porque cada comida es una ventana a otra cultura."] } }
+                    ],
+                    hobbies: [
+                        { q: "¿Cómo han moldeado tus pasatiempos tu identidad o quién eres?", t: "Autoanálisis", chunks: { vocab: ["moldear (to shape)", "identidad (identity)", "definir (to define)"], starters: ["Mis pasatiempos han...", "Me han ayudado a...", "A través de ellos..."], examples: ["Mis pasatiempos han moldeado mi paciencia y atención al detalle, cualidades que definen mi enfoque hacia la vida."] } },
+                        { q: "¿Qué crees que revelan los pasatiempos de las personas sobre ellas?", t: "Análisis", chunks: { vocab: ["revelar (to reveal)", "prioridades (priorities)", "personalidad (personality)"], starters: ["Los pasatiempos revelan...", "Muestran...", "Reflejan..."], examples: ["Los pasatiempos revelan las prioridades, valores y la manera en que una persona busca significado."] } },
+                        { q: "¿Qué papel juegan los pasatiempos en la salud mental y el bienestar?", t: "Análisis", chunks: { vocab: ["salud mental (mental health)", "bienestar (wellbeing)", "escape (escape)"], starters: ["Los pasatiempos son esenciales para...", "Proporcionan...", "Ayudan a..."], examples: ["Los pasatiempos son esenciales para el equilibrio mental, proporcionando escape del estrés y sentido de logro."] } },
+                        { q: "¿Qué significa estar verdaderamente apasionado por algo?", t: "Filosófico", chunks: { vocab: ["pasión (passion)", "dedicación (dedication)", "propósito (purpose)"], starters: ["La verdadera pasión implica...", "Significa...", "Va más allá de..."], examples: ["La verdadera pasión implica dedicación incondicional y encontrar propósito más allá del placer superficial."] } }
+                    ],
+                    travel: [
+                        { q: "¿Cómo ha cambiado viajar tu perspectiva sobre tu propia cultura?", t: "Reflexión", chunks: { vocab: ["perspectiva (perspective)", "apreciar (to appreciate)", "contrastar (to contrast)"], starters: ["Viajar me ha hecho...", "Me ha ayudado a apreciar...", "Al contrastar..."], examples: ["Viajar me ha hecho apreciar aspectos de mi cultura que daba por sentados y ver con otros ojos mi origen."] } },
+                        { q: "¿Qué crees que hace a alguien un buen viajero en lugar de un turista?", t: "Análisis", chunks: { vocab: ["viajero vs turista (traveler vs tourist)", "inmersión (immersion)", "respeto (respect)"], starters: ["Un buen viajero...", "La diferencia radica en...", "Implica..."], examples: ["Un buen viajero busca inmersión cultural auténtica y respeta las tradiciones locales más allá de las fotos."] } },
+                        { q: "¿Cómo crees que viajar moldea el crecimiento y desarrollo personal?", t: "Análisis", chunks: { vocab: ["crecimiento (growth)", "desarrollar (to develop)", "expandir (to expand)"], starters: ["Viajar moldea... porque...", "Contribuye al desarrollo...", "Expande..."], examples: ["Viajar moldea la empatía y adaptabilidad, expandiendo nuestra comprensión del mundo y de nosotros mismos."] } },
+                        { q: "¿Qué responsabilidades tienen los viajeros hacia los lugares que visitan?", t: "Análisis ético", chunks: { vocab: ["responsabilidades (responsibilities)", "sostenible (sustainable)", "impacto (impact)"], starters: ["Los viajeros tienen la responsabilidad de...", "Debemos...", "Es importante..."], examples: ["Los viajeros tienen la responsabilidad de minimizar su impacto ambiental y respetar las comunidades locales."] } }
+                    ],
+                    school: [
+                        { q: "¿Cómo crees que debería cambiar la educación para servir mejor a los estudiantes?", t: "Análisis crítico", chunks: { vocab: ["reforma (reform)", "enfoque (approach)", "individualizado (individualized)"], starters: ["La educación debería...", "Necesitamos un enfoque más...", "Sería beneficioso..."], examples: ["La educación debería enfocarse más en pensamiento crítico y menos en memorización mecánica."] } },
+                        { q: "¿Qué has aprendido en la escuela que genuinamente ha cambiado cómo piensas?", t: "Reflexión", chunks: { vocab: ["transformar (to transform)", "perspectiva (perspective)", "cuestionar (to question)"], starters: ["Aprendí a...", "Me enseñaron que...", "Cambió mi forma de pensar sobre..."], examples: ["Aprendí a cuestionar suposiciones y analizar información críticamente antes de formar opiniones."] } },
+                        { q: "¿Qué papel deberían jugar las escuelas más allá del aprendizaje académico?", t: "Opinión/Valores", chunks: { vocab: ["papel (role)", "desarrollo integral (holistic development)", "ciudadanía (citizenship)"], starters: ["Las escuelas deberían...", "Es crucial que también...", "Deben prepararnos para..."], examples: ["Las escuelas deberían desarrollar ciudadanos empáticos y críticos, no solo académicamente competentes."] } },
+                        { q: "¿Qué significa realmente entender algo versus solo memorizarlo?", t: "Filosófico", chunks: { vocab: ["comprender (to understand)", "aplicar (to apply)", "profundidad (depth)"], starters: ["Entender implica...", "La diferencia está en...", "Significa poder..."], examples: ["Entender implica poder aplicar conceptos a nuevas situaciones, mientras memorizar es solo retención temporal."] } }
+                    ],
+                    pets: [
+                        { q: "¿Qué crees que la relación entre humanos y mascotas revela sobre la sociedad?", t: "Análisis", chunks: { vocab: ["relación (relationship)", "reflejar (to reflect)", "compañía (companionship)"], starters: ["Esta relación revela...", "Muestra que...", "Refleja nuestra necesidad de..."], examples: ["Esta relación revela nuestra necesidad fundamental de conexión y la capacidad de amar incondicionalmente."] } },
+                        { q: "¿Cómo te ha enseñado cuidar una mascota responsabilidad o empatía?", t: "Reflexión", chunks: { vocab: ["enseñar (to teach)", "responsabilidad (responsibility)", "necesidades (needs)"], starters: ["Cuidar una mascota me ha enseñado...", "He desarrollado...", "Me ha hecho más consciente de..."], examples: ["Cuidar una mascota me ha enseñado a priorizar las necesidades de otros y ser constante en mis compromisos."] } },
+                        { q: "¿Qué consideraciones éticas piensas respecto a tener mascotas?", t: "Análisis ético", chunks: { vocab: ["ético (ethical)", "bienestar (welfare)", "compromiso (commitment)"], starters: ["Éticamente debemos considerar...", "Es importante...", "Implica el compromiso de..."], examples: ["Éticamente debemos considerar el bienestar animal a largo plazo y si podemos cumplir ese compromiso de por vida."] } },
+                        { q: "Describe cómo tu mascota ha impactado tu vida emocional o bienestar.", t: "Narrativa reflexiva", chunks: { vocab: ["impacto (impact)", "bienestar (wellbeing)", "apoyo emocional (emotional support)"], starters: ["Mi mascota ha impactado...", "Proporciona...", "En momentos difíciles..."], examples: ["Mi mascota ha impactado profundamente mi bienestar, proporcionando compañía incondicional en momentos de soledad."] } }
+                    ],
+                    media: [
+                        { q: "¿Cómo crees que el consumo de medios afecta la salud mental y el bienestar?", t: "Análisis", chunks: { vocab: ["consumo (consumption)", "impacto (impact)", "equilibrio (balance)"], starters: ["El consumo de medios puede...", "Afecta... porque...", "Es crucial mantener..."], examples: ["El consumo excesivo de medios puede aumentar ansiedad y comparación social, afectando la autoestima."] } },
+                        { q: "¿Qué responsabilidad tienen los creadores de contenido hacia sus audiencias?", t: "Análisis ético", chunks: { vocab: ["responsabilidad (responsibility)", "influencia (influence)", "veracidad (truthfulness)"], starters: ["Los creadores tienen la responsabilidad de...", "Deben considerar...", "Su influencia requiere..."], examples: ["Los creadores tienen la responsabilidad de ser veraces y conscientes del impacto que su contenido puede tener."] } },
+                        { q: "¿Cómo han moldeado los medios tu comprensión del mundo u otras culturas?", t: "Reflexión", chunks: { vocab: ["moldear (to shape)", "comprensión (understanding)", "percepción (perception)"], starters: ["Los medios han moldeado...", "Me han expuesto a...", "Han influido en mi percepción de..."], examples: ["Los medios han moldeado mi comprensión exponíendome a perspectivas diversas que no encontraría localmente."] } },
+                        { q: "¿Qué papel juega la representación en los medios en la sociedad?", t: "Análisis crítico", chunks: { vocab: ["representación (representation)", "diversidad (diversity)", "normalizar (to normalize)"], starters: ["La representación es crucial porque...", "Juega un papel en...", "Ayuda a normalizar..."], examples: ["La representación es crucial porque valida experiencias diversas y desafía estereotipos arraigados."] } }
+                    ],
+                    daily: [
+                        { q: "¿Cómo reflejan tus rutinas diarias tus prioridades y valores?", t: "Autoanálisis", chunks: { vocab: ["reflejar (to reflect)", "prioridades (priorities)", "valores (values)"], starters: ["Mis rutinas reflejan...", "Dedico tiempo a... porque...", "Priori zo..."], examples: ["Mis rutinas reflejan que priorizo el bienestar familiar y el crecimiento personal sobre el entretenimiento pasivo."] } },
+                        { q: "¿Cómo ha cambiado tu relación con el tiempo a medida que has crecido?", t: "Reflexión", chunks: { vocab: ["percepción (perception)", "valorar (to value)", "gestión (management)"], starters: ["Mi relación con el tiempo ha...", "He aprendido a valorar...", "Ahora veo el tiempo como..."], examples: ["Mi relación con el tiempo ha madurado; ahora veo cada momento como limitado y valioso."] } },
+                        { q: "¿Cómo equilibras la productividad y el descanso en tu vida diaria?", t: "Reflexión", chunks: { vocab: ["equilibrio (balance)", "productividad (productivity)", "descanso (rest)"], starters: ["Trato de equilibrar...", "He aprendido que...", "Para mí el equilibrio significa..."], examples: ["Trato de equilibrar estableciendo límites claros y reconociendo que el descanso también es productivo."] } },
+                        { q: "¿Qué significa vivir intencionalmente en lugar de solo pasar por los movimientos?", t: "Filosófico", chunks: { vocab: ["intencional (intentional)", "propósito (purpose)", "consciente (conscious)"], starters: ["Vivir intencionalmente significa...", "Implica...", "Es la diferencia entre..."], examples: ["Vivir intencionalmente significa tomar decisiones conscientes alineadas con valores profundos, no solo reaccionar."] } }
+                    ]
+                }
+            },
+            french: {
+                novice: {
+                    family: [
+                        { q: "As-tu des frères et sœurs?", t: "Oui/Non", chunks: { vocab: ["frères et sœurs (siblings)", "avoir (to have)"], starters: ["Oui, j'ai...", "Non, je n'ai pas...", "J'ai un frère/une sœur"], examples: ["Oui, j'ai deux frères.", "Non, je suis enfant unique."] } },
+                        { q: "Combien de personnes y a-t-il dans ta famille?", t: "Nombre", chunks: { vocab: ["combien (how many)", "personnes (people)", "famille (family)"], starters: ["Il y a... personnes", "Dans ma famille, il y a..."], examples: ["Il y a cinq personnes dans ma famille."] } },
+                        { q: "Habites-tu avec tes parents ou avec tes grands-parents?", t: "Ou/Ou", chunks: { vocab: ["habiter (to live)", "parents (parents)", "grands-parents (grandparents)"], starters: ["J'habite avec...", "J'habite avec mes..."], examples: ["J'habite avec mes parents."] } },
+                        { q: "Ta famille est grande ou petite?", t: "Ou/Ou", chunks: { vocab: ["grande (big)", "petite (small)", "famille (family)"], starters: ["Ma famille est...", "Elle est..."], examples: ["Ma famille est grande."] } }
+                    ],
+                    sports: [
+                        { q: "Fais-tu du sport?", t: "Oui/Non", chunks: { vocab: ["faire du sport (to do sports)", "sport (sport)"], starters: ["Oui, je fais...", "Non, je ne fais pas..."], examples: ["Oui, je fais du football.", "Non, je ne fais pas de sport."] } },
+                        { q: "Aimes-tu le football ou le basket?", t: "Ou/Ou", chunks: { vocab: ["aimer (to like)", "football (soccer)", "basket (basketball)"], starters: ["J'aime...", "Je préfère..."], examples: ["J'aime le football."] } },
+                        { q: "Quel est ton sport préféré?", t: "Fait simple", chunks: { vocab: ["quel (which)", "préféré (favorite)", "sport (sport)"], starters: ["Mon sport préféré est...", "C'est..."], examples: ["Mon sport préféré est le tennis."] } },
+                        { q: "Joues-tu dans une équipe?", t: "Oui/Non", chunks: { vocab: ["jouer (to play)", "équipe (team)"], starters: ["Oui, je joue dans...", "Non, je ne joue pas..."], examples: ["Oui, je joue dans une équipe de football."] } }
+                    ],
+                    music: [
+                        { q: "Aimes-tu la musique?", t: "Oui/Non", chunks: { vocab: ["aimer (to like)", "musique (music)"], starters: ["Oui, j'aime...", "Non, je n'aime pas..."], examples: ["Oui, j'aime beaucoup la musique."] } },
+                        { q: "Joues-tu d'un instrument?", t: "Oui/Non", chunks: { vocab: ["jouer de (to play instrument)", "instrument (instrument)"], starters: ["Oui, je joue...", "Non, je ne joue pas..."], examples: ["Oui, je joue de la guitare."] } },
+                        { q: "Qui est ton/ta chanteur/chanteuse préféré(e)?", t: "Fait simple", chunks: { vocab: ["qui (who)", "chanteur/chanteuse (singer)", "préféré(e) (favorite)"], starters: ["Mon chanteur préféré est...", "C'est..."], examples: ["Mon chanteur préféré est Stromae."] } },
+                        { q: "Quelle musique aimes-tu?", t: "Fait simple", chunks: { vocab: ["quelle (what)", "musique (music)", "aimer (to like)"], starters: ["J'aime...", "J'aime la musique..."], examples: ["J'aime la musique pop."] } }
+                    ],
+                    food: [
+                        { q: "Aimes-tu la pizza?", t: "Oui/Non", chunks: { vocab: ["aimer (to like)", "pizza (pizza)"], starters: ["Oui, j'aime...", "Non, je n'aime pas..."], examples: ["Oui, j'aime beaucoup la pizza."] } },
+                        { q: "Quel est ton plat préféré?", t: "Fait simple", chunks: { vocab: ["quel (which)", "plat (dish)", "préféré (favorite)"], starters: ["Mon plat préféré est...", "C'est..."], examples: ["Mon plat préféré sont les pâtes."] } },
+                        { q: "Préfères-tu les hamburgers ou les tacos?", t: "Ou/Ou", chunks: { vocab: ["préférer (to prefer)", "hamburgers (hamburgers)", "tacos (tacos)"], starters: ["Je préfère...", "J'aime mieux..."], examples: ["Je préfère les tacos."] } },
+                        { q: "Aimes-tu la glace?", t: "Oui/Non", chunks: { vocab: ["aimer (to like)", "glace (ice cream)"], starters: ["Oui, j'aime...", "Non, je n'aime pas..."], examples: ["Oui, j'adore la glace."] } }
+                    ],
+                    hobbies: [
+                        { q: "As-tu des passe-temps?", t: "Oui/Non", chunks: { vocab: ["avoir (to have)", "passe-temps (hobbies)"], starters: ["Oui, j'ai...", "Non, je n'ai pas..."], examples: ["Oui, j'ai beaucoup de passe-temps."] } },
+                        { q: "Aimes-tu lire?", t: "Oui/Non", chunks: { vocab: ["aimer (to like)", "lire (to read)"], starters: ["Oui, j'aime...", "Non, je n'aime pas..."], examples: ["Oui, j'aime lire des livres."] } },
+                        { q: "Que fais-tu pour t'amuser?", t: "Fait simple", chunks: { vocab: ["faire (to do)", "s'amuser (to have fun)"], starters: ["J'aime...", "Pour m'amuser..."], examples: ["J'aime jouer aux jeux vidéo."] } },
+                        { q: "Préfères-tu les jeux vidéo ou les jeux de société?", t: "Ou/Ou", chunks: { vocab: ["préférer (to prefer)", "jeux vidéo (video games)", "jeux de société (board games)"], starters: ["Je préfère...", "J'aime mieux..."], examples: ["Je préfère les jeux vidéo."] } }
+                    ],
+                    travel: [
+                        { q: "Aimes-tu voyager?", t: "Oui/Non", chunks: { vocab: ["aimer (to like)", "voyager (to travel)"], starters: ["Oui, j'aime...", "Non, je n'aime pas..."], examples: ["Oui, j'aime beaucoup voyager."] } },
+                        { q: "Es-tu allé(e) à la plage?", t: "Oui/Non", chunks: { vocab: ["aller (to go)", "plage (beach)"], starters: ["Oui, je suis allé(e)...", "Non, je ne suis pas allé(e)..."], examples: ["Oui, je suis allé plusieurs fois."] } },
+                        { q: "Préfères-tu la plage ou la montagne?", t: "Ou/Ou", chunks: { vocab: ["préférer (to prefer)", "plage (beach)", "montagne (mountain)"], starters: ["Je préfère...", "J'aime mieux..."], examples: ["Je préfère la plage."] } },
+                        { q: "Où veux-tu aller?", t: "Fait simple", chunks: { vocab: ["où (where)", "vouloir (to want)", "aller (to go)"], starters: ["Je veux aller...", "J'aimerais aller..."], examples: ["Je veux aller en France."] } }
+                    ],
+                    school: [
+                        { q: "Aimes-tu l'école?", t: "Oui/Non", chunks: { vocab: ["aimer (to like)", "école (school)"], starters: ["Oui, j'aime...", "Non, je n'aime pas..."], examples: ["Oui, j'aime l'école."] } },
+                        { q: "Quelle est ta matière préférée?", t: "Fait simple", chunks: { vocab: ["quelle (which)", "matière (subject)", "préférée (favorite)"], starters: ["Ma matière préférée est...", "C'est..."], examples: ["Ma matière préférée sont les maths."] } },
+                        { q: "Préfères-tu les maths ou les sciences?", t: "Ou/Ou", chunks: { vocab: ["préférer (to prefer)", "maths (math)", "sciences (science)"], starters: ["Je préfère...", "J'aime mieux..."], examples: ["Je préfère les sciences."] } },
+                        { q: "As-tu beaucoup de devoirs?", t: "Oui/Non", chunks: { vocab: ["avoir (to have)", "beaucoup (a lot)", "devoirs (homework)"], starters: ["Oui, j'ai...", "Non, je n'ai pas..."], examples: ["Oui, j'ai beaucoup de devoirs."] } }
+                    ],
+                    pets: [
+                        { q: "As-tu des animaux de compagnie?", t: "Oui/Non", chunks: { vocab: ["avoir (to have)", "animaux (animals)", "compagnie (companion)"], starters: ["Oui, j'ai...", "Non, je n'ai pas..."], examples: ["Oui, j'ai un chien."] } },
+                        { q: "As-tu un chien ou un chat?", t: "Ou/Ou", chunks: { vocab: ["avoir (to have)", "chien (dog)", "chat (cat)"], starters: ["J'ai un...", "J'ai une..."], examples: ["J'ai un chien."] } },
+                        { q: "Comment s'appelle ton animal?", t: "Fait simple", chunks: { vocab: ["s'appeler (to be called)", "animal (animal)"], starters: ["Il/Elle s'appelle...", "Mon animal s'appelle..."], examples: ["Il s'appelle Max."] } },
+                        { q: "Quel est ton animal préféré?", t: "Fait simple", chunks: { vocab: ["quel (which)", "animal (animal)", "préféré (favorite)"], starters: ["Mon animal préféré est...", "C'est..."], examples: ["Mon animal préféré est le chien."] } }
+                    ],
+                    media: [
+                        { q: "Regardes-tu la télévision?", t: "Oui/Non", chunks: { vocab: ["regarder (to watch)", "télévision (television)"], starters: ["Oui, je regarde...", "Non, je ne regarde pas..."], examples: ["Oui, je regarde la télévision tous les jours."] } },
+                        { q: "Quelle est ton émission préférée?", t: "Fait simple", chunks: { vocab: ["quelle (which)", "émission (show)", "préférée (favorite)"], starters: ["Mon émission préférée est...", "C'est..."], examples: ["Mon émission préférée est Friends."] } },
+                        { q: "Préfères-tu les films ou les séries?", t: "Ou/Ou", chunks: { vocab: ["préférer (to prefer)", "films (movies)", "séries (series)"], starters: ["Je préfère...", "J'aime mieux..."], examples: ["Je préfère les films."] } },
+                        { q: "Joues-tu aux jeux vidéo?", t: "Oui/Non", chunks: { vocab: ["jouer (to play)", "jeux vidéo (video games)"], starters: ["Oui, je joue...", "Non, je ne joue pas..."], examples: ["Oui, je joue aux jeux vidéo avec mes amis."] } }
+                    ],
+                    daily: [
+                        { q: "À quelle heure te réveilles-tu?", t: "Fait simple", chunks: { vocab: ["heure (time)", "se réveiller (to wake up)"], starters: ["Je me réveille à...", "Je me réveille à... heures"], examples: ["Je me réveille à sept heures."] } },
+                        { q: "Te réveilles-tu tôt ou tard?", t: "Ou/Ou", chunks: { vocab: ["se réveiller (to wake up)", "tôt (early)", "tard (late)"], starters: ["Je me réveille...", "Normalement..."], examples: ["Je me réveille tôt."] } },
+                        { q: "Que fais-tu après l'école?", t: "Fait simple", chunks: { vocab: ["faire (to do)", "après (after)", "école (school)"], starters: ["Après l'école...", "Je fais..."], examples: ["Après l'école, je fais mes devoirs."] } },
+                        { q: "Que fais-tu le week-end?", t: "Fait simple", chunks: { vocab: ["faire (to do)", "week-end (weekend)"], starters: ["Le week-end...", "J'aime..."], examples: ["Le week-end, je joue avec mes amis."] } }
+                    ]
+                },
+                intermediate: {
+                    family: [
+                        { q: "Parle-moi de ta famille. Avec qui habites-tu?", t: "Description", chunks: { vocab: ["parler (to talk)", "habiter (to live)", "avec qui (with whom)"], starters: ["J'habite avec...", "Dans ma famille, nous sommes...", "J'ai..."], examples: ["J'habite avec mes parents et ma grande sœur. Nous sommes quatre en tout."] } },
+                        { q: "Que fait ta mère/ton père comme travail?", t: "Détail", chunks: { vocab: ["faire (to do)", "travail (job)", "profession (profession)"], starters: ["Ma mère/Mon père est...", "Il/Elle travaille comme...", "Il/Elle fait..."], examples: ["Mon père est professeur de mathématiques dans un collège."] } },
+                        { q: "De qui es-tu le plus proche dans ta famille et pourquoi?", t: "Comparaison", chunks: { vocab: ["proche (close)", "parce que (because)", "relation (relationship)"], starters: ["Je suis plus proche de...", "Je m'entends mieux avec...", "J'ai une bonne relation avec..."], examples: ["Je suis plus proche de mon frère parce que nous partageons beaucoup d'intérêts."] } },
+                        { q: "Décris un week-end typique avec ta famille.", t: "Narrative", chunks: { vocab: ["week-end (weekend)", "typique (typical)", "normalement (normally)"], starters: ["Le week-end...", "Normalement...", "D'habitude..."], examples: ["Le week-end, nous prenons le petit-déjeuner ensemble et ensuite nous allons au parc."] } }
+                    ],
+                    sports: [
+                        { q: "Quels sports pratiques-tu et à quelle fréquence?", t: "Détail", chunks: { vocab: ["pratiquer (to practice)", "fréquence (frequency)", "fois (times)"], starters: ["Je pratique... fois par semaine", "Je joue au... régulièrement", "Je m'entraîne..."], examples: ["Je pratique la natation trois fois par semaine après l'école."] } },
+                        { q: "Parle-moi de ton équipe ou de tes coéquipiers.", t: "Description", chunks: { vocab: ["équipe (team)", "coéquipiers (teammates)", "entraîneur (coach)"], starters: ["Mon équipe est...", "Mes coéquipiers sont...", "Nous avons un entraîneur..."], examples: ["Mon équipe est très unie et mes coéquipiers sont très sympathiques."] } },
+                        { q: "Pourquoi aimes-tu ce sport plus que d'autres?", t: "Comparaison", chunks: { vocab: ["parce que (because)", "plus que (more than)", "amusant (fun)"], starters: ["J'aime parce que...", "Je préfère ce sport parce que...", "Je le trouve..."], examples: ["J'aime parce que c'est très excitant et ça me garde actif."] } },
+                        { q: "Décris un entraînement ou un match typique.", t: "Narrative", chunks: { vocab: ["entraînement (training)", "match (game)", "d'abord (first)", "puis (then)"], starters: ["D'abord...", "Pendant l'entraînement...", "Normalement nous commençons par..."], examples: ["D'abord nous nous échauffons pendant 15 minutes, puis nous pratiquons les techniques."] } }
+                    ],
+                    music: [
+                        { q: "Quel type de musique écoutes-tu le plus et pourquoi?", t: "Opinion", chunks: { vocab: ["type (type)", "genre (genre)", "rythme (rhythm)"], starters: ["J'écoute principalement...", "J'aime surtout... parce que...", "Je préfère..."], examples: ["J'écoute principalement de la pop parce qu'elle a des mélodies entraînantes."] } },
+                        { q: "Parle-moi de l'apprentissage de ton instrument.", t: "Narrative", chunks: { vocab: ["apprendre (to learn)", "pratiquer (to practice)", "difficile (difficult)"], starters: ["J'ai commencé à apprendre...", "Je joue depuis... ans", "Au début c'était..."], examples: ["J'ai commencé à apprendre le piano il y a cinq ans. Au début c'était difficile."] } },
+                        { q: "En quoi tes goûts musicaux sont-ils différents de ceux de tes parents?", t: "Comparer", chunks: { vocab: ["différent (different)", "tandis que (while)", "par contre (on the other hand)"], starters: ["J'aime... mais eux...", "Je préfère... tandis que mes parents..."], examples: ["Je préfère le rap tandis que mes parents écoutent de la musique classique."] } },
+                        { q: "Décris un concert ou une performance auquel tu es allé(e).", t: "Description", chunks: { vocab: ["concert (concert)", "performance (performance)", "incroyable (amazing)"], starters: ["Je suis allé(e) à un concert de...", "L'atmosphère était...", "C'était..."], examples: ["Je suis allé à un concert de rock l'année dernière. L'atmosphère était incroyable."] } }
+                    ],
+                    food: [
+                        { q: "Quel est ton repas préféré et pourquoi l'aimes-tu?", t: "Opinion", chunks: { vocab: ["préféré (favorite)", "saveur (flavor)", "délicieux (delicious)"], starters: ["Mon repas préféré est... parce que...", "J'adore... pour sa...", "J'apprécie..."], examples: ["Mon repas préféré sont les pâtes parce que j'adore leur saveur crémeuse."] } },
+                        { q: "Parle-moi d'un plat de ta culture ou famille.", t: "Description", chunks: { vocab: ["traditionnel (traditional)", "préparer (to prepare)", "ingrédients (ingredients)"], starters: ["Dans ma famille nous préparons...", "Un plat traditionnel est...", "Ma famille fait..."], examples: ["Dans ma famille nous préparons la ratatouille pour les fêtes. C'est une tradition."] } },
+                        { q: "Décris ce que tu manges typiquement dans une journée.", t: "Détail", chunks: { vocab: ["petit-déjeuner (breakfast)", "déjeuner (lunch)", "dîner (dinner)"], starters: ["Pour le petit-déjeuner...", "Normalement je mange...", "Pendant la journée..."], examples: ["Pour le petit-déjeuner je mange des céréales, je déjeune à l'école et je dîne avec ma famille."] } },
+                        { q: "Parle-moi d'une fois où tu as essayé un nouveau plat.", t: "Narrative", chunks: { vocab: ["essayer (to try)", "première fois (first time)", "expérience (experience)"], starters: ["Une fois j'ai essayé...", "La première fois que j'ai mangé...", "Je me souviens quand..."], examples: ["Une fois j'ai essayé des sushis pour la première fois. J'ai été surpris par leur fraîcheur."] } }
+                    ],
+                    hobbies: [
+                        { q: "Quels passe-temps as-tu et comment les as-tu commencés?", t: "Narrative", chunks: { vocab: ["passe-temps (hobbies)", "commencer (to start)", "intérêt (interest)"], starters: ["J'ai commencé... quand...", "Je me suis intéressé à... parce que...", "Mes passe-temps incluent..."], examples: ["J'ai commencé la peinture quand j'avais 10 ans après un cours d'art."] } },
+                        { q: "Parle-moi de ton passe-temps préféré en détail.", t: "Description", chunks: { vocab: ["préféré (favorite)", "apprécier (to enjoy)", "consacrer du temps (to dedicate time)"], starters: ["Mon passe-temps préféré est...", "J'apprécie beaucoup...", "J'adore... parce que..."], examples: ["Mon passe-temps préféré est la photographie. J'apprécie capturer des moments spéciaux."] } },
+                        { q: "Pourquoi préfères-tu ce passe-temps aux autres?", t: "Comparaison", chunks: { vocab: ["préférer (to prefer)", "relaxant (relaxing)", "créatif (creative)"], starters: ["Je le préfère parce que...", "Je le trouve plus...", "Contrairement aux autres..."], examples: ["Je le préfère parce que je le trouve plus relaxant et créatif que d'autres."] } },
+                        { q: "Combien de temps passes-tu sur tes passe-temps chaque semaine?", t: "Détail", chunks: { vocab: ["temps (time)", "heures (hours)", "chaque semaine (each week)"], starters: ["Je passe environ...", "Je consacre... heures", "Chaque semaine..."], examples: ["Je passe environ 10 heures chaque semaine à pratiquer mes passe-temps."] } }
+                    ],
+                    travel: [
+                        { q: "Parle-moi du meilleur voyage que tu aies jamais fait.", t: "Narrative", chunks: { vocab: ["voyage (trip)", "meilleur (best)", "mémorable (memorable)"], starters: ["Le meilleur voyage était...", "J'ai voyagé à... et c'était...", "Je me souviens quand je suis allé à..."], examples: ["Le meilleur voyage était au Mexique. J'ai découvert la culture et la cuisine incroyable."] } },
+                        { q: "Où veux-tu voyager et pourquoi?", t: "Opinion", chunks: { vocab: ["vouloir (to want)", "rêve (dream)", "découvrir (to discover)"], starters: ["Je veux voyager à... parce que...", "J'aimerais découvrir...", "Je rêve de visiter..."], examples: ["Je veux voyager au Japon parce que sa culture traditionnelle me fascine."] } },
+                        { q: "Décris un endroit que tu as visité qui t'a surpris(e).", t: "Description", chunks: { vocab: ["surprendre (to surprise)", "impressionnant (impressive)", "différent (different)"], starters: ["J'ai été surpris par... parce que...", "Je ne m'attendais pas à...", "C'était impressionnant..."], examples: ["J'ai été surpris par Barcelone parce que son architecture est complètement unique."] } },
+                        { q: "Que fais-tu habituellement quand tu voyages?", t: "Détail", chunks: { vocab: ["habituellement (usually)", "explorer (to explore)", "activités (activities)"], starters: ["D'habitude...", "J'aime explorer...", "Normalement..."], examples: ["D'habitude j'explore les sites historiques et je goûte la cuisine locale."] } }
+                    ],
+                    school: [
+                        { q: "Quel est ton cours préféré et qu'y apprends-tu?", t: "Description", chunks: { vocab: ["cours (class)", "apprendre (to learn)", "matière (subject)"], starters: ["Mon cours préféré est... parce que...", "Dans ce cours nous apprenons...", "J'aime... parce que..."], examples: ["Mon cours préféré est l'histoire parce que nous apprenons sur différentes cultures."] } },
+                        { q: "Parle-moi de ta journée scolaire du début à la fin.", t: "Narrative", chunks: { vocab: ["journée scolaire (school day)", "début (beginning)", "fin (end)"], starters: ["Ma journée commence...", "D'abord j'ai...", "Après..."], examples: ["Ma journée commence à 8h. D'abord j'ai maths, puis anglais."] } },
+                        { q: "Que trouves-tu le plus difficile à l'école et pourquoi?", t: "Opinion", chunks: { vocab: ["difficile (difficult)", "dur (hard)", "effort (effort)"], starters: ["Le plus difficile est...", "Je trouve... difficile parce que...", "J'ai du mal avec..."], examples: ["Le plus difficile est la chimie parce qu'elle nécessite beaucoup de mémorisation."] } },
+                        { q: "Décris ton/ta professeur(e) préféré(e) et son cours.", t: "Description", chunks: { vocab: ["professeur (teacher)", "enseigner (to teach)", "expliquer (to explain)"], starters: ["Mon/Ma professeur(e) préféré(e) est...", "Il/Elle est... parce que...", "Ses cours sont..."], examples: ["Ma professeure préférée est Mme Martin. Elle explique tout très clairement."] } }
+                    ],
+                    pets: [
+                        { q: "Parle-moi de ton animal - comment est-il?", t: "Description", chunks: { vocab: ["animal (animal)", "personnalité (personality)", "apparence (appearance)"], starters: ["Mon animal est...", "Il/Elle a...", "Il/Elle est très..."], examples: ["Mon animal est un labrador. Il est très amical et adore jouer."] } },
+                        { q: "Quelles responsabilités as-tu pour t'occuper de ton animal?", t: "Détail", chunks: { vocab: ["responsabilités (responsibilities)", "s'occuper de (to care for)", "nourrir (to feed)"], starters: ["Je dois...", "Je suis responsable de...", "Chaque jour..."], examples: ["Je dois le nourrir deux fois par jour et le promener."] } },
+                        { q: "Décris un moment drôle ou mémorable avec ton animal.", t: "Narrative", chunks: { vocab: ["drôle (funny)", "mémorable (memorable)", "souvenir (memory)"], starters: ["Une fois...", "Je me souviens quand...", "C'était drôle quand..."], examples: ["Je me souviens quand mon chat a poursuivi sa propre queue pendant 10 minutes."] } },
+                        { q: "Comment est la personnalité de ton animal?", t: "Description", chunks: { vocab: ["personnalité (personality)", "caractère (character)", "comportement (behavior)"], starters: ["Mon animal est...", "Il/Elle a une personnalité...", "Il/Elle se comporte..."], examples: ["Mon animal est très joueur mais aime aussi beaucoup dormir."] } }
+                    ],
+                    media: [
+                        { q: "Quel type d'émissions ou de films aimes-tu et pourquoi?", t: "Opinion", chunks: { vocab: ["type (type)", "genre (genre)", "divertissement (entertainment)"], starters: ["J'aime... parce que...", "Je préfère... parce que...", "J'apprécie regarder..."], examples: ["J'aime les comédies parce qu'elles me font rire et oublier le stress."] } },
+                        { q: "Parle-moi de ton émission préférée. De quoi s'agit-il?", t: "Description", chunks: { vocab: ["émission (show)", "s'agir de (to be about)", "personnages (characters)"], starters: ["Mon émission préférée est...", "Il s'agit de...", "L'histoire parle de..."], examples: ["Mon émission préférée est Stranger Things. Il s'agit d'enfants avec des pouvoirs."] } },
+                        { q: "Combien de temps passes-tu devant des écrans chaque jour?", t: "Détail", chunks: { vocab: ["temps (time)", "écrans (screens)", "heures (hours)"], starters: ["Je passe environ...", "Chaque jour j'utilise...", "Entre... et... heures"], examples: ["Je passe environ 3 heures par jour entre mon téléphone et l'ordinateur."] } },
+                        { q: "Décris le dernier film que tu as vu. De quoi parlait-il?", t: "Narrative", chunks: { vocab: ["dernier (last)", "film (movie)", "intrigue (plot)"], starters: ["Le dernier film était...", "Il parlait de...", "L'histoire était sur..."], examples: ["Le dernier film était Coco. Il parlait de la tradition du Jour des Morts."] } }
+                    ],
+                    daily: [
+                        { q: "Décris ta journée parfaite du matin au soir.", t: "Narrative", chunks: { vocab: ["parfaite (perfect)", "matin (morning)", "soir (evening)"], starters: ["Ma journée parfaite commencerait...", "Le matin...", "Pendant la journée..."], examples: ["Ma journée parfaite commencerait tard, je prendrais le petit-déjeuner avec ma famille et je sortirais avec des amis."] } },
+                        { q: "Comment est ta routine matinale?", t: "Description", chunks: { vocab: ["routine (routine)", "matinale (morning)", "se réveiller (to wake up)"], starters: ["Ma routine matinale consiste à...", "D'abord...", "Normalement..."], examples: ["Ma routine matinale consiste à me réveiller, me doucher et prendre mon petit-déjeuner rapidement."] } },
+                        { q: "Que fais-tu pour te détendre après l'école?", t: "Détail", chunks: { vocab: ["se détendre (to relax)", "se reposer (to rest)", "activités (activities)"], starters: ["Pour me détendre...", "J'aime...", "Normalement..."], examples: ["Pour me détendre j'écoute de la musique ou je regarde des vidéos sur mon téléphone."] } },
+                        { q: "Parle-moi de la partie la plus importante de ta journée.", t: "Opinion", chunks: { vocab: ["important (important)", "partie (part)", "significatif (significant)"], starters: ["La partie la plus importante est...", "Ce que j'apprécie le plus c'est...", "Pour moi..."], examples: ["La partie la plus importante est le dîner parce que toute ma famille se réunit."] } }
+                    ]
+                },
+                advanced: {
+                    family: [
+                        { q: "Comment ta relation avec ta famille a-t-elle changé en grandissant?", t: "Analyse", chunks: { vocab: ["changer (to change)", "relation (relationship)", "mûrir (to mature)"], starters: ["En grandissant...", "La relation a évolué...", "Avant... mais maintenant..."], examples: ["En grandissant, je comprends mieux les décisions de mes parents et notre communication s'est beaucoup améliorée."] } },
+                        { q: "Quelles valeurs ou leçons as-tu apprises de ta famille?", t: "Réflexion", chunks: { vocab: ["valeurs (values)", "leçons (lessons)", "enseigner (to teach)"], starters: ["Ma famille m'a enseigné...", "J'ai appris l'importance de...", "Les valeurs que..."], examples: ["Ma famille m'a enseigné l'importance du respect et de la persévérance face aux difficultés."] } },
+                        { q: "Comment les traditions culturelles influencent-elles la vie de ta famille?", t: "Analyse culturelle", chunks: { vocab: ["influencer (to influence)", "traditions (traditions)", "identité (identity)"], starters: ["Les traditions culturelles...", "Dans ma famille...", "Ces traditions nous..."], examples: ["Les traditions culturelles forment le noyau de notre identité familiale et nous maintiennent connectés à nos racines."] } },
+                        { q: "Comment penses-tu que ta famille a façonné qui tu es aujourd'hui?", t: "Réflexion", chunks: { vocab: ["façonner (to shape)", "influence (influence)", "personnalité (personality)"], starters: ["Je pense que ma famille a...", "Son influence se reflète dans...", "Grâce à eux..."], examples: ["Je pense que ma famille a façonné mon éthique de travail et ma capacité à ressentir de l'empathie pour les autres."] } }
+                    ],
+                    sports: [
+                        { q: "Comment la pratique du sport a-t-elle influencé ton caractère ou tes valeurs?", t: "Réflexion", chunks: { vocab: ["influencer (to influence)", "caractère (character)", "discipline (discipline)"], starters: ["Le sport m'a appris...", "Il a développé en moi...", "Grâce au sport..."], examples: ["Le sport m'a appris la discipline, la résilience et l'importance du travail d'équipe."] } },
+                        { q: "Quelles leçons de vie as-tu apprises à travers le sport?", t: "Analyse", chunks: { vocab: ["leçons (lessons)", "persévérance (perseverance)", "échec (failure)"], starters: ["J'ai appris que...", "Le sport m'a enseigné...", "Une leçon importante est..."], examples: ["J'ai appris que l'échec est temporaire et que la persévérance apporte toujours des résultats."] } },
+                        { q: "Que signifie être un bon coéquipier, selon toi?", t: "Opinion/Valeurs", chunks: { vocab: ["signifier (to mean)", "soutien (support)", "communication (communication)"], starters: ["Pour moi, être un bon coéquipier signifie...", "Cela implique...", "Cela nécessite..."], examples: ["Pour moi, être un bon coéquipier signifie soutenir les autres même quand ils perdent et communiquer honnêtement."] } },
+                        { q: "Comment équilibres-tu les aspects compétitifs et amusants du sport?", t: "Analyse", chunks: { vocab: ["équilibrer (to balance)", "compétitif (competitive)", "profiter (to enjoy)"], starters: ["J'essaie d'équilibrer...", "Il est important de maintenir...", "Pour moi l'équilibre se trouve dans..."], examples: ["J'essaie d'équilibrer en prenant la compétition au sérieux mais en me rappelant que l'essentiel est de profiter du processus."] } }
+                    ],
+                    music: [
+                        { q: "Comment la musique sert-elle différents objectifs dans ta vie?", t: "Analyse", chunks: { vocab: ["objectifs (purposes)", "émotions (emotions)", "expression (expression)"], starters: ["La musique sert à...", "Selon le moment...", "J'utilise la musique pour..."], examples: ["La musique sert à traiter les émotions, me motiver pendant les études et me connecter aux autres."] } },
+                        { q: "Que penses-tu que la musique révèle sur une culture ou une génération?", t: "Analyse culturelle", chunks: { vocab: ["révéler (to reveal)", "refléter (to reflect)", "époque (era)"], starters: ["Je pense que la musique reflète...", "Elle révèle les valeurs...", "C'est un miroir de..."], examples: ["Je pense que la musique reflète les luttes, les espoirs et les valeurs de chaque génération."] } },
+                        { q: "Quel rôle la musique joue-t-elle dans ton identité?", t: "Auto-analyse", chunks: { vocab: ["identité (identity)", "expression (expression)", "authentique (authentic)"], starters: ["La musique fait partie de...", "Elle m'aide à exprimer...", "À travers la musique..."], examples: ["La musique fait partie intégrante de mon identité et m'aide à exprimer des émotions que je ne peux pas verbaliser."] } },
+                        { q: "Que signifie vraiment écouter la musique au lieu de simplement l'entendre?", t: "Philosophique", chunks: { vocab: ["écouter vs entendre (to listen vs to hear)", "attention (attention)", "profond (deep)"], starters: ["Écouter implique...", "La différence se trouve dans...", "Cela signifie prêter..."], examples: ["Écouter implique une connexion émotionnelle et une attention consciente, tandis qu'entendre est simplement physique."] } }
+                    ],
+                    food: [
+                        { q: "Comment la nourriture se connecte-t-elle à ton identité culturelle?", t: "Analyse culturelle", chunks: { vocab: ["identité (identity)", "héritage (heritage)", "racines (roots)"], starters: ["La nourriture se connecte avec...", "C'est un lien avec...", "À travers la nourriture..."], examples: ["La nourriture se connecte avec mes racines françaises et maintient vivante la mémoire de mes grands-parents."] } },
+                        { q: "Quel rôle la nourriture joue-t-elle dans ta famille au-delà de la nutrition?", t: "Analyse", chunks: { vocab: ["rôle (role)", "unir (to unite)", "rituel (ritual)"], starters: ["La nourriture est un moyen de...", "Elle va au-delà de... parce que...", "Elle sert à..."], examples: ["La nourriture est un moyen de nous unir, partager des histoires et créer des moments mémorables ensemble."] } },
+                        { q: "Décris un souvenir lié à la nourriture qui a une signification émotionnelle.", t: "Narrative réflexive", chunks: { vocab: ["souvenir (memory)", "signification (meaning)", "évoquer (to evoke)"], starters: ["Je me souviens clairement...", "Il y a un moment qui...", "Chaque fois que..."], examples: ["Je me souviens clairement de faire des crêpes avec ma grand-mère. Cette odeur évoque toujours sa présence et son amour."] } },
+                        { q: "Quelle est ta philosophie sur essayer de nouveaux aliments?", t: "Opinion/Valeurs", chunks: { vocab: ["philosophie (philosophy)", "aventure (adventure)", "esprit ouvert (open mind)"], starters: ["Ma philosophie est...", "Je crois en...", "Pour moi il est important de..."], examples: ["Ma philosophie est de garder l'esprit ouvert parce que chaque aliment est une fenêtre sur une autre culture."] } }
+                    ],
+                    hobbies: [
+                        { q: "Comment tes passe-temps ont-ils façonné ton identité?", t: "Auto-analyse", chunks: { vocab: ["façonner (to shape)", "identité (identity)", "définir (to define)"], starters: ["Mes passe-temps ont...", "Ils m'ont aidé à...", "À travers eux..."], examples: ["Mes passe-temps ont façonné ma patience et mon attention aux détails, qualités qui définissent mon approche de la vie."] } },
+                        { q: "Que penses-tu que les passe-temps des gens révèlent sur eux?", t: "Analyse", chunks: { vocab: ["révéler (to reveal)", "priorités (priorities)", "personnalité (personality)"], starters: ["Les passe-temps révèlent...", "Ils montrent...", "Ils reflètent..."], examples: ["Les passe-temps révèlent les priorités, les valeurs et la manière dont une personne cherche du sens."] } },
+                        { q: "Quel rôle les passe-temps jouent-ils dans la santé mentale?", t: "Analyse", chunks: { vocab: ["santé mentale (mental health)", "bien-être (wellbeing)", "échappatoire (escape)"], starters: ["Les passe-temps sont essentiels pour...", "Ils fournissent...", "Ils aident à..."], examples: ["Les passe-temps sont essentiels pour l'équilibre mental, fournissant une échappatoire au stress et un sentiment d'accomplissement."] } },
+                        { q: "Que signifie être vraiment passionné par quelque chose?", t: "Philosophique", chunks: { vocab: ["passion (passion)", "dévouement (dedication)", "but (purpose)"], starters: ["La vraie passion implique...", "Cela signifie...", "Cela va au-delà de..."], examples: ["La vraie passion implique un dévouement inconditionnel et trouver un but au-delà du plaisir superficiel."] } }
+                    ],
+                    travel: [
+                        { q: "Comment voyager a-t-il changé ta perspective sur ta propre culture?", t: "Réflexion", chunks: { vocab: ["perspective (perspective)", "apprécier (to appreciate)", "contraster (to contrast)"], starters: ["Voyager m'a fait...", "Cela m'a aidé à apprécier...", "En contrastant..."], examples: ["Voyager m'a fait apprécier des aspects de ma culture que je tenais pour acquis et voir mon origine sous un autre angle."] } },
+                        { q: "Que penses-tu qui fait de quelqu'un un bon voyageur plutôt qu'un touriste?", t: "Analyse", chunks: { vocab: ["voyageur vs touriste (traveler vs tourist)", "immersion (immersion)", "respect (respect)"], starters: ["Un bon voyageur...", "La différence réside dans...", "Cela implique..."], examples: ["Un bon voyageur cherche une immersion culturelle authentique et respecte les traditions locales au-delà des photos."] } },
+                        { q: "Comment penses-tu que voyager façonne la croissance personnelle?", t: "Analyse", chunks: { vocab: ["croissance (growth)", "développer (to develop)", "élargir (to expand)"], starters: ["Voyager façonne... parce que...", "Cela contribue au développement...", "Cela élargit..."], examples: ["Voyager façonne l'empathie et l'adaptabilité, élargissant notre compréhension du monde et de nous-mêmes."] } },
+                        { q: "Quelles responsabilités les voyageurs ont-ils envers les endroits qu'ils visitent?", t: "Analyse éthique", chunks: { vocab: ["responsabilités (responsibilities)", "durable (sustainable)", "impact (impact)"], starters: ["Les voyageurs ont la responsabilité de...", "Nous devons...", "Il est important de..."], examples: ["Les voyageurs ont la responsabilité de minimiser leur impact environnemental et de respecter les communautés locales."] } }
+                    ],
+                    school: [
+                        { q: "Comment penses-tu que l'éducation devrait changer pour mieux servir les élèves?", t: "Analyse critique", chunks: { vocab: ["réforme (reform)", "approche (approach)", "individualisé (individualized)"], starters: ["L'éducation devrait...", "Nous avons besoin d'une approche plus...", "Ce serait bénéfique de..."], examples: ["L'éducation devrait se concentrer davantage sur la pensée critique et moins sur la mémorisation mécanique."] } },
+                        { q: "Qu'as-tu appris à l'école qui a véritablement changé ta façon de penser?", t: "Réflexion", chunks: { vocab: ["transformer (to transform)", "perspective (perspective)", "remettre en question (to question)"], starters: ["J'ai appris à...", "On m'a enseigné que...", "Cela a changé ma façon de penser sur..."], examples: ["J'ai appris à remettre en question les suppositions et à analyser l'information de manière critique avant de former des opinions."] } },
+                        { q: "Quel rôle les écoles devraient-elles jouer au-delà de l'apprentissage académique?", t: "Opinion/Valeurs", chunks: { vocab: ["rôle (role)", "développement intégral (holistic development)", "citoyenneté (citizenship)"], starters: ["Les écoles devraient...", "Il est crucial qu'elles...", "Elles doivent nous préparer pour..."], examples: ["Les écoles devraient développer des citoyens empathiques et critiques, pas seulement académiquement compétents."] } },
+                        { q: "Que signifie vraiment comprendre quelque chose au lieu de simplement le mémoriser?", t: "Philosophique", chunks: { vocab: ["comprendre (to understand)", "appliquer (to apply)", "profondeur (depth)"], starters: ["Comprendre implique...", "La différence se trouve dans...", "Cela signifie pouvoir..."], examples: ["Comprendre implique pouvoir appliquer des concepts à de nouvelles situations, tandis que mémoriser n'est qu'une rétention temporaire."] } }
+                    ],
+                    pets: [
+                        { q: "Que penses-tu que la relation entre humains et animaux révèle sur la société?", t: "Analyse", chunks: { vocab: ["relation (relationship)", "refléter (to reflect)", "compagnie (companionship)"], starters: ["Cette relation révèle...", "Elle montre que...", "Elle reflète notre besoin de..."], examples: ["Cette relation révèle notre besoin fondamental de connexion et la capacité d'aimer inconditionnellement."] } },
+                        { q: "Comment prendre soin d'un animal t'a-t-il appris la responsabilité?", t: "Réflexion", chunks: { vocab: ["enseigner (to teach)", "responsabilité (responsibility)", "besoins (needs)"], starters: ["Prendre soin d'un animal m'a appris...", "J'ai développé...", "Cela m'a rendu plus conscient de..."], examples: ["Prendre soin d'un animal m'a appris à prioriser les besoins des autres et à être constant dans mes engagements."] } },
+                        { q: "Quelles considérations éthiques as-tu concernant la possession d'animaux?", t: "Analyse éthique", chunks: { vocab: ["éthique (ethical)", "bien-être (welfare)", "engagement (commitment)"], starters: ["Éthiquement nous devons considérer...", "Il est important de...", "Cela implique l'engagement de..."], examples: ["Éthiquement nous devons considérer le bien-être animal à long terme et si nous pouvons tenir cet engagement à vie."] } },
+                        { q: "Décris comment ton animal a impacté ta vie émotionnelle ou ton bien-être.", t: "Narrative réflexive", chunks: { vocab: ["impact (impact)", "bien-être (wellbeing)", "soutien émotionnel (emotional support)"], starters: ["Mon animal a impacté...", "Il/Elle fournit...", "Dans les moments difficiles..."], examples: ["Mon animal a profondément impacté mon bien-être, fournissant une compagnie inconditionnelle dans les moments de solitude."] } }
+                    ],
+                    media: [
+                        { q: "Comment penses-tu que la consommation de médias affecte la santé mentale?", t: "Analyse", chunks: { vocab: ["consommation (consumption)", "impact (impact)", "équilibre (balance)"], starters: ["La consommation de médias peut...", "Cela affecte... parce que...", "Il est crucial de maintenir..."], examples: ["La consommation excessive de médias peut augmenter l'anxiété et la comparaison sociale, affectant l'estime de soi."] } },
+                        { q: "Quelle responsabilité les créateurs de contenu ont-ils envers leurs audiences?", t: "Analyse éthique", chunks: { vocab: ["responsabilité (responsibility)", "influence (influence)", "véracité (truthfulness)"], starters: ["Les créateurs ont la responsabilité de...", "Ils doivent considérer...", "Leur influence nécessite..."], examples: ["Les créateurs ont la responsabilité d'être véridiques et conscients de l'impact que leur contenu peut avoir."] } },
+                        { q: "Comment les médias ont-ils façonné ta compréhension du monde?", t: "Réflexion", chunks: { vocab: ["façonner (to shape)", "compréhension (understanding)", "perception (perception)"], starters: ["Les médias ont façonné...", "Ils m'ont exposé à...", "Ils ont influencé ma perception de..."], examples: ["Les médias ont façonné ma compréhension en m'exposant à des perspectives diverses que je ne trouverais pas localement."] } },
+                        { q: "Quel rôle la représentation dans les médias joue-t-elle dans la société?", t: "Analyse critique", chunks: { vocab: ["représentation (representation)", "diversité (diversity)", "normaliser (to normalize)"], starters: ["La représentation est cruciale parce que...", "Elle joue un rôle dans...", "Elle aide à normaliser..."], examples: ["La représentation est cruciale parce qu'elle valide des expériences diverses et remet en question les stéréotypes enracinés."] } }
+                    ],
+                    daily: [
+                        { q: "Comment tes routines quotidiennes reflètent-elles tes priorités et valeurs?", t: "Auto-analyse", chunks: { vocab: ["refléter (to reflect)", "priorités (priorities)", "valeurs (values)"], starters: ["Mes routines reflètent...", "Je consacre du temps à... parce que...", "Je priorise..."], examples: ["Mes routines reflètent que je priorise le bien-être familial et la croissance personnelle plutôt que le divertissement passif."] } },
+                        { q: "Comment ta relation avec le temps a-t-elle changé en grandissant?", t: "Réflexion", chunks: { vocab: ["perception (perception)", "valoriser (to value)", "gestion (management)"], starters: ["Ma relation avec le temps a...", "J'ai appris à valoriser...", "Maintenant je vois le temps comme..."], examples: ["Ma relation avec le temps a mûri; maintenant je vois chaque moment comme limité et précieux."] } },
+                        { q: "Comment équilibres-tu la productivité et le repos dans ta vie quotidienne?", t: "Réflexion", chunks: { vocab: ["équilibre (balance)", "productivité (productivity)", "repos (rest)"], starters: ["J'essaie d'équilibrer...", "J'ai appris que...", "Pour moi l'équilibre signifie..."], examples: ["J'essaie d'équilibrer en établissant des limites claires et en reconnaissant que le repos est aussi productif."] } },
+                        { q: "Que signifie vivre intentionnellement au lieu de simplement suivre les mouvements?", t: "Philosophique", chunks: { vocab: ["intentionnel (intentional)", "but (purpose)", "conscient (conscious)"], starters: ["Vivre intentionnellement signifie...", "Cela implique...", "C'est la différence entre..."], examples: ["Vivre intentionnellement signifie prendre des décisions conscientes alignées avec des valeurs profondes, pas seulement réagir."] } }
+                    ]
+                }
+            },
+            german: {
+                novice: {
+                    family: [{ q: "Hast du Geschwister?", t: "Ja/Nein" }, { q: "Wie viele Personen sind in deiner Familie?", t: "Zahl" }, { q: "Wohnst du bei deinen Eltern oder bei deinen Großeltern?", t: "Oder/Oder" }, { q: "Ist deine Familie groß oder klein?", t: "Oder/Oder" }],
+                    sports: [{ q: "Treibst du Sport?", t: "Ja/Nein" }, { q: "Magst du Fußball oder Basketball?", t: "Oder/Oder" }, { q: "Was ist deine Lieblingssportart?", t: "Einfache Tatsache" }, { q: "Spielst du in einer Mannschaft?", t: "Ja/Nein" }],
+                    music: [{ q: "Magst du Musik?", t: "Ja/Nein" }, { q: "Spielst du ein Instrument?", t: "Ja/Nein" }, { q: "Wer ist dein/e Lieblingssänger/in?", t: "Einfache Tatsache" }, { q: "Welche Musik magst du?", t: "Einfache Tatsache" }],
+                    food: [{ q: "Magst du Pizza?", t: "Ja/Nein" }, { q: "Was ist dein Lieblingsessen?", t: "Einfache Tatsache" }, { q: "Bevorzugst du Hamburger oder Tacos?", t: "Oder/Oder" }, { q: "Magst du Eis?", t: "Ja/Nein" }],
+                    hobbies: [{ q: "Hast du Hobbys?", t: "Ja/Nein" }, { q: "Liest du gern?", t: "Ja/Nein" }, { q: "Was machst du zum Spaß?", t: "Einfache Tatsache" }, { q: "Bevorzugst du Videospiele oder Brettspiele?", t: "Oder/Oder" }],
+                    travel: [{ q: "Reist du gern?", t: "Ja/Nein" }, { q: "Bist du schon am Strand gewesen?", t: "Ja/Nein" }, { q: "Bevorzugst du den Strand oder die Berge?", t: "Oder/Oder" }, { q: "Wohin möchtest du gehen?", t: "Einfache Tatsache" }],
+                    school: [{ q: "Magst du die Schule?", t: "Ja/Nein" }, { q: "Was ist dein Lieblingsfach?", t: "Einfache Tatsache" }, { q: "Bevorzugst du Mathe oder Naturwissenschaften?", t: "Oder/Oder" }, { q: "Hast du viele Hausaufgaben?", t: "Ja/Nein" }],
+                    pets: [{ q: "Hast du Haustiere?", t: "Ja/Nein" }, { q: "Hast du einen Hund oder eine Katze?", t: "Oder/Oder" }, { q: "Wie heißt dein Haustier?", t: "Einfache Tatsache" }, { q: "Was ist dein Lieblingstier?", t: "Einfache Tatsache" }],
+                    media: [{ q: "Siehst du fern?", t: "Ja/Nein" }, { q: "Was ist deine Lieblingssendung?", t: "Einfache Tatsache" }, { q: "Bevorzugst du Filme oder Serien?", t: "Oder/Oder" }, { q: "Spielst du Videospiele?", t: "Ja/Nein" }],
+                    daily: [{ q: "Wann wachst du auf?", t: "Einfache Tatsache" }, { q: "Wachst du früh oder spät auf?", t: "Oder/Oder" }, { q: "Was machst du nach der Schule?", t: "Einfache Tatsache" }, { q: "Was machst du am Wochenende?", t: "Einfache Tatsache" }]
+                },
+                intermediate: {
+                    family: [{ q: "Erzähl mir von deiner Familie. Mit wem wohnst du?", t: "Beschreibung" }, { q: "Was macht deine Mutter/dein Vater beruflich?", t: "Detail" }, { q: "Wem in deiner Familie stehst du am nächsten und warum?", t: "Vergleich" }, { q: "Beschreibe ein typisches Wochenende mit deiner Familie.", t: "Erzählung" }],
+                    sports: [{ q: "Welche Sportarten treibst du und wie oft?", t: "Detail" }, { q: "Erzähl mir von deiner Mannschaft oder deinen Teamkollegen.", t: "Beschreibung" }, { q: "Warum magst du diese Sportart mehr als andere?", t: "Vergleich" }, { q: "Beschreibe ein typisches Training oder Spiel.", t: "Erzählung" }],
+                    music: [{ q: "Welche Art von Musik hörst du am meisten und warum?", t: "Meinung" }, { q: "Erzähl mir vom Erlernen deines Instruments.", t: "Erzählung" }, { q: "Wie unterscheidet sich dein Musikgeschmack von dem deiner Eltern?", t: "Vergleichen" }, { q: "Beschreibe ein Konzert oder eine Aufführung, bei der du warst.", t: "Beschreibung" }],
+                    food: [{ q: "Was ist deine Lieblingsmahlzeit und warum magst du sie?", t: "Meinung" }, { q: "Erzähl mir von einem Essen aus deiner Kultur oder Familie.", t: "Beschreibung" }, { q: "Beschreibe, was du an einem typischen Tag isst.", t: "Detail" }, { q: "Erzähl mir von einer Zeit, als du ein neues Essen probiert hast.", t: "Erzählung" }],
+                    hobbies: [{ q: "Welche Hobbys hast du und wie hast du damit angefangen?", t: "Erzählung" }, { q: "Erzähl mir im Detail von deinem Lieblingshobby.", t: "Beschreibung" }, { q: "Warum bevorzugst du dieses Hobby gegenüber anderen?", t: "Vergleich" }, { q: "Wie viel Zeit verbringst du jede Woche mit deinen Hobbys?", t: "Detail" }],
+                    travel: [{ q: "Erzähl mir von der besten Reise, die du je gemacht hast.", t: "Erzählung" }, { q: "Wohin möchtest du reisen und warum?", t: "Meinung" }, { q: "Beschreibe einen Ort, den du besucht hast und der dich überrascht hat.", t: "Beschreibung" }, { q: "Was machst du normalerweise, wenn du reist?", t: "Detail" }],
+                    school: [{ q: "Was ist dein Lieblingsfach und was lernst du dort?", t: "Beschreibung" }, { q: "Erzähl mir von deinem Schultag von Anfang bis Ende.", t: "Erzählung" }, { q: "Was findest du an der Schule am schwierigsten und warum?", t: "Meinung" }, { q: "Beschreibe deinen Lieblingslehrer/deine Lieblingslehrerin.", t: "Beschreibung" }],
+                    pets: [{ q: "Erzähl mir alles über dein Haustier - wie ist es?", t: "Beschreibung" }, { q: "Welche Verantwortlichkeiten hast du für die Pflege deines Haustiers?", t: "Detail" }, { q: "Beschreibe einen lustigen oder unvergesslichen Moment mit deinem Haustier.", t: "Erzählung" }, { q: "Wie ist die Persönlichkeit deines Haustiers?", t: "Beschreibung" }],
+                    media: [{ q: "Welche Art von Sendungen oder Filmen magst du und warum?", t: "Meinung" }, { q: "Erzähl mir von deiner Lieblingssendung. Worum geht es?", t: "Beschreibung" }, { q: "Wie viel Zeit verbringst du jeden Tag vor Bildschirmen?", t: "Detail" }, { q: "Beschreibe den letzten Film, den du gesehen hast.", t: "Erzählung" }],
+                    daily: [{ q: "Beschreibe deinen perfekten Tag vom Morgen bis zum Abend.", t: "Erzählung" }, { q: "Wie ist deine Morgenroutine?", t: "Beschreibung" }, { q: "Was machst du, um dich nach der Schule zu entspannen?", t: "Detail" }, { q: "Erzähl mir vom wichtigsten Teil deines Tages.", t: "Meinung" }]
+                },
+                advanced: {
+                    family: [{ q: "Wie hat sich deine Beziehung zu deiner Familie verändert, als du älter wurdest?", t: "Analyse" }, { q: "Welche Werte oder Lektionen hast du von deiner Familie gelernt?", t: "Reflexion" }, { q: "Wie beeinflussen kulturelle Traditionen das Leben deiner Familie?", t: "Kulturanalyse" }, { q: "Wie denkst du, hat deine Familie geformt, wer du heute bist?", t: "Reflexion" }],
+                    sports: [{ q: "Wie hat Sport deinen Charakter oder deine Werte beeinflusst?", t: "Reflexion" }, { q: "Welche Lebenslektionen hast du durch Sport gelernt?", t: "Analyse" }, { q: "Was bedeutet es deiner Meinung nach, ein guter Teamkollege zu sein?", t: "Meinung/Werte" }, { q: "Wie balancierst du die wettbewerblichen und spaßigen Aspekte des Sports?", t: "Analyse" }],
+                    music: [{ q: "Wie dient Musik verschiedenen Zwecken in deinem Leben?", t: "Analyse" }, { q: "Was denkst du, verrät Musik über eine Kultur oder Generation?", t: "Kulturanalyse" }, { q: "Welche Rolle spielt Musik in deiner Identität?", t: "Selbstanalyse" }, { q: "Was bedeutet es, Musik wirklich zu hören?", t: "Philosophisch" }],
+                    food: [{ q: "Wie verbindet sich Essen mit deiner kulturellen Identität?", t: "Kulturanalyse" }, { q: "Welche Rolle spielt Essen in deiner Familie über Ernährung hinaus?", t: "Analyse" }, { q: "Beschreibe eine Erinnerung die emotionale Bedeutung hat.", t: "Reflexive Erzählung" }, { q: "Was ist deine Philosophie über das Probieren neuer Lebensmittel?", t: "Meinung/Werte" }],
+                    hobbies: [{ q: "Wie haben deine Hobbys deine Identität geformt?", t: "Selbstanalyse" }, { q: "Was denkst du, verraten die Hobbys der Menschen über sie?", t: "Analyse" }, { q: "Welche Rolle spielen Hobbys für die psychische Gesundheit?", t: "Analyse" }, { q: "Was bedeutet es, wirklich leidenschaftlich für etwas zu sein?", t: "Philosophisch" }],
+                    travel: [{ q: "Wie hat Reisen deine Perspektive auf deine eigene Kultur verändert?", t: "Reflexion" }, { q: "Was macht jemanden zu einem guten Reisenden?", t: "Analyse" }, { q: "Wie formt Reisen persönliches Wachstum?", t: "Analyse" }, { q: "Welche Verantwortung haben Reisende?", t: "Ethische Analyse" }],
+                    school: [{ q: "Wie sollte sich Bildung ändern?", t: "Kritische Analyse" }, { q: "Was hast du gelernt, das deine Denkweise verändert hat?", t: "Reflexion" }, { q: "Welche Rolle sollten Schulen spielen?", t: "Meinung/Werte" }, { q: "Was bedeutet es, etwas wirklich zu verstehen?", t: "Philosophisch" }],
+                    pets: [{ q: "Was verrät die Beziehung zwischen Menschen und Haustieren?", t: "Analyse" }, { q: "Wie hat dich die Pflege eines Haustiers gelehrt?", t: "Reflexion" }, { q: "Welche ethischen Überlegungen hast du?", t: "Ethische Analyse" }, { q: "Beschreibe wie dein Haustier dich beeinflusst hat.", t: "Reflexive Erzählung" }],
+                    media: [{ q: "Wie beeinflusst Medienkonsum die psychische Gesundheit?", t: "Analyse" }, { q: "Welche Verantwortung haben Content-Ersteller?", t: "Ethische Analyse" }, { q: "Wie haben Medien dein Verständnis geprägt?", t: "Reflexion" }, { q: "Welche Rolle spielt Repräsentation?", t: "Kritische Analyse" }],
+                    daily: [{ q: "Wie spiegeln deine Routinen deine Prioritäten wider?", t: "Selbstanalyse" }, { q: "Wie hat sich deine Beziehung zur Zeit verändert?", t: "Reflexion" }, { q: "Wie balancierst du Produktivität und Ruhe?", t: "Reflexion" }, { q: "Was bedeutet es, absichtlich zu leben?", t: "Philosophisch" }]
+                }
+            },
+            italian: {
+                novice: {
+                    family: [{ q: "Hai fratelli o sorelle?", t: "Sì/No" }, { q: "Quante persone ci sono nella tua famiglia?", t: "Numero" }, { q: "Vivi con i tuoi genitori o con i tuoi nonni?", t: "O/O" }, { q: "La tua famiglia è grande o piccola?", t: "O/O" }],
+                    sports: [{ q: "Pratichi sport?", t: "Sì/No" }, { q: "Ti piace il calcio o il basket?", t: "O/O" }, { q: "Qual è il tuo sport preferito?", t: "Fatto semplice" }, { q: "Giochi in una squadra?", t: "Sì/No" }],
+                    music: [{ q: "Ti piace la musica?", t: "Sì/No" }, { q: "Suoni uno strumento?", t: "Sì/No" }, { q: "Chi è il tuo cantante preferito?", t: "Fatto semplice" }, { q: "Che musica ti piace?", t: "Fatto semplice" }],
+                    food: [{ q: "Ti piace la pizza?", t: "Sì/No" }, { q: "Qual è il tuo cibo preferito?", t: "Fatto semplice" }, { q: "Preferisci hamburger o tacos?", t: "O/O" }, { q: "Ti piace il gelato?", t: "Sì/No" }],
+                    hobbies: [{ q: "Hai degli hobby?", t: "Sì/No" }, { q: "Ti piace leggere?", t: "Sì/No" }, { q: "Cosa fai per divertirti?", t: "Fatto semplice" }, { q: "Preferisci i videogiochi o i giochi da tavolo?", t: "O/O" }],
+                    travel: [{ q: "Ti piace viaggiare?", t: "Sì/No" }, { q: "Sei stato/a al mare?", t: "Sì/No" }, { q: "Preferisci il mare o la montagna?", t: "O/O" }, { q: "Dove vuoi andare?", t: "Fatto semplice" }],
+                    school: [{ q: "Ti piace la scuola?", t: "Sì/No" }, { q: "Qual è la tua materia preferita?", t: "Fatto semplice" }, { q: "Preferisci la matematica o le scienze?", t: "O/O" }, { q: "Hai molti compiti?", t: "Sì/No" }],
+                    pets: [{ q: "Hai animali domestici?", t: "Sì/No" }, { q: "Hai un cane o un gatto?", t: "O/O" }, { q: "Come si chiama il tuo animale?", t: "Fatto semplice" }, { q: "Qual è il tuo animale preferito?", t: "Fatto semplice" }],
+                    media: [{ q: "Guardi la televisione?", t: "Sì/No" }, { q: "Qual è il tuo programma preferito?", t: "Fatto semplice" }, { q: "Preferisci i film o le serie TV?", t: "O/O" }, { q: "Giochi ai videogiochi?", t: "Sì/No" }],
+                    daily: [{ q: "A che ora ti svegli?", t: "Fatto semplice" }, { q: "Ti svegli presto o tardi?", t: "O/O" }, { q: "Cosa fai dopo la scuola?", t: "Fatto semplice" }, { q: "Cosa fai nel fine settimana?", t: "Fatto semplice" }]
+                },
+                intermediate: {
+                    family: [{ q: "Parlami della tua famiglia. Con chi vivi?", t: "Descrizione" }, { q: "Che lavoro fa tua madre/tuo padre?", t: "Dettaglio" }, { q: "A chi sei più vicino/a e perché?", t: "Confronto" }, { q: "Descrivi un fine settimana tipico.", t: "Narrativa" }],
+                    sports: [{ q: "Quali sport pratichi e quanto spesso?", t: "Dettaglio" }, { q: "Parlami della tua squadra.", t: "Descrizione" }, { q: "Perché ti piace questo sport?", t: "Confronto" }, { q: "Descrivi un allenamento tipico.", t: "Narrativa" }],
+                    music: [{ q: "Che tipo di musica ascolti e perché?", t: "Opinione" }, { q: "Parlami dell'imparare il tuo strumento.", t: "Narrativa" }, { q: "Come sono diversi i tuoi gusti musicali?", t: "Confrontare" }, { q: "Descrivi un concerto a cui sei andato/a.", t: "Descrizione" }],
+                    food: [{ q: "Qual è il tuo pasto preferito e perché?", t: "Opinione" }, { q: "Parlami di un cibo della tua cultura.", t: "Descrizione" }, { q: "Descrivi cosa mangi in un giorno.", t: "Dettaglio" }, { q: "Parlami di quando hai provato un cibo nuovo.", t: "Narrativa" }],
+                    hobbies: [{ q: "Quali hobby hai e come hai iniziato?", t: "Narrativa" }, { q: "Parlami del tuo hobby preferito.", t: "Descrizione" }, { q: "Perché preferisci questo hobby?", t: "Confronto" }, { q: "Quanto tempo dedichi ai tuoi hobby?", t: "Dettaglio" }],
+                    travel: [{ q: "Parlami del miglior viaggio che hai fatto.", t: "Narrativa" }, { q: "Dove vuoi viaggiare e perché?", t: "Opinione" }, { q: "Descrivi un posto che ti ha sorpreso.", t: "Descrizione" }, { q: "Cosa fai quando viaggi?", t: "Dettaglio" }],
+                    school: [{ q: "Qual è la tua materia preferita?", t: "Descrizione" }, { q: "Parlami della tua giornata scolastica.", t: "Narrativa" }, { q: "Cosa trovi più impegnativo?", t: "Opinione" }, { q: "Descrivi il tuo insegnante preferito.", t: "Descrizione" }],
+                    pets: [{ q: "Parlami del tuo animale - com'è?", t: "Descrizione" }, { q: "Quali responsabilità hai?", t: "Dettaglio" }, { q: "Descrivi un momento memorabile.", t: "Narrativa" }, { q: "Com'è la personalità del tuo animale?", t: "Descrizione" }],
+                    media: [{ q: "Che tipo di programmi ti piacciono?", t: "Opinione" }, { q: "Parlami del tuo programma preferito.", t: "Descrizione" }, { q: "Quanto tempo passi davanti agli schermi?", t: "Dettaglio" }, { q: "Descrivi l'ultimo film che hai visto.", t: "Narrativa" }],
+                    daily: [{ q: "Descrivi la tua giornata perfetta.", t: "Narrativa" }, { q: "Com'è la tua routine mattutina?", t: "Descrizione" }, { q: "Cosa fai per rilassarti?", t: "Dettaglio" }, { q: "Parlami della parte più importante della tua giornata.", t: "Opinione" }]
+                },
+                advanced: {
+                    family: [{ q: "Come è cambiato il tuo rapporto con la famiglia?", t: "Analisi" }, { q: "Quali valori hai imparato?", t: "Riflessione" }, { q: "Come influenzano le tradizioni culturali?", t: "Analisi culturale" }, { q: "Come ha plasmato la famiglia chi sei?", t: "Riflessione" }],
+                    sports: [{ q: "Come ha influenzato lo sport il tuo carattere?", t: "Riflessione" }, { q: "Quali lezioni hai imparato?", t: "Analisi" }, { q: "Cosa significa essere un buon compagno?", t: "Opinione/Valori" }, { q: "Come bilanci competizione e divertimento?", t: "Analisi" }],
+                    music: [{ q: "Come serve la musica a scopi diversi?", t: "Analisi" }, { q: "Cosa rivela la musica su una cultura?", t: "Analisi culturale" }, { q: "Che ruolo gioca nella tua identità?", t: "Autoanalisi" }, { q: "Cosa significa ascoltare davvero?", t: "Filosofico" }],
+                    food: [{ q: "Come si collega il cibo all'identità?", t: "Analisi culturale" }, { q: "Che ruolo gioca il cibo oltre nutrizione?", t: "Analisi" }, { q: "Descrivi un ricordo con significato emotivo.", t: "Narrativa riflessiva" }, { q: "Qual è la tua filosofia sul cibo?", t: "Opinione/Valori" }],
+                    hobbies: [{ q: "Come hanno plasmato i tuoi hobby l'identità?", t: "Autoanalisi" }, { q: "Cosa rivelano gli hobby sulle persone?", t: "Analisi" }, { q: "Che ruolo giocano nella salute mentale?", t: "Analisi" }, { q: "Cosa significa essere appassionato?", t: "Filosofico" }],
+                    travel: [{ q: "Come ha cambiato viaggiare la tua prospettiva?", t: "Riflessione" }, { q: "Cosa rende qualcuno un buon viaggiatore?", t: "Analisi" }, { q: "Come plasmi la crescita personale?", t: "Analisi" }, { q: "Quali responsabilità hanno i viaggiatori?", t: "Analisi etica" }],
+                    school: [{ q: "Come dovrebbe cambiare l'istruzione?", t: "Analisi critica" }, { q: "Cosa hai imparato che ha cambiato il pensiero?", t: "Riflessione" }, { q: "Che ruolo dovrebbero avere le scuole?", t: "Opinione/Valori" }, { q: "Cosa significa capire veramente?", t: "Filosofico" }],
+                    pets: [{ q: "Cosa rivela la relazione umani-animali?", t: "Analisi" }, { q: "Come ti ha insegnato prenderti cura?", t: "Riflessione" }, { q: "Quali considerazioni etiche hai?", t: "Analisi etica" }, { q: "Descrivi come ha impattato la vita.", t: "Narrativa riflessiva" }],
+                    media: [{ q: "Come influenzi la salute mentale?", t: "Analisi" }, { q: "Quale responsabilità hanno i creatori?", t: "Analisi etica" }, { q: "Come hanno plasmato la comprensione?", t: "Riflessione" }, { q: "Che ruolo gioca la rappresentazione?", t: "Analisi critica" }],
+                    daily: [{ q: "Come riflettono le routine le priorità?", t: "Autoanalisi" }, { q: "Come è cambiato il rapporto col tempo?", t: "Riflessione" }, { q: "Come bilanci produttività e riposo?", t: "Riflessione" }, { q: "Cosa significa vivere intenzionalmente?", t: "Filosofico" }]
+                }
+            },
+            chinese: {
+                novice: {
+                    family: [{ q: "你有兄弟姐妹吗?", t: "是/否" }, { q: "你家有几口人?", t: "数字" }, { q: "你和父母住还是和祖父母住?", t: "或/或" }, { q: "你的家庭大还是小?", t: "或/或" }],
+                    sports: [{ q: "你运动吗?", t: "是/否" }, { q: "你喜欢足球还是篮球?", t: "或/或" }, { q: "你最喜欢什么运动?", t: "简单事实" }, { q: "你在队里打球吗?", t: "是/否" }],
+                    music: [{ q: "你喜欢音乐吗?", t: "是/否" }, { q: "你会演奏乐器吗?", t: "是/否" }, { q: "你最喜欢的歌手是谁?", t: "简单事实" }, { q: "你喜欢什么音乐?", t: "简单事实" }],
+                    food: [{ q: "你喜欢披萨吗?", t: "是/否" }, { q: "你最喜欢什么食物?", t: "简单事实" }, { q: "你更喜欢汉堡还是玉米饼?", t: "或/或" }, { q: "你喜欢冰淇淋吗?", t: "是/否" }],
+                    hobbies: [{ q: "你有爱好吗?", t: "是/否" }, { q: "你喜欢阅读吗?", t: "是/否" }, { q: "你做什么来娱乐?", t: "简单事实" }, { q: "你更喜欢电子游戏还是桌游?", t: "或/或" }],
+                    travel: [{ q: "你喜欢旅行吗?", t: "是/否" }, { q: "你去过海滩吗?", t: "是/否" }, { q: "你更喜欢海滩还是山?", t: "或/或" }, { q: "你想去哪里?", t: "简单事实" }],
+                    school: [{ q: "你喜欢学校吗?", t: "是/否" }, { q: "你最喜欢什么科目?", t: "简单事实" }, { q: "你更喜欢数学还是科学?", t: "或/或" }, { q: "你有很多作业吗?", t: "是/否" }],
+                    pets: [{ q: "你有宠物吗?", t: "是/否" }, { q: "你有狗还是猫?", t: "或/或" }, { q: "你的宠物叫什么名字?", t: "简单事实" }, { q: "你最喜欢什么动物?", t: "简单事实" }],
+                    media: [{ q: "你看电视吗?", t: "是/否" }, { q: "你最喜欢什么节目?", t: "简单事实" }, { q: "你更喜欢电影还是电视剧?", t: "或/或" }, { q: "你玩电子游戏吗?", t: "是/否" }],
+                    daily: [{ q: "你几点起床?", t: "简单事实" }, { q: "你起得早还是晚?", t: "或/或" }, { q: "你放学后做什么?", t: "简单事实" }, { q: "你周末做什么?", t: "简单事实" }]
+                },
+                intermediate: {
+                    family: [{ q: "跟我说说你的家庭。你和谁住?", t: "描述" }, { q: "你妈妈/爸爸做什么工作?", t: "细节" }, { q: "你和家里谁最亲近,为什么?", t: "比较" }, { q: "描述一下典型周末。", t: "叙述" }],
+                    sports: [{ q: "你做什么运动,多久一次?", t: "细节" }, { q: "跟我说说你的队伍。", t: "描述" }, { q: "为什么你喜欢这个?", t: "比较" }, { q: "描述一下典型训练。", t: "叙述" }],
+                    music: [{ q: "你最常听什么音乐,为什么?", t: "意见" }, { q: "跟我说说学习乐器。", t: "叙述" }, { q: "你的音乐品味有什么不同?", t: "对比" }, { q: "描述一下音乐会。", t: "描述" }],
+                    food: [{ q: "你最喜欢什么食物,为什么?", t: "意见" }, { q: "跟我说说你文化的食物。", t: "描述" }, { q: "描述一下你一天吃什么。", t: "细节" }, { q: "跟我说说尝试新食物。", t: "叙述" }],
+                    hobbies: [{ q: "你有什么爱好,怎么开始的?", t: "叙述" }, { q: "详细说说你最喜欢的爱好。", t: "描述" }, { q: "为什么你更喜欢这个?", t: "比较" }, { q: "你每周花多少时间?", t: "细节" }],
+                    travel: [{ q: "跟我说说最好的旅行。", t: "叙述" }, { q: "你想去哪里旅行,为什么?", t: "意见" }, { q: "描述一个让你惊讶的地方。", t: "描述" }, { q: "你旅行时通常做什么?", t: "细节" }],
+                    school: [{ q: "你最喜欢什么课?", t: "描述" }, { q: "说说你的学校生活。", t: "叙述" }, { q: "你觉得最有挑战性的是什么?", t: "意见" }, { q: "描述一下你最喜欢的老师。", t: "描述" }],
+                    pets: [{ q: "说说你的宠物-它怎么样?", t: "描述" }, { q: "你有什么责任?", t: "细节" }, { q: "描述一个难忘的时刻。", t: "叙述" }, { q: "你的宠物性格如何?", t: "描述" }],
+                    media: [{ q: "你喜欢什么类型,为什么?", t: "意见" }, { q: "说说你最喜欢的节目。", t: "描述" }, { q: "你每天花多少时间?", t: "细节" }, { q: "描述一下最近的电影。", t: "叙述" }],
+                    daily: [{ q: "描述一下你的完美一天。", t: "叙述" }, { q: "你的早晨日常是什么?", t: "描述" }, { q: "你做什么来放松?", t: "细节" }, { q: "说说最重要的部分。", t: "意见" }]
+                },
+                advanced: {
+                    family: [{ q: "你和家人的关系如何改变?", t: "分析" }, { q: "你学到了什么价值观?", t: "反思" }, { q: "文化传统如何影响?", t: "文化分析" }, { q: "家庭如何塑造了你?", t: "反思" }],
+                    sports: [{ q: "运动如何影响性格?", t: "反思" }, { q: "你学到了什么人生教训?", t: "分析" }, { q: "做好队友意味着什么?", t: "意见/价值观" }, { q: "你如何平衡竞争和乐趣?", t: "分析" }],
+                    music: [{ q: "音乐如何服务不同目的?", t: "分析" }, { q: "音乐揭示了什么?", t: "文化分析" }, { q: "音乐扮演什么角色?", t: "自我分析" }, { q: "真正聆听意味着什么?", t: "哲学" }],
+                    food: [{ q: "食物如何联系身份?", t: "文化分析" }, { q: "食物扮演什么角色?", t: "分析" }, { q: "描述有情感意义的记忆。", t: "反思性叙述" }, { q: "你的哲学是什么?", t: "意见/价值观" }],
+                    hobbies: [{ q: "你的爱好如何塑造身份?", t: "自我分析" }, { q: "爱好揭示了什么?", t: "分析" }, { q: "爱好在心理健康中的角色?", t: "分析" }, { q: "真正充满热情意味着什么?", t: "哲学" }],
+                    travel: [{ q: "旅行如何改变看法?", t: "反思" }, { q: "什么使某人成为好旅行者?", t: "分析" }, { q: "旅行如何塑造成长?", t: "分析" }, { q: "旅行者有什么责任?", t: "道德分析" }],
+                    school: [{ q: "教育应该如何改变?", t: "批判性分析" }, { q: "你学到了什么改变思维?", t: "反思" }, { q: "学校应该扮演什么角色?", t: "意见/价值观" }, { q: "真正理解意味着什么?", t: "哲学" }],
+                    pets: [{ q: "人与宠物的关系揭示了什么?", t: "分析" }, { q: "照顾宠物教会了什么?", t: "反思" }, { q: "你有什么道德考虑?", t: "道德分析" }, { q: "描述宠物如何影响生活。", t: "反思性叙述" }],
+                    media: [{ q: "媒体消费如何影响健康?", t: "分析" }, { q: "创作者有什么责任?", t: "道德分析" }, { q: "媒体如何塑造理解?", t: "反思" }, { q: "代表性扮演什么角色?", t: "批判性分析" }],
+                    daily: [{ q: "日常生活如何反映优先事项?", t: "自我分析" }, { q: "与时间的关系如何改变?", t: "反思" }, { q: "你如何平衡生产力和休息?", t: "反思" }, { q: "有意识地生活意味着什么?", t: "哲学" }]
+                }
+            }
+        };
+
+        function generateQuestions(e) {
+            const btn = document.querySelector('.generate-btn');
+            const errorMsg = document.getElementById('topicError');
+            
+            // Mark as user-initiated if called from button click
+            if (e && e.type === 'click') {
+                userInitiated = true;
+            }
+            
+            // Hide error message
+            errorMsg.classList.remove('show');
+            
+            const selectedTopics = [];
+            document.querySelectorAll('.topic-checkbox:checked').forEach(checkbox => {
+                selectedTopics.push(checkbox.id.replace('topic-', ''));
+            });
+
+            // COMMANDMENT 10: ELIMINATE ERRORS - Validation
+            if (selectedTopics.length === 0) {
+                errorMsg.classList.add('show');
+                document.getElementById('questionsSection').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>No topics selected</h3>
+                        <p>Please select at least one topic to generate questions</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show loading state
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            // Simulate loading for better UX
+            setTimeout(() => {
+                let allQuestions = [];
+                selectedTopics.forEach(topic => {
+                    const topicQuestions = questions[selectedLanguage][selectedLevel][topic];
+                    if (topicQuestions) {
+                        allQuestions = allQuestions.concat(topicQuestions.map(item => ({
+                            q: item.q,
+                            type: item.t,
+                            topic: topic,
+                            chunks: item.chunks || null
+                        })));
+                    }
+                });
+
+                if (allQuestions.length === 0) {
+                    document.getElementById('questionsSection').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">⚠️</div>
+                            <h3>No questions available</h3>
+                            <p>Try selecting different options</p>
+                        </div>
+                    `;
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    return;
+                }
+
+                // Shuffle and select 10 questions
+                allQuestions.sort(() => Math.random() - 0.5);
+                const selectedQuestions = allQuestions.slice(0, Math.min(10, allQuestions.length));
+
+                let frameworkLevel = '';
+                if (selectedLevel === 'novice') frameworkLevel = 'Recognize/Respond';
+                if (selectedLevel === 'intermediate') frameworkLevel = 'Relate/Extend';
+                if (selectedLevel === 'advanced') frameworkLevel = 'Analyze/Create';
+
+                const languageNames = {
+                    spanish: 'Spanish',
+                    french: 'French',
+                    german: 'German',
+                    italian: 'Italian',
+                    chinese: 'Chinese'
+                };
+
+                const questionsHTML = `
+                    <h2>
+                        Your Generated Questions 
+                        <span class="framework-badge">${frameworkLevel}</span> 
+                        <span class="framework-badge">${languageNames[selectedLanguage]}</span>
+                    </h2>
+                    ${selectedQuestions.map((q, index) => `
+                        <div class="question-card">
+                            <div class="question-header">
+                                <div class="question-main">
+                                    <span class="question-number">${index + 1}.</span>
+                                    <span class="question-text">${q.q}</span>
+                                    <span class="question-type">${q.type}</span>
+                                </div>
+                                ${q.chunks ? `<button class="chunks-toggle" onclick="toggleChunks(${index})" id="toggle-${index}">💡 Show Help</button>` : ''}
+                            </div>
+                            ${q.chunks ? `
+                                <div class="helpful-chunks" id="chunks-${index}">
+                                    ${q.chunks.vocab ? `
+                                        <div class="chunk-section">
+                                            <div class="chunk-label">Key Vocabulary</div>
+                                            <div class="chunk-list">
+                                                ${q.chunks.vocab.map(v => `<span class="chunk-item">${v}</span>`).join('')}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                    ${q.chunks.starters ? `
+                                        <div class="chunk-section">
+                                            <div class="chunk-label">Response Starters</div>
+                                            <div class="chunk-list">
+                                                ${q.chunks.starters.map(s => `<span class="chunk-item">${s}</span>`).join('')}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                    ${q.chunks.examples ? `
+                                        <div class="chunk-section">
+                                            <div class="chunk-label">Example Answers</div>
+                                            ${q.chunks.examples.map(ex => `<div class="chunk-example">${ex}</div>`).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                `;
+
+                document.getElementById('questionsSection').innerHTML = questionsHTML;
+                
+                // Remove loading state
+                btn.classList.remove('loading');
+                btn.disabled = false;
+
+                // Scroll to results only if user clicked the button
+                if (userInitiated) {
+                    document.getElementById('questionsSection').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }
+            }, 600);
+        }
+
+        // Toggle helpful chunks visibility
+        function toggleChunks(index) {
+            const chunksDiv = document.getElementById(`chunks-${index}`);
+            const toggleBtn = document.getElementById(`toggle-${index}`);
+            
+            if (chunksDiv.classList.contains('show')) {
+                chunksDiv.classList.remove('show');
+                toggleBtn.classList.remove('active');
+                toggleBtn.innerHTML = '💡 Show Help';
+            } else {
+                chunksDiv.classList.add('show');
+                toggleBtn.classList.add('active');
+                toggleBtn.innerHTML = '✕ Hide Help';
+            }
+        }
+
+        // Generate questions on page load with default settings
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                generateQuestions();
+            }, 300);
+        });
+    </script>
+</body>
+</html>

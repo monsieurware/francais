@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Person Story Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+        }
+
+        .main-flow {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn-small {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-quick-start {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-quick-start:hover {
+            background: #059669;
+        }
+
+        .btn-load {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-load:hover {
+            background: #2563eb;
+        }
+
+        .restore-banner {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .restore-banner.show {
+            display: flex;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e7ff;
+            border-radius: 10px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .step {
+            margin-bottom: 30px;
+            opacity: 0.3;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .step.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .step.completed {
+            opacity: 0.7;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .step.active .step-number {
+            background: white;
+            color: #667eea;
+        }
+
+        .step.completed .step-number {
+            background: #10b981;
+            color: white;
+        }
+
+        .step-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .step.active .step-title {
+            color: white;
+        }
+
+        .required-badge {
+            background: #dc2626;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .optional-badge {
+            background: #94a3b8;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .step-content {
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .step.active .step-content {
+            display: block;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .option-card {
+            padding: 20px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .option-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option-card .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .option-card h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .option-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1em;
+            margin: 10px 0;
+            transition: border-color 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .text-input.error {
+            border-color: #dc2626;
+        }
+
+        textarea.text-input {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .validation-message {
+            color: #dc2626;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .validation-message.show {
+            display: block;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: #f0f4ff;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .example-btn {
+            background: #f0f4ff;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+        }
+
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .sidebar-tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .sidebar-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .sidebar h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .summary-section {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .summary-section:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .summary-value {
+            color: #333;
+            font-size: 1.05em;
+            padding: 10px;
+            background: #f8f9ff;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .summary-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .summary-list li {
+            padding: 8px;
+            background: #f8f9ff;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .preview-story {
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            font-style: italic;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .generate-section {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+        }
+
+        .generate-section h4 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            color: #059669;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .differentiation-options {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .differentiation-options label {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+
+        .prompt-output {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .prompt-output.show {
+            display: block;
+        }
+
+        .prompt-section {
+            margin-bottom: 20px;
+        }
+
+        .prompt-header {
+            color: #10b981;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .prompt-highlight {
+            color: #fbbf24;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .copy-btn, .save-btn, .export-btn {
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            flex: 1;
+        }
+
+        .copy-btn:hover, .save-btn:hover, .export-btn:hover {
+            background: #2563eb;
+        }
+
+        .tip-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .tip-box strong {
+            color: #92400e;
+        }
+
+        .example-box {
+            background: #e0e7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            color: #3730a3;
+        }
+
+        .warning-box {
+            background: #fee2e2;
+            border-left: 4px solid #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #7f1d1d;
+        }
+
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #065f46;
+        }
+
+        .cultural-enhancement {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #f59e0b;
+        }
+
+        .cultural-enhancement h4 {
+            color: #92400e;
+            margin-bottom: 15px;
+        }
+
+        .do-dont-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .do-column, .dont-column {
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .do-column {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+        }
+
+        .dont-column {
+            background: #fee2e2;
+            border-left: 4px solid #dc2626;
+        }
+
+        .do-column h5 {
+            color: #065f46;
+            margin-bottom: 10px;
+        }
+
+        .dont-column h5 {
+            color: #991b1b;
+            margin-bottom: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e5e7eb;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            background: #d1d5db;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .template-card {
+            background: #f8f9ff;
+            border: 2px solid #667eea;
+            padding: 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .template-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .template-card p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                top: 0;
+            }
+
+            .do-dont-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-flow {
+                padding: 20px;
+            }
+
+            .sidebar {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .option-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-flow">
+            <div class="header">
+                <h1>🎨 Special Person Story Builder</h1>
+                <p>Your step-by-step guide to crafting compelling, proficiency-aligned student stories</p>
+                <div class="header-actions">
+                    <button class="btn-small btn-quick-start" onclick="showQuickStart()">⚡ Quick Start</button>
+                    <button class="btn-small btn-load" onclick="showLoadOptions()">📂 Load Saved</button>
+                </div>
+            </div>
+
+            <div class="restore-banner" id="restoreBanner">
+                <span>💾 Found saved progress. Want to continue where you left off?</span>
+                <div>
+                    <button class="btn-small btn-load" onclick="restoreProgress()">Restore</button>
+                    <button class="btn-small" style="background: #ef4444; color: white;" onclick="clearSaved()">Start Fresh</button>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <!-- Step 1: Student Information -->
+            <div class="step active" id="step1">
+                <div class="step-header" onclick="toggleStep(1)">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Gather Student Information</div>
+                    <span class="required-badge">REQUIRED</span>
+                </div>
+                <div class="step-content">
+                    <p style="color: #666; margin-bottom: 20px;">Start with what makes this student unique. What did they share in the interview?</p>
+                    
+                    <label style="color: #333; font-weight: 600; display: block; margin-bottom: 8px;">Student's Name (or pseudonym): *</label>
+                    <input type="text" class="text-input" id="studentName" placeholder="e.g., María, Alex, Jordan" oninput="updateSummary(); validateStep1()">
+                    <div class="validation-message" id="nameError">Please enter a student name</div>
+
+                    <label style="color: #333; font-weight: 600; display: block; margin-bottom: 8px; margin-top: 20px;">Core Interest/Topic from Interview: *</label>
+                    <textarea class="text-input" id="studentInterest" placeholder="e.g., 'Sustainable fashion and reducing clothing waste' or 'Learning guitar to play at open mic nights'" oninput="updateSummary(); validateStep1()"></textarea>
+                    <div class="validation-message" id="interestError">Please describe the student's interest (at least 15 characters)</div>
+
+                    <button class="example-btn" onclick="showExamples('step1')">💡 See Good vs. Vague Examples</button>
+
+                    <div class="tip-box">
+                        <strong>💡 Tip:</strong> Be specific! "Music" is too broad. "Learning guitar to overcome stage fright at open mic nights" gives you story gold.
+                    </div>
+
+                    <label style="color: #333; font-weight: 600; display: block; margin-bottom: 8px; margin-top: 20px;">Key Phrases/Vocabulary Student Used:</label>
+                    <input type="text" class="text-input" id="studentVocab" placeholder="e.g., 'fast fashion,' 'thrift stores,' 'environmental impact'" oninput="updateSummary()">
+
+                    <div style="margin-top: 20px; padding: 15px; background: #f0f4ff; border-radius: 8px;">
+                        <label style="color: #333; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="apibTheme" onchange="toggleAPIBSection(); updateSummary()">
+                            Connect to AP/IB Theme (optional)
+                        </label>
+                        <div id="apibSection" style="display: none; margin-top: 15px;">
+                            <select class="text-input" id="themeSelect" onchange="updateSummary()">
+                                <option value="">Select a theme...</option>
+                                <option value="global-challenges">Global Challenges</option>
+                                <option value="science-technology">Science & Technology</option>
+                                <option value="contemporary-life">Contemporary Life</option>
+                                <option value="personal-public-identities">Personal & Public Identities</option>
+                                <option value="families-communities">Families & Communities</option>
+                                <option value="beauty-aesthetics">Beauty & Aesthetics</option>
+                                <option value="experiences">Experiences</option>
+                                <option value="social-organization">Social Organization</option>
+                                <option value="sharing-planet">Sharing the Planet</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="step1Continue" onclick="completeStep(1)" disabled>Continue to Proficiency Level →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Proficiency Level -->
+            <div class="step" id="step2">
+                <div class="step-header" onclick="toggleStep(2)">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Select Proficiency Level</div>
+                    <span class="required-badge">REQUIRED</span>
+                </div>
+                <div class="step-content">
+                    <p style="color: #666; margin-bottom: 20px;">Choose the target proficiency level for your story. This determines linguistic complexity.</p>
+                    
+                    <button class="example-btn" onclick="showExamples('step2')">📊 See Examples at Each Level</button>
+
+                    <div class="option-grid">
+                        <div class="option-card" onclick="selectOption('proficiency', 'novice-low', this)">
+                            <div class="icon">🌱</div>
+                            <h4>Novice Low/Mid</h4>
+                            <p>Present tense, high-frequency words, 100-150 words</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption('proficiency', 'novice-high', this)">
+                            <div class="icon">🌿</div>
+                            <h4>Novice High</h4>
+                            <p>Present + simple past, 150-200 words</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption('proficiency', 'intermediate-low', this)">
+                            <div class="icon">🌳</div>
+                            <h4>Intermediate Low</h4>
+                            <p>Multiple tenses, paragraphs, 200-300 words</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption('proficiency', 'intermediate-mid', this)">
+                            <div class="icon">🌲</div>
+                            <h4>Intermediate Mid/High</h4>
+                            <p>Full narration, descriptions, 300-400 words</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption('proficiency', 'advanced', this)">
+                            <div class="icon">🏔️</div>
+                            <h4>Advanced</h4>
+                            <p>Complex structures, subjunctive, 400-600 words</p>
+                        </div>
+                    </div>
+
+                    <div class="validation-message" id="proficiencyError">Please select a proficiency level</div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+                        <button class="btn btn-primary" id="step2Continue" onclick="completeStep(2)" disabled>Continue to Story Elements →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Story Elements -->
+            <div class="step" id="step3">
+                <div class="step-header" onclick="toggleStep(3)">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Choose Story Elements</div>
+                    <span class="optional-badge">RECOMMENDED</span>
+                </div>
+                <div class="step-content">
+                    <p style="color: #666; margin-bottom: 20px;">Select the narrative techniques you want to emphasize (choose at least 2):</p>
+                    
+                    <button class="example-btn" onclick="showExamples('step3')">✨ See Strong vs. Weak Examples</button>
+
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="element-action" onchange="updateSummary(); validateStep3()">
+                            <label for="element-action">
+                                <strong>Jump Into Action</strong> - Start in the middle of a moment
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="element-sensory" onchange="updateSummary(); validateStep3()">
+                            <label for="element-sensory">
+                                <strong>Rich Sensory Details</strong> - Show, don't tell through senses
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="element-dialogue" onchange="updateSummary(); validateStep3()">
+                            <label for="element-dialogue">
+                                <strong>Natural Dialogue</strong> - Include realistic conversation
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="element-voice" onchange="updateSummary(); validateStep3()">
+                            <label for="element-voice">
+                                <strong>Strong Voice</strong> - Distinctive personality on the page
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="element-ending" onchange="updateSummary(); validateStep3()">
+                            <label for="element-ending">
+                                <strong>Meaningful Ending</strong> - Resonant conclusion with insight
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Smart Selection:</strong> For beginners, focus on "Action" + "Sensory Details". For advanced learners, all elements work together beautifully.
+                    </div>
+
+                    <div class="validation-message" id="elementsError">We recommend selecting at least 2 story elements</div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+                        <button class="btn btn-primary" id="step3Continue" onclick="completeStep(3)">Continue to Grammar Focus →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Grammar/Structures -->
+            <div class="step" id="step4">
+                <div class="step-header" onclick="toggleStep(4)">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Target Grammar Structures</div>
+                    <span class="optional-badge">OPTIONAL</span>
+                </div>
+                <div class="step-content">
+                    <p style="color: #666; margin-bottom: 20px;">Want to recycle specific structures? List them here. Leave blank for general proficiency-aligned language.</p>
+                    
+                    <label style="color: #333; font-weight: 600; display: block; margin-bottom: 8px;">TPRS-Style Keywords/Structures:</label>
+                    <input type="text" class="text-input" id="tprsKeywords" placeholder="e.g., 'wants,' 'goes to,' 'has'" oninput="updateSummary()">
+
+                    <label style="color: #333; font-weight: 600; display: block; margin-bottom: 8px; margin-top: 20px;">Advanced Structures (for Intermediate+):</label>
+                    <input type="text" class="text-input" id="advancedStructures" placeholder="e.g., 'subjunctive with emotion,' 'conditional for hypotheticals'" oninput="updateSummary()">
+
+                    <div class="tip-box">
+                        <strong>💡 Tip:</strong> Don't overload! 2-3 target structures max. The story should feel natural, not like a grammar worksheet.
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+                        <button class="btn btn-primary" onclick="completeStep(4)">Continue to Cultural Elements →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Cultural Integration (Enhanced) -->
+            <div class="step" id="step5">
+                <div class="step-header" onclick="toggleStep(5)">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Integrate Cultural Elements</div>
+                    <span class="required-badge">REQUIRED</span>
+                </div>
+                <div class="step-content">
+                    <p style="color: #666; margin-bottom: 20px;">How should cultural perspectives be woven into this story?</p>
+                    
+                    <button class="example-btn" onclick="showExamples('step5')">🌍 See Authentic vs. Tokenistic Examples</button>
+
+                    <div class="option-grid">
+                        <div class="option-card" onclick="selectOption('culture', 'student-only', this)">
+                            <div class="icon">🏠</div>
+                            <h4>Student's Own Culture</h4>
+                            <p>Focus solely on their authentic experience</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption('culture', 'comparative', this)">
+                            <div class="icon">🌍</div>
+                            <h4>Comparative</h4>
+                            <p>Connect to parallel experiences in target culture</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption('culture', 'embedded', this)">
+                            <div class="icon">🎭</div>
+                            <h4>Naturally Embedded</h4>
+                            <p>Weave cultural products/practices organically</p>
+                        </div>
+                    </div>
+
+                    <div class="validation-message" id="cultureError">Please select a cultural approach</div>
+
+                    <label style="color: #333; font-weight: 600; display: block; margin-bottom: 8px; margin-top: 20px;">Cultural Connection Notes (if applicable):</label>
+                    <textarea class="text-input" id="culturalNotes" placeholder="e.g., 'Connect María's sustainable fashion interest to traditional textile practices in Guatemala' or 'Mention how K-pop fandoms parallel student's dance community'" oninput="updateSummary()"></textarea>
+
+                    <div class="cultural-enhancement">
+                        <h4>🎯 ACTFL's Intercultural Communication Framework</h4>
+                        <p style="color: #666; margin-bottom: 15px;">Ask yourself these questions before finalizing cultural elements:</p>
+                        <ul style="color: #555; line-height: 1.8; padding-left: 20px;">
+                            <li><strong>Investigate:</strong> Am I using researched, specific details rather than stereotypes?</li>
+                            <li><strong>Interact:</strong> Does this element emerge from the student's actual experience?</li>
+                            <li><strong>Reflect:</strong> Would someone from this culture recognize authenticity here?</li>
+                        </ul>
+                    </div>
+
+                    <div class="do-dont-container">
+                        <div class="do-column">
+                            <h5>✅ DO: Authentic Integration</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 0.9em;">
+                                <li style="margin: 8px 0;">"María's abuela taught her to make tortillas from scratch—the kind that smell like home"</li>
+                                <li style="margin: 8px 0;">"Ahmed fasts during Ramadan, which means basketball practice hits different this month"</li>
+                            </ul>
+                        </div>
+                        <div class="dont-column">
+                            <h5>❌ DON'T: Tokenism</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 0.9em;">
+                                <li style="margin: 8px 0;">"María loves tacos because she's Mexican"</li>
+                                <li style="margin: 8px 0;">"Ahmed is Middle Eastern so he likes spicy food"</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Critical:</strong> Avoid tokenism! Cultural elements should emerge naturally from the story, not be "sprinkled in" superficially. Ask: Does this detail deepen understanding or just check a box?
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="goToStep(4)">← Back</button>
+                        <button class="btn btn-primary" id="step5Continue" onclick="completeStep(5)" disabled>Continue to Format →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6: Story Format -->
+            <div class="step" id="step6">
+                <div class="step-header" onclick="toggleStep(6)">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Select Story Format</div>
+                    <span class="optional-badge">RECOMMENDED</span>
+                </div>
+                <div class="step-content">
+                    <p style="color: #666; margin-bottom: 20px;">How will students interact with this story? (Select at least one)</p>
+                    
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="format-plain" onchange="updateSummary(); validateStep6()">
+                            <label for="format-plain">
+                                <strong>Plain Narrative</strong> - Just the story text for reading
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="format-questions" onchange="updateSummary(); validateStep6()">
+                            <label for="format-questions">
+                                <strong>Comprehension Questions</strong> - Add 3-5 questions after story
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="format-illustrations" onchange="updateSummary(); validateStep6()">
+                            <label for="format-illustrations">
+                                <strong>Illustration Boxes</strong> - Blank spaces for students to draw
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="format-cloze" onchange="updateSummary(); validateStep6()">
+                            <label for="format-cloze">
+                                <strong>Cloze/Fill-in-the-Blank</strong> - Remove 8-10 key words
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="format-chapters" onchange="updateSummary(); validateStep6()">
+                            <label for="format-chapters">
+                                <strong>Chapter Structure</strong> - Break into 2-3 short sections
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="format-rewrite" onchange="updateSummary(); validateStep6()">
+                            <label for="format-rewrite">
+                                <strong>Student Rewrite Sections</strong> - Include "Your Turn" prompts
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="validation-message" id="formatError">We recommend selecting at least 1 format option</div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="goToStep(5)">← Back</button>
+                        <button class="btn btn-primary" id="step6Continue" onclick="completeStep(6)">Review & Generate →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar with Tabs -->
+        <div class="sidebar">
+            <div class="sidebar-tabs">
+                <div class="sidebar-tab active" onclick="switchTab('blueprint')">📋 Blueprint</div>
+                <div class="sidebar-tab" onclick="switchTab('preview')">👁️ Preview</div>
+            </div>
+
+            <div class="tab-content active" id="blueprintTab">
+                <div class="summary-section">
+                    <div class="summary-label">STUDENT & TOPIC</div>
+                    <div class="summary-value" id="summaryStudent">Not yet specified</div>
+                </div>
+
+                <div class="summary-section" id="apibThemeSection" style="display: none;">
+                    <div class="summary-label">AP/IB THEME</div>
+                    <div class="summary-value" id="summaryTheme"></div>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-label">PROFICIENCY TARGET</div>
+                    <div class="summary-value" id="summaryProficiency">Not yet selected</div>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-label">STORY ELEMENTS</div>
+                    <ul class="summary-list" id="summaryElements">
+                        <li style="color: #999; font-style: italic;">No elements selected yet</li>
+                    </ul>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-label">GRAMMAR FOCUS</div>
+                    <div class="summary-value" id="summaryGrammar">General proficiency-aligned</div>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-label">CULTURAL APPROACH</div>
+                    <div class="summary-value" id="summaryCulture">Not yet selected</div>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-label">FORMAT OPTIONS</div>
+                    <ul class="summary-list" id="summaryFormat">
+                        <li style="color: #999; font-style: italic;">No formats selected yet</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tab-content" id="previewTab">
+                <h3 style="margin-bottom: 15px;">Story Preview</h3>
+                <div class="preview-story" id="previewStory">
+                    <p style="color: #999;">Complete Step 1 and 2 to see a preview of how your story might begin...</p>
+                </div>
+            </div>
+
+            <div class="generate-section">
+                <h4>🚀 Ready to Create?</h4>
+                <button class="btn-generate" onclick="generatePrompt()">Generate AI Prompt</button>
+                <button class="btn-generate" style="background: #e0e7ff; color: #4338ca;" onclick="showManualGuide()">Manual Writing Guide</button>
+                
+                <div class="differentiation-options">
+                    <label>
+                        <input type="checkbox" id="diffLevels" style="width: 18px; height: 18px;">
+                        Include versions for 3 proficiency levels
+                    </label>
+                    <label>
+                        <input type="checkbox" id="followupActivities" style="width: 18px; height: 18px;">
+                        Generate follow-up activities
+                    </label>
+                </div>
+            </div>
+
+            <div class="prompt-output" id="promptOutput"></div>
+            <div class="action-row" id="actionButtons" style="display: none;">
+                <button class="copy-btn" onclick="copyPrompt()">📋 Copy</button>
+                <button class="save-btn" onclick="saveBlueprint()">💾 Save</button>
+                <button class="export-btn" onclick="exportPDF()">📄 Export</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="exampleModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('exampleModal')">×</button>
+            <div id="exampleContent"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="quickStartModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('quickStartModal')">×</button>
+            <h2 style="color: #667eea; margin-bottom: 20px;">⚡ Quick Start Templates</h2>
+            <p style="color: #666; margin-bottom: 25px;">Choose a template to get started quickly. You can customize everything afterward.</p>
+            
+            <div class="template-grid">
+                <div class="template-card" onclick="loadTemplate('novice')">
+                    <h4>🌱 Beginner Story</h4>
+                    <p>Present tense narrative with sensory details. Perfect for Novice learners who need high-frequency vocabulary and simple structures.</p>
+                </div>
+                <div class="template-card" onclick="loadTemplate('intermediate')">
+                    <h4>🌳 Intermediate Narrative</h4>
+                    <p>Past and present tenses with dialogue. Ideal for students ready for connected sentences and paragraph-level storytelling.</p>
+                </div>
+                <div class="template-card" onclick="loadTemplate('advanced')">
+                    <h4>🏔️ Advanced Exploration</h4>
+                    <p>Complex structures with subjunctive. Designed for AP/IB students analyzing themes with sophisticated language.</p>
+                </div>
+                <div class="template-card" onclick="loadTemplate('apib')">
+                    <h4>🎓 AP/IB Theme-Based</h4>
+                    <p>Pre-configured for AP/IB curriculum with theme mapping, comparative approach, and advanced proficiency targets.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+        let selections = {
+            studentName: '',
+            studentInterest: '',
+            studentVocab: '',
+            apibTheme: '',
+            proficiency: '',
+            elements: [],
+            tprsKeywords: '',
+            advancedStructures: '',
+            culture: '',
+            culturalNotes: '',
+            formats: []
+        };
+
+        // Auto-save functionality
+        function autoSave() {
+            localStorage.setItem('storyBlueprint', JSON.stringify(selections));
+            localStorage.setItem('currentStep', currentStep);
+        }
+
+        function checkForSaved() {
+            const saved = localStorage.getItem('storyBlueprint');
+            if (saved) {
+                document.getElementById('restoreBanner').classList.add('show');
+            }
+        }
+
+        function restoreProgress() {
+            const saved = localStorage.getItem('storyBlueprint');
+            const savedStep = localStorage.getItem('currentStep');
+            
+            if (saved) {
+                selections = JSON.parse(saved);
+                
+                // Restore form values
+                document.getElementById('studentName').value = selections.studentName || '';
+                document.getElementById('studentInterest').value = selections.studentInterest || '';
+                document.getElementById('studentVocab').value = selections.studentVocab || '';
+                
+                if (selections.apibTheme) {
+                    document.getElementById('apibTheme').checked = true;
+                    toggleAPIBSection();
+                    document.getElementById('themeSelect').value = selections.apibTheme;
+                }
+                
+                // Restore checkboxes
+                ['action', 'sensory', 'dialogue', 'voice', 'ending'].forEach(el => {
+                    const checkbox = document.getElementById('element-' + el);
+                    if (checkbox && selections.elements.includes(checkbox.nextElementSibling.textContent.split(' - ')[0])) {
+                        checkbox.checked = true;
+                    }
+                });
+                
+                ['plain', 'questions', 'illustrations', 'cloze', 'chapters', 'rewrite'].forEach(fmt => {
+                    const checkbox = document.getElementById('format-' + fmt);
+                    if (checkbox) {
+                        const label = checkbox.nextElementSibling.textContent.split(' - ')[0];
+                        if (selections.formats.some(f => f.includes(label))) {
+                            checkbox.checked = true;
+                        }
+                    }
+                });
+                
+                document.getElementById('tprsKeywords').value = selections.tprsKeywords || '';
+                document.getElementById('advancedStructures').value = selections.advancedStructures || '';
+                document.getElementById('culturalNotes').value = selections.culturalNotes || '';
+                
+                // Restore selections
+                if (selections.proficiency) {
+                    const profCard = document.querySelector(`[onclick*="'proficiency', '${selections.proficiency}'"]`);
+                    if (profCard) profCard.classList.add('selected');
+                }
+                
+                if (selections.culture) {
+                    const cultureCard = document.querySelector(`[onclick*="'culture', '${selections.culture}'"]`);
+                    if (cultureCard) cultureCard.classList.add('selected');
+                }
+                
+                updateSummary();
+                document.getElementById('restoreBanner').classList.remove('show');
+                
+                // Go to saved step
+                if (savedStep) {
+                    goToStep(parseInt(savedStep));
+                }
+            }
+        }
+
+        function clearSaved() {
+            localStorage.removeItem('storyBlueprint');
+            localStorage.removeItem('currentStep');
+            document.getElementById('restoreBanner').classList.remove('show');
+        }
+
+        // Validation functions
+        function validateStep1() {
+            const name = document.getElementById('studentName').value.trim();
+            const interest = document.getElementById('studentInterest').value.trim();
+            const continueBtn = document.getElementById('step1Continue');
+            
+            let isValid = true;
+            
+            if (name.length === 0) {
+                document.getElementById('nameError').classList.add('show');
+                document.getElementById('studentName').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('nameError').classList.remove('show');
+                document.getElementById('studentName').classList.remove('error');
+            }
+            
+            if (interest.length < 15) {
+                document.getElementById('interestError').classList.add('show');
+                document.getElementById('studentInterest').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('interestError').classList.remove('show');
+                document.getElementById('studentInterest').classList.remove('error');
+            }
+            
+            continueBtn.disabled = !isValid;
+            return isValid;
+        }
+
+        function validateStep2() {
+            const isValid = selections.proficiency !== '';
+            document.getElementById('step2Continue').disabled = !isValid;
+            
+            if (!isValid) {
+                document.getElementById('proficiencyError').classList.add('show');
+            } else {
+                document.getElementById('proficiencyError').classList.remove('show');
+            }
+            
+            return isValid;
+        }
+
+        function validateStep3() {
+            const elementCount = selections.elements.length;
+            
+            if (elementCount < 2) {
+                document.getElementById('elementsError').classList.add('show');
+            } else {
+                document.getElementById('elementsError').classList.remove('show');
+            }
+            
+            return true; // Not blocking
+        }
+
+        function validateStep5() {
+            const isValid = selections.culture !== '';
+            document.getElementById('step5Continue').disabled = !isValid;
+            
+            if (!isValid) {
+                document.getElementById('cultureError').classList.add('show');
+            } else {
+                document.getElementById('cultureError').classList.remove('show');
+            }
+            
+            return isValid;
+        }
+
+        function validateStep6() {
+            const formatCount = selections.formats.length;
+            
+            if (formatCount < 1) {
+                document.getElementById('formatError').classList.add('show');
+            } else {
+                document.getElementById('formatError').classList.remove('show');
+            }
+            
+            return true; // Not blocking
+        }
+
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function completeStep(stepNum) {
+            document.getElementById('step' + stepNum).classList.remove('active');
+            document.getElementById('step' + stepNum).classList.add('completed');
+            
+            if (stepNum < totalSteps) {
+                currentStep = stepNum + 1;
+                document.getElementById('step' + currentStep).classList.add('active');
+                updateProgress();
+                autoSave();
+                
+                document.getElementById('step' + currentStep).scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function goToStep(stepNum) {
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById('step' + i).classList.remove('active');
+            }
+            
+            currentStep = stepNum;
+            document.getElementById('step' + stepNum).classList.add('active');
+            updateProgress();
+            
+            document.getElementById('step' + stepNum).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function toggleStep(stepNum) {
+            if (stepNum <= currentStep || document.getElementById('step' + stepNum).classList.contains('completed')) {
+                goToStep(stepNum);
+            }
+        }
+
+        function selectOption(category, value, element) {
+            const siblings = element.parentElement.querySelectorAll('.option-card');
+            siblings.forEach(sib => sib.classList.remove('selected'));
+            
+            element.classList.add('selected');
+            selections[category] = value;
+            
+            if (category === 'proficiency') {
+                validateStep2();
+            } else if (category === 'culture') {
+                validateStep5();
+            }
+            
+            updateSummary();
+            autoSave();
+        }
+
+        function toggleAPIBSection() {
+            const checkbox = document.getElementById('apibTheme');
+            const section = document.getElementById('apibSection');
+            const sidebarSection = document.getElementById('apibThemeSection');
+            
+            if (checkbox.checked) {
+                section.style.display = 'block';
+                sidebarSection.style.display = 'block';
+            } else {
+                section.style.display = 'none';
+                sidebarSection.style.display = 'none';
+                document.getElementById('themeSelect').value = '';
+                selections.apibTheme = '';
+            }
+        }
+
+        function updateSummary() {
+            const name = document.getElementById('studentName')?.value || '';
+            const interest = document.getElementById('studentInterest')?.value || '';
+            selections.studentName = name;
+            selections.studentInterest = interest;
+            selections.studentVocab = document.getElementById('studentVocab')?.value || '';
+            
+            if (name || interest) {
+                document.getElementById('summaryStudent').innerHTML = `
+                    ${name ? '<strong>' + name + '</strong><br>' : ''}
+                    ${interest || 'Topic not yet described'}
+                `;
+            }
+
+            // AP/IB Theme
+            if (document.getElementById('apibTheme').checked) {
+                const themeValue = document.getElementById('themeSelect').value;
+                const themeNames = {
+                    'global-challenges': 'Global Challenges',
+                    'science-technology': 'Science & Technology',
+                    'contemporary-life': 'Contemporary Life',
+                    'personal-public-identities': 'Personal & Public Identities',
+                    'families-communities': 'Families & Communities',
+                    'beauty-aesthetics': 'Beauty & Aesthetics',
+                    'experiences': 'Experiences',
+                    'social-organization': 'Social Organization',
+                    'sharing-planet': 'Sharing the Planet'
+                };
+                selections.apibTheme = themeValue;
+                if (themeValue) {
+                    document.getElementById('summaryTheme').textContent = themeNames[themeValue];
+                }
+            } else {
+                selections.apibTheme = '';
+            }
+
+            // Proficiency
+            const profLevels = {
+                'novice-low': 'Novice Low/Mid',
+                'novice-high': 'Novice High',
+                'intermediate-low': 'Intermediate Low',
+                'intermediate-mid': 'Intermediate Mid/High',
+                'advanced': 'Advanced'
+            };
+            if (selections.proficiency) {
+                document.getElementById('summaryProficiency').textContent = profLevels[selections.proficiency];
+            }
+
+            // Story elements
+            const elements = [];
+            if (document.getElementById('element-action')?.checked) elements.push('Jump Into Action');
+            if (document.getElementById('element-sensory')?.checked) elements.push('Rich Sensory Details');
+            if (document.getElementById('element-dialogue')?.checked) elements.push('Natural Dialogue');
+            if (document.getElementById('element-voice')?.checked) elements.push('Strong Voice');
+            if (document.getElementById('element-ending')?.checked) elements.push('Meaningful Ending');
+            selections.elements = elements;
+            
+            const elementsHtml = document.getElementById('summaryElements');
+            if (elements.length > 0) {
+                elementsHtml.innerHTML = elements.map(el => `<li>${el}</li>`).join('');
+            } else {
+                elementsHtml.innerHTML = '<li style="color: #999; font-style: italic;">No elements selected yet</li>';
+            }
+
+            // Grammar focus
+            const tprs = document.getElementById('tprsKeywords')?.value || '';
+            const advanced = document.getElementById('advancedStructures')?.value || '';
+            selections.tprsKeywords = tprs;
+            selections.advancedStructures = advanced;
+            
+            if (tprs || advanced) {
+                document.getElementById('summaryGrammar').innerHTML = 
+                    (tprs ? 'Keywords: ' + tprs + '<br>' : '') +
+                    (advanced ? 'Structures: ' + advanced : '');
+            }
+
+            // Cultural approach
+            const cultures = {
+                'student-only': "Student's Own Culture",
+                'comparative': 'Comparative Approach',
+                'embedded': 'Naturally Embedded'
+            };
+            if (selections.culture) {
+                document.getElementById('summaryCulture').textContent = cultures[selections.culture];
+            }
+            selections.culturalNotes = document.getElementById('culturalNotes')?.value || '';
+
+            // Formats
+            const formats = [];
+            if (document.getElementById('format-plain')?.checked) formats.push('Plain Narrative');
+            if (document.getElementById('format-questions')?.checked) formats.push('Comprehension Questions');
+            if (document.getElementById('format-illustrations')?.checked) formats.push('Illustration Boxes');
+            if (document.getElementById('format-cloze')?.checked) formats.push('Cloze Activities');
+            if (document.getElementById('format-chapters')?.checked) formats.push('Chapter Structure');
+            if (document.getElementById('format-rewrite')?.checked) formats.push('Student Rewrite Sections');
+            selections.formats = formats;
+            
+            const formatsHtml = document.getElementById('summaryFormat');
+            if (formats.length > 0) {
+                formatsHtml.innerHTML = formats.map(fmt => `<li>${fmt}</li>`).join('');
+            } else {
+                formatsHtml.innerHTML = '<li style="color: #999; font-style: italic;">No formats selected yet</li>';
+            }
+
+            // Update preview
+            updatePreview();
+            autoSave();
+        }
+
+        function updatePreview() {
+            if (!selections.studentName || !selections.proficiency) {
+                document.getElementById('previewStory').innerHTML = 
+                    '<p style="color: #999;">Complete Step 1 and 2 to see a preview of how your story might begin...</p>';
+                return;
+            }
+
+            const previews = {
+                'novice-low': `${selections.studentName} looks at [topic]. ${selections.studentName} feels excited. Today is special...`,
+                'novice-high': `${selections.studentName} looked at [topic] yesterday. ${selections.studentName} felt nervous but excited. Today everything changes...`,
+                'intermediate-low': `When ${selections.studentName} first discovered [topic], everything changed. It wasn't just an interest—it became a passion that shaped daily decisions...`,
+                'intermediate-mid': `${selections.studentName} had been thinking about [topic] for weeks. While others might not understand the fascination, ${selections.studentName} knew this mattered deeply. The question was: what to do next?`,
+                'advanced': `If someone had told ${selections.studentName} a year ago that [topic] would become central to life's meaning, the response would have been skepticism. Yet here we are—transformed by what once seemed insignificant...`
+            };
+
+            const topicPhrase = selections.studentInterest ? 
+                selections.studentInterest.split(' ').slice(0, 4).join(' ') + '...' : 
+                'this interest';
+
+            const preview = previews[selections.proficiency].replace(/\[topic\]/g, topicPhrase);
+            
+            document.getElementById('previewStory').innerHTML = `
+                <p><strong>Story Opening Preview:</strong></p>
+                <p style="margin-top: 15px;">${preview}</p>
+                <p style="margin-top: 15px; color: #999; font-size: 0.9em; font-style: normal;">
+                    This is just a preview based on your proficiency selection. The actual AI-generated story will be fully personalized to ${selections.studentName}'s specific interest.
+                </p>
+            `;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.sidebar-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        function generatePrompt() {
+            const profDescriptions = {
+                'novice-low': 'Novice Low/Mid level (present tense, high-frequency words, 100-150 words)',
+                'novice-high': 'Novice High level (present and simple past tenses, 150-200 words)',
+                'intermediate-low': 'Intermediate Low level (multiple tenses, connected sentences, 200-300 words)',
+                'intermediate-mid': 'Intermediate Mid/High level (full narration and description in paragraphs, 300-400 words)',
+                'advanced': 'Advanced level (complex structures including subjunctive, sophisticated vocabulary, 400-600 words)'
+            };
+
+            let prompt = '';
+            
+            prompt += `<div class="prompt-section">`;
+            prompt += `<div class="prompt-header">STUDENT & TOPIC</div>`;
+            prompt += `- Student: <span class="prompt-highlight">${selections.studentName || '[Student name]'}</span><br>`;
+            prompt += `- Core Interest: <span class="prompt-highlight">${selections.studentInterest || '[Student interest]'}</span><br>`;
+            if (selections.studentVocab) {
+                prompt += `- Incorporate these student phrases: <span class="prompt-highlight">${selections.studentVocab}</span><br>`;
+            }
+            if (selections.apibTheme) {
+                const themeNames = {
+                    'global-challenges': 'Global Challenges',
+                    'science-technology': 'Science & Technology',
+                    'contemporary-life': 'Contemporary Life',
+                    'personal-public-identities': 'Personal & Public Identities',
+                    'families-communities': 'Families & Communities',
+                    'beauty-aesthetics': 'Beauty & Aesthetics',
+                    'experiences': 'Experiences',
+                    'social-organization': 'Social Organization',
+                    'sharing-planet': 'Sharing the Planet'
+                };
+                prompt += `- <span class="prompt-highlight">AP/IB Theme: ${themeNames[selections.apibTheme]}</span><br>`;
+            }
+            prompt += `</div>`;
+
+            prompt += `<div class="prompt-section">`;
+            prompt += `<div class="prompt-header">PROFICIENCY LEVEL</div>`;
+            prompt += `- Target: <span class="prompt-highlight">${profDescriptions[selections.proficiency] || 'Not specified'}</span><br>`;
+            prompt += `</div>`;
+
+            if (selections.elements.length > 0) {
+                prompt += `<div class="prompt-section">`;
+                prompt += `<div class="prompt-header">NARRATIVE TECHNIQUES</div>`;
+                selections.elements.forEach(el => {
+                    prompt += `- ${el}<br>`;
+                });
+                prompt += `</div>`;
+            }
+
+            if (selections.tprsKeywords || selections.advancedStructures) {
+                prompt += `<div class="prompt-section">`;
+                prompt += `<div class="prompt-header">GRAMMAR/STRUCTURE FOCUS</div>`;
+                if (selections.tprsKeywords) {
+                    prompt += `- Recycle these structures: <span class="prompt-highlight">${selections.tprsKeywords}</span><br>`;
+                }
+                if (selections.advancedStructures) {
+                    prompt += `- Include these advanced structures: <span class="prompt-highlight">${selections.advancedStructures}</span><br>`;
+                }
+                prompt += `</div>`;
+            }
+
+            if (selections.culture || selections.culturalNotes) {
+                prompt += `<div class="prompt-section">`;
+                prompt += `<div class="prompt-header">CULTURAL INTEGRATION</div>`;
+                const cultureDescriptions = {
+                    'student-only': 'Focus on the student\'s own authentic cultural experience',
+                    'comparative': 'Create opportunities to compare with parallel experiences in the target culture',
+                    'embedded': 'Weave cultural products/practices naturally into the narrative'
+                };
+                if (selections.culture) {
+                    prompt += `- Approach: ${cultureDescriptions[selections.culture]}<br>`;
+                }
+                if (selections.culturalNotes) {
+                    prompt += `- Specific connections: <span class="prompt-highlight">${selections.culturalNotes}</span><br>`;
+                }
+                prompt += `</div>`;
+            }
+
+            if (selections.formats.length > 0) {
+                prompt += `<div class="prompt-section">`;
+                prompt += `<div class="prompt-header">FORMAT REQUIREMENTS</div>`;
+                selections.formats.forEach(fmt => {
+                    if (fmt === 'Plain Narrative') {
+                        prompt += `- Provide the story as continuous narrative text<br>`;
+                    } else if (fmt === 'Comprehension Questions') {
+                        prompt += `- Add 3-5 comprehension questions after the story<br>`;
+                    } else if (fmt === 'Illustration Boxes') {
+                        prompt += `- Include [ILLUSTRATION BOX] markers where students should draw<br>`;
+                    } else if (fmt === 'Cloze Activities') {
+                        prompt += `- Create a second version with 8-10 key words removed as blanks<br>`;
+                    } else if (fmt === 'Chapter Structure') {
+                        prompt += `- Break the story into 2-3 short chapters with titles<br>`;
+                    } else if (fmt === 'Student Rewrite Sections') {
+                        prompt += `- Include "Your Turn" prompts where students can add their own details<br>`;
+                    }
+                });
+                prompt += `</div>`;
+            }
+
+            // Check for differentiation options
+            if (document.getElementById('diffLevels').checked) {
+                prompt += `<div class="prompt-section">`;
+                prompt += `<div class="prompt-header">DIFFERENTIATION</div>`;
+                prompt += `- Create THREE versions of this story at different proficiency levels (Novice, Intermediate, Advanced)<br>`;
+                prompt += `- Maintain the same core narrative and student voice across all versions<br>`;
+                prompt += `- Adjust only linguistic complexity, not story quality or engagement<br>`;
+                prompt += `</div>`;
+            }
+
+            if (document.getElementById('followupActivities').checked) {
+                prompt += `<div class="prompt-section">`;
+                prompt += `<div class="prompt-header">FOLLOW-UP ACTIVITIES</div>`;
+                prompt += `- Generate 3-4 extension activities students can do with this story<br>`;
+                prompt += `- Include discussion prompts, writing extensions, and creative responses<br>`;
+                prompt += `- Ensure activities maintain connection to student's authentic interest<br>`;
+                prompt += `</div>`;
+            }
+
+            prompt += `<div class="prompt-section">`;
+            prompt += `<div class="prompt-header">CRITICAL REMINDERS</div>`;
+            prompt += `- Jump right into the action (no static "X is a student" openings)<br>`;
+            prompt += `- Use rich sensory details that help students visualize the story<br>`;
+            prompt += `- Write with a strong, distinctive voice that sounds like a real person<br>`;
+            prompt += `- End with meaning and resonance, not just "the end"<br>`;
+            prompt += `- Ensure cultural elements emerge naturally from the story<br>`;
+            prompt += `- The story should feel authentic and engaging, not like a grammar exercise<br>`;
+            prompt += `</div>`;
+
+            // Display the prompt
+            const output = document.getElementById('promptOutput');
+            output.innerHTML = prompt;
+            output.classList.add('show');
+            document.getElementById('actionButtons').style.display = 'flex';
+
+            // Scroll to prompt
+            output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function showManualGuide() {
+            const guide = `<div class="prompt-section">
+                <div class="prompt-header">MANUAL STORY WRITING CHECKLIST</div>
+                Use this blueprint when crafting your story by hand:<br><br>
+                ☐ Opening Hook: Start with action, dialogue, or a compelling image<br>
+                ☐ Sensory Details: Include at least 3 different senses<br>
+                ☐ Student Voice: Use specific details from their interview<br>
+                ☐ Appropriate Complexity: Match verb tenses to proficiency level<br>
+                ☐ Natural Dialogue: Make it sound like real speech<br>
+                ☐ Cultural Authenticity: Elements should feel organic<br>
+                ☐ Emotional Arc: Character experiences change or growth<br>
+                ☐ Meaningful Ending: Conclude with resonance<br>
+                ☐ Grammar Integration: Target structures appear naturally<br>
+                ☐ Read Aloud Test: Does it sound compelling?<br><br>
+                <span class="prompt-highlight">Remember:</span> A compelling story about something students care about will always outperform a technically perfect story about a generic topic.
+                </div>`;
+
+            const output = document.getElementById('promptOutput');
+            output.innerHTML = guide;
+            output.classList.add('show');
+            document.getElementById('actionButtons').style.display = 'flex';
+
+            output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function copyPrompt() {
+            const text = document.getElementById('promptOutput').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                }, 2000);
+            });
+        }
+
+        function saveBlueprint() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(selections, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `story-blueprint-${selections.studentName || 'unnamed'}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function exportPDF() {
+            alert('PDF export would require a backend service. For now, you can:\n1. Copy the prompt\n2. Use your browser\'s Print function (Ctrl/Cmd + P)\n3. Save as PDF');
+        }
+
+        function showExamples(step) {
+            const examples = {
+                'step1': `
+                    <h2 style="color: #667eea; margin-bottom: 20px;">Good vs. Vague Student Interests</h2>
+                    <div class="do-dont-container">
+                        <div class="do-column">
+                            <h5>✅ Specific & Story-Rich</h5>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="margin: 12px 0;">"Learning guitar to overcome stage fright at open mic nights"</li>
+                                <li style="margin: 12px 0;">"Reducing clothing waste by thrifting and upcycling fast fashion"</li>
+                                <li style="margin: 12px 0;">"Training my rescue dog to become a therapy animal for hospitals"</li>
+                                <li style="margin: 12px 0;">"Creating digital art that combines anime styles with African patterns"</li>
+                            </ul>
+                        </div>
+                        <div class="dont-column">
+                            <h5>❌ Too Vague</h5>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="margin: 12px 0;">"Music" (What about music? Playing? Listening? Genre?)</li>
+                                <li style="margin: 12px 0;">"Fashion" (Too broad—need the specific angle)</li>
+                                <li style="margin: 12px 0;">"Animals" (What kind? What relationship?)</li>
+                                <li style="margin: 12px 0;">"Art" (Medium? Style? Purpose?)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tip-box" style="margin-top: 20px;">
+                        <strong>The Magic Formula:</strong> [Action Verb] + [Specific Topic] + [Why It Matters to Student]
+                    </div>
+                `,
+                'step2': `
+                    <h2 style="color: #667eea; margin-bottom: 20px;">Story Openings by Proficiency Level</h2>
+                    <p style="color: #666; margin-bottom: 20px;">Same student interest (learning guitar), different proficiency targets:</p>
+                    
+                    <div style="margin: 20px 0; padding: 20px; background: #f0f9ff; border-radius: 12px;">
+                        <h4 style="color: #0c4a6e; margin-bottom: 10px;">🌱 Novice Low/Mid</h4>
+                        <p style="font-style: italic; color: #555; line-height: 1.7;">
+                            "Marcus looks at his guitar. His hands shake. Today is the open mic night. He feels nervous."
+                        </p>
+                        <p style="margin-top: 10px; color: #666; font-size: 0.9em;">
+                            Present tense only, simple sentences, high-frequency words (looks, shake, feels)
+                        </p>
+                    </div>
+
+                    <div style="margin: 20px 0; padding: 20px; background: #f0fdf4; border-radius: 12px;">
+                        <h4 style="color: #14532d; margin-bottom: 10px;">🌿 Novice High</h4>
+                        <p style="font-style: italic; color: #555; line-height: 1.7;">
+                            "Marcus practiced all week. Now he looks at his guitar and thinks about the open mic. His hands are shaking because tonight is different."
+                        </p>
+                        <p style="margin-top: 10px; color: #666; font-size: 0.9em;">
+                            Mix of past (practiced) and present, causal connection (because)
+                        </p>
+                    </div>
+
+                    <div style="margin: 20px 0; padding: 20px; background: #fef3c7; border-radius: 12px;">
+                        <h4 style="color: #78350f; margin-bottom: 10px;">🌳 Intermediate Mid</h4>
+                        <p style="font-style: italic; color: #555; line-height: 1.7;">
+                            "Marcus had been practicing the same song for three weeks, but now, standing backstage at the open mic, he couldn't remember the first chord. His guitar felt heavier than usual, and the voices from the audience—laughing, chatting—made his heart race."
+                        </p>
+                        <p style="margin-top: 10px; color: #666; font-size: 0.9em;">
+                            Imperfect + preterite, complex sentences, sensory details, psychological depth
+                        </p>
+                    </div>
+
+                    <div style="margin: 20px 0; padding: 20px; background: #fae8ff; border-radius: 12px;">
+                        <h4 style="color: #581c87; margin-bottom: 10px;">🏔️ Advanced</h4>
+                        <p style="font-style: italic; color: #555; line-height: 1.7;">
+                            "If someone had told Marcus six months ago that he'd be performing at an open mic, he would have laughed. Stage fright wasn't just nervousness—it was paralysis, a certainty that judgment awaited. But here he stood, guitar in hand, questioning whether courage meant the absence of fear or simply choosing to act despite it."
+                        </p>
+                        <p style="margin-top: 10px; color: #666; font-size: 0.9em;">
+                            Conditional, subjunctive implied, abstract concepts, sophisticated vocabulary
+                        </p>
+                    </div>
+                `,
+                'step3': `
+                    <h2 style="color: #667eea; margin-bottom: 20px;">Strong vs. Weak Story Elements</h2>
+                    
+                    <h3 style="color: #667eea; margin: 30px 0 15px 0;">Jump Into Action</h3>
+                    <div class="do-dont-container">
+                        <div class="do-column">
+                            <h5>✅ Strong Opening</h5>
+                            <p>"The email notification appears. Leila's breath catches. She clicks."</p>
+                        </div>
+                        <div class="dont-column">
+                            <h5>❌ Weak Opening</h5>
+                            <p>"Leila is a student. She is 16. She likes debate club."</p>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin: 30px 0 15px 0;">Rich Sensory Details</h3>
+                    <div class="do-dont-container">
+                        <div class="do-column">
+                            <h5>✅ Sensory & Specific</h5>
+                            <p>"The gym smells like rubber and sweat. Aisha's shoes squeak on the polished floor. Her opponent's breathing echoes—fast, nervous."</p>
+                        </div>
+                        <div class="dont-column">
+                            <h5>❌ Abstract & Vague</h5>
+                            <p>"Aisha was in the gym. She felt excited about the game."</p>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin: 30px 0 15px 0;">Natural Dialogue</h3>
+                    <div class="do-dont-container">
+                        <div class="do-column">
+                            <h5>✅ Sounds Real</h5>
+                            <p>"You ready?"<br>"I... yeah. Maybe."<br>"That's not a yes."<br>"I know."</p>
+                        </div>
+                        <div class="dont-column">
+                            <h5>❌ Sounds Textbook</h5>
+                            <p>"Hello, are you prepared?"<br>"Yes, I am prepared. Thank you for asking."</p>
+                        </div>
+                    </div>
+                `,
+                'step5': `
+                    <h2 style="color: #667eea; margin-bottom: 20px;">Cultural Integration: Authentic vs. Tokenistic</h2>
+                    
+                    <div class="warning-box">
+                        <strong>The Test:</strong> Would someone from this culture recognize authenticity, or would they see a stereotype?
+                    </div>
+
+                    <h3 style="color: #667eea; margin: 30px 0 15px 0;">Example 1: Food & Family</h3>
+                    <div class="do-dont-container">
+                        <div class="do-column">
+                            <h5>✅ Authentic & Specific</h5>
+                            <p>"Every Sunday, Grandmother makes tamales the way her mother taught her—masa spread thin, filling never too spicy because the kids complain. The kitchen smells like corn and steam. This is how family happens in our house."</p>
+                            <p style="margin-top: 10px; font-size: 0.85em; color: #065f46;">Why it works: Specific details, inter-generational transmission, personal family dynamic, sensory details</p>
+                        </div>
+                        <div class="dont-column">
+                            <h5>❌ Tokenistic & Generic</h5>
+                            <p>"María eats tacos every day because she's Mexican and that's what Mexican people eat."</p>
+                            <p style="margin-top: 10px; font-size: 0.85em; color: #991b1b;">Why it fails: Stereotype, no specificity, reduces culture to single food item, treats culture as monolithic</p>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin: 30px 0 15px 0;">Example 2: Religious Practice</h3>
+                    <div class="do-dont-container">
+                        <div class="do-column">
+                            <h5>✅ Authentic & Nuanced</h5>
+                            <p>"During Ramadan, Ahmed's basketball schedule becomes complicated. Coach doesn't get why he can't drink water during practice. His teammates try to understand—some bring him dates for iftar. It's awkward and kind at the same time."</p>
+                            <p style="margin-top: 10px; font-size: 0.85em; color: #065f46;">Why it works: Shows complexity, real social navigation, mixture of understanding and misunderstanding, student agency</p>
+                        </div>
+                        <div class="dont-column">
+                            <h5>❌ Tokenistic & Reductive</h5>
+                            <p>"Ahmed is Muslim so he prays five times a day and doesn't eat pork."</p>
+                            <p style="margin-top: 10px; font-size: 0.85em; color: #991b1b;">Why it fails: Reduces person to checklist of practices, no lived experience or personal meaning</p>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin: 30px 0 15px 0;">Example 3: Language & Identity</h3>
+                    <div class="do-dont-container">
+                        <div class="do-column">
+                            <h5>✅ Authentic & Complex</h5>
+                            <p>"When Kenji speaks English, his grandmother says he sounds American. When he speaks Japanese, his cousins in Tokyo say his accent is 'cute'—which means wrong. Sometimes he wonders if he's fluent in neither or both."</p>
+                            <p style="margin-top: 10px; font-size: 0.85em; color: #065f46;">Why it works: Real identity negotiation, shows complexity of bilingualism, emotional honesty, avoids easy answers</p>
+                        </div>
+                        <div class="dont-column">
+                            <h5>❌ Tokenistic & Superficial</h5>
+                            <p>"Kenji speaks both English and Japanese. He is bilingual. This makes him special."</p>
+                            <p style="margin-top: 10px; font-size: 0.85em; color: #991b1b;">Why it fails: No depth, treats bilingualism as simple advantage, ignores identity complexity</p>
+                        </div>
+                    </div>
+
+                    <div class="success-box" style="margin-top: 30px;">
+                        <strong>Golden Rule:</strong> Cultural elements should create questions, not provide answers. They should complicate, not simplify. They should show how culture is lived, not listed.
+                    </div>
+                `
+            };
+
+            document.getElementById('exampleContent').innerHTML = examples[step];
+            document.getElementById('exampleModal').classList.add('show');
+        }
+
+        function showQuickStart() {
+            document.getElementById('quickStartModal').classList.add('show');
+        }
+
+        function showLoadOptions() {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.json';
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        try {
+                            const loaded = JSON.parse(event.target.result);
+                            selections = loaded;
+                            restoreProgress();
+                            alert('Blueprint loaded successfully!');
+                        } catch (error) {
+                            alert('Error loading file. Please make sure it\'s a valid blueprint file.');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            fileInput.click();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function loadTemplate(type) {
+            const templates = {
+                'novice': {
+                    studentName: 'Example Student',
+                    studentInterest: 'Learning to skateboard at the local park',
+                    studentVocab: 'practice, fall, try again, scared, excited',
+                    proficiency: 'novice-low',
+                    elements: ['Jump Into Action', 'Rich Sensory Details'],
+                    culture: 'student-only',
+                    formats: ['Plain Narrative', 'Illustration Boxes']
+                },
+                'intermediate': {
+                    studentName: 'Example Student',
+                    studentInterest: 'Starting a community garden to bring neighbors together',
+                    studentVocab: 'seeds, soil, community, grow, harvest, share',
+                    proficiency: 'intermediate-low',
+                    elements: ['Jump Into Action', 'Rich Sensory Details', 'Natural Dialogue'],
+                    culture: 'embedded',
+                    formats: ['Chapter Structure', 'Comprehension Questions']
+                },
+                'advanced': {
+                    studentName: 'Example Student',
+                    studentInterest: 'Exploring ethical questions about artificial intelligence and creativity',
+                    studentVocab: 'algorithm, creativity, originality, consciousness, authentic',
+                    proficiency: 'advanced',
+                    elements: ['Jump Into Action', 'Strong Voice', 'Meaningful Ending'],
+                    culture: 'comparative',
+                    formats: ['Plain Narrative', 'Student Rewrite Sections'],
+                    advancedStructures: 'subjunctive with doubt, conditional for hypotheticals'
+                },
+                'apib': {
+                    studentName: 'Example Student',
+                    studentInterest: 'Investigating food waste in school cafeterias',
+                    studentVocab: 'waste, sustainability, responsibility, change, system',
+                    proficiency: 'intermediate-mid',
+                    elements: ['Jump Into Action', 'Natural Dialogue', 'Meaningful Ending'],
+                    culture: 'comparative',
+                    formats: ['Chapter Structure', 'Comprehension Questions', 'Student Rewrite Sections'],
+                    apibTheme: 'global-challenges'
+                }
+            };
+
+            const template = templates[type];
+            selections = {...selections, ...template};
+            
+            // Apply template to form
+            document.getElementById('studentName').value = template.studentName;
+            document.getElementById('studentInterest').value = template.studentInterest;
+            document.getElementById('studentVocab').value = template.studentVocab;
+            
+            if (template.apibTheme) {
+                document.getElementById('apibTheme').checked = true;
+                toggleAPIBSection();
+                document.getElementById('themeSelect').value = template.apibTheme;
+            }
+            
+            // Set proficiency
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+                if (card.textContent.includes(template.proficiency.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))) {
+                    card.click();
+                }
+            });
+            
+            updateSummary();
+            closeModal('quickStartModal');
+            validateStep1();
+            
+            alert(`Template loaded! Review and customize the settings, then proceed through the steps.`);
+        }
+
+        // Initialize
+        checkForSaved();
+        updateProgress();
+        updateSummary();
+    </script>
+</body>
+</html>
