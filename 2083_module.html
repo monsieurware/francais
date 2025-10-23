@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module IB French B HL - "2083" par Grand Corps Malade</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+        }
+        
+        .header p {
+            margin: 5px 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            color: #1e3c72;
+            border-bottom: 3px solid #2a5298;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        .section h3 {
+            color: #2a5298;
+            margin-top: 25px;
+        }
+        
+        .ib-themes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .theme-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .theme-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+        
+        .champs-lexical {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .lexical-category {
+            background: #f8f9fa;
+            border-left: 4px solid #2a5298;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        
+        .lexical-category h4 {
+            color: #1e3c72;
+            margin-top: 0;
+            font-size: 1.1em;
+        }
+        
+        .lexical-category ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .lexical-category li {
+            padding: 5px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .lexical-category li:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .activity-box h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+        
+        .drag-drop-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .drop-zone {
+            min-height: 200px;
+            border: 2px dashed #2a5298;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f8f9fa;
+        }
+        
+        .drop-zone h4 {
+            color: #1e3c72;
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        .draggable-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .draggable-item {
+            background: white;
+            border: 2px solid #2a5298;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: move;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .draggable-item:hover {
+            background: #e3f2fd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .draggable-item.dragging {
+            opacity: 0.5;
+        }
+        
+        .drop-zone.drag-over {
+            background: #e3f2fd;
+            border-color: #1e3c72;
+        }
+        
+        .dropped-item {
+            background: #d4edda;
+            border-color: #28a745;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        
+        .remove-btn:hover {
+            background: #c82333;
+        }
+        
+        .check-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s;
+        }
+        
+        .check-btn:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+        
+        .reset-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px auto;
+            display: block;
+        }
+        
+        .reset-btn:hover {
+            background: #5a6268;
+        }
+        
+        .result-message {
+            text-align: center;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .result-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+        
+        .result-message.partial {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+        
+        .result-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+        
+        .question-box {
+            background: #e3f2fd;
+            border-left: 4px solid #1e3c72;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .question-box p {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        
+        .analysis-point {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #764ba2;
+        }
+        
+        strong {
+            color: #1e3c72;
+        }
+        
+        em {
+            color: #764ba2;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .drag-drop-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌍 "2083" - Grand Corps Malade</h1>
+        <p><strong>Module IB French B - Niveau Supérieur (HL)</strong></p>
+        <p>Thème global : Expériences / Partage de la planète</p>
+    </div>
+
+    <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/G8oWYFQ1fE0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <div class="section">
+        <h2>📖 Contexte et Présentation</h2>
+        <p><strong>Artiste :</strong> Grand Corps Malade (Fabien Marsaud)</p>
+        <p><strong>Album :</strong> <em>Reflets</em> (2023)</p>
+        <p><strong>Genre :</strong> Slam / Spoken word</p>
+        <p><strong>Durée :</strong> 4:15</p>
+        
+        <div class="analysis-point">
+            <p><strong>Synopsis :</strong> Cette chanson présente un dialogue épistolaire entre deux générations séparées par 60 ans. Un petit-fils de 2083 écrit à son grand-père en 2023 pour décrire l'état catastrophique de la planète et l'urgence d'agir. Le grand-père répond en reconnaissant que les avertissements existaient déjà, mais que l'inaction politique persiste. Le message se termine par un appel à l'action collective.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🎯 Thèmes IB Français B</h2>
+        <div class="ib-themes">
+            <div class="theme-card">
+                <h4>🌱 Partage de la planète</h4>
+                <p>Changement climatique, catastrophes environnementales, responsabilité collective</p>
+            </div>
+            <div class="theme-card">
+                <h4>👥 Expériences</h4>
+                <p>Relations intergénérationnelles, correspondance, héritage et responsabilité envers les générations futures</p>
+            </div>
+            <div class="theme-card">
+                <h4>🏛️ Organisation sociale</h4>
+                <p>Rôle des gouvernements, politiques publiques, accords internationaux, migrations forcées</p>
+            </div>
+            <div class="theme-card">
+                <h4>🌐 Ingéniosité humaine</h4>
+                <p>Science et recherche climatique, rapport du GIEC, innovations nécessaires pour sauver la planète</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📚 Analyse du Champs Lexical</h2>
+        <p><em>Explorez les différents réseaux de mots utilisés dans la chanson pour comprendre comment le langage crée du sens.</em></p>
+        
+        <div class="champs-lexical">
+            <div class="lexical-category">
+                <h4>🌊 Catastrophes naturelles</h4>
+                <ul>
+                    <li><strong>la montée des eaux</strong> - hausse du niveau de la mer</li>
+                    <li><strong>les cyclones et ouragans</strong> - tempêtes tropicales violentes</li>
+                    <li><strong>la sécheresse</strong> - absence prolongée de pluie</li>
+                    <li><strong>la chaleur</strong> - températures extrêmes</li>
+                    <li><strong>disparaître sous la mer</strong> - submersion totale</li>
+                    <li><strong>ensevelis sous le désert</strong> - recouverts par le sable</li>
+                </ul>
+            </div>
+            
+            <div class="lexical-category">
+                <h4>🏗️ Tentatives de protection (inefficaces)</h4>
+                <ul>
+                    <li><strong>construire des digues</strong> - barrières contre l'eau</li>
+                    <li><strong>des barrages</strong> - structures de retenue</li>
+                    <li><strong>des murailles</strong> - murs défensifs</li>
+                    <li><strong>ne pèsent pas bien lourd</strong> - expression idiomatique : sont inefficaces</li>
+                    <li><strong>éclatent en morceaux</strong> - se brisent, se détruisent</li>
+                </ul>
+            </div>
+            
+            <div class="lexical-category">
+                <h4>💀 Mort et disparition</h4>
+                <ul>
+                    <li><strong>ont disparu</strong> - cessé d'exister</li>
+                    <li><strong>ne vivent plus</strong> - sont morts</li>
+                    <li><strong>un million d'espèces</strong> - extinction massive</li>
+                    <li><strong>pour toujours</strong> - irréversibilité</li>
+                    <li><strong>des millions de morts</strong> - catastrophe humanitaire</li>
+                    <li><strong>la terre n'est pas encore morte</strong> - métaphore de l'espoir</li>
+                </ul>
+            </div>
+            
+            <div class="lexical-category">
+                <h4>🌍 Géographie mondiale</h4>
+                <ul>
+                    <li><strong>Jakarta, Lagos, New-York</strong> - villes côtières submergées</li>
+                    <li><strong>Venise, Londres</strong> - capitales européennes menacées</li>
+                    <li><strong>Tombouctou</strong> - ville malienne historique</li>
+                    <li><strong>le fleuve Niger</strong> - cours d'eau africain majeur asséché</li>
+                    <li><strong>New-Delhi, Pékin, Shanghai</strong> - mégalopoles asiatiques polluées</li>
+                </ul>
+            </div>
+            
+            <div class="lexical-category">
+                <h4>😷 Pollution et qualité de l'air</h4>
+                <ul>
+                    <li><strong>asphyxiée</strong> - étouffée, privée d'oxygène</li>
+                    <li><strong>un nuage de pollution</strong> - masse d'air toxique</li>
+                    <li><strong>masque à oxygène</strong> - équipement de survie</li>
+                    <li><strong>interdit de sortir</strong> - mesure d'urgence sanitaire</li>
+                </ul>
+            </div>
+            
+            <div class="lexical-category">
+                <h4>⚔️ Conflit et division</h4>
+                <ul>
+                    <li><strong>des millions de réfugiés</strong> - personnes déplacées</li>
+                    <li><strong>fuient leur pays</strong> - abandonnent leur terre natale</li>
+                    <li><strong>zones de combat</strong> - lieux de guerre</li>
+                    <li><strong>c'est la guerre</strong> - conflit généralisé</li>
+                    <li><strong>les frontières</strong> - limites territoriales fortifiées</li>
+                </ul>
+            </div>
+            
+            <div class="lexical-category">
+                <h4>🍞 Crise alimentaire</h4>
+                <ul>
+                    <li><strong>les sols sont secs</strong> - terre infertile</li>
+                    <li><strong>plus de vigne en France</strong> - fin d'une tradition millénaire</li>
+                    <li><strong>l'agriculture est impossible</strong> - effondrement du système alimentaire</li>
+                    <li><strong>n'ont plus d'eau</strong> - ressource épuisée</li>
+                    <li><strong>la famine</strong> - manque extrême de nourriture</li>
+                    <li><strong>la misère</strong> - pauvreté extrême</li>
+                </ul>
+            </div>
+            
+            <div class="lexical-category">
+                <h4>🏛️ Critique politique</h4>
+                <ul>
+                    <li><strong>les grands de ce monde</strong> - leaders mondiaux (ironique)</li>
+                    <li><strong>un terrible échec</strong> - résultat désastreux</li>
+                    <li><strong>n'aboutit à rien</strong> - sans résultat concret</li>
+                    <li><strong>jet privé</strong> - symbole d'hypocrisie environnementale</li>
+                    <li><strong>se torchent avec les rapports du GIEC</strong> - expression vulgaire : ignorent complètement</li>
+                    <li><strong>l'inaction</strong> - absence de réaction</li>
+                    <li><strong>demi-mesures</strong> - actions insuffisantes</li>
+                </ul>
+            </div>
+            
+            <div class="lexical-category">
+                <h4>⏰ Temps et urgence</h4>
+                <ul>
+                    <li><strong>il n'est pas encore trop tard</strong> - appel à l'espoir</li>
+                    <li><strong>l'avenir de l'humanité</strong> - enjeu existentiel</li>
+                    <li><strong>au-delà de l'urgence</strong> - situation critique</li>
+                    <li><strong>irréversibles</strong> - qu'on ne peut plus changer</li>
+                    <li><strong>dès aujourd'hui</strong> - immédiatement</li>
+                    <li><strong>il ne faudra pas attendre</strong> - action immédiate requise</li>
+                </ul>
+            </div>
+            
+            <div class="lexical-category">
+                <h4>💪 Action collective et espoir</h4>
+                <ul>
+                    <li><strong>réagisse</strong> - prenne des mesures</li>
+                    <li><strong>le combat</strong> - métaphore guerrière de la lutte</li>
+                    <li><strong>contraindre</strong> - forcer, obliger</li>
+                    <li><strong>investir massivement</strong> - engager des ressources importantes</li>
+                    <li><strong>tous tes potes</strong> - langage familier : tous tes amis</li>
+                    <li><strong>collective</strong> - ensemble, tous unis</li>
+                    <li><strong>la victoire</strong> - réussite finale</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🎮 Activité Interactive : Problèmes vs Solutions</h2>
+        <div class="activity-box">
+            <h4>📋 Instructions</h4>
+            <p>Classez les éléments suivants dans la bonne catégorie en les faisant glisser. Certains éléments mentionnés dans la chanson décrivent des <strong>problèmes</strong> constatés, d'autres proposent des <strong>solutions</strong> possibles.</p>
+        </div>
+        
+        <div class="draggable-items" id="items-container">
+            <div class="draggable-item" draggable="true" data-category="problem">Montée des eaux submergeant les villes côtières</div>
+            <div class="draggable-item" draggable="true" data-category="problem">Températures atteignant 60 degrés</div>
+            <div class="draggable-item" draggable="true" data-category="problem">Disparition d'un million d'espèces</div>
+            <div class="draggable-item" draggable="true" data-category="solution">Déclarer l'état d'urgence climatique mondial</div>
+            <div class="draggable-item" draggable="true" data-category="problem">Cyclones et ouragans détruisant les infrastructures</div>
+            <div class="draggable-item" draggable="true" data-category="solution">Contraindre les pays sur leurs émissions de CO2</div>
+            <div class="draggable-item" draggable="true" data-category="problem">Sols trop secs pour la viticulture française</div>
+            <div class="draggable-item" draggable="true" data-category="solution">Rendre toute déforestation illégale</div>
+            <div class="draggable-item" draggable="true" data-category="problem">Obligation de porter un masque à oxygène</div>
+            <div class="draggable-item" draggable="true" data-category="solution">Investir massivement pour consommer moins et mieux</div>
+            <div class="draggable-item" draggable="true" data-category="problem">Guerres aux frontières entre réfugiés et États du Nord</div>
+            <div class="draggable-item" draggable="true" data-category="problem">Famine et misère devenues irréversibles</div>
+            <div class="draggable-item" draggable="true" data-category="solution">Changements de comportement par des lois contraignantes</div>
+            <div class="draggable-item" draggable="true" data-category="problem">Fleuve Niger complètement asséché</div>
+            <div class="draggable-item" draggable="true" data-category="solution">Mobilisation collective et intergénérationnelle</div>
+            <div class="draggable-item" draggable="true" data-category="problem">Échec répété des conférences sur le climat</div>
+        </div>
+        
+        <div class="drag-drop-area">
+            <div class="drop-zone" id="problems-zone" data-category="problem">
+                <h4>⚠️ PROBLÈMES CONSTATÉS</h4>
+            </div>
+            <div class="drop-zone" id="solutions-zone" data-category="solution">
+                <h4>✅ SOLUTIONS PROPOSÉES</h4>
+            </div>
+        </div>
+        
+        <button class="check-btn" onclick="checkAnswers()">Vérifier mes réponses</button>
+        <button class="reset-btn" onclick="resetActivity()">Recommencer</button>
+        
+        <div class="result-message" id="result-message"></div>
+    </div>
+
+    <div class="section">
+        <h2>🔍 Questions de Compréhension Approfondie</h2>
+        
+        <div class="question-box">
+            <p><strong>1. Structure narrative :</strong> Pourquoi l'artiste choisit-il la forme épistolaire (lettre) pour transmettre son message ? Quel est l'effet de ce dialogue intergénérationnel ?</p>
+        </div>
+        
+        <div class="question-box">
+            <p><strong>2. Le titre "2083" :</strong> Cette date n'est pas choisie au hasard. Calculez : si un enfant naît en 2023, quel âge aura-t-il en 2083 ? Que représente ce chiffre symboliquement ?</p>
+        </div>
+        
+        <div class="question-box">
+            <p><strong>3. Contraste temporel :</strong> Identifiez les temps verbaux utilisés par le petit-fils (2083) versus ceux utilisés par le grand-père (2023). Qu'est-ce que ce contraste grammatical révèle ?</p>
+        </div>
+        
+        <div class="question-box">
+            <p><strong>4. Géographie symbolique :</strong> L'artiste mentionne des villes spécifiques (Jakarta, Venise, New-Delhi, Tombouctou). Pourquoi choisit-il ces lieux précis ? Que représentent-ils géographiquement et culturellement ?</p>
+        </div>
+        
+        <div class="question-box">
+            <p><strong>5. Inégalités sociales :</strong> Analysez la phrase « les riches vivent sous la clim et les pauvres ne vivent plus ». Comment le changement climatique exacerbe-t-il les inégalités existantes ?</p>
+        </div>
+        
+        <div class="question-box">
+            <p><strong>6. Langage critique :</strong> Expliquez l'expression vulgaire « se torchent avec les rapports du GIEC ». Pourquoi l'artiste utilise-t-il un registre familier/vulgaire à ce moment précis ?</p>
+        </div>
+        
+        <div class="question-box">
+            <p><strong>7. Responsabilité collective :</strong> Le message se termine par « la victoire pour le climat ne pourra être que collective ». Pourquoi l'action individuelle est-elle insuffisante selon la chanson ?</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>💭 Analyse Thématique Approfondie</h2>
+        
+        <h3>1. Le déterminisme temporel</h3>
+        <div class="analysis-point">
+            <p>La chanson joue sur une tension fascinante : l'avenir catastrophique décrit est-il <strong>inévitable</strong> ou <strong>évitable</strong> ? Le petit-fils écrit depuis 2083 comme si c'était un fait accompli, mais le grand-père insiste : « le combat n'est pas fini » et « il n'est pas encore trop tard ». Cette structure crée un paradoxe temporel : si l'avenir peut être changé, pourquoi le petit-fils existe-t-il dans cette réalité dystopique ?</p>
+            <p><em>Question philosophique :</em> Grand Corps Malade utilise-t-il la science-fiction pour nous <strong>avertir</strong> ou pour nous <strong>prédire</strong> ?</p>
+        </div>
+        
+        <h3>2. L'ironie tragique du savoir</h3>
+        <div class="analysis-point">
+            <p>Le grand-père (2023) admet : « tout ce que tu me racontes là n'est pas vraiment une surprise ». Cette phrase est dévastatrice. Elle signifie que nous <strong>savons déjà</strong> ce qui va se passer, que les scientifiques ont averti depuis des décennies, mais que l'humanité choisit consciemment l'inaction. Ce n'est pas un problème d'ignorance mais de <strong>volonté politique</strong>.</p>
+            <p><em>Connexion IB :</em> Cela illustre parfaitement le thème « Organisation sociale » - l'échec des systèmes de gouvernance face à une menace existentielle.</p>
+        </div>
+        
+        <h3>3. La violence des images concrètes</h3>
+        <div class="analysis-point">
+            <p>Au lieu d'abstractions scientifiques, Grand Corps Malade utilise des images viscérales et concrètes : « le fleuve Niger n'a plus une seule goutte d'eau », « plus de vigne en France », « New-Delhi entièrement évacuée ». Ces détails rendent la catastrophe <strong>tangible</strong> et <strong>personnelle</strong>. La disparition de la vigne française, par exemple, n'est pas qu'une perte agricole - c'est l'effondrement d'une identité culturelle millénaire.</p>
+        </div>
+        
+        <h3>4. Le langage comme arme politique</h3>
+        <div class="analysis-point">
+            <p>Le passage sur les jets privés et les rapports du GIEC est remarquable par son changement de registre. L'artiste abandonne momentanément le ton poétique pour une critique directe et vulgaire. Ce choix stylistique n'est pas accidentel - il exprime la <strong>colère</strong> et la <strong>frustration</strong> face à l'hypocrisie. Les leaders mondiaux prêchent l'action climatique tout en vivant dans un luxe polluant.</p>
+        </div>
+        
+        <h3>5. La solidarité intergénérationnelle comme solution</h3>
+        <div class="analysis-point">
+            <p>Le message final est un appel à la jeunesse : « peux-tu demander à tous tes potes d'écrire à leurs aïeux ». Mais attention - ce n'est pas qu'une métaphore poétique. Grand Corps Malade suggère littéralement que les jeunes générations doivent <strong>activer</strong> les anciennes, les forcer à agir en leur rappelant qu'elles laisseront un héritage. C'est un renversement du pouvoir : ce sont les enfants qui doivent éduquer leurs parents.</p>
+        </div>
+        
+        <h3>6. Les limites de l'adaptation et la faillite technologique</h3>
+        <div class="analysis-point">
+            <p>La chanson mentionne les tentatives de construction de digues, barrages et murailles, mais conclut qu'elles « éclatent vite en morceaux ». C'est une critique subtile du <strong>techno-solutionnisme</strong> - l'idée qu'on pourra s'adapter technologiquement au changement climatique sans changer nos comportements. Grand Corps Malade affirme : non, la technologie seule ne suffira pas.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>✍️ Activités de Production Orale et Écrite</h2>
+        
+        <h3>Expression Orale Individuelle (Paper 2 style)</h3>
+        <div class="question-box">
+            <p><strong>Sujet 1 :</strong> « Les jeunes générations ont-elles raison d'être en colère contre les décisions climatiques des générations précédentes ? » Préparez un exposé de 3-4 minutes incluant une analyse de la chanson.</p>
+        </div>
+        <div class="question-box">
+            <p><strong>Sujet 2 :</strong> « Grand Corps Malade choisit la forme épistolaire plutôt qu'un manifeste politique direct. Est-ce un choix artistique efficace pour sensibiliser le public ? » Argumentez en vous appuyant sur des exemples précis.</p>
+        </div>
+        
+        <h3>Expression Écrite (Paper 1 style)</h3>
+        <div class="question-box">
+            <p><strong>Exercice 1 - Lettre au futur (250-400 mots) :</strong> Vous êtes en 2025. Écrivez une lettre à votre propre petit-enfant en 2085. Que voulez-vous lui expliquer sur votre époque ? Quelles promesses pouvez-vous faire ?</p>
+        </div>
+        <div class="question-box">
+            <p><strong>Exercice 2 - Article d'opinion (250-400 mots) :</strong> « Les demi-mesures ne sont plus une option » : rédigez un article pour un journal étudiant expliquant quelles actions concrètes votre école/communauté devrait prendre immédiatement.</p>
+        </div>
+        
+        <h3>Débat en classe</h3>
+        <div class="question-box">
+            <p><strong>Motion :</strong> « Les gouvernements devraient avoir le pouvoir de contraindre les citoyens et les entreprises à réduire leurs émissions de CO2, même si cela limite certaines libertés individuelles. »</p>
+            <p><em>Préparez des arguments pour et contre en utilisant des exemples de la chanson.</em></p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🌐 Connexions Interdisciplinaires</h2>
+        
+        <h3>Histoire-Géographie</h3>
+        <div class="analysis-point">
+            <p>• Recherchez l'historique des conférences sur le climat (Kyoto 1997, Paris 2015, etc.)</p>
+            <p>• Étudiez la géographie des zones menacées mentionnées dans la chanson</p>
+            <p>• Analysez les patterns de migration climatique actuels et prédits</p>
+        </div>
+        
+        <h3>Sciences</h3>
+        <div class="analysis-point">
+            <p>• Qu'est-ce que le GIEC ? Consultez leurs rapports sur le réchauffement climatique</p>
+            <p>• Calculez combien de degrés de réchauffement causeraient les scénarios décrits</p>
+            <p>• Recherchez sur l'extinction des espèces et la biodiversité en déclin</p>
+        </div>
+        
+        <h3>TOK (Theory of Knowledge)</h3>
+        <div class="analysis-point">
+            <p>• <strong>Question de connaissance :</strong> Dans quelle mesure l'art (comme cette chanson) est-il plus efficace que les données scientifiques pour motiver l'action climatique ?</p>
+            <p>• Comment les prédictions scientifiques influencent-elles nos décisions éthiques présentes ?</p>
+            <p>• Y a-t-il une responsabilité morale envers des générations qui n'existent pas encore ?</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📖 Vocabulaire Essentiel à Maîtriser</h2>
+        <div class="champs-lexical">
+            <div class="lexical-category">
+                <h4>Verbes d'action climatique</h4>
+                <ul>
+                    <li><strong>contraindre</strong> - forcer, obliger</li>
+                    <li><strong>aboutir à</strong> - mener à un résultat</li>
+                    <li><strong>investir massivement</strong> - engager beaucoup d'argent</li>
+                    <li><strong>réagir</strong> - répondre, agir</li>
+                    <li><strong>alerter</strong> - avertir d'un danger</li>
+                </ul>
+            </div>
+            <div class="lexical-category">
+                <h4>Expressions idiomatiques</h4>
+                <ul>
+                    <li><strong>ne pas peser lourd</strong> - être insignifiant</li>
+                    <li><strong>se torcher avec</strong> - ignorer complètement (vulgaire)</li>
+                    <li><strong>il n'est pas trop tard</strong> - il reste du temps</li>
+                    <li><strong>au-delà de</strong> - plus loin que, pire que</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let draggedElement = null;
+        
+        // Initialize drag and drop
+        document.addEventListener('DOMContentLoaded', function() {
+            const draggableItems = document.querySelectorAll('.draggable-item');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            
+            draggableItems.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+            
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('drop', handleDrop);
+                zone.addEventListener('dragleave', handleDragLeave);
+            });
+        });
+        
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+        
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+        
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            this.classList.add('drag-over');
+            return false;
+        }
+        
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+        
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            this.classList.remove('drag-over');
+            
+            if (draggedElement) {
+                const droppedItem = document.createElement('div');
+                droppedItem.className = 'dropped-item';
+                droppedItem.innerHTML = `
+                    <span>${draggedElement.textContent}</span>
+                    <button class="remove-btn" onclick="removeItem(this)">✕</button>
+                `;
+                droppedItem.dataset.category = draggedElement.dataset.category;
+                
+                this.appendChild(droppedItem);
+                draggedElement.remove();
+            }
+            
+            return false;
+        }
+        
+        function removeItem(button) {
+            const droppedItem = button.parentElement;
+            const text = droppedItem.querySelector('span').textContent;
+            const category = droppedItem.dataset.category;
+            
+            // Create new draggable item
+            const newItem = document.createElement('div');
+            newItem.className = 'draggable-item';
+            newItem.draggable = true;
+            newItem.textContent = text;
+            newItem.dataset.category = category;
+            newItem.addEventListener('dragstart', handleDragStart);
+            newItem.addEventListener('dragend', handleDragEnd);
+            
+            document.getElementById('items-container').appendChild(newItem);
+            droppedItem.remove();
+        }
+        
+        function checkAnswers() {
+            const problemsZone = document.getElementById('problems-zone');
+            const solutionsZone = document.getElementById('solutions-zone');
+            const resultMessage = document.getElementById('result-message');
+            
+            const problemItems = problemsZone.querySelectorAll('.dropped-item');
+            const solutionItems = solutionsZone.querySelectorAll('.dropped-item');
+            
+            let correct = 0;
+            let total = 0;
+            
+            problemItems.forEach(item => {
+                total++;
+                if (item.dataset.category === 'problem') {
+                    correct++;
+                    item.style.background = '#d4edda';
+                } else {
+                    item.style.background = '#f8d7da';
+                }
+            });
+            
+            solutionItems.forEach(item => {
+                total++;
+                if (item.dataset.category === 'solution') {
+                    correct++;
+                    item.style.background = '#d4edda';
+                } else {
+                    item.style.background = '#f8d7da';
+                }
+            });
+            
+            const percentage = total > 0 ? (correct / total) * 100 : 0;
+            
+            resultMessage.style.display = 'block';
+            
+            if (percentage === 100) {
+                resultMessage.className = 'result-message success';
+                resultMessage.innerHTML = `🎉 Parfait ! ${correct}/${total} - Vous avez correctement classé tous les éléments !`;
+            } else if (percentage >= 70) {
+                resultMessage.className = 'result-message partial';
+                resultMessage.innerHTML = `👍 Bien ! ${correct}/${total} - Vous avez bien compris l'essentiel. Les éléments en rouge sont mal classés.`;
+            } else {
+                resultMessage.className = 'result-message error';
+                resultMessage.innerHTML = `📚 ${correct}/${total} - Relisez les paroles attentivement. Les éléments en vert sont bien placés, ceux en rouge non.`;
+            }
+        }
+        
+        function resetActivity() {
+            const problemsZone = document.getElementById('problems-zone');
+            const solutionsZone = document.getElementById('solutions-zone');
+            const itemsContainer = document.getElementById('items-container');
+            const resultMessage = document.getElementById('result-message');
+            
+            // Remove all dropped items
+            problemsZone.querySelectorAll('.dropped-item').forEach(item => item.remove());
+            solutionsZone.querySelectorAll('.dropped-item').forEach(item => item.remove());
+            
+            // Clear items container
+            itemsContainer.innerHTML = '';
+            
+            // Recreate original items
+            const items = [
+                { text: 'Montée des eaux submergeant les villes côtières', category: 'problem' },
+                { text: 'Températures atteignant 60 degrés', category: 'problem' },
+                { text: 'Disparition d\'un million d\'espèces', category: 'problem' },
+                { text: 'Déclarer l\'état d\'urgence climatique mondial', category: 'solution' },
+                { text: 'Cyclones et ouragans détruisant les infrastructures', category: 'problem' },
+                { text: 'Contraindre les pays sur leurs émissions de CO2', category: 'solution' },
+                { text: 'Sols trop secs pour la viticulture française', category: 'problem' },
+                { text: 'Rendre toute déforestation illégale', category: 'solution' },
+                { text: 'Obligation de porter un masque à oxygène', category: 'problem' },
+                { text: 'Investir massivement pour consommer moins et mieux', category: 'solution' },
+                { text: 'Guerres aux frontières entre réfugiés et États du Nord', category: 'problem' },
+                { text: 'Famine et misère devenues irréversibles', category: 'problem' },
+                { text: 'Changements de comportement par des lois contraignantes', category: 'solution' },
+                { text: 'Fleuve Niger complètement asséché', category: 'problem' },
+                { text: 'Mobilisation collective et intergénérationnelle', category: 'solution' },
+                { text: 'Échec répété des conférences sur le climat', category: 'problem' }
+            ];
+            
+            items.forEach(item => {
+                const newItem = document.createElement('div');
+                newItem.className = 'draggable-item';
+                newItem.draggable = true;
+                newItem.textContent = item.text;
+                newItem.dataset.category = item.category;
+                newItem.addEventListener('dragstart', handleDragStart);
+                newItem.addEventListener('dragend', handleDragEnd);
+                itemsContainer.appendChild(newItem);
+            });
+            
+            // Hide result message
+            resultMessage.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
