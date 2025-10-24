@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>French Verb Conjugation Module</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 20px 30px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation {
+            background: #f0f4ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .explanation h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .explanation p {
+            line-height: 1.6;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .story-example {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .conjugation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .conjugation-table th,
+        .conjugation-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .conjugation-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .conjugation-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .activity-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .activity-section h3 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .question {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #212529;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .option-btn,
+        .input-answer {
+            padding: 12px 20px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1em;
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option-btn.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option-btn.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .input-answer {
+            width: 100%;
+            cursor: text;
+        }
+
+        .submit-btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .tts-btn {
+            background: #17a2b8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+
+        .tts-btn:hover {
+            background: #138496;
+            transform: scale(1.05);
+        }
+
+        .tts-btn:active {
+            transform: scale(0.95);
+        }
+
+        .listening-activity {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 2px solid #17a2b8;
+        }
+
+        .score {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .verb-highlight {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .pronoun {
+            color: #764ba2;
+            font-weight: 600;
+        }
+
+        .pattern-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #0066cc;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1 1 50%;
+                text-align: center;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .score {
+                position: static;
+                margin: 20px auto;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🇫🇷 French Verb Conjugation</h1>
+            <p class="subtitle">Master Present Tense Verbs Through Interactive Activities</p>
+        </header>
+
+        <div class="score" id="score">Score: 0/0</div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('er-verbs')">-ER Verbs</button>
+            <button class="tab" onclick="showTab('ir-verbs')">-IR Verbs</button>
+            <button class="tab" onclick="showTab('re-verbs')">-RE Verbs</button>
+            <button class="tab" onclick="showTab('irregular')">Irregular Verbs</button>
+            <button class="tab" onclick="showTab('mixed')">Mixed Practice</button>
+        </div>
+
+        <div class="content">
+            <!-- ER VERBS TAB -->
+            <div id="er-verbs" class="tab-content active">
+                <div class="explanation">
+                    <h3>📚 Understanding -ER Verbs (TPRS Style)</h3>
+                    <p><strong>Meet Marie.</strong> Marie <span class="verb-highlight">parle</span> français. She talks in French every day. When we say "<span class="pronoun">je parle</span>" (I talk), we're using an -ER verb!</p>
+                    
+                    <p><strong>The Pattern:</strong> Take <span class="verb-highlight">parler</span> (to talk). Remove the -ER and add these endings:</p>
+                    <div class="pattern-box">
+                        <strong>je → -e</strong> | <strong>tu → -es</strong> | <strong>il/elle → -e</strong><br>
+                        <strong>nous → -ons</strong> | <strong>vous → -ez</strong> | <strong>ils/elles → -ent</strong>
+                    </div>
+                    
+                    <div class="story-example">
+                        <strong>Story:</strong> Marie <span class="verb-highlight">parle</span> to her friend. Her friend <span class="verb-highlight">écoute</span> (listens). They both <span class="verb-highlight">aiment</span> (love) French class. Do you <span class="verb-highlight">étudies</span> too?
+                    </div>
+                </div>
+
+                <table class="conjugation-table">
+                    <thead>
+                        <tr>
+                            <th>Pronoun</th>
+                            <th>Parler (to speak)</th>
+                            <th>Aimer (to love/like)</th>
+                            <th>Manger (to eat)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>je</strong></td>
+                            <td>parle</td>
+                            <td>aime</td>
+                            <td>mange</td>
+                        </tr>
+                        <tr>
+                            <td><strong>tu</strong></td>
+                            <td>parles</td>
+                            <td>aimes</td>
+                            <td>manges</td>
+                        </tr>
+                        <tr>
+                            <td><strong>il/elle/on</strong></td>
+                            <td>parle</td>
+                            <td>aime</td>
+                            <td>mange</td>
+                        </tr>
+                        <tr>
+                            <td><strong>nous</strong></td>
+                            <td>parlons</td>
+                            <td>aimons</td>
+                            <td>mangeons*</td>
+                        </tr>
+                        <tr>
+                            <td><strong>vous</strong></td>
+                            <td>parlez</td>
+                            <td>aimez</td>
+                            <td>mangez</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ils/elles</strong></td>
+                            <td>parlent</td>
+                            <td>aiment</td>
+                            <td>mangent</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="font-size: 0.9em; color: #6c757d;">*Note: Manger adds 'e' before 'ons' to keep the soft 'g' sound</p>
+
+                <div class="activity-section">
+                    <h3>🎯 Activity 1: Multiple Choice</h3>
+                    <div id="er-mc-questions"></div>
+                </div>
+
+                <div class="activity-section">
+                    <h3>✍️ Activity 2: Fill in the Blank</h3>
+                    <div id="er-fill-questions"></div>
+                </div>
+
+                <div class="activity-section">
+                    <h3>🎧 Activity 3: Listening Comprehension</h3>
+                    <div id="er-listening-questions"></div>
+                </div>
+            </div>
+
+            <!-- IR VERBS TAB -->
+            <div id="ir-verbs" class="tab-content">
+                <div class="explanation">
+                    <h3>📚 Understanding -IR Verbs (TPRS Style)</h3>
+                    <p><strong>Meet Thomas.</strong> Thomas <span class="verb-highlight">finit</span> his homework. He finishes it quickly! When we say "<span class="pronoun">je finis</span>" (I finish), we're using an -IR verb!</p>
+                    
+                    <p><strong>The Pattern:</strong> Take <span class="verb-highlight">finir</span> (to finish). Remove the -IR and add these endings:</p>
+                    <div class="pattern-box">
+                        <strong>je → -is</strong> | <strong>tu → -is</strong> | <strong>il/elle → -it</strong><br>
+                        <strong>nous → -issons</strong> | <strong>vous → -issez</strong> | <strong>ils/elles → -issent</strong>
+                    </div>
+                    
+                    <div class="story-example">
+                        <strong>Story:</strong> Thomas <span class="verb-highlight">choisit</span> (chooses) a book. He <span class="verb-highlight">réfléchit</span> (thinks) about which one. Then he <span class="verb-highlight">réussit</span> (succeeds) to find the perfect book!
+                    </div>
+                </div>
+
+                <table class="conjugation-table">
+                    <thead>
+                        <tr>
+                            <th>Pronoun</th>
+                            <th>Finir (to finish)</th>
+                            <th>Choisir (to choose)</th>
+                            <th>Réussir (to succeed)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>je</strong></td>
+                            <td>finis</td>
+                            <td>choisis</td>
+                            <td>réussis</td>
+                        </tr>
+                        <tr>
+                            <td><strong>tu</strong></td>
+                            <td>finis</td>
+                            <td>choisis</td>
+                            <td>réussis</td>
+                        </tr>
+                        <tr>
+                            <td><strong>il/elle/on</strong></td>
+                            <td>finit</td>
+                            <td>choisit</td>
+                            <td>réussit</td>
+                        </tr>
+                        <tr>
+                            <td><strong>nous</strong></td>
+                            <td>finissons</td>
+                            <td>choisissons</td>
+                            <td>réussissons</td>
+                        </tr>
+                        <tr>
+                            <td><strong>vous</strong></td>
+                            <td>finissez</td>
+                            <td>choisissez</td>
+                            <td>réussissez</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ils/elles</strong></td>
+                            <td>finissent</td>
+                            <td>choisissent</td>
+                            <td>réussissent</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="activity-section">
+                    <h3>🎯 Activity 1: Multiple Choice</h3>
+                    <div id="ir-mc-questions"></div>
+                </div>
+
+                <div class="activity-section">
+                    <h3>✍️ Activity 2: Fill in the Blank</h3>
+                    <div id="ir-fill-questions"></div>
+                </div>
+
+                <div class="activity-section">
+                    <h3>🎧 Activity 3: Listening Comprehension</h3>
+                    <div id="ir-listening-questions"></div>
+                </div>
+            </div>
+
+            <!-- RE VERBS TAB -->
+            <div id="re-verbs" class="tab-content">
+                <div class="explanation">
+                    <h3>📚 Understanding -RE Verbs (TPRS Style)</h3>
+                    <p><strong>Meet Sophie.</strong> Sophie <span class="verb-highlight">vend</span> croissants. She sells them at her bakery! When we say "<span class="pronoun">je vends</span>" (I sell), we're using an -RE verb!</p>
+                    
+                    <p><strong>The Pattern:</strong> Take <span class="verb-highlight">vendre</span> (to sell). Remove the -RE and add these endings:</p>
+                    <div class="pattern-box">
+                        <strong>je → -s</strong> | <strong>tu → -s</strong> | <strong>il/elle → —</strong> (no ending!)<br>
+                        <strong>nous → -ons</strong> | <strong>vous → -ez</strong> | <strong>ils/elles → -ent</strong>
+                    </div>
+                    
+                    <div class="story-example">
+                        <strong>Story:</strong> Sophie <span class="verb-highlight">attend</span> (waits for) customers. She <span class="verb-highlight">répond</span> (answers) their questions. They <span class="verb-highlight">entendent</span> (hear) her kind voice!
+                    </div>
+                </div>
+
+                <table class="conjugation-table">
+                    <thead>
+                        <tr>
+                            <th>Pronoun</th>
+                            <th>Vendre (to sell)</th>
+                            <th>Attendre (to wait)</th>
+                            <th>Répondre (to answer)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>je</strong></td>
+                            <td>vends</td>
+                            <td>attends</td>
+                            <td>réponds</td>
+                        </tr>
+                        <tr>
+                            <td><strong>tu</strong></td>
+                            <td>vends</td>
+                            <td>attends</td>
+                            <td>réponds</td>
+                        </tr>
+                        <tr>
+                            <td><strong>il/elle/on</strong></td>
+                            <td>vend</td>
+                            <td>attend</td>
+                            <td>répond</td>
+                        </tr>
+                        <tr>
+                            <td><strong>nous</strong></td>
+                            <td>vendons</td>
+                            <td>attendons</td>
+                            <td>répondons</td>
+                        </tr>
+                        <tr>
+                            <td><strong>vous</strong></td>
+                            <td>vendez</td>
+                            <td>attendez</td>
+                            <td>répondez</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ils/elles</strong></td>
+                            <td>vendent</td>
+                            <td>attendent</td>
+                            <td>répondent</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="activity-section">
+                    <h3>🎯 Activity 1: Multiple Choice</h3>
+                    <div id="re-mc-questions"></div>
+                </div>
+
+                <div class="activity-section">
+                    <h3>✍️ Activity 2: Fill in the Blank</h3>
+                    <div id="re-fill-questions"></div>
+                </div>
+
+                <div class="activity-section">
+                    <h3>🎧 Activity 3: Listening Comprehension</h3>
+                    <div id="re-listening-questions"></div>
+                </div>
+            </div>
+
+            <!-- IRREGULAR VERBS TAB -->
+            <div id="irregular" class="tab-content">
+                <div class="explanation">
+                    <h3>📚 Understanding Irregular Verbs (TPRS Style)</h3>
+                    <p><strong>Meet Lucas.</strong> Lucas <span class="verb-highlight">est</span> intelligent. He <span class="verb-highlight">a</span> a dog. He <span class="verb-highlight">va</span> to the park. These verbs don't follow the regular patterns—they're special!</p>
+                    
+                    <p><strong>Key irregular verbs:</strong> être (to be), avoir (to have), aller (to go), faire (to do/make). These are the most common verbs in French, so learning them is super important!</p>
+                    
+                    <div class="story-example">
+                        <strong>Story:</strong> Lucas <span class="verb-highlight">est</span> (is) happy. He <span class="verb-highlight">a</span> (has) free time. He <span class="verb-highlight">va</span> (goes) to see his friend. They <span class="verb-highlight">font</span> (do/make) homework together!
+                    </div>
+                </div>
+
+                <table class="conjugation-table">
+                    <thead>
+                        <tr>
+                            <th>Pronoun</th>
+                            <th>Être (to be)</th>
+                            <th>Avoir (to have)</th>
+                            <th>Aller (to go)</th>
+                            <th>Faire (to do/make)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>je</strong></td>
+                            <td>suis</td>
+                            <td>ai</td>
+                            <td>vais</td>
+                            <td>fais</td>
+                        </tr>
+                        <tr>
+                            <td><strong>tu</strong></td>
+                            <td>es</td>
+                            <td>as</td>
+                            <td>vas</td>
+                            <td>fais</td>
+                        </tr>
+                        <tr>
+                            <td><strong>il/elle/on</strong></td>
+                            <td>est</td>
+                            <td>a</td>
+                            <td>va</td>
+                            <td>fait</td>
+                        </tr>
+                        <tr>
+                            <td><strong>nous</strong></td>
+                            <td>sommes</td>
+                            <td>avons</td>
+                            <td>allons</td>
+                            <td>faisons</td>
+                        </tr>
+                        <tr>
+                            <td><strong>vous</strong></td>
+                            <td>êtes</td>
+                            <td>avez</td>
+                            <td>allez</td>
+                            <td>faites</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ils/elles</strong></td>
+                            <td>sont</td>
+                            <td>ont</td>
+                            <td>vont</td>
+                            <td>font</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="activity-section">
+                    <h3>🎯 Activity 1: Multiple Choice</h3>
+                    <div id="irreg-mc-questions"></div>
+                </div>
+
+                <div class="activity-section">
+                    <h3>✍️ Activity 2: Fill in the Blank</h3>
+                    <div id="irreg-fill-questions"></div>
+                </div>
+
+                <div class="activity-section">
+                    <h3>🎧 Activity 3: Listening Comprehension</h3>
+                    <div id="irreg-listening-questions"></div>
+                </div>
+            </div>
+
+            <!-- MIXED PRACTICE TAB -->
+            <div id="mixed" class="tab-content">
+                <div class="explanation">
+                    <h3>🌟 Mixed Practice: All Verb Types</h3>
+                    <p>Now it's time to practice everything together! This section mixes -ER, -IR, -RE, and irregular verbs. Remember the patterns:</p>
+                    <ul style="margin: 15px 0; padding-left: 20px;">
+                        <li><strong>-ER verbs:</strong> je -e, tu -es, il/elle -e, nous -ons, vous -ez, ils/elles -ent</li>
+                        <li><strong>-IR verbs:</strong> je -is, tu -is, il/elle -it, nous -issons, vous -issez, ils/elles -issent</li>
+                        <li><strong>-RE verbs:</strong> je -s, tu -s, il/elle [no ending], nous -ons, vous -ez, ils/elles -ent</li>
+                        <li><strong>Irregular verbs:</strong> memorize each one!</li>
+                    </ul>
+                </div>
+
+                <div class="activity-section">
+                    <h3>🎯 Activity 1: Mixed Multiple Choice</h3>
+                    <div id="mixed-mc-questions"></div>
+                </div>
+
+                <div class="activity-section">
+                    <h3>✍️ Activity 2: Mixed Fill in the Blank</h3>
+                    <div id="mixed-fill-questions"></div>
+                </div>
+
+                <div class="activity-section">
+                    <h3>🎧 Activity 3: Mixed Listening Comprehension</h3>
+                    <div id="mixed-listening-questions"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let total = 0;
+
+        // Question banks
+        const questions = {
+            erMC: [
+                {
+                    question: "Je _____ français tous les jours. (parler)",
+                    options: ["parle", "parles", "parlons", "parlez"],
+                    correct: 0,
+                    explanation: "With 'je', -ER verbs end in -e"
+                },
+                {
+                    question: "Tu _____ la pizza. (aimer)",
+                    options: ["aime", "aimes", "aimons", "aiment"],
+                    correct: 1,
+                    explanation: "With 'tu', -ER verbs end in -es"
+                },
+                {
+                    question: "Elle _____ de la musique. (écouter)",
+                    options: ["écoute", "écoutes", "écoutent", "écoutons"],
+                    correct: 0,
+                    explanation: "With 'elle', -ER verbs end in -e"
+                },
+                {
+                    question: "Nous _____ à l'école. (marcher)",
+                    options: ["marche", "marches", "marchons", "marchez"],
+                    correct: 2,
+                    explanation: "With 'nous', -ER verbs end in -ons"
+                },
+                {
+                    question: "Vous _____ le français. (étudier)",
+                    options: ["étudie", "étudies", "étudient", "étudiez"],
+                    correct: 3,
+                    explanation: "With 'vous', -ER verbs end in -ez"
+                },
+                {
+                    question: "Ils _____ au restaurant. (manger)",
+                    options: ["mange", "manges", "mangent", "mangeons"],
+                    correct: 2,
+                    explanation: "With 'ils', -ER verbs end in -ent"
+                }
+            ],
+            erFill: [
+                {
+                    sentence: "Je _____ beaucoup de livres.",
+                    verb: "regarder",
+                    correct: "regarde",
+                    pronoun: "je"
+                },
+                {
+                    sentence: "Tu _____ avec tes amis.",
+                    verb: "jouer",
+                    correct: "joues",
+                    pronoun: "tu"
+                },
+                {
+                    sentence: "Il _____ dans le parc.",
+                    verb: "danser",
+                    correct: "danse",
+                    pronoun: "il"
+                },
+                {
+                    sentence: "Nous _____ la télévision.",
+                    verb: "regarder",
+                    correct: "regardons",
+                    pronoun: "nous"
+                },
+                {
+                    sentence: "Vous _____ trop vite!",
+                    verb: "parler",
+                    correct: "parlez",
+                    pronoun: "vous"
+                },
+                {
+                    sentence: "Elles _____ au téléphone.",
+                    verb: "parler",
+                    correct: "parlent",
+                    pronoun: "elles"
+                }
+            ],
+            erListening: [
+                { text: "Je parle français", answer: "je parle" },
+                { text: "Tu manges une pomme", answer: "tu manges" },
+                { text: "Elle écoute la radio", answer: "elle écoute" },
+                { text: "Nous aimons le chocolat", answer: "nous aimons" },
+                { text: "Vous dansez bien", answer: "vous dansez" }
+            ],
+
+            irMC: [
+                {
+                    question: "Je _____ mes devoirs. (finir)",
+                    options: ["fini", "finis", "finit", "finissons"],
+                    correct: 1,
+                    explanation: "With 'je', -IR verbs end in -is"
+                },
+                {
+                    question: "Tu _____ ton livre. (choisir)",
+                    options: ["choisi", "choisis", "choisit", "choisissons"],
+                    correct: 1,
+                    explanation: "With 'tu', -IR verbs end in -is"
+                },
+                {
+                    question: "Il _____ à l'examen. (réussir)",
+                    options: ["réussi", "réussis", "réussit", "réussissons"],
+                    correct: 2,
+                    explanation: "With 'il', -IR verbs end in -it"
+                },
+                {
+                    question: "Nous _____ la maison. (remplir)",
+                    options: ["remplis", "remplit", "remplissons", "remplissez"],
+                    correct: 2,
+                    explanation: "With 'nous', -IR verbs end in -issons"
+                },
+                {
+                    question: "Vous _____ bien. (réfléchir)",
+                    options: ["réfléchis", "réfléchit", "réfléchissons", "réfléchissez"],
+                    correct: 3,
+                    explanation: "With 'vous', -IR verbs end in -issez"
+                },
+                {
+                    question: "Elles _____ leurs projets. (finir)",
+                    options: ["finis", "finit", "finissons", "finissent"],
+                    correct: 3,
+                    explanation: "With 'elles', -IR verbs end in -issent"
+                }
+            ],
+            irFill: [
+                {
+                    sentence: "Je _____ mon travail.",
+                    verb: "finir",
+                    correct: "finis",
+                    pronoun: "je"
+                },
+                {
+                    sentence: "Tu _____ un film.",
+                    verb: "choisir",
+                    correct: "choisis",
+                    pronoun: "tu"
+                },
+                {
+                    sentence: "Elle _____ à ses examens.",
+                    verb: "réussir",
+                    correct: "réussit",
+                    pronoun: "elle"
+                },
+                {
+                    sentence: "Nous _____ avant de parler.",
+                    verb: "réfléchir",
+                    correct: "réfléchissons",
+                    pronoun: "nous"
+                },
+                {
+                    sentence: "Vous _____ vos études.",
+                    verb: "finir",
+                    correct: "finissez",
+                    pronoun: "vous"
+                }
+            ],
+            irListening: [
+                { text: "Je finis mes devoirs", answer: "je finis" },
+                { text: "Tu choisis un cadeau", answer: "tu choisis" },
+                { text: "Il réussit toujours", answer: "il réussit" },
+                { text: "Nous finissons le projet", answer: "nous finissons" },
+                { text: "Elles réfléchissent beaucoup", answer: "elles réfléchissent" }
+            ],
+
+            reMC: [
+                {
+                    question: "Je _____ le bus. (attendre)",
+                    options: ["attend", "attends", "attendons", "attendez"],
+                    correct: 1,
+                    explanation: "With 'je', -RE verbs end in -s"
+                },
+                {
+                    question: "Tu _____ à la question. (répondre)",
+                    options: ["répond", "réponds", "répondons", "répondez"],
+                    correct: 1,
+                    explanation: "With 'tu', -RE verbs end in -s"
+                },
+                {
+                    question: "Elle _____ des fruits. (vendre)",
+                    options: ["vends", "vend", "vendons", "vendez"],
+                    correct: 1,
+                    explanation: "With 'elle', -RE verbs have no ending (just the stem!)"
+                },
+                {
+                    question: "Nous _____ nos amis. (attendre)",
+                    options: ["attend", "attends", "attendons", "attendez"],
+                    correct: 2,
+                    explanation: "With 'nous', -RE verbs end in -ons"
+                },
+                {
+                    question: "Vous _____ bien. (entendre)",
+                    options: ["entend", "entends", "entendons", "entendez"],
+                    correct: 3,
+                    explanation: "With 'vous', -RE verbs end in -ez"
+                },
+                {
+                    question: "Ils _____ leurs bicyclettes. (vendre)",
+                    options: ["vends", "vend", "vendons", "vendent"],
+                    correct: 3,
+                    explanation: "With 'ils', -RE verbs end in -ent"
+                }
+            ],
+            reFill: [
+                {
+                    sentence: "Je _____ le téléphone.",
+                    verb: "entendre",
+                    correct: "entends",
+                    pronoun: "je"
+                },
+                {
+                    sentence: "Tu _____ à la lettre.",
+                    verb: "répondre",
+                    correct: "réponds",
+                    pronoun: "tu"
+                },
+                {
+                    sentence: "Il _____ sa voiture.",
+                    verb: "vendre",
+                    correct: "vend",
+                    pronoun: "il"
+                },
+                {
+                    sentence: "Nous _____ nos amis.",
+                    verb: "attendre",
+                    correct: "attendons",
+                    pronoun: "nous"
+                },
+                {
+                    sentence: "Elles _____ de la limonade.",
+                    verb: "vendre",
+                    correct: "vendent",
+                    pronoun: "elles"
+                }
+            ],
+            reListening: [
+                { text: "Je vends des livres", answer: "je vends" },
+                { text: "Tu attends ton ami", answer: "tu attends" },
+                { text: "Elle répond vite", answer: "elle répond" },
+                { text: "Nous entendons la musique", answer: "nous entendons" },
+                { text: "Ils vendent des fleurs", answer: "ils vendent" }
+            ],
+
+            irregMC: [
+                {
+                    question: "Je _____ étudiant. (être)",
+                    options: ["suis", "es", "est", "sommes"],
+                    correct: 0,
+                    explanation: "être is irregular: je suis"
+                },
+                {
+                    question: "Tu _____ un chien. (avoir)",
+                    options: ["ai", "as", "a", "avons"],
+                    correct: 1,
+                    explanation: "avoir is irregular: tu as"
+                },
+                {
+                    question: "Elle _____ au cinéma. (aller)",
+                    options: ["vais", "vas", "va", "allons"],
+                    correct: 2,
+                    explanation: "aller is irregular: elle va"
+                },
+                {
+                    question: "Nous _____ nos devoirs. (faire)",
+                    options: ["fais", "fait", "faisons", "faites"],
+                    correct: 2,
+                    explanation: "faire is irregular: nous faisons"
+                },
+                {
+                    question: "Vous _____ contents. (être)",
+                    options: ["suis", "es", "est", "êtes"],
+                    correct: 3,
+                    explanation: "être is irregular: vous êtes"
+                },
+                {
+                    question: "Ils _____ raison. (avoir)",
+                    options: ["ai", "as", "a", "ont"],
+                    correct: 3,
+                    explanation: "avoir is irregular: ils ont"
+                }
+            ],
+            irregFill: [
+                {
+                    sentence: "Je _____ au parc.",
+                    verb: "aller",
+                    correct: "vais",
+                    pronoun: "je"
+                },
+                {
+                    sentence: "Tu _____ français.",
+                    verb: "être",
+                    correct: "es",
+                    pronoun: "tu"
+                },
+                {
+                    sentence: "Il _____ un frère.",
+                    verb: "avoir",
+                    correct: "a",
+                    pronoun: "il"
+                },
+                {
+                    sentence: "Nous _____ du sport.",
+                    verb: "faire",
+                    correct: "faisons",
+                    pronoun: "nous"
+                },
+                {
+                    sentence: "Elles _____ à l'école.",
+                    verb: "aller",
+                    correct: "vont",
+                    pronoun: "elles"
+                }
+            ],
+            irregListening: [
+                { text: "Je suis content", answer: "je suis" },
+                { text: "Tu as un chat", answer: "tu as" },
+                { text: "Elle va en France", answer: "elle va" },
+                { text: "Nous faisons du vélo", answer: "nous faisons" },
+                { text: "Ils sont intelligents", answer: "ils sont" }
+            ],
+
+            mixedMC: [
+                {
+                    question: "Je _____ mes amis. (attendre - RE)",
+                    options: ["attend", "attends", "attendons", "attendent"],
+                    correct: 1,
+                    explanation: "-RE verb with je: add -s"
+                },
+                {
+                    question: "Tu _____ content. (être - Irregular)",
+                    options: ["suis", "es", "est", "sont"],
+                    correct: 1,
+                    explanation: "être is irregular: tu es"
+                },
+                {
+                    question: "Elle _____ la télé. (regarder - ER)",
+                    options: ["regarde", "regardes", "regardons", "regardez"],
+                    correct: 0,
+                    explanation: "-ER verb with elle: add -e"
+                },
+                {
+                    question: "Nous _____ nos devoirs. (finir - IR)",
+                    options: ["finis", "finit", "finissons", "finissez"],
+                    correct: 2,
+                    explanation: "-IR verb with nous: add -issons"
+                },
+                {
+                    question: "Vous _____ au supermarché. (aller - Irregular)",
+                    options: ["vais", "vas", "va", "allez"],
+                    correct: 3,
+                    explanation: "aller is irregular: vous allez"
+                },
+                {
+                    question: "Ils _____ de la pizza. (manger - ER)",
+                    options: ["mange", "manges", "mangent", "mangeons"],
+                    correct: 2,
+                    explanation: "-ER verb with ils: add -ent"
+                }
+            ],
+            mixedFill: [
+                {
+                    sentence: "Je _____ français.",
+                    verb: "parler (ER)",
+                    correct: "parle",
+                    pronoun: "je"
+                },
+                {
+                    sentence: "Tu _____ ton travail.",
+                    verb: "finir (IR)",
+                    correct: "finis",
+                    pronoun: "tu"
+                },
+                {
+                    sentence: "Elle _____ à Paris.",
+                    verb: "être (irregular)",
+                    correct: "est",
+                    pronoun: "elle"
+                },
+                {
+                    sentence: "Nous _____ la radio.",
+                    verb: "entendre (RE)",
+                    correct: "entendons",
+                    pronoun: "nous"
+                },
+                {
+                    sentence: "Ils _____ un chat.",
+                    verb: "avoir (irregular)",
+                    correct: "ont",
+                    pronoun: "ils"
+                }
+            ],
+            mixedListening: [
+                { text: "Je parle anglais", answer: "je parle" },
+                { text: "Tu finis tard", answer: "tu finis" },
+                { text: "Elle vend des fleurs", answer: "elle vend" },
+                { text: "Nous sommes heureux", answer: "nous sommes" },
+                { text: "Vous allez bien", answer: "vous allez" }
+            ]
+        };
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+
+            // Generate questions for the tab if not already generated
+            generateAllQuestions(tabName);
+        }
+
+        function generateAllQuestions(tabName) {
+            const prefix = tabName === 'er-verbs' ? 'er' :
+                          tabName === 'ir-verbs' ? 'ir' :
+                          tabName === 're-verbs' ? 're' :
+                          tabName === 'irregular' ? 'irreg' : 'mixed';
+            
+            generateMCQuestions(prefix);
+            generateFillQuestions(prefix);
+            generateListeningQuestions(prefix);
+        }
+
+        function generateMCQuestions(prefix) {
+            const container = document.getElementById(`${prefix}-mc-questions`);
+            if (container.innerHTML !== '') return; // Already generated
+
+            const mcQuestions = questions[`${prefix}MC`];
+            
+            mcQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-text">${index + 1}. ${q.question}</div>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <button class="option-btn" onclick="checkMCAnswer('${prefix}', ${index}, ${i})">${opt}</button>
+                        `).join('')}
+                    </div>
+                    <div id="${prefix}-mc-feedback-${index}" class="feedback" style="display: none;"></div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function checkMCAnswer(prefix, qIndex, optIndex) {
+            const question = questions[`${prefix}MC`][qIndex];
+            const feedback = document.getElementById(`${prefix}-mc-feedback-${qIndex}`);
+            const buttons = document.querySelectorAll(`#${prefix}-mc-questions .question:nth-child(${qIndex + 1}) .option-btn`);
+            
+            // Disable all buttons
+            buttons.forEach(btn => btn.disabled = true);
+            
+            total++;
+            if (optIndex === question.correct) {
+                score++;
+                buttons[optIndex].classList.add('correct');
+                feedback.innerHTML = `✓ Correct! ${question.explanation}`;
+                feedback.className = 'feedback correct';
+            } else {
+                buttons[optIndex].classList.add('incorrect');
+                buttons[question.correct].classList.add('correct');
+                feedback.innerHTML = `✗ Incorrect. The correct answer is "${question.options[question.correct]}". ${question.explanation}`;
+                feedback.className = 'feedback incorrect';
+            }
+            
+            feedback.style.display = 'block';
+            updateScore();
+        }
+
+        function generateFillQuestions(prefix) {
+            const container = document.getElementById(`${prefix}-fill-questions`);
+            if (container.innerHTML !== '') return;
+
+            const fillQuestions = questions[`${prefix}Fill`];
+            
+            fillQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-text">${index + 1}. ${q.sentence}</div>
+                    <p style="margin: 10px 0; color: #6c757d;">Verb: <strong>${q.verb}</strong></p>
+                    <input type="text" class="input-answer" id="${prefix}-fill-${index}" placeholder="Type your answer...">
+                    <button class="submit-btn" onclick="checkFillAnswer('${prefix}', ${index})">Check Answer</button>
+                    <div id="${prefix}-fill-feedback-${index}" class="feedback" style="display: none;"></div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function checkFillAnswer(prefix, qIndex) {
+            const question = questions[`${prefix}Fill`][qIndex];
+            const input = document.getElementById(`${prefix}-fill-${qIndex}`);
+            const feedback = document.getElementById(`${prefix}-fill-feedback-${qIndex}`);
+            const answer = input.value.trim().toLowerCase();
+            
+            input.disabled = true;
+            event.target.disabled = true;
+            
+            total++;
+            
+            if (answer === question.correct.toLowerCase()) {
+                score++;
+                feedback.innerHTML = `✓ Excellent! "${question.correct}" is correct!`;
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.innerHTML = `✗ Not quite. The correct answer is "${question.correct}".`;
+                feedback.className = 'feedback incorrect';
+            }
+            
+            feedback.style.display = 'block';
+            updateScore();
+        }
+
+        function generateListeningQuestions(prefix) {
+            const container = document.getElementById(`${prefix}-listening-questions`);
+            if (container.innerHTML !== '') return;
+
+            const listeningQuestions = questions[`${prefix}Listening`];
+            
+            listeningQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'listening-activity';
+                questionDiv.innerHTML = `
+                    <div class="question-text">${index + 1}. Listen and type what you hear:</div>
+                    <button class="tts-btn" onclick="speakText('${q.text}', 'fr-FR')">🔊 Play Audio</button>
+                    <button class="tts-btn" onclick="speakText('${q.text}', 'fr-FR', 0.7)">🐢 Play Slowly</button>
+                    <input type="text" class="input-answer" id="${prefix}-listen-${index}" placeholder="Type what you hear...">
+                    <button class="submit-btn" onclick="checkListeningAnswer('${prefix}', ${index}, '${q.answer}')">Check Answer</button>
+                    <div id="${prefix}-listen-feedback-${index}" class="feedback" style="display: none;"></div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function speakText(text, lang = 'fr-FR', rate = 1.0) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                utterance.rate = rate;
+                
+                // Try to use a French voice if available
+                const voices = speechSynthesis.getVoices();
+                const frenchVoice = voices.find(voice => voice.lang.startsWith('fr'));
+                if (frenchVoice) {
+                    utterance.voice = frenchVoice;
+                }
+                
+                speechSynthesis.cancel(); // Cancel any ongoing speech
+                speechSynthesis.speak(utterance);
+            } else {
+                alert('Sorry, your browser does not support text-to-speech.');
+            }
+        }
+
+        // Load voices when they become available
+        if ('speechSynthesis' in window) {
+            speechSynthesis.onvoiceschanged = () => {
+                speechSynthesis.getVoices();
+            };
+        }
+
+        function checkListeningAnswer(prefix, qIndex, correctAnswer) {
+            const input = document.getElementById(`${prefix}-listen-${qIndex}`);
+            const feedback = document.getElementById(`${prefix}-listen-feedback-${qIndex}`);
+            const answer = input.value.trim().toLowerCase();
+            const correct = correctAnswer.toLowerCase();
+            
+            input.disabled = true;
+            event.target.disabled = true;
+            
+            total++;
+            
+            // Remove accents and normalize for comparison
+            const normalize = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            
+            if (normalize(answer) === normalize(correct) || answer === correct) {
+                score++;
+                feedback.innerHTML = `✓ Perfect! You heard it correctly: "${correctAnswer}"`;
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.innerHTML = `✗ Not quite. The correct answer is: "${correctAnswer}". Try listening again!`;
+                feedback.className = 'feedback incorrect';
+            }
+            
+            feedback.style.display = 'block';
+            updateScore();
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = `Score: ${score}/${total}`;
+        }
+
+        // Initialize the first tab
+        window.onload = function() {
+            generateAllQuestions('er-verbs');
+        };
+    </script>
+</body>
+</html>
