@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 French Climate Challenge - Interactive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse {
+            animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes particle-float {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: particle-float 0.6s ease-out forwards;
+        }
+        @keyframes celebration {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .celebrate {
+            animation: celebration 0.5s ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .bounce {
+            animation: bounce 0.5s ease-in-out;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .word-button {
+            transition: all 0.2s;
+            cursor: pointer;
+            user-select: none;
+        }
+        .word-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .word-button.selected {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .answer-slot {
+            min-height: 40px;
+            transition: all 0.2s;
+        }
+        .dragging {
+            opacity: 0.5;
+        }
+        .drag-over {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-900 via-teal-900 to-blue-900 p-4">
+        <div class="bg-gray-900 rounded-lg shadow-2xl p-6 max-w-2xl w-full">
+            <div class="text-center mb-4">
+                <h1 class="text-4xl font-bold text-white mb-2">🌍 French Climate Challenge</h1>
+                <p class="text-gray-300 text-sm">Interactive French learning - Click, drag, and unscramble!</p>
+            </div>
+
+            <div class="flex justify-between items-center mb-4 text-white">
+                <div class="flex gap-4">
+                    <div class="bg-green-600 px-4 py-2 rounded">
+                        <span class="font-bold">Score: <span id="score">0</span></span>
+                    </div>
+                    <div class="bg-teal-600 px-4 py-2 rounded">
+                        <span class="font-bold">Level: <span id="level">1</span></span>
+                    </div>
+                </div>
+                <div class="flex gap-2" id="lives-container"></div>
+            </div>
+
+            <div id="powerup-indicator" class="bg-yellow-500 text-black px-3 py-1 rounded text-center mb-2 text-sm font-bold hidden">
+                <span id="powerup-name"></span>
+            </div>
+
+            <!-- Question Powerups Display -->
+            <div class="flex justify-center gap-2 mb-2">
+                <div class="bg-purple-600 px-3 py-1 rounded text-white text-sm" title="Skip Question">
+                    ⏭️ <span id="skip-count">0</span>
+                </div>
+                <div class="bg-blue-600 px-3 py-1 rounded text-white text-sm" title="Show Hint">
+                    💡 <span id="hint-count">0</span>
+                </div>
+                <div class="bg-pink-600 px-3 py-1 rounded text-white text-sm" title="50/50">
+                    🎲 <span id="fifty-count">0</span>
+                </div>
+                <div class="bg-cyan-600 px-3 py-1 rounded text-white text-sm" title="Time Freeze">
+                    ❄️ <span id="freeze-count">0</span>
+                </div>
+            </div>
+
+            <div class="relative">
+                <canvas id="gameCanvas" width="600" height="600" class="w-full bg-gray-800 rounded border-4 border-gray-700"></canvas>
+
+                <!-- Start Screen -->
+                <div id="startScreen" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-90 rounded">
+                    <div class="text-center text-white p-8">
+                        <h2 class="text-3xl font-bold mb-4">Bienvenue! 🌍</h2>
+                        <p class="mb-6 text-gray-300">
+                            🧱 Break bricks to reveal powerups<br />
+                            📝 After 3 bricks: Interactive questions!<br />
+                            🖱️ Click & drag words - no typing needed<br />
+                            ⭐ 4 interactive question types
+                        </p>
+                        <button onclick="startGame()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg text-xl transition">
+                            Commencer (Start Game)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question Screen -->
+                <div id="questionScreen" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-95 rounded hidden overflow-auto">
+                    <div class="bg-gradient-to-br from-green-600 to-teal-600 p-8 rounded-lg max-w-lg w-full mx-4 my-8">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-2xl font-bold text-white">Question Challenge! 🎯</h2>
+                            <div class="flex gap-1">
+                                <button onclick="useSkip()" class="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded text-xs" title="Skip Question">⏭️</button>
+                                <button onclick="useHint()" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs" title="Show Hint">💡</button>
+                                <button onclick="useFiftyFifty()" class="bg-pink-500 hover:bg-pink-600 text-white px-2 py-1 rounded text-xs" title="50/50">🎲</button>
+                            </div>
+                        </div>
+                        
+                        <!-- TTS Controls -->
+                        <div class="bg-white bg-opacity-10 rounded-lg p-3 mb-4">
+                            <div class="flex gap-2 mb-2">
+                                <button onclick="playQuestionAudio()" class="flex-1 bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-2 px-4 rounded flex items-center justify-center gap-2 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                                    🔊 Listen
+                                </button>
+                                <select id="speechRate" onchange="updateSpeechRate()" class="bg-white bg-opacity-20 text-white rounded px-3 py-1 text-sm">
+                                    <option value="0.6">Slow (0.6x)</option>
+                                    <option value="0.8" selected>Normal (0.8x)</option>
+                                    <option value="1.0">Fast (1.0x)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Translation Toggle -->
+                        <div class="bg-white bg-opacity-10 rounded-lg p-3 mb-4">
+                            <label class="flex items-center text-white cursor-pointer">
+                                <input type="checkbox" id="showTranslation" onchange="toggleTranslation()" class="mr-2 w-4 h-4">
+                                <span>🇬🇧 Show English Translation</span>
+                            </label>
+                        </div>
+
+                        <div id="questionTypeLabel" class="text-center text-yellow-300 text-sm font-bold mb-2"></div>
+
+                        <div class="bg-white bg-opacity-10 rounded-lg p-4 mb-4">
+                            <p class="text-white text-base leading-relaxed" id="questionText"></p>
+                        </div>
+                        
+                        <!-- English Translation (hidden by default) -->
+                        <div id="englishTranslation" class="bg-blue-500 bg-opacity-20 rounded-lg p-4 mb-4 hidden">
+                            <div class="text-blue-200 text-xs font-semibold mb-1">English:</div>
+                            <p class="text-white text-sm leading-relaxed italic" id="translationText"></p>
+                        </div>
+
+                        <!-- Answer Area (for word unscramble) -->
+                        <div id="answerArea" class="bg-white bg-opacity-20 rounded-lg p-4 mb-4 min-h-[60px] hidden">
+                            <div class="text-white text-sm mb-2">Your answer:</div>
+                            <div id="selectedWords" class="flex flex-wrap gap-2 min-h-[40px]"></div>
+                        </div>
+
+                        <!-- Word Bank (for word unscramble) -->
+                        <div id="wordBank" class="bg-white bg-opacity-10 rounded-lg p-4 mb-4 hidden">
+                            <div class="text-white text-sm mb-2">Click words in order:</div>
+                            <div id="wordButtons" class="flex flex-wrap gap-2"></div>
+                        </div>
+
+                        <!-- Multiple Choice Options -->
+                        <div id="multipleChoiceOptions" class="space-y-2 mb-4 hidden"></div>
+                        
+                        <!-- Fill in the Blank Options -->
+                        <div id="fillBlankOptions" class="space-y-2 mb-4 hidden"></div>
+
+                        <!-- Submit Button -->
+                        <button id="submitButton" onclick="submitAnswer()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition hidden">
+                            Submit Answer
+                        </button>
+
+                        <!-- Reset Button -->
+                        <button id="resetButton" onclick="resetAnswer()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 rounded-lg transition mb-2 hidden">
+                            🔄 Reset
+                        </button>
+                        
+                        <div id="feedback" class="mt-4 p-3 rounded text-center hidden"></div>
+                        <div id="hintDisplay" class="mt-2 p-2 bg-blue-500 bg-opacity-30 rounded text-white text-sm text-center hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Game Over Screen -->
+                <div id="gameOverScreen" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-90 rounded hidden">
+                    <div class="text-center text-white p-8">
+                        <h2 class="text-4xl font-bold mb-4">Game Over!</h2>
+                        <p class="text-2xl mb-2">Final Score: <span class="text-yellow-400" id="finalScore">0</span></p>
+                        <p class="text-xl mb-6">Level Reached: <span class="text-blue-400" id="finalLevel">1</span></p>
+                        <button onclick="startGame()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg text-xl transition">
+                            Play Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-gray-300 text-sm text-center">
+                <p>🖱️ Move mouse to control paddle • 🧱 Break bricks = Get powerups • 📝 Click & drag to answer!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Climate change texts in French with English translations
+        const climateTexts = [
+            {
+                fr: "Le réchauffement climatique est causé par les gaz à effet de serre.",
+                en: "Global warming is caused by greenhouse gases."
+            },
+            {
+                fr: "Ces gaz viennent surtout des voitures, des usines et des avions.",
+                en: "These gases mainly come from cars, factories and planes."
+            },
+            {
+                fr: "La température moyenne augmente chaque année.",
+                en: "The average temperature increases each year."
+            },
+            {
+                fr: "Si nous ne changeons rien, les glaciers vont fondre.",
+                en: "If we don't change anything, glaciers will melt."
+            },
+            {
+                fr: "Beaucoup de jeunes veulent agir contre le réchauffement climatique.",
+                en: "Many young people want to take action against climate change."
+            },
+            {
+                fr: "Ils participent à des manifestations pour demander des lois plus écologiques.",
+                en: "They participate in demonstrations to demand more ecological laws."
+            },
+            {
+                fr: "Chaque geste compte, comme trier les déchets.",
+                en: "Every action counts, like sorting waste."
+            },
+            {
+                fr: "Leur énergie donne de l'espoir.",
+                en: "Their energy gives hope."
+            },
+            {
+                fr: "Les océans se réchauffent à cause de la pollution.",
+                en: "The oceans are warming because of pollution."
+            },
+            {
+                fr: "Cela menace la vie marine, surtout les coraux.",
+                en: "This threatens marine life, especially corals."
+            },
+            {
+                fr: "Il faut réduire notre consommation d'énergie.",
+                en: "We must reduce our energy consumption."
+            },
+            {
+                fr: "Les vagues de chaleur deviennent plus longues et dangereuses.",
+                en: "Heat waves are becoming longer and more dangerous."
+            },
+            {
+                fr: "Les villes plantent plus d'arbres pour créer de l'ombre.",
+                en: "Cities plant more trees to create shade."
+            },
+            {
+                fr: "C'est une solution simple mais efficace.",
+                en: "It's a simple but effective solution."
+            },
+            {
+                fr: "Les glaciers fondent à une vitesse alarmante.",
+                en: "Glaciers are melting at an alarming rate."
+            },
+            {
+                fr: "La glace disparaît complètement pendant l'été.",
+                en: "The ice disappears completely during summer."
+            },
+            {
+                fr: "Cela fait monter le niveau de la mer.",
+                en: "This raises the sea level."
+            },
+            {
+                fr: "Certains animaux perdent leur habitat.",
+                en: "Some animals are losing their habitat."
+            },
+            {
+                fr: "Les ours polaires ont du mal à trouver de la glace.",
+                en: "Polar bears have difficulty finding ice."
+            },
+            {
+                fr: "Le recyclage ne suffit pas.",
+                en: "Recycling is not enough."
+            },
+            {
+                fr: "Il faut aussi réduire la consommation.",
+                en: "We must also reduce consumption."
+            },
+            {
+                fr: "Acheter moins, mais mieux, est une bonne solution.",
+                en: "Buying less, but better, is a good solution."
+            },
+            {
+                fr: "Les énergies renouvelables remplacent le charbon.",
+                en: "Renewable energies are replacing coal."
+            },
+            {
+                fr: "Le vent et le soleil ne polluent pas.",
+                en: "Wind and sun don't pollute."
+            },
+            {
+                fr: "La sécheresse devient extrême dans certaines régions.",
+                en: "Drought is becoming extreme in some regions."
+            },
+            {
+                fr: "Les récoltes diminuent à cause du climat.",
+                en: "Harvests are decreasing because of climate."
+            },
+            {
+                fr: "Les forêts absorbent le dioxyde de carbone.",
+                en: "Forests absorb carbon dioxide."
+            },
+            {
+                fr: "Quand elles brûlent, le carbone retourne dans l'atmosphère.",
+                en: "When they burn, carbon returns to the atmosphere."
+            },
+            {
+                fr: "Il est urgent de protéger les forêts tropicales.",
+                en: "It is urgent to protect tropical forests."
+            },
+            {
+                fr: "Les transports publics réduisent la pollution.",
+                en: "Public transport reduces pollution."
+            },
+            {
+                fr: "Moins de voitures signifie un air plus propre.",
+                en: "Fewer cars means cleaner air."
+            },
+            {
+                fr: "Les pays organisent des sommets sur le climat.",
+                en: "Countries organize climate summits."
+            },
+            {
+                fr: "Les jeunes apprennent à protéger la planète.",
+                en: "Young people learn to protect the planet."
+            },
+            {
+                fr: "Le plastique pollue les océans.",
+                en: "Plastic pollutes the oceans."
+            },
+            {
+                fr: "Il se décompose très lentement.",
+                en: "It decomposes very slowly."
+            },
+            {
+                fr: "Utiliser des sacs réutilisables aide l'environnement.",
+                en: "Using reusable bags helps the environment."
+            },
+            {
+                fr: "Les scientifiques avertissent d'un point de non-retour.",
+                en: "Scientists warn of a point of no return."
+            },
+            {
+                fr: "Il est encore possible de changer.",
+                en: "It is still possible to change."
+            },
+            {
+                fr: "L'énergie solaire chauffe les maisons.",
+                en: "Solar energy heats homes."
+            },
+            {
+                fr: "Les incendies de forêt sont plus fréquents.",
+                en: "Forest fires are more frequent."
+            },
+            {
+                fr: "Le tri des déchets est essentiel.",
+                en: "Sorting waste is essential."
+            },
+            {
+                fr: "Nos choix quotidiens ont un impact réel.",
+                en: "Our daily choices have a real impact."
+            },
+            {
+                fr: "Éteindre la lumière protège la planète.",
+                en: "Turning off the light protects the planet."
+            },
+            {
+                fr: "Manger local réduit les émissions.",
+                en: "Eating local reduces emissions."
+            }
+        ];
+
+        // Game state
+        let gameState = 'start';
+        let score = 0;
+        let level = 1;
+        let lives = 3;
+        let bricksDestroyed = 0;
+        let animationId = null;
+        let currentQuestion = null;
+        let speechRate = 0.8;
+        let isFrozen = false;
+        let selectedWordsArray = [];
+
+        // Question powerups
+        let questionPowerups = {
+            skip: 0,
+            hint: 0,
+            fifty: 0,
+            freeze: 0
+        };
+
+        // Canvas setup
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game objects
+        let game = {
+            paddle: { x: 250, y: 550, width: 100, height: 15 },
+            ball: { x: 300, y: 535, dx: 5, dy: -5, radius: 8, active: true },
+            bricks: [],
+            powerups: [],
+            activePowerup: null,
+            powerupTimeout: null
+        };
+
+        // Powerup types
+        const powerupTypes = [
+            { type: 'wide', icon: '↔️', color: '#10b981', name: 'Wide Paddle' },
+            { type: 'fast', icon: '⚫', color: '#ef4444', name: 'Fast Ball' },
+            { type: 'slow', icon: '🐌', color: '#fbbf24', name: 'Slow Ball' },
+            { type: 'life', icon: '❤️', color: '#ec4899', name: 'Extra Life' },
+            { type: 'skip', icon: '⏭️', color: '#a855f7', name: 'Skip Question' },
+            { type: 'hint', icon: '💡', color: '#3b82f6', name: 'Show Hint' },
+            { type: 'fifty', icon: '🎲', color: '#ec4899', name: '50/50' },
+            { type: 'freeze', icon: '❄️', color: '#06b6d4', name: 'Time Freeze' }
+        ];
+
+        // Sound effects using Web Audio API
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSoundEffect(type) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            switch(type) {
+                case 'brick':
+                    oscillator.frequency.value = 800;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                    break;
+                case 'paddle':
+                    oscillator.frequency.value = 300;
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                    break;
+                case 'powerup':
+                    oscillator.frequency.value = 1000;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(1500, audioContext.currentTime + 0.2);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                    break;
+                case 'correct':
+                    oscillator.frequency.value = 800;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.3);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                    break;
+                case 'wrong':
+                    oscillator.frequency.value = 200;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                    break;
+                case 'levelup':
+                    [800, 1000, 1200].forEach((freq, i) => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.2, audioContext.currentTime + i * 0.1);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.2);
+                        osc.start(audioContext.currentTime + i * 0.1);
+                        osc.stop(audioContext.currentTime + i * 0.1 + 0.2);
+                    });
+                    break;
+            }
+        }
+
+        // Create particle effect
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.cssText = `
+                    left: ${x}px;
+                    top: ${y}px;
+                    width: 8px;
+                    height: 8px;
+                    background: ${color};
+                    border-radius: 50%;
+                    --tx: ${(Math.random() - 0.5) * 100}px;
+                    --ty: ${(Math.random() - 0.5) * 100}px;
+                `;
+                canvas.parentElement.appendChild(particle);
+                setTimeout(() => particle.remove(), 600);
+            }
+        }
+
+        // Initialize bricks
+        function initBricks() {
+            const brickRowCount = 5;
+            const brickColumnCount = 6;
+            const brickWidth = 90;
+            const brickHeight = 50;
+            const brickPadding = 5;
+            const brickOffsetTop = 30;
+            const brickOffsetLeft = 15;
+
+            game.bricks = [];
+            let colors;
+            
+            if (level === 1) {
+                colors = ['#10b981', '#14b8a6', '#06b6d4', '#3b82f6', '#6366f1'];
+            } else if (level === 2) {
+                colors = ['#f97316', '#fb923c', '#fb7185', '#ec4899', '#d946ef'];
+            } else {
+                colors = ['#8b5cf6', '#7c3aed', '#6d28d9', '#5b21b6', '#4c1d95'];
+            }
+
+            for (let c = 0; c < brickColumnCount; c++) {
+                for (let r = 0; r < brickRowCount; r++) {
+                    const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+                    const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+                    
+                    game.bricks.push({
+                        x: brickX,
+                        y: brickY,
+                        width: brickWidth,
+                        height: brickHeight,
+                        active: true,
+                        color: colors[r],
+                        hasPowerup: Math.random() < 0.3
+                    });
+                }
+            }
+        }
+
+        // Generate question
+        function generateQuestion() {
+            const rand = Math.random();
+            let questionType;
+            
+            if (rand < 0.6) {
+                questionType = 'wordUnscramble';
+            } else if (rand < 0.8) {
+                questionType = 'multipleChoice';
+            } else if (rand < 0.9) {
+                questionType = 'audioUnscramble';
+            } else {
+                questionType = 'fillBlank';
+            }
+
+            const text = climateTexts[Math.floor(Math.random() * climateTexts.length)];
+            
+            currentQuestion = {
+                text: text,
+                type: questionType,
+                correctAnswer: '',
+                options: [],
+                usedHint: false,
+                usedFifty: false,
+                levelComplete: false
+            };
+
+            // Clear all previous question elements
+            selectedWordsArray = [];
+            document.getElementById('hintDisplay').classList.add('hidden');
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('answerArea').classList.add('hidden');
+            document.getElementById('wordBank').classList.add('hidden');
+            document.getElementById('multipleChoiceOptions').classList.add('hidden');
+            document.getElementById('fillBlankOptions').classList.add('hidden');
+            document.getElementById('submitButton').classList.add('hidden');
+            document.getElementById('resetButton').classList.add('hidden');
+            document.getElementById('englishTranslation').classList.add('hidden');
+            document.getElementById('showTranslation').checked = false;
+            
+            // Clear the actual content
+            document.getElementById('selectedWords').innerHTML = '';
+            document.getElementById('wordButtons').innerHTML = '';
+            document.getElementById('multipleChoiceOptions').innerHTML = '';
+            document.getElementById('fillBlankOptions').innerHTML = '';
+            
+            // Set the English translation text
+            document.getElementById('translationText').textContent = text.en;
+
+            switch(questionType) {
+                case 'wordUnscramble':
+                    currentQuestion.correctAnswer = text.fr.split(' ');
+                    document.getElementById('questionTypeLabel').textContent = '🔀 Unscramble the French Text';
+                    document.getElementById('questionText').textContent = '📝 Click the words in the correct order:';
+                    displayWordUnscramble(text.fr);
+                    break;
+
+                case 'multipleChoice':
+                    currentQuestion.correctAnswer = text.en;
+                    document.getElementById('questionTypeLabel').textContent = '🔤 Multiple Choice - What does this mean?';
+                    document.getElementById('questionText').textContent = text.fr;
+                    
+                    const wrongAnswers = [];
+                    while (wrongAnswers.length < 3) {
+                        const wrong = climateTexts[Math.floor(Math.random() * climateTexts.length)].en;
+                        if (wrong !== text.en && !wrongAnswers.includes(wrong)) {
+                            wrongAnswers.push(wrong);
+                        }
+                    }
+                    
+                    currentQuestion.options = [text.en, ...wrongAnswers].sort(() => Math.random() - 0.5);
+                    currentQuestion.allOptions = [...currentQuestion.options];
+                    displayMultipleChoice();
+                    break;
+
+                case 'audioUnscramble':
+                    currentQuestion.correctAnswer = text.fr.split(' ');
+                    document.getElementById('questionTypeLabel').textContent = '🎧 Audio Unscramble - Listen & Arrange';
+                    document.getElementById('questionText').textContent = '🔊 Click Listen, then arrange the words you hear:';
+                    displayWordUnscramble(text.fr);
+                    setTimeout(() => playQuestionAudio(), 500);
+                    break;
+
+                case 'fillBlank':
+                    const words = text.fr.split(' ');
+                    const blankIndex = Math.floor(Math.random() * words.length);
+                    const blankWord = words[blankIndex];
+                    currentQuestion.correctAnswer = blankWord;
+                    
+                    // Create wrong options
+                    const wrongOptions = [];
+                    const allWords = climateTexts.flatMap(t => t.fr.split(' '));
+                    const uniqueWords = [...new Set(allWords)];
+                    
+                    while (wrongOptions.length < 3) {
+                        const wrong = uniqueWords[Math.floor(Math.random() * uniqueWords.length)];
+                        if (wrong !== blankWord && !wrongOptions.includes(wrong) && wrong.length > 2) {
+                            wrongOptions.push(wrong);
+                        }
+                    }
+                    
+                    currentQuestion.options = [blankWord, ...wrongOptions].sort(() => Math.random() - 0.5);
+                    
+                    words[blankIndex] = '<span class="bg-yellow-400 text-black px-2 py-1 rounded">_______</span>';
+                    document.getElementById('questionTypeLabel').textContent = '✏️ Fill in the Blank';
+                    document.getElementById('questionText').innerHTML = words.join(' ');
+                    displayFillBlank();
+                    break;
+            }
+        }
+
+        // Display word unscramble
+        function displayWordUnscramble(sentence) {
+            const words = sentence.split(' ');
+            const scrambledWords = [...words].sort(() => Math.random() - 0.5);
+            
+            document.getElementById('answerArea').classList.remove('hidden');
+            document.getElementById('wordBank').classList.remove('hidden');
+            document.getElementById('submitButton').classList.remove('hidden');
+            document.getElementById('resetButton').classList.remove('hidden');
+            
+            const wordButtons = document.getElementById('wordButtons');
+            wordButtons.innerHTML = '';
+            
+            scrambledWords.forEach((word, index) => {
+                const button = document.createElement('button');
+                button.className = 'word-button bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded font-medium';
+                button.textContent = word;
+                button.dataset.word = word;
+                button.onclick = () => selectWord(button);
+                wordButtons.appendChild(button);
+            });
+        }
+
+        // Select word for unscramble
+        function selectWord(button) {
+            const word = button.dataset.word;
+            selectedWordsArray.push(word);
+            button.classList.add('selected');
+            
+            const selectedWords = document.getElementById('selectedWords');
+            const wordSpan = document.createElement('span');
+            wordSpan.className = 'bg-green-500 text-white px-3 py-2 rounded';
+            wordSpan.textContent = word;
+            wordSpan.dataset.word = word;
+            wordSpan.onclick = () => deselectWord(wordSpan);
+            selectedWords.appendChild(wordSpan);
+        }
+
+        // Deselect word
+        function deselectWord(wordSpan) {
+            const word = wordSpan.dataset.word;
+            const index = selectedWordsArray.indexOf(word);
+            if (index > -1) {
+                selectedWordsArray.splice(index, 1);
+            }
+            
+            wordSpan.remove();
+            
+            // Re-enable button
+            const buttons = document.getElementById('wordButtons').children;
+            for (let button of buttons) {
+                if (button.dataset.word === word && button.classList.contains('selected')) {
+                    button.classList.remove('selected');
+                    break;
+                }
+            }
+        }
+
+        // Reset answer
+        function resetAnswer() {
+            selectedWordsArray = [];
+            document.getElementById('selectedWords').innerHTML = '';
+            
+            const buttons = document.getElementById('wordButtons').children;
+            for (let button of buttons) {
+                button.classList.remove('selected');
+            }
+        }
+
+        // Display multiple choice
+        function displayMultipleChoice() {
+            const optionsContainer = document.getElementById('multipleChoiceOptions');
+            optionsContainer.innerHTML = '';
+            optionsContainer.classList.remove('hidden');
+            
+            const letters = ['A', 'B', 'C', 'D'];
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-3 rounded transition text-left';
+                button.innerHTML = `<strong>${letters[index]}.</strong> ${option}`;
+                button.onclick = () => checkAnswer(option);
+                button.id = `option-${index}`;
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // Display fill in blank
+        function displayFillBlank() {
+            const optionsContainer = document.getElementById('fillBlankOptions');
+            optionsContainer.innerHTML = '';
+            optionsContainer.classList.remove('hidden');
+            
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-3 rounded transition text-center font-medium';
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // Submit answer (for unscramble)
+        function submitAnswer() {
+            const answer = selectedWordsArray.join(' ');
+            checkAnswer(answer);
+        }
+
+        // Check answer
+        function checkAnswer(answer) {
+            const feedback = document.getElementById('feedback');
+            let isCorrect = false;
+            
+            if (Array.isArray(currentQuestion.correctAnswer)) {
+                // Word unscramble
+                const correct = currentQuestion.correctAnswer.join(' ');
+                isCorrect = answer === correct;
+            } else {
+                // Multiple choice or fill blank
+                const normalizedAnswer = answer.toLowerCase().trim().replace(/[.,!?]/g, '');
+                const normalizedCorrect = currentQuestion.correctAnswer.toLowerCase().trim().replace(/[.,!?]/g, '');
+                isCorrect = normalizedAnswer === normalizedCorrect;
+            }
+            
+            if (isCorrect) {
+                playSoundEffect('correct');
+                feedback.className = 'mt-4 p-3 rounded text-center bg-green-500 text-white font-bold celebrate';
+                feedback.textContent = '✅ Correct! Excellent!';
+                score += currentQuestion.usedHint ? 50 : (currentQuestion.usedFifty ? 75 : 100);
+                updateScore();
+                
+                setTimeout(() => {
+                    document.getElementById('questionScreen').classList.add('hidden');
+                    
+                    // Check if level was completed during the question
+                    if (currentQuestion.levelComplete) {
+                        level++;
+                        updateLevel();
+                        playSoundEffect('levelup');
+                        showPowerupNotification(`🎉 Level ${level}! 🎉`);
+                        initBricks();
+                    }
+                    
+                    gameState = 'playing';
+                    gameLoop();
+                }, 1500);
+            } else {
+                playSoundEffect('wrong');
+                feedback.className = 'mt-4 p-3 rounded text-center bg-red-500 text-white';
+                let correctText = Array.isArray(currentQuestion.correctAnswer) 
+                    ? currentQuestion.correctAnswer.join(' ')
+                    : currentQuestion.correctAnswer;
+                feedback.innerHTML = `❌ Incorrect. The correct answer was:<br><strong>${correctText}</strong>`;
+                lives--;
+                updateLives();
+                
+                if (lives === 0) {
+                    setTimeout(() => {
+                        gameOver();
+                    }, 2000);
+                } else {
+                    setTimeout(() => {
+                        document.getElementById('questionScreen').classList.add('hidden');
+                        
+                        // Check if level was completed during the question
+                        if (currentQuestion.levelComplete) {
+                            level++;
+                            updateLevel();
+                            playSoundEffect('levelup');
+                            showPowerupNotification(`🎉 Level ${level}! 🎉`);
+                            initBricks();
+                        }
+                        
+                        gameState = 'playing';
+                        gameLoop();
+                    }, 2500);
+                }
+            }
+            
+            feedback.classList.remove('hidden');
+        }
+
+        // Use powerups
+        function useSkip() {
+            if (questionPowerups.skip > 0) {
+                questionPowerups.skip--;
+                updatePowerupDisplay();
+                playSoundEffect('powerup');
+                document.getElementById('questionScreen').classList.add('hidden');
+                
+                // Check if level was completed during the question
+                if (currentQuestion && currentQuestion.levelComplete) {
+                    level++;
+                    updateLevel();
+                    playSoundEffect('levelup');
+                    showPowerupNotification(`🎉 Level ${level}! 🎉`);
+                    initBricks();
+                }
+                
+                gameState = 'playing';
+                gameLoop();
+            }
+        }
+
+        function useHint() {
+            if (questionPowerups.hint > 0 && !currentQuestion.usedHint) {
+                questionPowerups.hint--;
+                currentQuestion.usedHint = true;
+                updatePowerupDisplay();
+                playSoundEffect('powerup');
+                
+                let hintText = '';
+                if (Array.isArray(currentQuestion.correctAnswer)) {
+                    hintText = `First word: ${currentQuestion.correctAnswer[0]}`;
+                } else {
+                    hintText = currentQuestion.correctAnswer.substring(0, 3) + '...';
+                }
+                document.getElementById('hintDisplay').textContent = `💡 Hint: ${hintText}`;
+                document.getElementById('hintDisplay').classList.remove('hidden');
+            }
+        }
+
+        function useFiftyFifty() {
+            if (questionPowerups.fifty > 0 && currentQuestion.type === 'multipleChoice' && !currentQuestion.usedFifty) {
+                questionPowerups.fifty--;
+                currentQuestion.usedFifty = true;
+                updatePowerupDisplay();
+                playSoundEffect('powerup');
+                
+                const correctAnswer = currentQuestion.correctAnswer;
+                const wrongOptions = currentQuestion.options.filter(opt => opt !== correctAnswer);
+                const toRemove = wrongOptions.slice(0, 2);
+                
+                currentQuestion.options = currentQuestion.options.filter(opt => 
+                    opt === correctAnswer || !toRemove.includes(opt)
+                );
+                
+                displayMultipleChoice();
+            }
+        }
+
+        function useFreeze() {
+            if (questionPowerups.freeze > 0) {
+                questionPowerups.freeze--;
+                updatePowerupDisplay();
+                playSoundEffect('powerup');
+                isFrozen = true;
+                showPowerupNotification('❄️ Time Freeze Active!');
+                setTimeout(() => {
+                    isFrozen = false;
+                }, 10000);
+            }
+        }
+
+        // Activate powerup
+        function activatePowerup(type) {
+            playSoundEffect('powerup');
+            
+            if (type === 'life') {
+                lives++;
+                updateLives();
+                showPowerupNotification('❤️ Extra Life!');
+                return;
+            }
+            
+            if (['skip', 'hint', 'fifty', 'freeze'].includes(type)) {
+                questionPowerups[type]++;
+                updatePowerupDisplay();
+                const powerup = powerupTypes.find(p => p.type === type);
+                showPowerupNotification(`${powerup.icon} ${powerup.name}!`);
+                return;
+            }
+            
+            if (game.powerupTimeout) {
+                clearTimeout(game.powerupTimeout);
+            }
+            
+            game.activePowerup = type;
+            const powerup = powerupTypes.find(p => p.type === type);
+            showPowerupNotification(`${powerup.icon} ${powerup.name} Active!`);
+            
+            switch(type) {
+                case 'wide':
+                    game.paddle.width = 150;
+                    break;
+                case 'fast':
+                    game.ball.dx *= 1.5;
+                    game.ball.dy *= 1.5;
+                    break;
+                case 'slow':
+                    game.ball.dx *= 0.5;
+                    game.ball.dy *= 0.5;
+                    break;
+            }
+            
+            game.powerupTimeout = setTimeout(() => {
+                deactivatePowerup();
+            }, 10000);
+        }
+
+        function deactivatePowerup() {
+            if (game.activePowerup === 'wide') {
+                game.paddle.width = 100;
+            } else if (game.activePowerup === 'fast') {
+                game.ball.dx /= 1.5;
+                game.ball.dy /= 1.5;
+            } else if (game.activePowerup === 'slow') {
+                game.ball.dx /= 0.5;
+                game.ball.dy /= 0.5;
+            }
+            
+            game.activePowerup = null;
+            document.getElementById('powerup-indicator').classList.add('hidden');
+        }
+
+        function showPowerupNotification(text) {
+            const indicator = document.getElementById('powerup-indicator');
+            document.getElementById('powerup-name').textContent = text;
+            indicator.classList.remove('hidden');
+            setTimeout(() => {
+                if (!game.activePowerup) {
+                    indicator.classList.add('hidden');
+                }
+            }, 3000);
+        }
+
+        // Update displays
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+
+        function updateLevel() {
+            document.getElementById('level').textContent = level;
+        }
+
+        function updateLives() {
+            const livesContainer = document.getElementById('lives-container');
+            livesContainer.innerHTML = '';
+            for (let i = 0; i < lives; i++) {
+                const heart = document.createElement('span');
+                heart.textContent = '❤️';
+                heart.className = 'text-2xl';
+                livesContainer.appendChild(heart);
+            }
+        }
+
+        function updatePowerupDisplay() {
+            document.getElementById('skip-count').textContent = questionPowerups.skip;
+            document.getElementById('hint-count').textContent = questionPowerups.hint;
+            document.getElementById('fifty-count').textContent = questionPowerups.fifty;
+            document.getElementById('freeze-count').textContent = questionPowerups.freeze;
+        }
+
+        // TTS functions
+        function toggleTranslation() {
+            const checkbox = document.getElementById('showTranslation');
+            const translationDiv = document.getElementById('englishTranslation');
+            
+            if (checkbox.checked) {
+                translationDiv.classList.remove('hidden');
+            } else {
+                translationDiv.classList.add('hidden');
+            }
+        }
+        
+        function playQuestionAudio() {
+            if (!currentQuestion) return;
+            
+            let textToSpeak = currentQuestion.text.fr;
+            
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = 'fr-FR';
+            utterance.rate = speechRate;
+            
+            const voices = speechSynthesis.getVoices();
+            const frenchVoice = voices.find(voice => voice.lang.startsWith('fr'));
+            if (frenchVoice) {
+                utterance.voice = frenchVoice;
+            }
+            
+            speechSynthesis.cancel();
+            speechSynthesis.speak(utterance);
+        }
+
+        function updateSpeechRate() {
+            speechRate = parseFloat(document.getElementById('speechRate').value);
+        }
+
+        // Game over
+        function gameOver() {
+            gameState = 'gameOver';
+            document.getElementById('gameOverScreen').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalLevel').textContent = level;
+        }
+
+        // Game update
+        function update() {
+            if (isFrozen) return;
+            
+            const { ball, paddle, bricks, powerups } = game;
+
+            if (!ball.active) return;
+
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+                ball.dx = -ball.dx;
+            }
+            if (ball.y - ball.radius < 0) {
+                ball.dy = -ball.dy;
+            }
+
+            if (ball.y + ball.radius > canvas.height) {
+                lives--;
+                updateLives();
+                
+                if (lives === 0) {
+                    gameOver();
+                    return;
+                }
+                
+                ball.x = 300;
+                ball.y = 535;
+                ball.dx = 5;
+                ball.dy = -5;
+            }
+
+            if (
+                ball.y + ball.radius > paddle.y &&
+                ball.y - ball.radius < paddle.y + paddle.height &&
+                ball.x > paddle.x &&
+                ball.x < paddle.x + paddle.width
+            ) {
+                playSoundEffect('paddle');
+                ball.dy = -Math.abs(ball.dy);
+                const hitPos = (ball.x - paddle.x) / paddle.width;
+                ball.dx = (hitPos - 0.5) * 8;
+            }
+
+            let bricksHit = 0;
+            bricks.forEach(brick => {
+                if (brick.active) {
+                    if (
+                        ball.x > brick.x &&
+                        ball.x < brick.x + brick.width &&
+                        ball.y > brick.y &&
+                        ball.y < brick.y + brick.height
+                    ) {
+                        playSoundEffect('brick');
+                        ball.dy = -ball.dy;
+                        brick.active = false;
+                        score += 10;
+                        updateScore();
+                        bricksHit++;
+                        
+                        const rect = canvas.getBoundingClientRect();
+                        createParticles(
+                            rect.left + (brick.x / canvas.width) * rect.width,
+                            rect.top + (brick.y / canvas.height) * rect.height,
+                            brick.color
+                        );
+                        
+                        if (brick.hasPowerup) {
+                            const powerupType = powerupTypes[Math.floor(Math.random() * powerupTypes.length)];
+                            powerups.push({
+                                x: brick.x + brick.width / 2,
+                                y: brick.y,
+                                type: powerupType.type,
+                                icon: powerupType.icon,
+                                color: powerupType.color,
+                                active: true
+                            });
+                        }
+                    }
+                }
+            });
+
+            if (bricksHit > 0) {
+                bricksDestroyed += bricksHit;
+                
+                // Check for level completion first
+                const levelComplete = bricks.every(b => !b.active);
+                
+                if (bricksDestroyed >= 3) {
+                    gameState = 'questionTime';
+                    document.getElementById('questionScreen').classList.remove('hidden');
+                    generateQuestion();
+                    bricksDestroyed = 0;
+                    
+                    // If level was completed, set it up after question
+                    if (levelComplete) {
+                        currentQuestion.levelComplete = true;
+                    }
+                    return;
+                }
+
+                if (levelComplete) {
+                    level++;
+                    updateLevel();
+                    bricksDestroyed = 0;
+                    playSoundEffect('levelup');
+                    showPowerupNotification(`🎉 Level ${level}! 🎉`);
+                    initBricks();
+                }
+            }
+
+            for (let i = powerups.length - 1; i >= 0; i--) {
+                const p = powerups[i];
+                if (!p.active) continue;
+                
+                p.y += 2;
+                
+                if (
+                    p.y + 15 > paddle.y &&
+                    p.y < paddle.y + paddle.height &&
+                    p.x > paddle.x &&
+                    p.x < paddle.x + paddle.width
+                ) {
+                    activatePowerup(p.type);
+                    p.active = false;
+                }
+                
+                if (p.y > canvas.height) {
+                    p.active = false;
+                }
+            }
+            
+            game.powerups = powerups.filter(p => p.active);
+        }
+
+        // Game draw
+        function draw() {
+            const { ball, paddle, bricks, powerups, activePowerup } = game;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            bricks.forEach(brick => {
+                if (brick.active) {
+                    ctx.fillStyle = brick.color;
+                    ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+                    
+                    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(brick.x, brick.y, brick.width, brick.height);
+                    
+                    if (brick.hasPowerup) {
+                        ctx.fillStyle = '#ffd700';
+                        ctx.font = 'bold 20px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('★', brick.x + brick.width / 2, brick.y + brick.height / 2 + 7);
+                    }
+                }
+            });
+
+            ctx.fillStyle = activePowerup === 'wide' ? '#4ade80' : '#3b82f6';
+            ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+
+            if (ball.active) {
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                ctx.fillStyle = activePowerup === 'slow' ? '#fbbf24' : '#ffffff';
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            powerups.forEach(p => {
+                if (p.active) {
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 12, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(p.icon, p.x, p.y + 5);
+                }
+            });
+
+            if (isFrozen) {
+                ctx.fillStyle = 'rgba(0, 255, 255, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // Game loop
+        function gameLoop() {
+            if (gameState !== 'playing') return;
+            
+            update();
+            draw();
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        // Mouse control
+        canvas.addEventListener('mousemove', (e) => {
+            if (gameState !== 'playing') return;
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const scaledX = (mouseX / rect.width) * canvas.width;
+            game.paddle.x = Math.max(0, Math.min(scaledX - game.paddle.width / 2, canvas.width - game.paddle.width));
+        });
+
+        // Keyboard controls for powerups
+        document.addEventListener('keydown', (e) => {
+            if (gameState === 'playing' && e.key === 'f') {
+                useFreeze();
+            }
+        });
+
+        // Start game
+        function startGame() {
+            gameState = 'playing';
+            score = 0;
+            level = 1;
+            lives = 3;
+            bricksDestroyed = 0;
+            questionPowerups = { skip: 0, hint: 0, fifty: 0, freeze: 0 };
+            
+            updateScore();
+            updateLevel();
+            updateLives();
+            updatePowerupDisplay();
+            
+            game.paddle = { x: 250, y: 550, width: 100, height: 15 };
+            game.ball = { x: 300, y: 535, dx: 5, dy: -5, radius: 8, active: true };
+            game.bricks = [];
+            game.powerups = [];
+            game.activePowerup = null;
+            isFrozen = false;
+            
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('questionScreen').classList.add('hidden');
+            document.getElementById('gameOverScreen').classList.add('hidden');
+            document.getElementById('powerup-indicator').classList.add('hidden');
+            
+            initBricks();
+            gameLoop();
+        }
+
+        // Initialize
+        updateLives();
+        updatePowerupDisplay();
+        
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => {};
+        }
+    </script>
+</body>
+</html>
