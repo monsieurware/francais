@@ -431,6 +431,7 @@
 
         <div class="info-box">
             <p><strong>💡 How to use:</strong> Click on any phoneme card to hear the pronunciation. The card will highlight as the sound plays. Practice the example words and listen carefully to master French pronunciation!</p>
+            <p style="margin-top: 10px;"><strong>Note:</strong> The voice recording feature requires microphone access. If embedded in an LMS like Schoology, you may need to open this page in a new tab to use recording.</p>
         </div>
 
         <!-- Vowels Section -->
@@ -508,6 +509,14 @@
         <div class="practice-section" style="margin-top: 40px;">
             <h2 class="section-title">🎤 Record Your Voice</h2>
             <p style="color: #666; margin-bottom: 20px;">Practice pronunciation by recording yourself and comparing with native audio!</p>
+            
+            <div id="iframe-warning" class="info-box" style="display: none; background: rgba(255, 152, 0, 0.1); border-left: 4px solid #ff9800; margin-bottom: 20px;">
+                <p><strong>⚠️ Recording Not Available in Embedded View</strong></p>
+                <p>Microphone access is blocked when this page is embedded in an iframe (like in Schoology). To use the recording feature, please open this page in a new tab:</p>
+                <button class="btn" onclick="window.open(window.location.href, '_blank')" style="margin-top: 10px;">
+                    🔗 Open in New Tab
+                </button>
+            </div>
             
             <div class="recording-section">
                 <div class="recording-word-display">
@@ -910,6 +919,15 @@
 
         updateRecordingDisplay();
 
+        // Check if page is in iframe and show warning
+        function checkIframeStatus() {
+            if (window.self !== window.top) {
+                document.getElementById('iframe-warning').style.display = 'block';
+            }
+        }
+
+        checkIframeStatus();
+
         function playTargetWord() {
             const word = recordingWords[currentRecordingWord].word;
             speak(word);
@@ -951,8 +969,21 @@
                     recordText.textContent = 'Stop Recording';
                     visualizer.classList.add('active');
                 } catch (err) {
-                    alert('Microphone access is required for recording. Please allow microphone access and try again.');
                     console.error('Error accessing microphone:', err);
+                    
+                    let errorMessage = 'Microphone access is required for recording.';
+                    
+                    if (window.self !== window.top) {
+                        errorMessage = '⚠️ Recording is not available when this page is embedded in an iframe (like in Schoology).\n\nPlease click the "Open in New Tab" button above to use the recording feature.';
+                    } else if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                        errorMessage = '⚠️ Microphone access was denied.\n\nPlease allow microphone access in your browser settings and try again.';
+                    } else if (err.name === 'NotFoundError') {
+                        errorMessage = '⚠️ No microphone found.\n\nPlease connect a microphone and try again.';
+                    } else {
+                        errorMessage = '⚠️ Could not access microphone.\n\n' + err.message;
+                    }
+                    
+                    alert(errorMessage);
                 }
             } else {
                 mediaRecorder.stop();
