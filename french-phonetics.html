@@ -968,22 +968,28 @@
                     recordIcon.textContent = '⏹';
                     recordText.textContent = 'Stop Recording';
                     visualizer.classList.add('active');
+                    
+                    // Hide iframe warning if recording starts successfully
+                    document.getElementById('iframe-warning').style.display = 'none';
+                    
                 } catch (err) {
                     console.error('Error accessing microphone:', err);
                     
-                    let errorMessage = 'Microphone access is required for recording.';
-                    
-                    if (window.self !== window.top) {
-                        errorMessage = '⚠️ Recording is not available when this page is embedded in an iframe (like in Schoology).\n\nPlease click the "Open in New Tab" button above to use the recording feature.';
-                    } else if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                        errorMessage = '⚠️ Microphone access was denied.\n\nPlease allow microphone access in your browser settings and try again.';
-                    } else if (err.name === 'NotFoundError') {
-                        errorMessage = '⚠️ No microphone found.\n\nPlease connect a microphone and try again.';
-                    } else {
-                        errorMessage = '⚠️ Could not access microphone.\n\n' + err.message;
+                    // Only show alert if NOT in iframe (iframe warning is already visible)
+                    if (window.self === window.top) {
+                        let errorMessage = 'Microphone access is required for recording.';
+                        
+                        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                            errorMessage = '⚠️ Microphone access was denied.\n\nPlease allow microphone access in your browser settings and try again.';
+                        } else if (err.name === 'NotFoundError') {
+                            errorMessage = '⚠️ No microphone found.\n\nPlease connect a microphone and try again.';
+                        } else {
+                            errorMessage = '⚠️ Could not access microphone.\n\n' + err.message;
+                        }
+                        
+                        alert(errorMessage);
                     }
-                    
-                    alert(errorMessage);
+                    // If in iframe, the warning banner is already showing, so no alert needed
                 }
             } else {
                 mediaRecorder.stop();
