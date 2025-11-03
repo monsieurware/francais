@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Secret du Mapo Tofu - Jeu de Défi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 800px;
+            width: 100%;
+            border: 3px solid #00ff00;
+            padding: 30px;
+            background: #000;
+            box-shadow: 0 0 20px #00ff00;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff00;
+            animation: flicker 3s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .subtitle {
+            font-size: 0.9em;
+            color: #00cc00;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #001a00;
+            border: 2px solid #00ff00;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #00ff00;
+            transition: width 0.5s;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000;
+            font-weight: bold;
+            z-index: 10;
+            mix-blend-mode: difference;
+        }
+
+        .riddle-container {
+            background: #001a00;
+            border: 2px solid #00ff00;
+            padding: 25px;
+            margin-bottom: 30px;
+            min-height: 200px;
+        }
+
+        .riddle-number {
+            color: #00ff00;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .riddle-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .input-container {
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            background: #000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 15px #00ff00;
+        }
+
+        button {
+            background: #001a00;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 15px 30px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 15px #00ff00;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .feedback.correct {
+            background: #003300;
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+
+        .feedback.incorrect {
+            background: #330000;
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        .hint {
+            color: #00cc00;
+            font-size: 0.9em;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .completion-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .completion-screen h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #00ff00;
+            text-shadow: 0 0 20px #00ff00;
+        }
+
+        .completion-message {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            background: #001a00;
+            border: 2px solid #00ff00;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-line {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .multiple-choice {
+            margin-top: 15px;
+        }
+
+        .choice-button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            text-align: left;
+            padding: 15px;
+        }
+
+        .choice-button:hover:not(:disabled) {
+            transform: translateX(10px);
+        }
+
+        .scramble-container {
+            margin: 20px 0;
+        }
+
+        .scrambled-words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            min-height: 60px;
+            padding: 15px;
+            background: #000;
+            border: 2px dashed #00ff00;
+        }
+
+        .word-chip {
+            padding: 10px 15px;
+            background: #001a00;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .word-chip:hover {
+            background: #00ff00;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        .word-chip.selected {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .answer-area {
+            min-height: 80px;
+            padding: 15px;
+            background: #000;
+            border: 2px solid #00ff00;
+            margin: 15px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .answer-area:empty::before {
+            content: ">> Cliquez sur les mots dans le bon ordre...";
+            color: #006600;
+            font-style: italic;
+        }
+
+        .answer-word {
+            padding: 10px 15px;
+            background: #003300;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .answer-word:hover {
+            background: #ff0000;
+            border-color: #ff0000;
+        }
+
+        .scramble-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .scramble-buttons button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>╔═══ LE SECRET DU MAPO TOFU ═══╗</h1>
+            <div class="subtitle">║ Système de Défi Interactif v1.0 ║</div>
+            <div class="subtitle">╚══════════════════════════════════╝</div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-text" id="progressText">0 / 16 DÉFIS COMPLÉTÉS</div>
+        </div>
+
+        <div class="riddle-container" id="riddleContainer">
+            <div class="riddle-number" id="riddleNumber">► DÉFI 01</div>
+            <div class="riddle-text" id="riddleText"></div>
+            <div class="input-container" id="inputContainer"></div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="completion-screen" id="completionScreen">
+            <h2>╔═══════════════════╗</h2>
+            <h2>║ MISSION RÉUSSIE ║</h2>
+            <h2>╚═══════════════════╝</h2>
+            <div class="completion-message">
+                <p>> Bravo, agent ! Vous avez déchiffré tous les codes.</p>
+                <p>> La recette du mapo tofu est en sécurité.</p>
+                <p>> Emily, Olivia et leur mère vous remercient.</p>
+            </div>
+            <div class="stats" id="finalStats"></div>
+            <button onclick="location.reload()">► RECOMMENCER LA MISSION</button>
+        </div>
+    </div>
+
+    <script>
+        const riddles = [
+            {
+                type: 'text',
+                question: "Depuis combien d'années Emily joue-t-elle du violon ?",
+                answers: ['4', 'quatre', 'quatre ans', '4 ans'],
+                hint: "Indice : C'est mentionné plusieurs fois dans l'histoire..."
+            },
+            {
+                type: 'scramble',
+                question: "DÉBROUILLAGE DE CODE : Réorganisez ces mots pour former une phrase de l'histoire.",
+                scrambled: ['tremblent', 'ses', 'sur', 'doigts', 'les', 'cordes'],
+                answer: 'ses doigts tremblent sur les cordes',
+                hint: "Indice : Emily ne peut pas se concentrer au début de l'histoire..."
+            },
+            {
+                type: 'math',
+                question: "CALCUL DE SÉCURITÉ : Soixante-sept multiplié par soixante-sept égale combien ?",
+                answers: ['4489'],
+                hint: "Indice : 67 × 67 = ?"
+            },
+            {
+                type: 'text',
+                question: "Quel est le métier de la mère d'Emily et Olivia ?",
+                answers: ['statisticienne', 'statisticien'],
+                hint: "Indice : Un métier qui travaille avec les chiffres et les probabilités..."
+            },
+            {
+                type: 'scramble',
+                question: "DÉBROUILLAGE DE CODE : Remettez ces mots dans le bon ordre.",
+                scrambled: ['dépend', 'ça', 'de', 'l\'humeur'],
+                answer: 'ça dépend de l\'humeur',
+                hint: "Indice : Une phrase répétée qui décrit la relation entre les sœurs..."
+            },
+            {
+                type: 'multiple',
+                question: "Quelle épice fait VIBRER la bouche dans le mapo tofu parfait ?",
+                choices: [
+                    "Le piment rouge",
+                    "Le poivre de Sichuan",
+                    "L'ail grillé",
+                    "Le gingembre"
+                ],
+                correct: 1,
+                hint: "Indice : Chef Flik le mentionne quand il décrit le plat parfait..."
+            },
+            {
+                type: 'math',
+                question: "CALCUL DE SÉCURITÉ : Soixante plus sept égale combien ?",
+                answers: ['67'],
+                hint: "Indice : 60 + 7 = ?"
+            },
+            {
+                type: 'text',
+                question: "Comment s'appelle le restaurant dans le quartier chinois ?",
+                answers: ['dragon d\'or', 'dragon dor', 'le dragon d\'or'],
+                hint: "Indice : Emily et Olivia trouvent cette adresse dans un email..."
+            },
+            {
+                type: 'scramble',
+                question: "DÉBROUILLAGE DE CODE : Organisez ces mots correctement.",
+                scrambled: ['la', 'sauce', 'est', 'épaisse', 'comme', 'du', 'velours'],
+                answer: 'la sauce est épaisse comme du velours',
+                hint: "Indice : Une description du mapo tofu parfait de la mère..."
+            },
+            {
+                type: 'text',
+                question: "Pendant combien d'années la mère travaille-t-elle sur la recette ?",
+                answers: ['3', 'trois', 'trois ans', '3 ans'],
+                hint: "Indice : Elle le dit elle-même à Chef Flik..."
+            },
+            {
+                type: 'math',
+                question: "CALCUL DE SÉCURITÉ : Vingt divisé par cinq égale combien ?",
+                answers: ['4'],
+                hint: "Indice : 20 ÷ 5 = ?"
+            },
+            {
+                type: 'multiple',
+                question: "Selon Emily, pourquoi Chef Flik ne peut-il pas voler la perfection ?",
+                choices: [
+                    "Parce que la recette est trop compliquée",
+                    "Parce que la perfection n'existe pas",
+                    "Parce que la cuisine est vivante et toujours différente",
+                    "Parce qu'il n'a pas les bons ingrédients"
+                ],
+                correct: 2,
+                hint: "Indice : Emily compare la cuisine à la musique..."
+            },
+            {
+                type: 'scramble',
+                question: "DÉBROUILLAGE DE CODE : Déchiffrez cette phrase clé de l'histoire.",
+                scrambled: ['le', 'tofu', 'fond', 'dans', 'la', 'bouche', 'comme', 'de', 'la', 'soie'],
+                answer: 'le tofu fond dans la bouche comme de la soie',
+                hint: "Indice : Emily se souvient de cette texture quand elle pense au mapo tofu..."
+            },
+            {
+                type: 'text',
+                question: "Quel instrument Emily apporte-t-elle au restaurant (sans savoir pourquoi) ?",
+                answers: ['violon', 'son violon', 'le violon', 'un violon'],
+                hint: "Indice : Elle porte cet instrument sur son dos..."
+            },
+            {
+                type: 'scramble',
+                question: "DÉBROUILLAGE DE CODE : Reconstruisez cette phrase importante.",
+                scrambled: ['avec', 'c\'est', 'amour', 'mieux', 'que', 'parfait'],
+                answer: 'avec amour c\'est mieux que parfait',
+                hint: "Indice : La mère dit cela à la fin quand elle parle de faire du mapo tofu..."
+            },
+            {
+                type: 'multiple',
+                question: "À la fin de l'histoire, qu'est-ce qui est PLUS important que la perfection ?",
+                choices: [
+                    "Les statistiques",
+                    "La réputation",
+                    "L'amour et le partage",
+                    "La recette secrète"
+                ],
+                correct: 2,
+                hint: "Indice : La mère le dit dans la voiture en rentrant..."
+            }
+        ];
+
+        let currentRiddle = 0;
+        let attempts = 0;
+        let totalAttempts = 0;
+        let startTime = Date.now();
+        let selectedWords = [];
+        let isProcessing = false; // Prevent rapid submissions
+
+        function displayRiddle() {
+            const riddle = riddles[currentRiddle];
+            document.getElementById('riddleNumber').textContent = `► DÉFI ${String(currentRiddle + 1).padStart(2, '0')}`;
+            document.getElementById('riddleText').textContent = riddle.question;
+            document.getElementById('feedback').style.display = 'none';
+            
+            const inputContainer = document.getElementById('inputContainer');
+            inputContainer.innerHTML = '';
+            selectedWords = [];
+            isProcessing = false; // Reset processing flag for new question
+
+            if (riddle.type === 'text') {
+                inputContainer.innerHTML = `
+                    <input type="text" id="answerInput" placeholder=">> Tapez votre réponse ici..." autocomplete="off">
+                    <button onclick="checkAnswer()">► VALIDER</button>
+                    <div class="hint">${riddle.hint}</div>
+                `;
+                // Delay focus and event listener to prevent carryover from previous question
+                setTimeout(() => {
+                    const input = document.getElementById('answerInput');
+                    if (input) {
+                        input.focus();
+                        input.addEventListener('keypress', function(e) {
+                            if (e.key === 'Enter' && !isProcessing) {
+                                checkAnswer();
+                            }
+                        });
+                    }
+                }, 100);
+            } else if (riddle.type === 'math') {
+                inputContainer.innerHTML = `
+                    <input type="text" id="answerInput" placeholder=">> Tapez le résultat numérique..." autocomplete="off">
+                    <button onclick="checkAnswer()">► VALIDER</button>
+                    <div class="hint">${riddle.hint}</div>
+                `;
+                // Delay focus and event listener to prevent carryover from previous question
+                setTimeout(() => {
+                    const input = document.getElementById('answerInput');
+                    if (input) {
+                        input.focus();
+                        input.addEventListener('keypress', function(e) {
+                            if (e.key === 'Enter' && !isProcessing) {
+                                checkAnswer();
+                            }
+                        });
+                    }
+                }, 100);
+            } else if (riddle.type === 'multiple') {
+                riddle.choices.forEach((choice, index) => {
+                    const button = document.createElement('button');
+                    button.className = 'choice-button';
+                    button.textContent = `${String.fromCharCode(65 + index)}. ${choice}`;
+                    button.onclick = () => checkMultipleChoice(index);
+                    inputContainer.appendChild(button);
+                });
+                const hintDiv = document.createElement('div');
+                hintDiv.className = 'hint';
+                hintDiv.textContent = riddle.hint;
+                inputContainer.appendChild(hintDiv);
+            } else if (riddle.type === 'scramble') {
+                displayScramble(riddle);
+            }
+        }
+
+        function displayScramble(riddle) {
+            const inputContainer = document.getElementById('inputContainer');
+            
+            // Shuffle the words
+            const shuffled = [...riddle.scrambled].sort(() => Math.random() - 0.5);
+            
+            inputContainer.innerHTML = `
+                <div class="scramble-container">
+                    <div class="scrambled-words" id="scrambledWords"></div>
+                    <div class="answer-area" id="answerArea"></div>
+                    <div class="scramble-buttons">
+                        <button onclick="clearScramble()">✗ EFFACER</button>
+                        <button onclick="checkScramble()">► VALIDER</button>
+                    </div>
+                    <div class="hint">${riddle.hint}</div>
+                </div>
+            `;
+            
+            const scrambledWordsDiv = document.getElementById('scrambledWords');
+            shuffled.forEach((word, index) => {
+                const chip = document.createElement('div');
+                chip.className = 'word-chip';
+                chip.textContent = word;
+                chip.dataset.word = word;
+                chip.dataset.index = index;
+                chip.onclick = () => selectWord(index, word);
+                scrambledWordsDiv.appendChild(chip);
+            });
+        }
+
+        function selectWord(index, word) {
+            const chip = document.querySelectorAll('.word-chip')[index];
+            if (chip.classList.contains('selected')) return;
+            
+            chip.classList.add('selected');
+            selectedWords.push(word);
+            
+            const answerArea = document.getElementById('answerArea');
+            const answerWord = document.createElement('div');
+            answerWord.className = 'answer-word';
+            answerWord.textContent = word;
+            answerWord.dataset.originalIndex = index;
+            answerWord.onclick = () => removeWord(answerWord);
+            answerArea.appendChild(answerWord);
+        }
+
+        function removeWord(wordElement) {
+            const originalIndex = wordElement.dataset.originalIndex;
+            const word = wordElement.textContent;
+            
+            selectedWords = selectedWords.filter(w => w !== word);
+            wordElement.remove();
+            
+            const chips = document.querySelectorAll('.word-chip');
+            chips[originalIndex].classList.remove('selected');
+        }
+
+        function clearScramble() {
+            selectedWords = [];
+            document.getElementById('answerArea').innerHTML = '';
+            document.querySelectorAll('.word-chip').forEach(chip => {
+                chip.classList.remove('selected');
+            });
+        }
+
+        function checkScramble() {
+            if (isProcessing) return; // Prevent multiple rapid submissions
+            
+            const riddle = riddles[currentRiddle];
+            const userAnswer = selectedWords.join(' ').toLowerCase().trim();
+            const correctAnswer = riddle.answer.toLowerCase().trim();
+            const feedback = document.getElementById('feedback');
+            
+            // Don't allow empty submissions
+            if (userAnswer === '') {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = '✗ Veuillez sélectionner des mots avant de valider.';
+                feedback.style.display = 'block';
+                return;
+            }
+            
+            attempts++;
+            totalAttempts++;
+
+            if (userAnswer === correctAnswer) {
+                isProcessing = true; // Lock further submissions
+                feedback.className = 'feedback correct';
+                feedback.textContent = `✓ CORRECT ! Phrase déchiffrée... Progression : ${currentRiddle + 1}/${riddles.length}`;
+                feedback.style.display = 'block';
+                
+                setTimeout(() => {
+                    currentRiddle++;
+                    attempts = 0;
+                    updateProgress();
+                    if (currentRiddle < riddles.length) {
+                        displayRiddle();
+                    } else {
+                        showCompletion();
+                    }
+                }, 2000);
+            } else {
+                feedback.className = 'feedback incorrect';
+                if (attempts === 1) {
+                    feedback.textContent = '✗ SÉQUENCE INCORRECTE. L\'ordre des mots n\'est pas correct...';
+                } else if (attempts === 2) {
+                    feedback.textContent = '✗ ERREUR. Pensez à la structure grammaticale française...';
+                } else {
+                    feedback.textContent = '✗ TENTATIVE ÉCHOUÉE. Relisez cette partie de l\'histoire...';
+                }
+                feedback.style.display = 'block';
+            }
+        }
+
+        function checkAnswer() {
+            if (isProcessing) return; // Prevent multiple rapid submissions
+            
+            const riddle = riddles[currentRiddle];
+            const answerInput = document.getElementById('answerInput');
+            if (!answerInput) return; // Safety check
+            
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            const feedback = document.getElementById('feedback');
+            
+            // Don't allow empty submissions
+            if (userAnswer === '') {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = '✗ Veuillez entrer une réponse avant de valider.';
+                feedback.style.display = 'block';
+                return;
+            }
+            
+            attempts++;
+            totalAttempts++;
+
+            const isCorrect = riddle.answers.some(answer => 
+                userAnswer === answer.toLowerCase() || 
+                userAnswer.includes(answer.toLowerCase())
+            );
+
+            if (isCorrect) {
+                isProcessing = true; // Lock further submissions
+                feedback.className = 'feedback correct';
+                if (riddle.type === 'math') {
+                    feedback.textContent = `✓ CALCUL CORRECT ! Code de sécurité validé... Progression : ${currentRiddle + 1}/${riddles.length}`;
+                } else {
+                    feedback.textContent = `✓ CORRECT ! Accès autorisé... Progression : ${currentRiddle + 1}/${riddles.length}`;
+                }
+                feedback.style.display = 'block';
+                
+                setTimeout(() => {
+                    currentRiddle++;
+                    attempts = 0;
+                    updateProgress();
+                    if (currentRiddle < riddles.length) {
+                        displayRiddle();
+                    } else {
+                        showCompletion();
+                    }
+                }, 2000);
+            } else {
+                feedback.className = 'feedback incorrect';
+                if (riddle.type === 'math') {
+                    if (attempts === 1) {
+                        feedback.textContent = '✗ ERREUR DE CALCUL. Vérifiez votre opération...';
+                    } else if (attempts === 2) {
+                        feedback.textContent = '✗ CALCUL INCORRECT. Consultez l\'indice mathématique...';
+                    } else {
+                        feedback.textContent = '✗ CODE INVALIDE. Refaites le calcul étape par étape...';
+                    }
+                } else {
+                    if (attempts === 1) {
+                        feedback.textContent = '✗ ACCÈS REFUSÉ. Relisez attentivement l\'histoire et réessayez...';
+                    } else if (attempts === 2) {
+                        feedback.textContent = '✗ ERREUR. Consultez l\'indice ci-dessous...';
+                    } else {
+                        feedback.textContent = '✗ TENTATIVE ÉCHOUÉE. La réponse doit être exactement comme dans le texte...';
+                    }
+                }
+                feedback.style.display = 'block';
+            }
+        }
+
+        function checkMultipleChoice(selectedIndex) {
+            if (isProcessing) return; // Prevent multiple rapid clicks
+            
+            const riddle = riddles[currentRiddle];
+            const feedback = document.getElementById('feedback');
+            const buttons = document.querySelectorAll('.choice-button');
+            
+            isProcessing = true; // Lock further clicks
+            attempts++;
+            totalAttempts++;
+
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === riddle.correct) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = `✓ CORRECT ! Accès autorisé... Progression : ${currentRiddle + 1}/${riddles.length}`;
+                feedback.style.display = 'block';
+                
+                setTimeout(() => {
+                    currentRiddle++;
+                    attempts = 0;
+                    updateProgress();
+                    if (currentRiddle < riddles.length) {
+                        displayRiddle();
+                    } else {
+                        showCompletion();
+                    }
+                }, 2000);
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = '✗ ACCÈS REFUSÉ. Réessayez...';
+                feedback.style.display = 'block';
+                
+                setTimeout(() => {
+                    buttons.forEach(btn => btn.disabled = false);
+                    feedback.style.display = 'none';
+                    isProcessing = false; // Allow new attempts
+                }, 1500);
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentRiddle / riddles.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${currentRiddle} / ${riddles.length} DÉFIS COMPLÉTÉS`;
+        }
+
+        function showCompletion() {
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsedTime / 60);
+            const seconds = elapsedTime % 60;
+            
+            document.getElementById('riddleContainer').style.display = 'none';
+            document.getElementById('completionScreen').style.display = 'block';
+            
+            document.getElementById('finalStats').innerHTML = `
+                <div class="stat-line">║ TEMPS TOTAL : ${minutes}m ${seconds}s</div>
+                <div class="stat-line">║ TENTATIVES : ${totalAttempts}</div>
+                <div class="stat-line">║ EFFICACITÉ : ${Math.round((riddles.length / totalAttempts) * 100)}%</div>
+                <div class="stat-line">║ STATUT : <span class="blink">AGENT CERTIFIÉ</span></div>
+            `;
+        }
+
+        // Initialize game
+        displayRiddle();
+        updateProgress();
+    </script>
+</body>
+</html>
