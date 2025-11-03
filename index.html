@@ -313,6 +313,17 @@
     </style>
 </head>
 <body>
+    <!-- Audio elements -->
+    <audio id="bgMusic" loop>
+        <source src="https://audio.jukehost.co.uk/6yUA43F0dJx9S3MS7GbbZKoI9oHJD8gv" type="audio/mpeg">
+    </audio>
+    <audio id="correctSound">
+        <source src="https://audio.jukehost.co.uk/zbpZkgE4krRkCc4VkO5oCSfHfZMXVnQd" type="audio/mpeg">
+    </audio>
+    <audio id="wrongSound">
+        <source src="https://audio.jukehost.co.uk/rpno2D6XI88iND0wSOXUf1KKRgGRlT8L" type="audio/mpeg">
+    </audio>
+
     <div class="game-container">
         <div class="header">
             <h1>╔═══ LE SECRET DU MAPO TOFU ═══╗</h1>
@@ -626,6 +637,12 @@
 
             if (userAnswer === correctAnswer) {
                 isProcessing = true; // Lock further submissions
+                
+                // Play correct sound
+                const correctSound = document.getElementById('correctSound');
+                correctSound.currentTime = 0;
+                correctSound.play().catch(e => console.log('Sound play failed:', e));
+                
                 feedback.className = 'feedback correct';
                 feedback.textContent = `✓ CORRECT ! Phrase déchiffrée... Progression : ${currentRiddle + 1}/${riddles.length}`;
                 feedback.style.display = 'block';
@@ -641,6 +658,11 @@
                     }
                 }, 2000);
             } else {
+                // Play wrong sound
+                const wrongSound = document.getElementById('wrongSound');
+                wrongSound.currentTime = 0;
+                wrongSound.play().catch(e => console.log('Sound play failed:', e));
+                
                 feedback.className = 'feedback incorrect';
                 if (attempts === 1) {
                     feedback.textContent = '✗ SÉQUENCE INCORRECTE. L\'ordre des mots n\'est pas correct...';
@@ -681,6 +703,12 @@
 
             if (isCorrect) {
                 isProcessing = true; // Lock further submissions
+                
+                // Play correct sound
+                const correctSound = document.getElementById('correctSound');
+                correctSound.currentTime = 0;
+                correctSound.play().catch(e => console.log('Sound play failed:', e));
+                
                 feedback.className = 'feedback correct';
                 if (riddle.type === 'math') {
                     feedback.textContent = `✓ CALCUL CORRECT ! Code de sécurité validé... Progression : ${currentRiddle + 1}/${riddles.length}`;
@@ -700,6 +728,11 @@
                     }
                 }, 2000);
             } else {
+                // Play wrong sound
+                const wrongSound = document.getElementById('wrongSound');
+                wrongSound.currentTime = 0;
+                wrongSound.play().catch(e => console.log('Sound play failed:', e));
+                
                 feedback.className = 'feedback incorrect';
                 if (riddle.type === 'math') {
                     if (attempts === 1) {
@@ -736,6 +769,11 @@
             buttons.forEach(btn => btn.disabled = true);
 
             if (selectedIndex === riddle.correct) {
+                // Play correct sound
+                const correctSound = document.getElementById('correctSound');
+                correctSound.currentTime = 0;
+                correctSound.play().catch(e => console.log('Sound play failed:', e));
+                
                 feedback.className = 'feedback correct';
                 feedback.textContent = `✓ CORRECT ! Accès autorisé... Progression : ${currentRiddle + 1}/${riddles.length}`;
                 feedback.style.display = 'block';
@@ -751,6 +789,11 @@
                     }
                 }, 2000);
             } else {
+                // Play wrong sound
+                const wrongSound = document.getElementById('wrongSound');
+                wrongSound.currentTime = 0;
+                wrongSound.play().catch(e => console.log('Sound play failed:', e));
+                
                 feedback.className = 'feedback incorrect';
                 feedback.textContent = '✗ ACCÈS REFUSÉ. Réessayez...';
                 feedback.style.display = 'block';
@@ -774,6 +817,19 @@
             const minutes = Math.floor(elapsedTime / 60);
             const seconds = elapsedTime % 60;
             
+            // Fade out background music
+            const bgMusic = document.getElementById('bgMusic');
+            let volume = 0.3;
+            const fadeOut = setInterval(() => {
+                if (volume > 0) {
+                    volume -= 0.05;
+                    bgMusic.volume = Math.max(0, volume);
+                } else {
+                    clearInterval(fadeOut);
+                    bgMusic.pause();
+                }
+            }, 100);
+            
             document.getElementById('riddleContainer').style.display = 'none';
             document.getElementById('completionScreen').style.display = 'block';
             
@@ -782,12 +838,24 @@
                 <div class="stat-line">║ TENTATIVES : ${totalAttempts}</div>
                 <div class="stat-line">║ EFFICACITÉ : ${Math.round((riddles.length / totalAttempts) * 100)}%</div>
                 <div class="stat-line">║ STATUT : <span class="blink">AGENT CERTIFIÉ</span></div>
+                <div class="stat-line" style="margin-top: 20px; color: #00ff00; font-size: 1.2em;">╔════════════════════════════╗</div>
+                <div class="stat-line" style="color: #00ff00; font-size: 1.2em;">║ MOT DE PASSE SECRET :      ║</div>
+                <div class="stat-line" style="color: #00ff00; font-size: 1.5em; text-shadow: 0 0 20px #00ff00;">║      ZOOTOPIA              ║</div>
+                <div class="stat-line" style="color: #00ff00; font-size: 1.2em;">╚════════════════════════════╝</div>
             `;
         }
 
         // Initialize game
         displayRiddle();
         updateProgress();
+        
+        // Start background music when user interacts with page
+        document.addEventListener('click', function initMusic() {
+            const bgMusic = document.getElementById('bgMusic');
+            bgMusic.volume = 0.3; // 30% volume
+            bgMusic.play().catch(e => console.log('Audio play failed:', e));
+            document.removeEventListener('click', initMusic);
+        }, { once: true });
     </script>
 </body>
 </html>
