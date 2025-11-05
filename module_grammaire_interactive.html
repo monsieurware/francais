@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Grammaire Interactive - IB French B</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 3px solid #e9ecef;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 20px 30px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #4e54c8;
+            border-bottom: 3px solid #4e54c8;
+            margin-bottom: -3px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .exercise {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #4e54c8;
+        }
+
+        .exercise h3 {
+            color: #4e54c8;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .exercise-instruction {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0066cc;
+        }
+
+        .question {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            line-height: 2.2;
+        }
+
+        select, input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #4e54c8;
+            box-shadow: 0 0 0 3px rgba(78, 84, 200, 0.1);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+
+        .btn-primary {
+            background: #4e54c8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3d43a8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 84, 200, 0.3);
+        }
+
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #5a6268;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .draggable-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            min-height: 70px;
+            border: 2px solid #4e54c8;
+            box-shadow: 0 2px 8px rgba(78, 84, 200, 0.1);
+        }
+
+        .draggable-item {
+            padding: 10px 20px;
+            background: #4e54c8;
+            color: white;
+            border-radius: 20px;
+            cursor: move;
+            user-select: none;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .draggable-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(78, 84, 200, 0.3);
+        }
+
+        .draggable-item.dragging {
+            opacity: 0.5;
+        }
+
+        .drop-zone {
+            display: inline-block;
+            min-width: 120px;
+            min-height: 35px;
+            padding: 8px 12px;
+            border: 2px dashed #4e54c8;
+            border-radius: 8px;
+            margin: 0 5px;
+            background: #f8f9fa;
+            transition: all 0.3s;
+            vertical-align: middle;
+        }
+
+        /* Block style for ordering exercises */
+        #connecteurs .drop-zone,
+        [id^="order-zone-"] {
+            display: block;
+            min-width: 100%;
+            min-height: 50px;
+            margin: 10px 0;
+        }
+
+        .drop-zone.drag-over {
+            background: #e7f3ff;
+            border-color: #0066cc;
+            border-style: solid;
+        }
+
+        .drop-zone .draggable-item {
+            margin: 0;
+            display: inline-block;
+            font-size: 0.95em;
+            padding: 6px 14px;
+        }
+
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .matching-column {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .matching-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .matching-item:hover {
+            background: #e9ecef;
+        }
+
+        .matching-item.selected {
+            background: #4e54c8;
+            color: white;
+            border-color: #3d43a8;
+        }
+
+        .matching-item.matched {
+            background: #d4edda;
+            color: #155724;
+            cursor: default;
+        }
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .word-chip {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #4e54c8;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .word-chip:hover {
+            background: #4e54c8;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .word-chip.used {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .sentence-builder {
+            min-height: 60px;
+            padding: 15px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .score-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .score-number {
+            font-size: 2em;
+            color: #4e54c8;
+            font-weight: bold;
+        }
+
+        .grammar-tip {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #ffc107;
+        }
+
+        .grammar-tip h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .expandable-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+            border: 2px solid #dee2e6;
+        }
+
+        .expandable-header {
+            padding: 20px;
+            cursor: pointer;
+            background: #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .expandable-header:hover {
+            background: #dee2e6;
+        }
+
+        .expandable-header h4 {
+            margin: 0;
+            color: #495057;
+            font-size: 1.2em;
+        }
+
+        .expand-icon {
+            font-size: 1.5em;
+            transition: transform 0.3s;
+            color: #4e54c8;
+        }
+
+        .expandable-section.open .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            padding: 0 20px;
+        }
+
+        .expandable-section.open .expandable-content {
+            max-height: 2000px;
+            padding: 20px;
+        }
+
+        .pronoun-example {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4e54c8;
+        }
+
+        .pronoun-example strong {
+            color: #4e54c8;
+            font-size: 1.1em;
+        }
+
+        .example-sentence {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .example-highlight {
+            color: #4e54c8;
+            font-weight: bold;
+        }
+
+        .example-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .matching-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tab {
+                padding: 15px 20px;
+                font-size: 1em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4e54c8, #8f94fb);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Module de Grammaire Avancée</h1>
+            <p>IB French B - Projet "Chemins d'école"</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('subjonctif')">Le Subjonctif</button>
+            <button class="nav-tab" onclick="showSection('conditionnel')">Le Conditionnel</button>
+            <button class="nav-tab" onclick="showSection('pronoms')">Pronoms Relatifs</button>
+            <button class="nav-tab" onclick="showSection('connecteurs')">Connecteurs Logiques</button>
+            <button class="nav-tab" onclick="showSection('revision')">Révision Complète</button>
+        </div>
+
+        <div class="content">
+            <!-- Section 1: Le Subjonctif -->
+            <div id="subjonctif" class="section active">
+                <h2>Le Subjonctif</h2>
+                
+                <div class="grammar-tip">
+                    <h4>💡 Rappel Grammatical</h4>
+                    <p><strong>Le subjonctif</strong> s'utilise pour exprimer des sentiments, des doutes, des souhaits, ou des jugements.</p>
+                    <div class="example-box">
+                        <strong>Exemples :</strong><br>
+                        • Il faut que les enfants <strong>aillent</strong> à l'école. (nécessité)<br>
+                        • Je doute qu'ils <strong>puissent</strong> arriver à l'heure. (doute)<br>
+                        • Il est important que nous <strong>comprenions</strong> leur situation. (jugement)
+                    </div>
+                </div>
+
+                <!-- Exercice 1: Dropdown -->
+                <div class="exercise">
+                    <h3>Exercice 1 : Choisissez la bonne forme</h3>
+                    <div class="exercise-instruction">
+                        Complétez les phrases avec la forme correcte du verbe au subjonctif.
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            1. Il est essentiel que tous les enfants 
+                            <select id="q1-1">
+                                <option value="">-- choisir --</option>
+                                <option value="ont">ont</option>
+                                <option value="aient">aient</option>
+                                <option value="auront">auront</option>
+                            </select>
+                            accès à l'éducation.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            2. Je souhaite que le gouvernement 
+                            <select id="q1-2">
+                                <option value="">-- choisir --</option>
+                                <option value="investit">investit</option>
+                                <option value="investisse">investisse</option>
+                                <option value="investira">investira</option>
+                            </select>
+                            dans les infrastructures scolaires.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            3. Il faut que nous 
+                            <select id="q1-3">
+                                <option value="">-- choisir --</option>
+                                <option value="prenons">prenons</option>
+                                <option value="prenions">prenions</option>
+                                <option value="prendrons">prendrons</option>
+                            </select>
+                            conscience des inégalités éducatives.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            4. Bien que le trajet 
+                            <select id="q1-4">
+                                <option value="">-- choisir --</option>
+                                <option value="est">est</option>
+                                <option value="soit">soit</option>
+                                <option value="sera">sera</option>
+                            </select>
+                            dangereux, les enfants continuent d'aller à l'école.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            5. Je ne pense pas que cette situation 
+                            <select id="q1-5">
+                                <option value="">-- choisir --</option>
+                                <option value="peut">peut</option>
+                                <option value="puisse">puisse</option>
+                                <option value="pourra">pourra</option>
+                            </select>
+                            s'améliorer sans aide internationale.
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkDropdowns()">Vérifier</button>
+                    <button class="btn btn-reset" onclick="resetDropdowns()">Recommencer</button>
+                    <div id="feedback-dropdown" class="feedback"></div>
+                </div>
+
+                <!-- Exercice 2: Drag and Drop -->
+                <div class="exercise">
+                    <h3>Exercice 2 : Glisser-Déposer</h3>
+                    <div class="exercise-instruction">
+                        Faites glisser les verbes au subjonctif dans les bonnes phrases. <em>(Sur mobile : appuyez longuement puis glissez)</em>
+                    </div>
+
+                    <p style="font-weight: 600; color: #4e54c8; margin-bottom: 10px;">📦 Banque de verbes (glissez dans les cases pointillées) :</p>
+                    <div class="draggable-items" id="verb-bank">
+                        <div class="draggable-item" draggable="true">soient</div>
+                        <div class="draggable-item" draggable="true">fassent</div>
+                        <div class="draggable-item" draggable="true">puissions</div>
+                        <div class="draggable-item" draggable="true">aille</div>
+                        <div class="draggable-item" draggable="true">aient</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">1. Il est important que les gouvernements <span class="drop-zone" data-answer="fassent"></span> des efforts.</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">2. Je doute que l'enfant <span class="drop-zone" data-answer="aille"></span> à l'école seul.</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">3. Il faut que nous <span class="drop-zone" data-answer="puissions"></span> aider ces communautés.</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">4. Bien que les conditions <span class="drop-zone" data-answer="soient"></span> difficiles, ils persévèrent.</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">5. Je souhaite qu'ils <span class="drop-zone" data-answer="aient"></span> un meilleur avenir.</div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkDragDrop()">Vérifier</button>
+                    <button class="btn btn-reset" onclick="resetDragDrop()">Recommencer</button>
+                    <div id="feedback-dragdrop" class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Section 2: Le Conditionnel -->
+            <div id="conditionnel" class="section">
+                <h2>Le Conditionnel</h2>
+                
+                <div class="grammar-tip">
+                    <h4>💡 Rappel Grammatical</h4>
+                    <p><strong>Le conditionnel</strong> s'utilise pour exprimer une action hypothétique, un souhait, ou pour faire une suggestion polie.</p>
+                    <div class="example-box">
+                        <strong>Exemples :</strong><br>
+                        • Si j'étais à leur place, je <strong>marcherais</strong> avec prudence. (hypothèse)<br>
+                        • Ils <strong>aimeraient</strong> avoir une école plus proche. (souhait)<br>
+                        • On <strong>devrait</strong> investir dans l'éducation. (suggestion)
+                    </div>
+                </div>
+
+                <!-- Exercice 3: Matching -->
+                <div class="exercise">
+                    <h3>Exercice 3 : Association</h3>
+                    <div class="exercise-instruction">
+                        Associez le début de la phrase avec sa fin logique. Cliquez sur une option de chaque colonne.
+                    </div>
+
+                    <div class="matching-container">
+                        <div class="matching-column">
+                            <h4>Début de phrase</h4>
+                            <div class="matching-item" data-id="1">Si le trajet était plus court,</div>
+                            <div class="matching-item" data-id="2">Si j'avais plus de ressources,</div>
+                            <div class="matching-item" data-id="3">Les enfants arriveraient plus facilement</div>
+                            <div class="matching-item" data-id="4">On devrait construire des écoles</div>
+                            <div class="matching-item" data-id="5">Si nous comprenions mieux leur situation,</div>
+                        </div>
+                        <div class="matching-column">
+                            <h4>Fin de phrase</h4>
+                            <div class="matching-item" data-id="A" data-match="4">dans chaque village.</div>
+                            <div class="matching-item" data-id="B" data-match="3">s'il y avait de meilleures routes.</div>
+                            <div class="matching-item" data-id="C" data-match="2">j'aiderais à financer des écoles.</div>
+                            <div class="matching-item" data-id="D" data-match="5">nous pourrions mieux les aider.</div>
+                            <div class="matching-item" data-id="E" data-match="1">les enfants seraient moins fatigués.</div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkMatching()">Vérifier</button>
+                    <button class="btn btn-reset" onclick="resetMatching()">Recommencer</button>
+                    <div id="feedback-matching" class="feedback"></div>
+                </div>
+
+                <!-- Exercice 4: Fill in the blanks -->
+                <div class="exercise">
+                    <h3>Exercice 4 : Complétez les phrases</h3>
+                    <div class="exercise-instruction">
+                        Conjuguez les verbes entre parenthèses au conditionnel présent.
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            1. Si j'étais responsable, je (construire) <input type="text" id="cond-1" style="width: 150px;"> des ponts plus sûrs.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            2. Les familles (pouvoir) <input type="text" id="cond-2" style="width: 150px;"> envoyer leurs enfants à l'école plus facilement.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            3. Nous (devoir) <input type="text" id="cond-3" style="width: 150px;"> sensibiliser plus de gens à cette cause.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            4. Il (être) <input type="text" id="cond-4" style="width: 150px;"> préférable d'avoir des transports scolaires.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            5. Les ONG (vouloir) <input type="text" id="cond-5" style="width: 150px;"> bien participer à ce projet.
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkConditionnel()">Vérifier</button>
+                    <button class="btn btn-reset" onclick="resetConditionnel()">Recommencer</button>
+                    <div id="feedback-conditionnel" class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Section 3: Pronoms Relatifs -->
+            <div id="pronoms" class="section">
+                <h2>Les Pronoms Relatifs</h2>
+                
+                <div class="grammar-tip">
+                    <h4>💡 Rappel Grammatical</h4>
+                    <p><strong>Les pronoms relatifs</strong> relient deux phrases et évitent la répétition.</p>
+                    <div class="example-box">
+                        <strong>Qui</strong> = sujet (personne ou chose)<br>
+                        <strong>Que</strong> = objet direct<br>
+                        <strong>Dont</strong> = complément avec "de"<br>
+                        <strong>Où</strong> = lieu ou temps
+                    </div>
+                </div>
+
+                <div class="expandable-section" id="pronoms-explanation">
+                    <div class="expandable-header" onclick="toggleExpand('pronoms-explanation')">
+                        <h4>📖 Explication Détaillée avec Exemples</h4>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="pronoun-example">
+                            <strong>QUI</strong> - Remplace le sujet (personne ou chose qui fait l'action)
+                            <div class="example-sentence">
+                                ✏️ <em>L'enfant marche. L'enfant va à l'école.</em><br>
+                                → L'enfant <span class="example-highlight">qui</span> marche va à l'école.
+                            </div>
+                            <div class="example-sentence">
+                                ✏️ <em>Les obstacles sont nombreux. Les obstacles rendent le trajet difficile.</em><br>
+                                → Les obstacles <span class="example-highlight">qui</span> rendent le trajet difficile sont nombreux.
+                            </div>
+                        </div>
+
+                        <div class="pronoun-example">
+                            <strong>QUE</strong> - Remplace l'objet direct (personne ou chose qui subit l'action)
+                            <div class="example-sentence">
+                                ✏️ <em>Le documentaire est émouvant. Nous avons regardé le documentaire.</em><br>
+                                → Le documentaire <span class="example-highlight">que</span> nous avons regardé est émouvant.
+                            </div>
+                            <div class="example-sentence">
+                                ✏️ <em>Les dangers sont réels. Les enfants affrontent ces dangers.</em><br>
+                                → Les dangers <span class="example-highlight">que</span> les enfants affrontent sont réels.
+                            </div>
+                            <div class="example-box" style="margin-top: 10px;">
+                                <strong>⚠️ Attention :</strong> "Que" devient "qu'" devant une voyelle<br>
+                                → L'école <span class="example-highlight">qu'</span>ils fréquentent est loin.
+                            </div>
+                        </div>
+
+                        <div class="pronoun-example">
+                            <strong>DONT</strong> - Remplace un complément avec "de" (de + nom)
+                            <div class="example-sentence">
+                                ✏️ <em>Je parle de l'éducation. L'éducation est un droit fondamental.</em><br>
+                                → L'éducation <span class="example-highlight">dont</span> je parle est un droit fondamental.
+                            </div>
+                            <div class="example-sentence">
+                                ✏️ <em>Les enfants ont besoin d'aide. Nous parlons de ces enfants.</em><br>
+                                → Les enfants <span class="example-highlight">dont</span> nous parlons ont besoin d'aide.
+                            </div>
+                            <div class="example-box" style="margin-top: 10px;">
+                                <strong>💡 Verbes communs avec "de" :</strong><br>
+                                parler de, avoir besoin de, se souvenir de, rêver de, s'occuper de
+                            </div>
+                        </div>
+
+                        <div class="pronoun-example">
+                            <strong>OÙ</strong> - Remplace un lieu ou un moment dans le temps
+                            <div class="example-sentence">
+                                ✏️ <strong>Lieu :</strong> <em>Le village est isolé. Ils habitent dans ce village.</em><br>
+                                → Le village <span class="example-highlight">où</span> ils habitent est isolé.
+                            </div>
+                            <div class="example-sentence">
+                                ✏️ <strong>Lieu :</strong> <em>L'école se trouve en montagne. Ils vont à cette école.</em><br>
+                                → L'école <span class="example-highlight">où</span> ils vont se trouve en montagne.
+                            </div>
+                            <div class="example-sentence">
+                                ✏️ <strong>Temps :</strong> <em>Le moment est dangereux. Ils traversent la rivière à ce moment.</em><br>
+                                → Le moment <span class="example-highlight">où</span> ils traversent la rivière est dangereux.
+                            </div>
+                        </div>
+
+                        <div class="grammar-tip" style="margin-top: 20px;">
+                            <h4>🎯 Comment choisir ?</h4>
+                            <p>
+                                1. <strong>QUI</strong> → Le mot remplacé fait l'action (c'est le sujet)<br>
+                                2. <strong>QUE</strong> → Le mot remplacé subit l'action (c'est l'objet)<br>
+                                3. <strong>DONT</strong> → Il y a "de" dans la phrase originale<br>
+                                4. <strong>OÙ</strong> → Il s'agit d'un lieu ou d'un moment
+                            </p>
+                        </div>
+
+                        <div class="example-box" style="margin-top: 15px;">
+                            <strong>💪 Exemples dans le contexte du projet :</strong><br><br>
+                            • L'enfant <span class="example-highlight">qui</span> parcourt 15 km est très courageux.<br>
+                            • Le trajet <span class="example-highlight">que</span> les enfants font est dangereux.<br>
+                            • Les difficultés <span class="example-highlight">dont</span> ils parlent sont réelles.<br>
+                            • Le pays <span class="example-highlight">où</span> se déroule le documentaire manque d'infrastructures.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercice 5: Dropdown -->
+                <div class="exercise">
+                    <h3>Exercice 5 : Qui, Que, Dont, Où ?</h3>
+                    <div class="exercise-instruction">
+                        Choisissez le pronom relatif approprié.
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            1. L'école 
+                            <select id="pron-1">
+                                <option value="">--</option>
+                                <option value="qui">qui</option>
+                                <option value="que">que</option>
+                                <option value="dont">dont</option>
+                                <option value="où">où</option>
+                            </select>
+                            se trouve dans les montagnes est difficile d'accès.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            2. Le documentaire 
+                            <select id="pron-2">
+                                <option value="">--</option>
+                                <option value="qui">qui</option>
+                                <option value="que">que</option>
+                                <option value="dont">dont</option>
+                                <option value="où">où</option>
+                            </select>
+                            nous avons regardé était très émouvant.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            3. Les dangers 
+                            <select id="pron-3">
+                                <option value="">--</option>
+                                <option value="qui">qui</option>
+                                <option value="que">que</option>
+                                <option value="dont">dont</option>
+                                <option value="où">où</option>
+                            </select>
+                            les enfants parlent sont réels et quotidiens.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            4. Le moment 
+                            <select id="pron-4">
+                                <option value="">--</option>
+                                <option value="qui">qui</option>
+                                <option value="que">que</option>
+                                <option value="dont">dont</option>
+                                <option value="où">où</option>
+                            </select>
+                            ils traversent la rivière est le plus dangereux.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            5. La famille 
+                            <select id="pron-5">
+                                <option value="">--</option>
+                                <option value="qui">qui</option>
+                                <option value="que">que</option>
+                                <option value="dont">dont</option>
+                                <option value="où">où</option>
+                            </select>
+                            soutient l'enfant est très courageuse.
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkPronoms()">Vérifier</button>
+                    <button class="btn btn-reset" onclick="resetPronoms()">Recommencer</button>
+                    <div id="feedback-pronoms" class="feedback"></div>
+                </div>
+
+                <!-- Exercice 6: Sentence Construction -->
+                <div class="exercise">
+                    <h3>Exercice 6 : Construction de phrases</h3>
+                    <div class="exercise-instruction">
+                        Combinez les deux phrases avec un pronom relatif. Cliquez sur les mots dans l'ordre.
+                    </div>
+
+                    <div class="question">
+                        <p><strong>Phrases à combiner :</strong> "L'enfant est courageux." + "L'enfant parcourt 15 km par jour."</p>
+                        <div class="word-bank" id="word-bank-1">
+                            <span class="word-chip" onclick="addWord(this, 1)">L'enfant</span>
+                            <span class="word-chip" onclick="addWord(this, 1)">qui</span>
+                            <span class="word-chip" onclick="addWord(this, 1)">que</span>
+                            <span class="word-chip" onclick="addWord(this, 1)">parcourt</span>
+                            <span class="word-chip" onclick="addWord(this, 1)">15 km</span>
+                            <span class="word-chip" onclick="addWord(this, 1)">par jour</span>
+                            <span class="word-chip" onclick="addWord(this, 1)">est</span>
+                            <span class="word-chip" onclick="addWord(this, 1)">courageux</span>
+                        </div>
+                        <div class="sentence-builder" id="sentence-1" data-answer="L'enfant qui parcourt 15 km par jour est courageux"></div>
+                        <button class="btn btn-reset" style="margin-top: 10px;" onclick="clearSentence(1)">Effacer</button>
+                    </div>
+
+                    <div class="question">
+                        <p><strong>Phrases à combiner :</strong> "Le village est isolé." + "Ils habitent dans ce village."</p>
+                        <div class="word-bank" id="word-bank-2">
+                            <span class="word-chip" onclick="addWord(this, 2)">Le village</span>
+                            <span class="word-chip" onclick="addWord(this, 2)">où</span>
+                            <span class="word-chip" onclick="addWord(this, 2)">qui</span>
+                            <span class="word-chip" onclick="addWord(this, 2)">ils</span>
+                            <span class="word-chip" onclick="addWord(this, 2)">habitent</span>
+                            <span class="word-chip" onclick="addWord(this, 2)">est</span>
+                            <span class="word-chip" onclick="addWord(this, 2)">isolé</span>
+                        </div>
+                        <div class="sentence-builder" id="sentence-2" data-answer="Le village où ils habitent est isolé"></div>
+                        <button class="btn btn-reset" style="margin-top: 10px;" onclick="clearSentence(2)">Effacer</button>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkSentences()">Vérifier</button>
+                    <button class="btn btn-reset" onclick="resetSentences()">Recommencer</button>
+                    <div id="feedback-sentences" class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Section 4: Connecteurs Logiques -->
+            <div id="connecteurs" class="section">
+                <h2>Les Connecteurs Logiques</h2>
+                
+                <div class="grammar-tip">
+                    <h4>💡 Rappel Grammatical</h4>
+                    <p><strong>Les connecteurs logiques</strong> permettent de structurer votre argumentation et d'établir des relations entre les idées.</p>
+                    <div class="example-box">
+                        <strong>Cause :</strong> parce que, car, puisque, étant donné que<br>
+                        <strong>Conséquence :</strong> donc, par conséquent, ainsi, c'est pourquoi<br>
+                        <strong>Opposition :</strong> mais, cependant, pourtant, néanmoins, bien que<br>
+                        <strong>Addition :</strong> en outre, de plus, également, par ailleurs
+                    </div>
+                </div>
+
+                <!-- Exercice 7: Dropdown -->
+                <div class="exercise">
+                    <h3>Exercice 7 : Choisissez le bon connecteur</h3>
+                    <div class="exercise-instruction">
+                        Complétez les phrases avec le connecteur logique approprié.
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            1. Le trajet est long et dangereux, 
+                            <select id="conn-1">
+                                <option value="">--</option>
+                                <option value="donc">donc</option>
+                                <option value="mais">mais</option>
+                                <option value="parce que">parce que</option>
+                            </select>
+                            les enfants continuent d'aller à l'école.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            2. Les infrastructures sont insuffisantes 
+                            <select id="conn-2">
+                                <option value="">--</option>
+                                <option value="car">car</option>
+                                <option value="donc">donc</option>
+                                <option value="cependant">cependant</option>
+                            </select>
+                            le pays manque de ressources financières.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            3. L'éducation est essentielle, 
+                            <select id="conn-3">
+                                <option value="">--</option>
+                                <option value="parce que">parce que</option>
+                                <option value="c'est pourquoi">c'est pourquoi</option>
+                                <option value="bien que">bien que</option>
+                            </select>
+                            nous devons soutenir ces initiatives.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            4. 
+                            <select id="conn-4">
+                                <option value="">--</option>
+                                <option value="Bien que">Bien que</option>
+                                <option value="Parce que">Parce que</option>
+                                <option value="Donc">Donc</option>
+                            </select>
+                            les conditions soient difficiles, les familles restent déterminées.
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">
+                            5. Les enfants font face à de nombreux dangers. 
+                            <select id="conn-5">
+                                <option value="">--</option>
+                                <option value="En outre">En outre</option>
+                                <option value="Pourtant">Pourtant</option>
+                                <option value="Parce que">Parce que</option>
+                            </select>
+                            , ils doivent marcher pendant des heures.
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkConnecteurs()">Vérifier</button>
+                    <button class="btn btn-reset" onclick="resetConnecteurs()">Recommencer</button>
+                    <div id="feedback-connecteurs" class="feedback"></div>
+                </div>
+
+                <!-- Exercice 8: Reordering -->
+                <div class="exercise">
+                    <h3>Exercice 8 : Remettez les phrases dans l'ordre</h3>
+                    <div class="exercise-instruction">
+                        Glissez les segments dans le bon ordre pour former une argumentation cohérente. <em>(Sur mobile : appuyez longuement puis glissez)</em>
+                    </div>
+
+                    <div class="question">
+                        <p><strong>Argument :</strong> Expliquez pourquoi l'éducation est importante malgré les obstacles.</p>
+                        
+                        <p style="font-weight: 600; color: #4e54c8; margin: 15px 0 10px 0;">📦 Segments à organiser :</p>
+                        <div class="draggable-items" id="order-bank">
+                            <div class="draggable-item" draggable="true" data-order="3">c'est pourquoi les familles font tous ces sacrifices.</div>
+                            <div class="draggable-item" draggable="true" data-order="1">L'éducation est la clé d'un avenir meilleur,</div>
+                            <div class="draggable-item" draggable="true" data-order="4">En outre, elle permet de briser le cycle de la pauvreté.</div>
+                            <div class="draggable-item" draggable="true" data-order="2">car elle offre des opportunités professionnelles.</div>
+                        </div>
+
+                        <p style="font-weight: 600; color: #4e54c8; margin: 20px 0 10px 0;">📝 Ordre logique (glissez les segments ici) :</p>
+                        <div class="drop-zone" id="order-zone-1" data-position="1"></div>
+                        <div class="drop-zone" id="order-zone-2" data-position="2"></div>
+                        <div class="drop-zone" id="order-zone-3" data-position="3"></div>
+                        <div class="drop-zone" id="order-zone-4" data-position="4"></div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkOrder()">Vérifier</button>
+                    <button class="btn btn-reset" onclick="resetOrder()">Recommencer</button>
+                    <div id="feedback-order" class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Section 5: Révision Complète -->
+            <div id="revision" class="section">
+                <h2>Révision Complète</h2>
+                
+                <div class="grammar-tip">
+                    <h4>🎯 Exercice Final</h4>
+                    <p>Cet exercice combine toutes les structures grammaticales étudiées. Rédigez un paragraphe cohérent pour votre présentation.</p>
+                </div>
+
+                <div class="exercise">
+                    <h3>Exercice 9 : Paragraphe Complet</h3>
+                    <div class="exercise-instruction">
+                        Complétez ce paragraphe d'analyse en utilisant toutes vos connaissances grammaticales.
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text" style="line-height: 2;">
+                            Le documentaire nous montre un enfant 
+                            <select id="rev-1">
+                                <option value="">--</option>
+                                <option value="qui">qui</option>
+                                <option value="que">que</option>
+                            </select>
+                            parcourt des kilomètres chaque jour pour aller à l'école. 
+                            <select id="rev-2">
+                                <option value="">--</option>
+                                <option value="Bien que">Bien que</option>
+                                <option value="Parce que">Parce que</option>
+                            </select>
+                            le trajet 
+                            <select id="rev-3">
+                                <option value="">--</option>
+                                <option value="est">est</option>
+                                <option value="soit">soit</option>
+                            </select>
+                            extrêmement dangereux, il continue avec détermination. Il est essentiel que nous 
+                            <select id="rev-4">
+                                <option value="">--</option>
+                                <option value="comprenons">comprenons</option>
+                                <option value="comprenions">comprenions</option>
+                            </select>
+                            leur situation. Si j'étais responsable politique, je 
+                            <select id="rev-5">
+                                <option value="">--</option>
+                                <option value="construis">construis</option>
+                                <option value="construirais">construirais</option>
+                            </select>
+                            plus d'écoles dans ces régions. 
+                            <select id="rev-6">
+                                <option value="">--</option>
+                                <option value="En outre">En outre</option>
+                                <option value="Pourtant">Pourtant</option>
+                            </select>
+                            , l'éducation est un droit fondamental 
+                            <select id="rev-7">
+                                <option value="">--</option>
+                                <option value="dont">dont</option>
+                                <option value="où">où</option>
+                            </select>
+                            tous les enfants devraient bénéficier. 
+                            <select id="rev-8">
+                                <option value="">--</option>
+                                <option value="C'est pourquoi">C'est pourquoi</option>
+                                <option value="Bien que">Bien que</option>
+                            </select>
+                            il faut que les gouvernements 
+                            <select id="rev-9">
+                                <option value="">--</option>
+                                <option value="agissent">agissent</option>
+                                <option value="agissaient">agissaient</option>
+                            </select>
+                            rapidement.
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkRevision()">Vérifier</button>
+                    <button class="btn btn-reset" onclick="resetRevision()">Recommencer</button>
+                    <div id="feedback-revision" class="feedback"></div>
+                </div>
+
+                <div class="exercise">
+                    <h3>Exercice 10 : Production Libre</h3>
+                    <div class="exercise-instruction">
+                        Écrivez 3-4 phrases pour votre présentation en utilisant au moins :
+                        <ul style="margin: 10px 0 10px 30px;">
+                            <li>Un verbe au subjonctif</li>
+                            <li>Un verbe au conditionnel</li>
+                            <li>Un pronom relatif</li>
+                            <li>Deux connecteurs logiques</li>
+                        </ul>
+                    </div>
+
+                    <textarea id="production-libre" style="width: 100%; min-height: 150px; padding: 15px; font-size: 1em; border: 2px solid #dee2e6; border-radius: 10px; font-family: inherit;" placeholder="Écrivez votre texte ici..."></textarea>
+
+                    <div class="grammar-tip" style="margin-top: 20px;">
+                        <h4>📝 Suggestions de sujets :</h4>
+                        <p>• Analysez les obstacles que rencontrent les enfants<br>
+                        • Proposez des solutions pour améliorer leur situation<br>
+                        • Comparez leur expérience avec la vôtre<br>
+                        • Expliquez l'importance de l'ODD 4</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle expandable sections
+        function toggleExpand(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.classList.toggle('open');
+        }
+
+        // Navigation between sections
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // Exercise 1: Dropdowns (Subjonctif)
+        function checkDropdowns() {
+            const answers = {
+                'q1-1': 'aient',
+                'q1-2': 'investisse',
+                'q1-3': 'prenions',
+                'q1-4': 'soit',
+                'q1-5': 'puisse'
+            };
+
+            let correct = 0;
+            let total = Object.keys(answers).length;
+
+            for (let id in answers) {
+                const select = document.getElementById(id);
+                const question = select.closest('.question');
+                
+                if (select.value === answers[id]) {
+                    question.style.background = '#d4edda';
+                    correct++;
+                } else {
+                    question.style.background = '#f8d7da';
+                }
+            }
+
+            const feedback = document.getElementById('feedback-dropdown');
+            feedback.className = 'feedback show ' + (correct === total ? 'correct' : 'incorrect');
+            feedback.textContent = `✓ ${correct}/${total} correct${correct > 1 ? 's' : ''}. ` + 
+                (correct === total ? '🎉 Excellent travail !' : '💪 Continuez à pratiquer !');
+        }
+
+        function resetDropdowns() {
+            const ids = ['q1-1', 'q1-2', 'q1-3', 'q1-4', 'q1-5'];
+            ids.forEach(id => {
+                document.getElementById(id).value = '';
+                document.getElementById(id).closest('.question').style.background = 'white';
+            });
+            document.getElementById('feedback-dropdown').className = 'feedback';
+        }
+
+        // Exercise 2: Drag and Drop
+        let draggedElement = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupDragAndDrop();
+            setupMatching();
+            setupOrderDragDrop();
+        });
+
+        function setupDragAndDrop() {
+            const draggables = document.querySelectorAll('.draggable-item');
+            const dropZones = document.querySelectorAll('.drop-zone');
+
+            draggables.forEach(item => {
+                item.addEventListener('dragstart', function(e) {
+                    draggedElement = this;
+                    this.classList.add('dragging');
+                });
+
+                item.addEventListener('dragend', function(e) {
+                    this.classList.remove('dragging');
+                });
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('drag-over');
+                });
+
+                zone.addEventListener('dragleave', function(e) {
+                    this.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drag-over');
+                    
+                    if (draggedElement && !this.querySelector('.draggable-item')) {
+                        this.appendChild(draggedElement);
+                    }
+                });
+            });
+        }
+
+        function checkDragDrop() {
+            const dropZones = document.querySelectorAll('#subjonctif .drop-zone');
+            let correct = 0;
+            let total = dropZones.length;
+
+            dropZones.forEach(zone => {
+                const answer = zone.dataset.answer;
+                const dropped = zone.querySelector('.draggable-item');
+                const question = zone.closest('.question');
+
+                if (dropped && dropped.textContent.trim() === answer) {
+                    question.style.background = '#d4edda';
+                    correct++;
+                } else {
+                    question.style.background = '#f8d7da';
+                }
+            });
+
+            const feedback = document.getElementById('feedback-dragdrop');
+            feedback.className = 'feedback show ' + (correct === total ? 'correct' : 'incorrect');
+            feedback.textContent = `✓ ${correct}/${total} correct${correct > 1 ? 's' : ''}. ` + 
+                (correct === total ? '🎉 Parfait !' : '💪 Essayez encore !');
+        }
+
+        function resetDragDrop() {
+            const verbBank = document.getElementById('verb-bank');
+            const dropZones = document.querySelectorAll('#subjonctif .drop-zone');
+            
+            dropZones.forEach(zone => {
+                const item = zone.querySelector('.draggable-item');
+                if (item) {
+                    verbBank.appendChild(item);
+                }
+                zone.closest('.question').style.background = 'white';
+            });
+            
+            document.getElementById('feedback-dragdrop').className = 'feedback';
+        }
+
+        // Exercise 3: Matching
+        let selectedLeft = null;
+        let selectedRight = null;
+        let matches = [];
+
+        function setupMatching() {
+            const items = document.querySelectorAll('#conditionnel .matching-item');
+            
+            items.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (this.classList.contains('matched')) return;
+
+                    const isLeft = this.parentElement.querySelector('h4').textContent.includes('Début');
+                    
+                    if (isLeft) {
+                        if (selectedLeft) selectedLeft.classList.remove('selected');
+                        selectedLeft = this;
+                        this.classList.add('selected');
+                    } else {
+                        if (selectedRight) selectedRight.classList.remove('selected');
+                        selectedRight = this;
+                        this.classList.add('selected');
+                    }
+
+                    if (selectedLeft && selectedRight) {
+                        const leftId = selectedLeft.dataset.id;
+                        const rightId = selectedRight.dataset.id;
+                        
+                        matches.push({left: leftId, right: rightId});
+                        
+                        selectedLeft.classList.remove('selected');
+                        selectedRight.classList.remove('selected');
+                        selectedLeft = null;
+                        selectedRight = null;
+                    }
+                });
+            });
+        }
+
+        function checkMatching() {
+            const correctMatches = {
+                '1': 'E',
+                '2': 'C',
+                '3': 'B',
+                '4': 'A',
+                '5': 'D'
+            };
+
+            let correct = 0;
+            matches.forEach(match => {
+                if (correctMatches[match.left] === match.right) {
+                    correct++;
+                    const leftItem = document.querySelector(`[data-id="${match.left}"]`);
+                    const rightItem = document.querySelector(`[data-id="${match.right}"]`);
+                    leftItem.classList.add('matched');
+                    rightItem.classList.add('matched');
+                }
+            });
+
+            const feedback = document.getElementById('feedback-matching');
+            feedback.className = 'feedback show ' + (correct === 5 ? 'correct' : 'incorrect');
+            feedback.textContent = `✓ ${correct}/5 correct${correct > 1 ? 's' : ''}. ` + 
+                (correct === 5 ? '🎉 Bravo !' : '💪 Réessayez !');
+        }
+
+        function resetMatching() {
+            matches = [];
+            selectedLeft = null;
+            selectedRight = null;
+            document.querySelectorAll('#conditionnel .matching-item').forEach(item => {
+                item.classList.remove('selected', 'matched');
+            });
+            document.getElementById('feedback-matching').className = 'feedback';
+        }
+
+        // Exercise 4: Conditionnel
+        function checkConditionnel() {
+            const answers = {
+                'cond-1': 'construirais',
+                'cond-2': 'pourraient',
+                'cond-3': 'devrions',
+                'cond-4': 'serait',
+                'cond-5': 'voudraient'
+            };
+
+            let correct = 0;
+            let total = Object.keys(answers).length;
+
+            for (let id in answers) {
+                const input = document.getElementById(id);
+                const question = input.closest('.question');
+                const userAnswer = input.value.trim().toLowerCase();
+                
+                if (userAnswer === answers[id]) {
+                    question.style.background = '#d4edda';
+                    correct++;
+                } else {
+                    question.style.background = '#f8d7da';
+                }
+            }
+
+            const feedback = document.getElementById('feedback-conditionnel');
+            feedback.className = 'feedback show ' + (correct === total ? 'correct' : 'incorrect');
+            feedback.textContent = `✓ ${correct}/${total} correct${correct > 1 ? 's' : ''}. ` + 
+                (correct === total ? '🎉 Excellent !' : '💪 Vérifiez les terminaisons !');
+        }
+
+        function resetConditionnel() {
+            const ids = ['cond-1', 'cond-2', 'cond-3', 'cond-4', 'cond-5'];
+            ids.forEach(id => {
+                document.getElementById(id).value = '';
+                document.getElementById(id).closest('.question').style.background = 'white';
+            });
+            document.getElementById('feedback-conditionnel').className = 'feedback';
+        }
+
+        // Exercise 5: Pronoms
+        function checkPronoms() {
+            const answers = {
+                'pron-1': 'qui',
+                'pron-2': 'que',
+                'pron-3': 'dont',
+                'pron-4': 'où',
+                'pron-5': 'qui'
+            };
+
+            let correct = 0;
+            let total = Object.keys(answers).length;
+
+            for (let id in answers) {
+                const select = document.getElementById(id);
+                const question = select.closest('.question');
+                
+                if (select.value === answers[id]) {
+                    question.style.background = '#d4edda';
+                    correct++;
+                } else {
+                    question.style.background = '#f8d7da';
+                }
+            }
+
+            const feedback = document.getElementById('feedback-pronoms');
+            feedback.className = 'feedback show ' + (correct === total ? 'correct' : 'incorrect');
+            feedback.textContent = `✓ ${correct}/${total} correct${correct > 1 ? 's' : ''}. ` + 
+                (correct === total ? '🎉 Parfait !' : '💪 Revoyez les règles !');
+        }
+
+        function resetPronoms() {
+            const ids = ['pron-1', 'pron-2', 'pron-3', 'pron-4', 'pron-5'];
+            ids.forEach(id => {
+                document.getElementById(id).value = '';
+                document.getElementById(id).closest('.question').style.background = 'white';
+            });
+            document.getElementById('feedback-pronoms').className = 'feedback';
+        }
+
+        // Exercise 6: Sentence Building
+        function addWord(chip, sentenceNum) {
+            if (chip.classList.contains('used')) return;
+            
+            const sentence = document.getElementById(`sentence-${sentenceNum}`);
+            const newChip = chip.cloneNode(true);
+            newChip.onclick = function() { removeWord(this, sentenceNum); };
+            sentence.appendChild(newChip);
+            chip.classList.add('used');
+        }
+
+        function removeWord(chip, sentenceNum) {
+            const text = chip.textContent;
+            const wordBank = document.getElementById(`word-bank-${sentenceNum}`);
+            const originalChip = Array.from(wordBank.children).find(c => c.textContent === text);
+            if (originalChip) {
+                originalChip.classList.remove('used');
+            }
+            chip.remove();
+        }
+
+        function clearSentence(num) {
+            const sentence = document.getElementById(`sentence-${num}`);
+            const wordBank = document.getElementById(`word-bank-${num}`);
+            sentence.innerHTML = '';
+            wordBank.querySelectorAll('.word-chip').forEach(chip => chip.classList.remove('used'));
+        }
+
+        function checkSentences() {
+            const answers = {
+                'sentence-1': "L'enfant qui parcourt 15 km par jour est courageux",
+                'sentence-2': "Le village où ils habitent est isolé"
+            };
+
+            let correct = 0;
+            let total = 2;
+
+            for (let id in answers) {
+                const sentence = document.getElementById(id);
+                const userSentence = Array.from(sentence.children)
+                    .map(chip => chip.textContent)
+                    .join(' ');
+                
+                const question = sentence.closest('.question');
+                
+                if (userSentence === answers[id]) {
+                    question.style.background = '#d4edda';
+                    correct++;
+                } else {
+                    question.style.background = '#f8d7da';
+                }
+            }
+
+            const feedback = document.getElementById('feedback-sentences');
+            feedback.className = 'feedback show ' + (correct === total ? 'correct' : 'incorrect');
+            feedback.textContent = `✓ ${correct}/${total} correct${correct > 1 ? 's' : ''}. ` + 
+                (correct === total ? '🎉 Superbe !' : '💪 Attention à l\'ordre des mots !');
+        }
+
+        function resetSentences() {
+            clearSentence(1);
+            clearSentence(2);
+            document.querySelectorAll('#pronoms .question').forEach(q => q.style.background = 'white');
+            document.getElementById('feedback-sentences').className = 'feedback';
+        }
+
+        // Exercise 7: Connecteurs
+        function checkConnecteurs() {
+            const answers = {
+                'conn-1': 'mais',
+                'conn-2': 'car',
+                'conn-3': 'c\'est pourquoi',
+                'conn-4': 'Bien que',
+                'conn-5': 'En outre'
+            };
+
+            let correct = 0;
+            let total = Object.keys(answers).length;
+
+            for (let id in answers) {
+                const select = document.getElementById(id);
+                const question = select.closest('.question');
+                
+                if (select.value === answers[id]) {
+                    question.style.background = '#d4edda';
+                    correct++;
+                } else {
+                    question.style.background = '#f8d7da';
+                }
+            }
+
+            const feedback = document.getElementById('feedback-connecteurs');
+            feedback.className = 'feedback show ' + (correct === total ? 'correct' : 'incorrect');
+            feedback.textContent = `✓ ${correct}/${total} correct${correct > 1 ? 's' : ''}. ` + 
+                (correct === total ? '🎉 Excellent !' : '💪 Pensez à la logique !');
+        }
+
+        function resetConnecteurs() {
+            const ids = ['conn-1', 'conn-2', 'conn-3', 'conn-4', 'conn-5'];
+            ids.forEach(id => {
+                document.getElementById(id).value = '';
+                document.getElementById(id).closest('.question').style.background = 'white';
+            });
+            document.getElementById('feedback-connecteurs').className = 'feedback';
+        }
+
+        // Exercise 8: Order
+        function setupOrderDragDrop() {
+            const draggables = document.querySelectorAll('#order-bank .draggable-item');
+            const dropZones = document.querySelectorAll('[id^="order-zone-"]');
+
+            draggables.forEach(item => {
+                item.addEventListener('dragstart', function(e) {
+                    draggedElement = this;
+                    this.classList.add('dragging');
+                });
+
+                item.addEventListener('dragend', function(e) {
+                    this.classList.remove('dragging');
+                });
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('drag-over');
+                });
+
+                zone.addEventListener('dragleave', function(e) {
+                    this.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drag-over');
+                    
+                    if (draggedElement) {
+                        // Remove existing item if present
+                        const existing = this.querySelector('.draggable-item');
+                        if (existing) {
+                            document.getElementById('order-bank').appendChild(existing);
+                        }
+                        this.appendChild(draggedElement);
+                    }
+                });
+            });
+        }
+
+        function checkOrder() {
+            const zones = document.querySelectorAll('[id^="order-zone-"]');
+            let correct = 0;
+
+            zones.forEach(zone => {
+                const item = zone.querySelector('.draggable-item');
+                const expectedOrder = zone.dataset.position;
+                
+                if (item && item.dataset.order === expectedOrder) {
+                    zone.style.borderColor = '#28a745';
+                    zone.style.background = '#d4edda';
+                    correct++;
+                } else {
+                    zone.style.borderColor = '#dc3545';
+                    zone.style.background = '#f8d7da';
+                }
+            });
+
+            const feedback = document.getElementById('feedback-order');
+            feedback.className = 'feedback show ' + (correct === 4 ? 'correct' : 'incorrect');
+            feedback.textContent = `✓ ${correct}/4 correct${correct > 1 ? 's' : ''}. ` + 
+                (correct === 4 ? '🎉 Parfait !' : '💪 Pensez à la logique argumentative !');
+        }
+
+        function resetOrder() {
+            const bank = document.getElementById('order-bank');
+            const zones = document.querySelectorAll('[id^="order-zone-"]');
+            
+            zones.forEach(zone => {
+                const item = zone.querySelector('.draggable-item');
+                if (item) {
+                    bank.appendChild(item);
+                }
+                zone.style.borderColor = '#4e54c8';
+                zone.style.background = '#f8f9fa';
+            });
+            
+            document.getElementById('feedback-order').className = 'feedback';
+        }
+
+        // Exercise 9: Révision
+        function checkRevision() {
+            const answers = {
+                'rev-1': 'qui',
+                'rev-2': 'Bien que',
+                'rev-3': 'soit',
+                'rev-4': 'comprenions',
+                'rev-5': 'construirais',
+                'rev-6': 'En outre',
+                'rev-7': 'dont',
+                'rev-8': 'C\'est pourquoi',
+                'rev-9': 'agissent'
+            };
+
+            let correct = 0;
+            let total = Object.keys(answers).length;
+
+            for (let id in answers) {
+                const select = document.getElementById(id);
+                
+                if (select.value === answers[id]) {
+                    select.style.borderColor = '#28a745';
+                    select.style.background = '#d4edda';
+                    correct++;
+                } else {
+                    select.style.borderColor = '#dc3545';
+                    select.style.background = '#f8d7da';
+                }
+            }
+
+            const feedback = document.getElementById('feedback-revision');
+            feedback.className = 'feedback show ' + (correct === total ? 'correct' : 'incorrect');
+            
+            let message = `✓ ${correct}/${total} correct${correct > 1 ? 's' : ''}. `;
+            if (correct === total) {
+                message += '🎉 Félicitations ! Vous maîtrisez toutes les structures !';
+            } else if (correct >= 7) {
+                message += '👍 Très bien ! Revoyez quelques petits détails.';
+            } else {
+                message += '💪 Continuez à pratiquer chaque section !';
+            }
+            
+            feedback.textContent = message;
+        }
+
+        function resetRevision() {
+            const ids = ['rev-1', 'rev-2', 'rev-3', 'rev-4', 'rev-5', 'rev-6', 'rev-7', 'rev-8', 'rev-9'];
+            ids.forEach(id => {
+                const select = document.getElementById(id);
+                select.value = '';
+                select.style.borderColor = '#dee2e6';
+                select.style.background = 'white';
+            });
+            document.getElementById('feedback-revision').className = 'feedback';
+        }
+    </script>
+</body>
+</html>
