@@ -1,0 +1,2812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Skills Alignment Builder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4472C4 0%, #2c5aa0 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .language-tabs {
+            display: flex;
+            background: #f0f0f0;
+            border-bottom: 3px solid #4472C4;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            background: #e0e0e0;
+            border: none;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background: #d0d0d0;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #4472C4;
+        }
+        
+        .content {
+            display: none;
+        }
+        
+        .content.active {
+            display: block;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+        
+        .sidebar {
+            background: #f8f9fa;
+            border-right: 2px solid #dee2e6;
+            overflow-y: auto;
+            max-height: 700px;
+        }
+        
+        .search-box {
+            padding: 15px;
+            background: #fff;
+            border-bottom: 2px solid #dee2e6;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #4472C4;
+            border-radius: 8px;
+            font-size: 0.95em;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(68, 114, 196, 0.2);
+        }
+        
+        .search-stats {
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: #6c757d;
+            text-align: center;
+        }
+        
+        .sidebar-section {
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .sidebar-section h3 {
+            color: #4472C4;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .skill-group {
+            margin-bottom: 20px;
+        }
+        
+        .skill-group.hidden {
+            display: none;
+        }
+        
+        .skill-group-title {
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #e7f1ff;
+            border-radius: 5px;
+            font-size: 0.95em;
+        }
+        
+        .skill-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            padding: 5px;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+        
+        .skill-item.hidden {
+            display: none;
+        }
+        
+        .skill-item.highlight {
+            background: #fff3cd;
+        }
+        
+        .skill-item:hover {
+            background: #e9ecef;
+        }
+        
+        .skill-item input[type="checkbox"] {
+            margin-right: 8px;
+            margin-top: 3px;
+            cursor: pointer;
+        }
+        
+        .skill-item label {
+            cursor: pointer;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        
+        .workspace {
+            padding: 30px;
+            overflow-y: auto;
+            max-height: 700px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #4472C4;
+        }
+        
+        .section-header h2 {
+            color: #2c5aa0;
+            font-size: 1.8em;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 0 5px;
+        }
+        
+        .btn-primary {
+            background: #4472C4;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2c5aa0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(68, 114, 196, 0.3);
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .unit-form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #dee2e6;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4472C4;
+            box-shadow: 0 0 0 3px rgba(68, 114, 196, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .selected-skills {
+            background: #e7f1ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .selected-skills h4 {
+            color: #2c5aa0;
+            margin-bottom: 10px;
+        }
+        
+        .skill-tag {
+            display: inline-block;
+            background: #4472C4;
+            color: white;
+            padding: 5px 12px;
+            margin: 5px 5px 5px 0;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+        
+        .skill-tag .remove {
+            margin-left: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .skill-tag .remove:hover {
+            color: #ffcccc;
+        }
+        
+        .units-list {
+            margin-top: 30px;
+        }
+        
+        .unit-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .unit-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        
+        .unit-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4472C4;
+        }
+        
+        .unit-card-header h3 {
+            color: #2c5aa0;
+            font-size: 1.3em;
+        }
+        
+        .unit-card-body {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .unit-info-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .unit-info-item strong {
+            display: block;
+            color: #6c757d;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+        
+        .unit-skills {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e7f1ff;
+            border-radius: 5px;
+        }
+        
+        .unit-skills h4 {
+            color: #2c5aa0;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-bar {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 15px 30px;
+            border-bottom: 2px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .save-status {
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .save-status.saved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .save-status.unsaved {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #4472C4;
+        }
+        
+        .modal-header h2 {
+            color: #2c5aa0;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .close-modal:hover {
+            color: #dc3545;
+        }
+        
+        .add-custom-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .add-custom-btn:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+        
+        .custom-skills-section {
+            border-top: 2px solid #4472C4;
+            padding-top: 10px;
+        }
+        
+        .custom-skill-item {
+            position: relative;
+        }
+        
+        .delete-custom-skill {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-size: 0.75em;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .custom-skill-item:hover .delete-custom-skill {
+            opacity: 1;
+        }
+        
+        .delete-custom-skill:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Language Skills Alignment Builder</h1>
+            <p>Build comprehensive curriculum alignments with expanded skills and powerful search</p>
+        </div>
+        
+        <div class="language-tabs">
+            <button class="tab active" onclick="switchLanguage('modern')">Modern Languages</button>
+            <button class="tab" onclick="switchLanguage('latin')">Latin</button>
+        </div>
+        
+        <!-- MODERN LANGUAGES CONTENT -->
+        <div id="modern-content" class="content active">
+            <div class="action-bar">
+                <div>
+                    <button class="btn btn-success" onclick="saveProgress()">💾 Save Progress</button>
+                    <button class="btn btn-primary" onclick="loadProgress()">📂 Load Saved</button>
+                </div>
+                <div>
+                    <span id="save-status-modern" class="save-status unsaved">Unsaved Changes</span>
+                    <button class="btn btn-primary" onclick="exportToExcel('modern')">📥 Export to Excel</button>
+                    <button class="btn btn-danger" onclick="clearAll('modern')">🗑️ Clear All</button>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="sidebar">
+                    <div class="search-box">
+                        <input type="text" id="ml-search" placeholder="🔍 Search skills..." oninput="searchSkills('modern')" />
+                        <div class="search-stats" id="ml-search-stats"></div>
+                        <button class="add-custom-btn" onclick="openCustomSkillModal('modern')">➕ Add Custom Skill</button>
+                    </div>
+                    
+                    <div id="ml-custom-skills-container"></div>
+                    
+                    <div class="sidebar-section">
+                        <h3>Select Skills</h3>
+                        
+                        <div class="skill-group" data-group="ml-interpers-novice">
+                            <div class="skill-group-title">💬 Interpersonal - Novice</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-1" value="Greet and say goodbye" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-1">Greet and say goodbye</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-2" value="Introduce self and others" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-2">Introduce self and others</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-3" value="Ask and answer simple questions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-3">Ask and answer simple questions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-4" value="Express basic preferences" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-4">Express basic preferences</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-5" value="Use memorized phrases in familiar situations" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-5">Use memorized phrases in familiar situations</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-6" value="Make simple requests" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-6">Make simple requests</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-77" value="Exchange personal information" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-77">Exchange personal information</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-78" value="Express needs and wants" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-78">Express needs and wants</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-79" value="Talk about daily routines" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-79">Talk about daily routines</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-interpers-intermediate">
+                            <div class="skill-group-title">💬 Interpersonal - Intermediate</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-7" value="Have conversations on familiar topics" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-7">Have conversations on familiar topics</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-8" value="Express opinions and feelings" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-8">Express opinions and feelings</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-9" value="Describe experiences in detail" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-9">Describe experiences in detail</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-10" value="Ask follow-up questions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-10">Ask follow-up questions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-11" value="Handle routine situations with unexpected complications" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-11">Handle routine situations with unexpected complications</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-12" value="Maintain conversation through elaboration" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-12">Maintain conversation through elaboration</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-13" value="Use circumlocution to convey meaning" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-13">Use circumlocution to convey meaning</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-80" value="Express agreement and disagreement politely" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-80">Express agreement and disagreement politely</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-81" value="Give advice and suggestions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-81">Give advice and suggestions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-82" value="Narrate events in different time frames" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-82">Narrate events in different time frames</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-83" value="Participate in extended conversations" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-83">Participate in extended conversations</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-interpers-advanced">
+                            <div class="skill-group-title">💬 Interpersonal - Advanced</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-14" value="Discuss abstract topics fluently" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-14">Discuss abstract topics fluently</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-15" value="Defend and justify opinions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-15">Defend and justify opinions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-16" value="Negotiate and resolve conflicts" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-16">Negotiate and resolve conflicts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-17" value="Adjust language style to audience" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-17">Adjust language style to audience</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-18" value="Use advanced discourse strategies" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-18">Use advanced discourse strategies</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-84" value="Engage in debates and discussions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-84">Engage in debates and discussions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-85" value="Express hypothetical situations" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-85">Express hypothetical situations</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-86" value="Use idiomatic expressions appropriately" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-86">Use idiomatic expressions appropriately</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-interp-novice">
+                            <div class="skill-group-title">👂 Interpretive - Novice</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-19" value="Recognize high-frequency words and phrases" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-19">Recognize high-frequency words and phrases</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-20" value="Understand simple sentences" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-20">Understand simple sentences</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-21" value="Identify key information in familiar contexts" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-21">Identify key information in familiar contexts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-22" value="Recognize cognates" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-22">Recognize cognates</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-23" value="Use visual cues to support comprehension" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-23">Use visual cues to support comprehension</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-87" value="Understand basic questions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-87">Understand basic questions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-88" value="Identify numbers, dates, and times" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-88">Identify numbers, dates, and times</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-interp-intermediate">
+                            <div class="skill-group-title">👂 Interpretive - Intermediate</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-24" value="Understand the main idea of texts" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-24">Understand the main idea of texts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-25" value="Identify main ideas and details" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-25">Identify main ideas and details</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-26" value="Use context clues to derive meaning" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-26">Use context clues to derive meaning</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-27" value="Follow instructions and directions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-27">Follow instructions and directions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-28" value="Understand connected discourse" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-28">Understand connected discourse</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-29" value="Identify author's purpose and perspective" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-29">Identify author's purpose and perspective</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-30" value="Understand authentic materials with support" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-30">Understand authentic materials with support</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-89" value="Distinguish between fact and opinion" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-89">Distinguish between fact and opinion</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-90" value="Understand speakers' emotions and attitudes" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-90">Understand speakers' emotions and attitudes</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-91" value="Follow narratives in past, present, and future" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-91">Follow narratives in past, present, and future</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-interp-advanced">
+                            <div class="skill-group-title">👂 Interpretive - Advanced</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-31" value="Differentiate main ideas from details" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-31">Differentiate main ideas from details</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-32" value="Make inferences from context" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-32">Make inferences from context</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-33" value="Understand paragraph-level discourse" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-33">Understand paragraph-level discourse</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-34" value="Analyze rhetorical devices and literary techniques" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-34">Analyze rhetorical devices and literary techniques</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-35" value="Understand implicit cultural references" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-35">Understand implicit cultural references</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-36" value="Critically evaluate authentic texts" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-36">Critically evaluate authentic texts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-92" value="Understand abstract and complex ideas" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-92">Understand abstract and complex ideas</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-93" value="Recognize tone, mood, and register" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-93">Recognize tone, mood, and register</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-94" value="Analyze complex argumentative texts" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-94">Analyze complex argumentative texts</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-present-novice">
+                            <div class="skill-group-title">📢 Presentational - Novice</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-37" value="Present basic biographical information" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-37">Present basic biographical information</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-38" value="Use lists and formulaic phrases" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-38">Use lists and formulaic phrases</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-39" value="Label objects and people" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-39">Label objects and people</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-40" value="Write simple notes and messages" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-40">Write simple notes and messages</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-95" value="Describe familiar people and places" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-95">Describe familiar people and places</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-96" value="Create simple posters and visuals" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-96">Create simple posters and visuals</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-present-intermediate">
+                            <div class="skill-group-title">📢 Presentational - Intermediate</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-41" value="Create messages using sentences" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-41">Create messages using sentences</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-42" value="Tell or retell simple stories" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-42">Tell or retell simple stories</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-43" value="Provide descriptions with detail" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-43">Provide descriptions with detail</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-44" value="Write about experiences using narration" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-44">Write about experiences using narration</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-45" value="Create informal communications" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-45">Create informal communications</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-46" value="Compare and contrast familiar topics" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-46">Compare and contrast familiar topics</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-97" value="Write emails and letters" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-97">Write emails and letters</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-98" value="Give presentations on familiar topics" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-98">Give presentations on familiar topics</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-99" value="Summarize information from multiple sources" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-99">Summarize information from multiple sources</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-present-advanced">
+                            <div class="skill-group-title">📢 Presentational - Advanced</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-47" value="Present in organized paragraphs" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-47">Present in organized paragraphs</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-48" value="Support point of view with evidence" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-48">Support point of view with evidence</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-49" value="Use cohesion and chronology" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-49">Use cohesion and chronology</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-50" value="Create formal presentations" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-50">Create formal presentations</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-51" value="Write persuasive essays" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-51">Write persuasive essays</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-52" value="Use sophisticated vocabulary and structures" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-52">Use sophisticated vocabulary and structures</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-100" value="Write research papers and reports" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-100">Write research papers and reports</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-101" value="Create multimedia presentations" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-101">Create multimedia presentations</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-102" value="Write creative and analytical essays" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-102">Write creative and analytical essays</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-grammar">
+                            <div class="skill-group-title">📚 Grammar & Structures</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-53" value="Use present tense accurately" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-53">Use present tense accurately</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-54" value="Use past tenses (preterite/imperfect)" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-54">Use past tenses (preterite/imperfect)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-55" value="Use future tense and conditional" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-55">Use future tense and conditional</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-56" value="Use subjunctive mood appropriately" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-56">Use subjunctive mood appropriately</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-57" value="Form questions correctly" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-57">Form questions correctly</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-58" value="Use reflexive verbs" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-58">Use reflexive verbs</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-59" value="Use direct and indirect object pronouns" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-59">Use direct and indirect object pronouns</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-60" value="Form and use compound tenses" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-60">Form and use compound tenses</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-103" value="Use ser vs. estar correctly" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-103">Use ser vs. estar correctly</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-104" value="Use por vs. para appropriately" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-104">Use por vs. para appropriately</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-105" value="Form and use commands" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-105">Form and use commands</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-106" value="Use relative pronouns and clauses" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-106">Use relative pronouns and clauses</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-cultural">
+                            <div class="skill-group-title">🌐 Cultural Competency</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-61" value="Recognize basic cultural practices" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-61">Recognize basic cultural practices</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-62" value="Compare cultural products and perspectives" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-62">Compare cultural products and perspectives</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-63" value="Demonstrate cultural awareness in communication" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-63">Demonstrate cultural awareness in communication</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-64" value="Analyze cultural stereotypes" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-64">Analyze cultural stereotypes</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-65" value="Identify cultural values and beliefs" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-65">Identify cultural values and beliefs</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-66" value="Navigate cultural differences respectfully" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-66">Navigate cultural differences respectfully</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-107" value="Explore festivals and celebrations" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-107">Explore festivals and celebrations</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-108" value="Understand cultural geography" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-108">Understand cultural geography</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-109" value="Analyze music and art from target culture" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-109">Analyze music and art from target culture</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-110" value="Study historical events and their impact" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-110">Study historical events and their impact</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-vocab">
+                            <div class="skill-group-title">📖 Vocabulary & Expressions</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-67" value="Use thematic vocabulary sets" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-67">Use thematic vocabulary sets</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-68" value="Use idiomatic expressions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-68">Use idiomatic expressions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-69" value="Use transition words and phrases" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-69">Use transition words and phrases</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-70" value="Expand vocabulary through word families" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-70">Expand vocabulary through word families</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-71" value="Use register-appropriate language" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-71">Use register-appropriate language</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-111" value="Recognize and use false cognates" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-111">Recognize and use false cognates</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-112" value="Use synonyms and antonyms" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-112">Use synonyms and antonyms</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-113" value="Apply specialized vocabulary by theme" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-113">Apply specialized vocabulary by theme</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-strategies">
+                            <div class="skill-group-title">🎯 Communication Strategies</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-72" value="Request clarification or repetition" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-72">Request clarification or repetition</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-73" value="Self-correct errors" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-73">Self-correct errors</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-74" value="Use gestures and body language" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-74">Use gestures and body language</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-75" value="Paraphrase when vocabulary is lacking" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-75">Paraphrase when vocabulary is lacking</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-76" value="Use fillers to maintain conversation" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-76">Use fillers to maintain conversation</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-114" value="Recognize and repair communication breakdowns" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-114">Recognize and repair communication breakdowns</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-115" value="Use context to guess meaning" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-115">Use context to guess meaning</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-pronunciation">
+                            <div class="skill-group-title">🗣️ Pronunciation & Phonetics</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-116" value="Produce target language sounds accurately" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-116">Produce target language sounds accurately</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-117" value="Use appropriate intonation patterns" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-117">Use appropriate intonation patterns</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-118" value="Apply stress and rhythm correctly" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-118">Apply stress and rhythm correctly</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-119" value="Recognize regional pronunciation differences" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-119">Recognize regional pronunciation differences</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-120" value="Use linking and elision in connected speech" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-120">Use linking and elision in connected speech</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-interpers-intermediate">
+                            <div class="skill-group-title">💬 Interpersonal - Intermediate</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-7" value="Have conversations on familiar topics" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-7">Have conversations on familiar topics</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-8" value="Express opinions and feelings" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-8">Express opinions and feelings</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-9" value="Describe experiences in detail" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-9">Describe experiences in detail</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-10" value="Ask follow-up questions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-10">Ask follow-up questions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-11" value="Handle routine situations with unexpected complications" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-11">Handle routine situations with unexpected complications</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-12" value="Maintain conversation through elaboration" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-12">Maintain conversation through elaboration</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-13" value="Use circumlocution to convey meaning" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-13">Use circumlocution to convey meaning</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-interpers-advanced">
+                            <div class="skill-group-title">💬 Interpersonal - Advanced</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-14" value="Discuss abstract topics fluently" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-14">Discuss abstract topics fluently</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-15" value="Defend and justify opinions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-15">Defend and justify opinions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-16" value="Negotiate and resolve conflicts" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-16">Negotiate and resolve conflicts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-17" value="Adjust language style to audience" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-17">Adjust language style to audience</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-18" value="Use advanced discourse strategies" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-18">Use advanced discourse strategies</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-interp-novice">
+                            <div class="skill-group-title">👂 Interpretive - Novice</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-19" value="Recognize high-frequency words and phrases" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-19">Recognize high-frequency words and phrases</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-20" value="Understand simple sentences" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-20">Understand simple sentences</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-21" value="Identify key information in familiar contexts" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-21">Identify key information in familiar contexts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-22" value="Recognize cognates" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-22">Recognize cognates</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-23" value="Use visual cues to support comprehension" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-23">Use visual cues to support comprehension</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-interp-intermediate">
+                            <div class="skill-group-title">👂 Interpretive - Intermediate</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-24" value="Understand the main idea of texts" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-24">Understand the main idea of texts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-25" value="Identify main ideas and details" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-25">Identify main ideas and details</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-26" value="Use context clues to derive meaning" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-26">Use context clues to derive meaning</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-27" value="Follow instructions and directions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-27">Follow instructions and directions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-28" value="Understand connected discourse" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-28">Understand connected discourse</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-29" value="Identify author's purpose and perspective" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-29">Identify author's purpose and perspective</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-30" value="Understand authentic materials with support" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-30">Understand authentic materials with support</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-interp-advanced">
+                            <div class="skill-group-title">👂 Interpretive - Advanced</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-31" value="Differentiate main ideas from details" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-31">Differentiate main ideas from details</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-32" value="Make inferences from context" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-32">Make inferences from context</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-33" value="Understand paragraph-level discourse" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-33">Understand paragraph-level discourse</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-34" value="Analyze rhetorical devices and literary techniques" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-34">Analyze rhetorical devices and literary techniques</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-35" value="Understand implicit cultural references" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-35">Understand implicit cultural references</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-36" value="Critically evaluate authentic texts" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-36">Critically evaluate authentic texts</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-present-novice">
+                            <div class="skill-group-title">📢 Presentational - Novice</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-37" value="Present basic biographical information" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-37">Present basic biographical information</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-38" value="Use lists and formulaic phrases" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-38">Use lists and formulaic phrases</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-39" value="Label objects and people" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-39">Label objects and people</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-40" value="Write simple notes and messages" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-40">Write simple notes and messages</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-present-intermediate">
+                            <div class="skill-group-title">📢 Presentational - Intermediate</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-41" value="Create messages using sentences" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-41">Create messages using sentences</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-42" value="Tell or retell simple stories" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-42">Tell or retell simple stories</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-43" value="Provide descriptions with detail" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-43">Provide descriptions with detail</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-44" value="Write about experiences using narration" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-44">Write about experiences using narration</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-45" value="Create informal communications" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-45">Create informal communications</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-46" value="Compare and contrast familiar topics" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-46">Compare and contrast familiar topics</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-present-advanced">
+                            <div class="skill-group-title">📢 Presentational - Advanced</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-47" value="Present in organized paragraphs" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-47">Present in organized paragraphs</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-48" value="Support point of view with evidence" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-48">Support point of view with evidence</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-49" value="Use cohesion and chronology" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-49">Use cohesion and chronology</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-50" value="Create formal presentations" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-50">Create formal presentations</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-51" value="Write persuasive essays" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-51">Write persuasive essays</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-52" value="Use sophisticated vocabulary and structures" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-52">Use sophisticated vocabulary and structures</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-grammar">
+                            <div class="skill-group-title">📚 Grammar & Structures</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-53" value="Use present tense accurately" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-53">Use present tense accurately</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-54" value="Use past tenses (preterite/imperfect)" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-54">Use past tenses (preterite/imperfect)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-55" value="Use future tense and conditional" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-55">Use future tense and conditional</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-56" value="Use subjunctive mood appropriately" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-56">Use subjunctive mood appropriately</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-57" value="Form questions correctly" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-57">Form questions correctly</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-58" value="Use reflexive verbs" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-58">Use reflexive verbs</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-59" value="Use direct and indirect object pronouns" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-59">Use direct and indirect object pronouns</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-60" value="Form and use compound tenses" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-60">Form and use compound tenses</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-cultural">
+                            <div class="skill-group-title">🌐 Cultural Competency</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-61" value="Recognize basic cultural practices" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-61">Recognize basic cultural practices</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-62" value="Compare cultural products and perspectives" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-62">Compare cultural products and perspectives</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-63" value="Demonstrate cultural awareness in communication" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-63">Demonstrate cultural awareness in communication</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-64" value="Analyze cultural stereotypes" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-64">Analyze cultural stereotypes</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-65" value="Identify cultural values and beliefs" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-65">Identify cultural values and beliefs</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-66" value="Navigate cultural differences respectfully" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-66">Navigate cultural differences respectfully</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-vocab">
+                            <div class="skill-group-title">📖 Vocabulary & Expressions</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-67" value="Use thematic vocabulary sets" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-67">Use thematic vocabulary sets</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-68" value="Use idiomatic expressions" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-68">Use idiomatic expressions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-69" value="Use transition words and phrases" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-69">Use transition words and phrases</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-70" value="Expand vocabulary through word families" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-70">Expand vocabulary through word families</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-71" value="Use register-appropriate language" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-71">Use register-appropriate language</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="ml-strategies">
+                            <div class="skill-group-title">🎯 Communication Strategies</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-72" value="Request clarification or repetition" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-72">Request clarification or repetition</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-73" value="Self-correct errors" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-73">Self-correct errors</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-74" value="Use gestures and body language" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-74">Use gestures and body language</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-75" value="Paraphrase when vocabulary is lacking" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-75">Paraphrase when vocabulary is lacking</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="ml-skill-76" value="Use fillers to maintain conversation" onchange="updateSelectedSkills('modern')">
+                                <label for="ml-skill-76">Use fillers to maintain conversation</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="workspace">
+                    <div class="section-header">
+                        <h2>Build Your Units</h2>
+                    </div>
+                    
+                    <div class="unit-form">
+                        <h3 style="color: #2c5aa0; margin-bottom: 20px;">Add New Unit</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Grade Level</label>
+                                <select id="ml-grade-level">
+                                    <option value="">Select...</option>
+                                    <option value="Lower School">Lower School (PreK-5)</option>
+                                    <option value="Middle School">Middle School (6-8)</option>
+                                    <option value="Upper School">Upper School (9-12)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Unit Number</label>
+                                <input type="text" id="ml-unit-number" placeholder="e.g., Unit 1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Target Proficiency</label>
+                                <select id="ml-proficiency">
+                                    <option value="">Select...</option>
+                                    <option value="Novice Low">Novice Low</option>
+                                    <option value="Novice Mid">Novice Mid</option>
+                                    <option value="Novice High">Novice High</option>
+                                    <option value="Intermediate Low">Intermediate Low</option>
+                                    <option value="Intermediate Mid">Intermediate Mid</option>
+                                    <option value="Intermediate High">Intermediate High</option>
+                                    <option value="Advanced Low">Advanced Low</option>
+                                    <option value="Advanced Mid">Advanced Mid</option>
+                                    <option value="Advanced High">Advanced High</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Topic</label>
+                                <input type="text" id="ml-topic" placeholder="e.g., Family & Pets, Technology, Immigration">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Theme</label>
+                                <input type="text" id="ml-theme" placeholder="e.g., Identity, Relationships, Sustainability">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Essential Question</label>
+                            <textarea id="ml-question" placeholder="e.g., How does family shape identity?"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Assessment Type</label>
+                            <select id="ml-assessment">
+                                <option value="">Select...</option>
+                                <option value="Formative-Observation">Formative-Observation</option>
+                                <option value="Formative-Quiz">Formative-Quiz</option>
+                                <option value="Formative-Discussion">Formative-Discussion</option>
+                                <option value="Summative-Presentation">Summative-Presentation</option>
+                                <option value="Summative-Essay">Summative-Essay</option>
+                                <option value="Summative-Project">Summative-Project</option>
+                                <option value="Summative-IPA">Summative-IPA</option>
+                                <option value="Performance Assessment">Performance Assessment</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="ml-notes" placeholder="Additional notes, resources, ideas..."></textarea>
+                        </div>
+                        
+                        <div class="selected-skills" id="ml-selected-skills-display">
+                            <h4>Selected Skills (0)</h4>
+                            <p style="color: #6c757d; font-style: italic;">Select skills from the sidebar to add them here</p>
+                        </div>
+                        
+                        <button class="btn btn-success" style="margin-top: 20px; width: 100%;" onclick="addUnit('modern')">
+                            ➕ Add Unit to Curriculum
+                        </button>
+                    </div>
+                    
+                    <div class="units-list" id="ml-units-list">
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                            </svg>
+                            <h3>No Units Yet</h3>
+                            <p>Start building your curriculum by adding units above</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LATIN CONTENT -->
+        <div id="latin-content" class="content">
+            <div class="action-bar">
+                <div>
+                    <button class="btn btn-success" onclick="saveProgress()">💾 Save Progress</button>
+                    <button class="btn btn-primary" onclick="loadProgress()">📂 Load Saved</button>
+                </div>
+                <div>
+                    <span id="save-status-latin" class="save-status unsaved">Unsaved Changes</span>
+                    <button class="btn btn-primary" onclick="exportToExcel('latin')">📥 Export to Excel</button>
+                    <button class="btn btn-danger" onclick="clearAll('latin')">🗑️ Clear All</button>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="sidebar">
+                    <div class="search-box">
+                        <input type="text" id="lat-search" placeholder="🔍 Search skills..." oninput="searchSkills('latin')" />
+                        <div class="search-stats" id="lat-search-stats"></div>
+                        <button class="add-custom-btn" onclick="openCustomSkillModal('latin')">➕ Add Custom Skill</button>
+                    </div>
+                    
+                    <div id="lat-custom-skills-container"></div>
+                    
+                    <div class="sidebar-section">
+                        <h3>Select Skills</h3>
+                        
+                        <div class="skill-group" data-group="lat-reading-novice">
+                            <div class="skill-group-title">📖 Reading - Novice</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-1" value="Recognize high-frequency Latin words" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-1">Recognize high-frequency Latin words</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-2" value="Identify cognates and derivatives" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-2">Identify cognates and derivatives</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-3" value="Understand simple sentences (SVO)" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-3">Understand simple sentences (SVO)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-4" value="Use context to understand meaning" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-4">Use context to understand meaning</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-5" value="Identify subject and verb in sentences" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-5">Identify subject and verb in sentences</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-65" value="Read simple adapted dialogues" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-65">Read simple adapted dialogues</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-66" value="Understand basic comprehension questions" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-66">Understand basic comprehension questions</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-reading-intermediate">
+                            <div class="skill-group-title">📖 Reading - Intermediate</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-6" value="Comprehend adapted authentic texts" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-6">Comprehend adapted authentic texts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-7" value="Identify main ideas in passages" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-7">Identify main ideas in passages</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-8" value="Follow narrative sequences" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-8">Follow narrative sequences</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-9" value="Analyze character development" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-9">Analyze character development</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-10" value="Understand plot structure" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-10">Understand plot structure</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-11" value="Translate connected passages" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-11">Translate connected passages</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-67" value="Read historical narratives" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-67">Read historical narratives</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-68" value="Understand cause and effect relationships" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-68">Understand cause and effect relationships</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-reading-advanced">
+                            <div class="skill-group-title">📖 Reading - Advanced</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-12" value="Read unadapted Latin texts" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-12">Read unadapted Latin texts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-13" value="Identify rhetorical devices" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-13">Identify rhetorical devices</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-14" value="Analyze author style and purpose" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-14">Analyze author style and purpose</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-15" value="Interpret literary themes" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-15">Interpret literary themes</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-16" value="Analyze poetic meter and scansion" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-16">Analyze poetic meter and scansion</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-17" value="Compare multiple authors' perspectives" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-17">Compare multiple authors' perspectives</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-69" value="Read philosophical texts" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-69">Read philosophical texts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-70" value="Analyze epic poetry conventions" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-70">Analyze epic poetry conventions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-71" value="Read oratory and speeches" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-71">Read oratory and speeches</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-grammar-novice">
+                            <div class="skill-group-title">📝 Grammar - Novice</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-18" value="Identify basic noun cases" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-18">Identify basic noun cases</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-19" value="Recognize verb forms (present tense)" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-19">Recognize verb forms (present tense)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-20" value="Identify noun declensions (1st-2nd)" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-20">Identify noun declensions (1st-2nd)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-21" value="Recognize basic adjectives" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-21">Recognize basic adjectives</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-22" value="Use basic prepositions" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-22">Use basic prepositions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-72" value="Distinguish between nominative and accusative" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-72">Distinguish between nominative and accusative</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-73" value="Recognize verb conjugation patterns" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-73">Recognize verb conjugation patterns</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-grammar-intermediate">
+                            <div class="skill-group-title">📝 Grammar - Intermediate</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-23" value="Parse complex verb forms" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-23">Parse complex verb forms</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-24" value="Analyze sentence structure" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-24">Analyze sentence structure</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-25" value="Identify subordinate clauses" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-25">Identify subordinate clauses</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-26" value="Recognize all noun declensions (1st-5th)" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-26">Recognize all noun declensions (1st-5th)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-27" value="Use perfect system (perfect, pluperfect, future perfect)" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-27">Use perfect system (perfect, pluperfect, future perfect)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-28" value="Recognize indirect statements" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-28">Recognize indirect statements</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-29" value="Identify participles and their uses" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-29">Identify participles and their uses</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-74" value="Use passive voice constructions" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-74">Use passive voice constructions</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-75" value="Recognize deponent verbs" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-75">Recognize deponent verbs</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-76" value="Identify comparative and superlative forms" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-76">Identify comparative and superlative forms</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-grammar-advanced">
+                            <div class="skill-group-title">📝 Grammar - Advanced</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-30" value="Parse complex syntax (abl. abs, etc)" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-30">Parse complex syntax (abl. abs, etc)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-31" value="Understand subjunctive mood usage" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-31">Understand subjunctive mood usage</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-32" value="Analyze conditions (simple, contrary-to-fact)" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-32">Analyze conditions (simple, contrary-to-fact)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-33" value="Parse gerunds and gerundives" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-33">Parse gerunds and gerundives</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-34" value="Identify all uses of the infinitive" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-34">Identify all uses of the infinitive</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-35" value="Understand sequence of tenses" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-35">Understand sequence of tenses</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-77" value="Analyze purpose clauses" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-77">Analyze purpose clauses</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-78" value="Identify result clauses" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-78">Identify result clauses</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-79" value="Parse fear clauses" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-79">Parse fear clauses</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-80" value="Understand indirect questions" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-80">Understand indirect questions</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-culture">
+                            <div class="skill-group-title">🏛️ Culture - All Levels</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-36" value="Identify aspects of Roman daily life" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-36">Identify aspects of Roman daily life</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-37" value="Compare Roman and modern values" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-37">Compare Roman and modern values</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-38" value="Analyze mythological themes" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-38">Analyze mythological themes</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-39" value="Analyze Roman historical perspectives" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-39">Analyze Roman historical perspectives</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-40" value="Understand Roman political structure" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-40">Understand Roman political structure</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-41" value="Explore Roman religion and beliefs" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-41">Explore Roman religion and beliefs</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-42" value="Analyze Roman art and architecture" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-42">Analyze Roman art and architecture</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-43" value="Examine Roman social hierarchy" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-43">Examine Roman social hierarchy</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-44" value="Study Roman military practices" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-44">Study Roman military practices</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-81" value="Explore Roman education system" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-81">Explore Roman education system</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-82" value="Study Roman entertainment and games" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-82">Study Roman entertainment and games</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-83" value="Analyze Roman family structure" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-83">Analyze Roman family structure</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-84" value="Examine Roman law and justice" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-84">Examine Roman law and justice</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-derivatives">
+                            <div class="skill-group-title">🔤 Derivatives & Vocabulary</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-45" value="Identify English derivatives from Latin roots" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-45">Identify English derivatives from Latin roots</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-46" value="Analyze word formation (prefixes, suffixes)" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-46">Analyze word formation (prefixes, suffixes)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-47" value="Connect Latin vocabulary to Romance languages" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-47">Connect Latin vocabulary to Romance languages</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-48" value="Use principal parts to form verb tenses" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-48">Use principal parts to form verb tenses</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-49" value="Learn vocabulary in thematic groups" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-49">Learn vocabulary in thematic groups</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-85" value="Study Latin phrases used in English" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-85">Study Latin phrases used in English</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-86" value="Identify medical and scientific terminology" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-86">Identify medical and scientific terminology</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-87" value="Analyze legal terminology from Latin" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-87">Analyze legal terminology from Latin</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-translation">
+                            <div class="skill-group-title">🔄 Translation Skills</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-50" value="Translate simple sentences accurately" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-50">Translate simple sentences accurately</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-51" value="Translate complex sentences with subordination" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-51">Translate complex sentences with subordination</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-52" value="Produce natural English translations" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-52">Produce natural English translations</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-53" value="Compare multiple translation approaches" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-53">Compare multiple translation approaches</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-54" value="Sight read and translate unfamiliar texts" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-54">Sight read and translate unfamiliar texts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-88" value="Identify and translate idioms" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-88">Identify and translate idioms</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-89" value="Maintain author's tone in translation" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-89">Maintain author's tone in translation</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-90" value="Translate poetry with attention to meter" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-90">Translate poetry with attention to meter</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-literary">
+                            <div class="skill-group-title">✍️ Literary Analysis</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-55" value="Identify literary genres (epic, lyric, etc)" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-55">Identify literary genres (epic, lyric, etc)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-56" value="Analyze imagery and symbolism" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-56">Analyze imagery and symbolism</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-57" value="Examine rhetorical techniques (anaphora, chiasmus)" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-57">Examine rhetorical techniques (anaphora, chiasmus)</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-58" value="Compare literary works across authors" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-58">Compare literary works across authors</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-59" value="Identify allusions and intertextuality" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-59">Identify allusions and intertextuality</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-91" value="Analyze characterization techniques" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-91">Analyze characterization techniques</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-92" value="Identify dramatic irony" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-92">Identify dramatic irony</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-93" value="Examine use of mythology in literature" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-93">Examine use of mythology in literature</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-94" value="Analyze pastoral and didactic poetry" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-94">Analyze pastoral and didactic poetry</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-historical">
+                            <div class="skill-group-title">🏺 Historical Context</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-60" value="Understand chronology of Roman history" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-60">Understand chronology of Roman history</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-61" value="Analyze primary source documents" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-61">Analyze primary source documents</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-62" value="Examine Roman expansion and conquest" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-62">Examine Roman expansion and conquest</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-63" value="Study key historical figures" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-63">Study key historical figures</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-64" value="Understand causes of Rome's decline" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-64">Understand causes of Rome's decline</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-95" value="Study Roman Republic vs. Empire" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-95">Study Roman Republic vs. Empire</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-96" value="Examine Punic Wars and their impact" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-96">Examine Punic Wars and their impact</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-97" value="Analyze Julius Caesar's role in history" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-97">Analyze Julius Caesar's role in history</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-mythology">
+                            <div class="skill-group-title">⚡ Mythology & Religion</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-98" value="Identify major Roman gods and goddesses" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-98">Identify major Roman gods and goddesses</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-99" value="Compare Greek and Roman mythology" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-99">Compare Greek and Roman mythology</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-100" value="Analyze hero myths and journeys" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-100">Analyze hero myths and journeys</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-101" value="Study creation myths" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-101">Study creation myths</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-102" value="Examine Roman religious rituals" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-102">Examine Roman religious rituals</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-103" value="Understand concept of pietas" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-103">Understand concept of pietas</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-philosophy">
+                            <div class="skill-group-title">💭 Philosophy & Rhetoric</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-104" value="Study Stoic philosophy" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-104">Study Stoic philosophy</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-105" value="Analyze Cicero's rhetorical techniques" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-105">Analyze Cicero's rhetorical techniques</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-106" value="Examine Epicurean philosophy" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-106">Examine Epicurean philosophy</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-107" value="Understand Roman ethical concepts" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-107">Understand Roman ethical concepts</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-108" value="Study the five canons of rhetoric" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-108">Study the five canons of rhetoric</label>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-group" data-group="lat-connections">
+                            <div class="skill-group-title">🌍 Connections & Legacy</div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-109" value="Trace Roman influence on modern government" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-109">Trace Roman influence on modern government</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-110" value="Examine Roman contributions to law" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-110">Examine Roman contributions to law</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-111" value="Study Roman engineering achievements" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-111">Study Roman engineering achievements</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-112" value="Analyze Roman influence on Western literature" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-112">Analyze Roman influence on Western literature</label>
+                            </div>
+                            <div class="skill-item">
+                                <input type="checkbox" id="lat-skill-113" value="Compare Roman and American values" onchange="updateSelectedSkills('latin')">
+                                <label for="lat-skill-113">Compare Roman and American values</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="workspace">
+                    <div class="section-header">
+                        <h2>Build Your Units</h2>
+                    </div>
+                    
+                    <div class="unit-form">
+                        <h3 style="color: #2c5aa0; margin-bottom: 20px;">Add New Unit</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Grade Level</label>
+                                <select id="lat-grade-level">
+                                    <option value="">Select...</option>
+                                    <option value="Lower School">Lower School (PreK-5)</option>
+                                    <option value="Middle School">Middle School (6-8)</option>
+                                    <option value="Upper School">Upper School (9-12)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Unit Number</label>
+                                <input type="text" id="lat-unit-number" placeholder="e.g., Unit 1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Reading Level</label>
+                                <select id="lat-proficiency">
+                                    <option value="">Select...</option>
+                                    <option value="Novice Low">Novice Low</option>
+                                    <option value="Novice Mid">Novice Mid</option>
+                                    <option value="Novice High">Novice High</option>
+                                    <option value="Intermediate Low">Intermediate Low</option>
+                                    <option value="Intermediate Mid">Intermediate Mid</option>
+                                    <option value="Intermediate High">Intermediate High</option>
+                                    <option value="Advanced Low">Advanced Low</option>
+                                    <option value="Advanced Mid">Advanced Mid</option>
+                                    <option value="Advanced High">Advanced High</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Grammar Focus</label>
+                                <input type="text" id="lat-grammar" placeholder="e.g., Present tense verbs, 3rd Declension">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Cultural Theme</label>
+                                <input type="text" id="lat-culture" placeholder="e.g., Roman Family, Mythology, Government">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Text/Author</label>
+                                <input type="text" id="lat-author" placeholder="e.g., Familia Romana Ch 1, Caesar Book 1, Vergil Aeneid">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Derivatives Focus</label>
+                                <input type="text" id="lat-derivatives" placeholder="e.g., family, aqua, victory">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Essential Question</label>
+                            <textarea id="lat-question" placeholder="e.g., How does Latin help us understand English?"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Assessment Type</label>
+                            <select id="lat-assessment">
+                                <option value="">Select...</option>
+                                <option value="Translation">Translation</option>
+                                <option value="Sight Reading">Sight Reading</option>
+                                <option value="Comprehension Questions">Comprehension Questions</option>
+                                <option value="Cultural Analysis">Cultural Analysis</option>
+                                <option value="Derivative Quiz">Derivative Quiz</option>
+                                <option value="Grammar Quiz">Grammar Quiz</option>
+                                <option value="Essay">Essay</option>
+                                <option value="Project">Project</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="lat-notes" placeholder="Additional notes, resources, ideas..."></textarea>
+                        </div>
+                        
+                        <div class="selected-skills" id="lat-selected-skills-display">
+                            <h4>Selected Skills (0)</h4>
+                            <p style="color: #6c757d; font-style: italic;">Select skills from the sidebar to add them here</p>
+                        </div>
+                        
+                        <button class="btn btn-success" style="margin-top: 20px; width: 100%;" onclick="addUnit('latin')">
+                            ➕ Add Unit to Curriculum
+                        </button>
+                    </div>
+                    
+                    <div class="units-list" id="lat-units-list">
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                            </svg>
+                            <h3>No Units Yet</h3>
+                            <p>Start building your curriculum by adding units above</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Custom Skill Modal -->
+    <div id="custom-skill-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Custom Skill</h2>
+                <button class="close-modal" onclick="closeCustomSkillModal()">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Skill Description</label>
+                <input type="text" id="custom-skill-input" placeholder="e.g., Analyze contemporary social issues" style="padding: 12px; font-size: 1em;">
+            </div>
+            
+            <div class="form-group">
+                <label>Category (Optional)</label>
+                <input type="text" id="custom-skill-category" placeholder="e.g., Advanced, Cultural, Grammar" style="padding: 12px; font-size: 1em;">
+            </div>
+            
+            <button class="btn btn-success" onclick="addCustomSkill()" style="width: 100%; margin-top: 10px;">
+                ➕ Add Custom Skill
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        let currentLanguage = 'modern';
+        let modernUnits = [];
+        let latinUnits = [];
+        let modernSelectedSkills = new Set();
+        let latinSelectedSkills = new Set();
+        let modernCustomSkills = [];
+        let latinCustomSkills = [];
+        let customSkillCounter = 1000;
+        let currentModalLanguage = 'modern';
+        
+        // Switch between language tabs
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${lang}-content`).classList.add('active');
+        }
+        
+        // Search skills function
+        function searchSkills(lang) {
+            const prefix = lang === 'modern' ? 'ml' : 'lat';
+            const searchInput = document.getElementById(`${prefix}-search`).value.toLowerCase();
+            const skillGroups = document.querySelectorAll(`#${lang}-content .skill-group`);
+            
+            let visibleCount = 0;
+            let totalCount = 0;
+            
+            skillGroups.forEach(group => {
+                const skillItems = group.querySelectorAll('.skill-item');
+                let groupHasVisibleItems = false;
+                
+                skillItems.forEach(item => {
+                    totalCount++;
+                    const label = item.querySelector('label').textContent.toLowerCase();
+                    
+                    if (searchInput === '' || label.includes(searchInput)) {
+                        item.classList.remove('hidden');
+                        item.classList.add('highlight');
+                        setTimeout(() => item.classList.remove('highlight'), 300);
+                        groupHasVisibleItems = true;
+                        visibleCount++;
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+                
+                // Hide/show entire group if no matches
+                if (groupHasVisibleItems) {
+                    group.classList.remove('hidden');
+                } else {
+                    group.classList.add('hidden');
+                }
+            });
+            
+            // Update search stats
+            const statsEl = document.getElementById(`${prefix}-search-stats`);
+            if (searchInput === '') {
+                statsEl.textContent = `Showing all ${totalCount} skills`;
+            } else {
+                statsEl.textContent = `Found ${visibleCount} of ${totalCount} skills`;
+            }
+        }
+        
+        // Custom skill modal functions
+        function openCustomSkillModal(lang) {
+            currentModalLanguage = lang;
+            document.getElementById('custom-skill-modal').classList.add('active');
+            document.getElementById('custom-skill-input').focus();
+        }
+        
+        function closeCustomSkillModal() {
+            document.getElementById('custom-skill-modal').classList.remove('active');
+            document.getElementById('custom-skill-input').value = '';
+            document.getElementById('custom-skill-category').value = '';
+        }
+        
+        function addCustomSkill() {
+            const skillText = document.getElementById('custom-skill-input').value.trim();
+            const category = document.getElementById('custom-skill-category').value.trim();
+            
+            if (!skillText) {
+                alert('Please enter a skill description');
+                return;
+            }
+            
+            const customSkill = {
+                id: `custom-${Date.now()}-${customSkillCounter++}`,
+                text: skillText,
+                category: category || 'Custom'
+            };
+            
+            if (currentModalLanguage === 'modern') {
+                modernCustomSkills.push(customSkill);
+            } else {
+                latinCustomSkills.push(customSkill);
+            }
+            
+            renderCustomSkills(currentModalLanguage);
+            closeCustomSkillModal();
+            markUnsaved(currentModalLanguage);
+        }
+        
+        function deleteCustomSkill(lang, skillId) {
+            if (!confirm('Delete this custom skill?')) return;
+            
+            const customSkills = lang === 'modern' ? modernCustomSkills : latinCustomSkills;
+            const selectedSet = lang === 'modern' ? modernSelectedSkills : latinSelectedSkills;
+            
+            // Find the skill text before deleting
+            const skill = customSkills.find(s => s.id === skillId);
+            if (skill) {
+                selectedSet.delete(skill.text);
+            }
+            
+            if (lang === 'modern') {
+                modernCustomSkills = modernCustomSkills.filter(s => s.id !== skillId);
+            } else {
+                latinCustomSkills = latinCustomSkills.filter(s => s.id !== skillId);
+            }
+            
+            renderCustomSkills(lang);
+            updateSelectedSkills(lang);
+            markUnsaved(lang);
+        }
+        
+        function renderCustomSkills(lang) {
+            const customSkills = lang === 'modern' ? modernCustomSkills : latinCustomSkills;
+            const container = document.getElementById(`${lang === 'modern' ? 'ml' : 'lat'}-custom-skills-container`);
+            
+            if (customSkills.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            // Group by category
+            const grouped = {};
+            customSkills.forEach(skill => {
+                if (!grouped[skill.category]) {
+                    grouped[skill.category] = [];
+                }
+                grouped[skill.category].push(skill);
+            });
+            
+            let html = '<div class="sidebar-section custom-skills-section">';
+            html += '<h3>✨ Your Custom Skills</h3>';
+            
+            Object.keys(grouped).forEach(category => {
+                html += '<div class="skill-group" data-group="custom-' + category.toLowerCase().replace(/\s+/g, '-') + '">';
+                html += `<div class="skill-group-title">✨ ${category}</div>`;
+                
+                grouped[category].forEach(skill => {
+                    html += `
+                        <div class="skill-item custom-skill-item">
+                            <input type="checkbox" 
+                                   id="${skill.id}" 
+                                   value="${skill.text.replace(/"/g, '&quot;')}" 
+                                   onchange="updateSelectedSkills('${lang}')">
+                            <label for="${skill.id}">${skill.text}</label>
+                            <button class="delete-custom-skill" onclick="deleteCustomSkill('${lang}', '${skill.id}')">🗑️</button>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // Update selected skills display
+        function updateSelectedSkills(lang) {
+            const prefix = lang === 'modern' ? 'ml' : 'lat';
+            const selectedSet = lang === 'modern' ? modernSelectedSkills : latinSelectedSkills;
+            
+            // Clear and rebuild selected skills set
+            selectedSet.clear();
+            
+            // Get all checked skills (both standard and custom)
+            const contentDiv = document.getElementById(`${lang}-content`);
+            contentDiv.querySelectorAll('.skill-item input[type="checkbox"]:checked').forEach(cb => {
+                selectedSet.add(cb.value);
+            });
+            
+            // Update display
+            const displayDiv = document.getElementById(`${prefix}-selected-skills-display`);
+            
+            if (selectedSet.size === 0) {
+                displayDiv.innerHTML = `
+                    <h4>Selected Skills (0)</h4>
+                    <p style="color: #6c757d; font-style: italic;">Select skills from the sidebar to add them here</p>
+                `;
+            } else {
+                let html = `<h4>Selected Skills (${selectedSet.size})</h4><div>`;
+                selectedSet.forEach(skill => {
+                    html += `<span class="skill-tag">${skill}<span class="remove" onclick="removeSkill('${lang}', '${skill.replace(/'/g, "\\'")}')">×</span></span>`;
+                });
+                html += '</div>';
+                displayDiv.innerHTML = html;
+            }
+        }
+        
+        // Remove a skill
+        function removeSkill(lang, skill) {
+            const selectedSet = lang === 'modern' ? modernSelectedSkills : latinSelectedSkills;
+            
+            selectedSet.delete(skill);
+            
+            // Uncheck the checkbox (works for both standard and custom skills)
+            const contentDiv = document.getElementById(`${lang}-content`);
+            contentDiv.querySelectorAll('.skill-item input[type="checkbox"]').forEach(cb => {
+                if (cb.value === skill) {
+                    cb.checked = false;
+                }
+            });
+            
+            updateSelectedSkills(lang);
+        }
+        
+        // Add unit
+        function addUnit(lang) {
+            const prefix = lang === 'modern' ? 'ml' : 'lat';
+            const selectedSkills = lang === 'modern' ? modernSelectedSkills : latinSelectedSkills;
+            
+            const gradeLevel = document.getElementById(`${prefix}-grade-level`).value;
+            const unitNumber = document.getElementById(`${prefix}-unit-number`).value;
+            const proficiency = document.getElementById(`${prefix}-proficiency`).value;
+            const assessment = document.getElementById(`${prefix}-assessment`).value;
+            const question = document.getElementById(`${prefix}-question`).value;
+            const notes = document.getElementById(`${prefix}-notes`).value;
+            
+            if (!gradeLevel || !unitNumber) {
+                alert('Please fill in at least Grade Level and Unit Number');
+                return;
+            }
+            
+            const unit = {
+                id: Date.now(),
+                gradeLevel,
+                unitNumber,
+                proficiency,
+                assessment,
+                question,
+                notes,
+                skills: Array.from(selectedSkills)
+            };
+            
+            if (lang === 'modern') {
+                unit.topic = document.getElementById('ml-topic').value;
+                unit.theme = document.getElementById('ml-theme').value;
+                modernUnits.push(unit);
+            } else {
+                unit.grammar = document.getElementById('lat-grammar').value;
+                unit.culture = document.getElementById('lat-culture').value;
+                unit.author = document.getElementById('lat-author').value;
+                unit.derivatives = document.getElementById('lat-derivatives').value;
+                latinUnits.push(unit);
+            }
+            
+            renderUnits(lang);
+            clearForm(lang);
+            markUnsaved(lang);
+        }
+        
+        // Render units list
+        function renderUnits(lang) {
+            const units = lang === 'modern' ? modernUnits : latinUnits;
+            const listDiv = document.getElementById(`${lang === 'modern' ? 'ml' : 'lat'}-units-list`);
+            
+            if (units.length === 0) {
+                listDiv.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                        </svg>
+                        <h3>No Units Yet</h3>
+                        <p>Start building your curriculum by adding units above</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            units.forEach(unit => {
+                html += `
+                    <div class="unit-card">
+                        <div class="unit-card-header">
+                            <h3>${unit.gradeLevel} - ${unit.unitNumber}</h3>
+                            <button class="btn btn-danger" onclick="deleteUnit('${lang}', ${unit.id})">🗑️ Delete</button>
+                        </div>
+                        
+                        <div class="unit-card-body">
+                            ${unit.proficiency ? `<div class="unit-info-item"><strong>Proficiency/Reading</strong>${unit.proficiency}</div>` : ''}
+                            ${lang === 'modern' && unit.topic ? `<div class="unit-info-item"><strong>Topic</strong>${unit.topic}</div>` : ''}
+                            ${lang === 'modern' && unit.theme ? `<div class="unit-info-item"><strong>Theme</strong>${unit.theme}</div>` : ''}
+                            ${lang === 'latin' && unit.grammar ? `<div class="unit-info-item"><strong>Grammar</strong>${unit.grammar}</div>` : ''}
+                            ${lang === 'latin' && unit.culture ? `<div class="unit-info-item"><strong>Culture</strong>${unit.culture}</div>` : ''}
+                            ${lang === 'latin' && unit.author ? `<div class="unit-info-item"><strong>Text/Author</strong>${unit.author}</div>` : ''}
+                            ${lang === 'latin' && unit.derivatives ? `<div class="unit-info-item"><strong>Derivatives</strong>${unit.derivatives}</div>` : ''}
+                            ${unit.assessment ? `<div class="unit-info-item"><strong>Assessment</strong>${unit.assessment}</div>` : ''}
+                        </div>
+                        
+                        ${unit.question ? `
+                            <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 5px;">
+                                <strong>Essential Question:</strong>
+                                <div style="margin-top: 5px;">${unit.question}</div>
+                            </div>
+                        ` : ''}
+                        
+                        ${unit.notes ? `
+                            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                                <strong>Notes:</strong>
+                                <div style="margin-top: 5px;">${unit.notes}</div>
+                            </div>
+                        ` : ''}
+                        
+                        ${unit.skills.length > 0 ? `
+                            <div class="unit-skills">
+                                <h4>Skills (${unit.skills.length})</h4>
+                                <div>${unit.skills.map(s => `<span class="skill-tag">${s}</span>`).join('')}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            listDiv.innerHTML = html;
+        }
+        
+        // Delete unit
+        function deleteUnit(lang, id) {
+            if (!confirm('Are you sure you want to delete this unit?')) return;
+            
+            if (lang === 'modern') {
+                modernUnits = modernUnits.filter(u => u.id !== id);
+            } else {
+                latinUnits = latinUnits.filter(u => u.id !== id);
+            }
+            
+            renderUnits(lang);
+            markUnsaved(lang);
+        }
+        
+        // Clear form
+        function clearForm(lang) {
+            const prefix = lang === 'modern' ? 'ml' : 'lat';
+            
+            document.getElementById(`${prefix}-grade-level`).value = '';
+            document.getElementById(`${prefix}-unit-number`).value = '';
+            document.getElementById(`${prefix}-proficiency`).value = '';
+            document.getElementById(`${prefix}-assessment`).value = '';
+            document.getElementById(`${prefix}-question`).value = '';
+            document.getElementById(`${prefix}-notes`).value = '';
+            
+            if (lang === 'modern') {
+                document.getElementById('ml-topic').value = '';
+                document.getElementById('ml-theme').value = '';
+            } else {
+                document.getElementById('lat-grammar').value = '';
+                document.getElementById('lat-culture').value = '';
+                document.getElementById('lat-author').value = '';
+                document.getElementById('lat-derivatives').value = '';
+            }
+            
+            // Clear all checkboxes (both standard and custom)
+            const contentDiv = document.getElementById(`${lang}-content`);
+            contentDiv.querySelectorAll('.skill-item input[type="checkbox"]').forEach(cb => cb.checked = false);
+            
+            if (lang === 'modern') {
+                modernSelectedSkills.clear();
+            } else {
+                latinSelectedSkills.clear();
+            }
+            
+            updateSelectedSkills(lang);
+        }
+        
+        // Save progress to localStorage
+        function saveProgress() {
+            const data = {
+                modernUnits,
+                latinUnits,
+                modernCustomSkills,
+                latinCustomSkills,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('languageAlignmentData', JSON.stringify(data));
+            
+            document.getElementById('save-status-modern').textContent = 'Saved ✓';
+            document.getElementById('save-status-modern').className = 'save-status saved';
+            document.getElementById('save-status-latin').textContent = 'Saved ✓';
+            document.getElementById('save-status-latin').className = 'save-status saved';
+            
+            alert('Progress saved successfully! Your work is saved locally in your browser.');
+        }
+        
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('languageAlignmentData');
+            
+            if (!saved) {
+                alert('No saved data found.');
+                return;
+            }
+            
+            const data = JSON.parse(saved);
+            modernUnits = data.modernUnits || [];
+            latinUnits = data.latinUnits || [];
+            modernCustomSkills = data.modernCustomSkills || [];
+            latinCustomSkills = data.latinCustomSkills || [];
+            
+            renderUnits('modern');
+            renderUnits('latin');
+            renderCustomSkills('modern');
+            renderCustomSkills('latin');
+            
+            alert(`Loaded data from ${new Date(data.timestamp).toLocaleString()}`);
+        }
+        
+        // Mark as unsaved
+        function markUnsaved(lang) {
+            const statusEl = document.getElementById(`save-status-${lang}`);
+            statusEl.textContent = 'Unsaved Changes';
+            statusEl.className = 'save-status unsaved';
+        }
+        
+        // Clear all data
+        function clearAll(lang) {
+            const includeCustom = confirm(`Clear ALL ${lang === 'modern' ? 'Modern Languages' : 'Latin'} units?\n\nClick OK to also clear custom skills, or Cancel to keep custom skills.`);
+            
+            if (lang === 'modern') {
+                modernUnits = [];
+                modernSelectedSkills.clear();
+                if (includeCustom) {
+                    modernCustomSkills = [];
+                    renderCustomSkills('modern');
+                }
+            } else {
+                latinUnits = [];
+                latinSelectedSkills.clear();
+                if (includeCustom) {
+                    latinCustomSkills = [];
+                    renderCustomSkills('latin');
+                }
+            }
+            
+            renderUnits(lang);
+            clearForm(lang);
+            markUnsaved(lang);
+        }
+        
+        // Export to Excel
+        function exportToExcel(lang) {
+            const units = lang === 'modern' ? modernUnits : latinUnits;
+            
+            if (units.length === 0) {
+                alert('No units to export. Please add some units first.');
+                return;
+            }
+            
+            const wb = XLSX.utils.book_new();
+            
+            // Create alignment data
+            const alignmentData = units.map(unit => {
+                const row = {
+                    'Grade Level': unit.gradeLevel,
+                    'Unit #': unit.unitNumber,
+                    'Proficiency/Reading Level': unit.proficiency,
+                    'Assessment': unit.assessment,
+                    'Essential Question': unit.question,
+                    'Notes': unit.notes,
+                    'Skills (count)': unit.skills.length,
+                    'Skills': unit.skills.join('; ')
+                };
+                
+                if (lang === 'modern') {
+                    row['Topic'] = unit.topic;
+                    row['Theme'] = unit.theme;
+                } else {
+                    row['Grammar Focus'] = unit.grammar;
+                    row['Cultural Theme'] = unit.culture;
+                    row['Text/Author'] = unit.author;
+                    row['Derivatives'] = unit.derivatives;
+                }
+                
+                return row;
+            });
+            
+            const ws = XLSX.utils.json_to_sheet(alignmentData);
+            
+            // Set column widths
+            ws['!cols'] = [
+                {wch: 15}, {wch: 10}, {wch: 20}, {wch: 20}, {wch: 20},
+                {wch: 15}, {wch: 40}, {wch: 30}, {wch: 12}, {wch: 50}
+            ];
+            
+            XLSX.utils.book_append_sheet(wb, ws, 'Skills Alignment');
+            
+            // Create skills summary
+            const allSkills = new Set();
+            units.forEach(unit => unit.skills.forEach(skill => allSkills.add(skill)));
+            
+            const skillsData = Array.from(allSkills).map(skill => {
+                const unitsWithSkill = units.filter(u => u.skills.includes(skill));
+                return {
+                    'Skill': skill,
+                    'Used in # of Units': unitsWithSkill.length,
+                    'Grade Levels': [...new Set(unitsWithSkill.map(u => u.gradeLevel))].join(', ')
+                };
+            });
+            
+            const ws2 = XLSX.utils.json_to_sheet(skillsData);
+            ws2['!cols'] = [{wch: 50}, {wch: 20}, {wch: 40}];
+            XLSX.utils.book_append_sheet(wb, ws2, 'Skills Summary');
+            
+            // Export
+            const filename = `${lang}_alignment_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, filename);
+        }
+        
+        // Initialize on load
+        window.addEventListener('load', () => {
+            // Try to load saved data
+            const saved = localStorage.getItem('languageAlignmentData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                modernUnits = data.modernUnits || [];
+                latinUnits = data.latinUnits || [];
+                modernCustomSkills = data.modernCustomSkills || [];
+                latinCustomSkills = data.latinCustomSkills || [];
+                
+                renderUnits('modern');
+                renderUnits('latin');
+                renderCustomSkills('modern');
+                renderCustomSkills('latin');
+                
+                document.getElementById('save-status-modern').textContent = 'Saved ✓';
+                document.getElementById('save-status-modern').className = 'save-status saved';
+                document.getElementById('save-status-latin').textContent = 'Saved ✓';
+                document.getElementById('save-status-latin').className = 'save-status saved';
+            }
+            
+            // Initialize search stats
+            searchSkills('modern');
+            searchSkills('latin');
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Enter key in custom skill modal
+            if (e.key === 'Enter' && document.getElementById('custom-skill-modal').classList.contains('active')) {
+                addCustomSkill();
+            }
+            // Escape key to close modal
+            if (e.key === 'Escape' && document.getElementById('custom-skill-modal').classList.contains('active')) {
+                closeCustomSkillModal();
+            }
+        });
+    </script>
+</body>
+</html>
