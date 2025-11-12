@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumana's Story - French Finder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --olive-dark: #3D5A3C;
+            --olive-medium: #5C7C5A;
+            --olive-light: #8BA888;
+            --cream: #F5E6D3;
+            --gold: #C9A961;
+            --earth: #8B6F47;
+            --deep-green: #2C4A2B;
+            --mint: #B8D4B8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comfortaa', cursive;
+            background: linear-gradient(135deg, var(--olive-medium) 0%, var(--deep-green) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 80px;
+            color: var(--earth);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 10px 30px rgba(38, 78, 54, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--olive-medium) 0%, var(--olive-dark) 100%);
+            color: white;
+            padding: 30px 30px 20px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://i.pinimg.com/originals/c8/f4/6f/c8f46f9a8c5a3e3b2f3e5c8b8e3d3c3e.gif');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .header > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .music-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .music-btn {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .music-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .volume-icon {
+            font-size: 18px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-shadow: 
+                -0.5px -0.5px 0 #000,
+                0.5px -0.5px 0 #000,
+                -0.5px 0.5px 0 #000,
+                0.5px 0.5px 0 #000,
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000,
+                1px 1px 0 #000;
+        }
+
+        .header-icon {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-top: 20px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            color: rgba(255,255,255,0.8);
+            font-size: 1.05em;
+            font-family: 'Comfortaa', cursive;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tab:last-child {
+            border-right: none;
+        }
+
+        .tab:hover {
+            color: white;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .tab.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            border-bottom-color: var(--mint);
+            font-weight: 600;
+            box-shadow: inset 0 -3px 0 var(--mint);
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            margin-top: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--mint);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .game-area {
+            padding: 40px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--mint) 100%);
+            padding: 15px 25px;
+            border-radius: 12px;
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--earth);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--olive-dark);
+        }
+
+        .prompt-box {
+            background: var(--cream);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .prompt-label {
+            font-size: 0.9em;
+            color: var(--earth);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .prompt-text {
+            font-size: 1.2em;
+            color: var(--olive-dark);
+            font-weight: 500;
+        }
+
+        .text-area {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            line-height: 1.9;
+            font-size: 1.1em;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+            border: 2px solid var(--cream);
+        }
+
+        .chunk {
+            padding: 3px 8px;
+            margin: 2px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-block;
+            background: var(--cream);
+            border: 2px solid var(--cream);
+        }
+
+        .chunk:hover {
+            background: var(--mint);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .chunk.correct {
+            background: var(--olive-light);
+            color: white;
+            cursor: default;
+            animation: correctPulse 0.5s ease;
+        }
+
+        .chunk.wrong {
+            background: #e74c3c;
+            color: white;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .controls {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-family: 'Comfortaa', cursive;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--olive-medium) 0%, var(--olive-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gold);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--earth);
+            transform: translateY(-2px);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--earth) 100%);
+            color: white;
+            display: none;
+        }
+
+        .btn-next.show {
+            display: inline-block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .completion {
+            text-align: center;
+            padding: 60px 40px;
+            display: none;
+        }
+
+        .completion.show {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .completion-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .completion h2 {
+            font-size: 2.5em;
+            color: var(--olive-dark);
+            margin-bottom: 15px;
+        }
+
+        .completion-score {
+            font-size: 3em;
+            color: var(--gold);
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            font-weight: 600;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .feedback.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .feedback.correct {
+            color: var(--olive-dark);
+            border: 3px solid var(--olive-light);
+        }
+
+        .feedback.wrong {
+            color: #e74c3c;
+            border: 3px solid #e74c3c;
+        }
+
+        .chunk-logger {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 3px solid var(--olive-medium);
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .chunk-logger.collapsed {
+            transform: translateY(calc(100% - 50px));
+        }
+
+        .logger-header {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--mint) 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .logger-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--olive-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logger-badge {
+            background: var(--olive-dark);
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            font-weight: 700;
+        }
+
+        .logger-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9em;
+            color: var(--earth);
+        }
+
+        .logger-content {
+            padding: 20px 30px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .logger-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid var(--cream);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            resize: vertical;
+            background: #f9f9f9;
+        }
+
+        .logger-actions {
+            padding: 15px 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            background: var(--cream);
+        }
+
+        .logger-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            font-family: 'Comfortaa', cursive;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .logger-btn-copy {
+            background: var(--olive-medium);
+            color: white;
+        }
+
+        .logger-btn-export {
+            background: var(--gold);
+            color: white;
+        }
+
+        .logger-btn-clear {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .logger-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .game-area {
+                padding: 20px;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+
+            .text-area {
+                font-size: 1em;
+                padding: 15px;
+            }
+
+            .chunk-logger {
+                font-size: 0.9em;
+            }
+
+            .logger-content {
+                max-height: 200px;
+            }
+        }
+
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <audio id="bgMusic" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-slowmotion.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="correctSound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="incorrectSound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-10.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div class="header">
+            <div class="music-controls">
+                <button class="music-btn" id="playPauseBtn" onclick="toggleMusic()">▶</button>
+                <div class="volume-control">
+                    <span class="volume-icon">🔊</span>
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="30" oninput="changeVolume(this.value)">
+                </div>
+            </div>
+
+            <h1>
+                <span>🧵</span>
+                Jumana's Story
+                <span>🎸</span>
+            </h1>
+            <p>Find the French in the story!</p>
+
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('french')">🇫🇷 French Mode</button>
+                <button class="tab" onclick="switchTab('english')">🇬🇧 English Mode</button>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- French Mode -->
+        <div class="tab-content active" id="frenchContent">
+            <div class="game-area" id="frenchGameArea">
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Found</div>
+                        <div class="stat-value" id="frenchFoundCount">0/6</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Score</div>
+                        <div class="stat-value" id="frenchScore">0</div>
+                    </div>
+                </div>
+
+                <div class="prompt-box">
+                    <div class="prompt-label">🎯 Find this in French:</div>
+                    <div class="prompt-text" id="frenchPrompt"></div>
+                </div>
+
+                <div class="text-area" id="frenchText"></div>
+
+                <div class="controls">
+                    <button class="btn btn-next" id="frenchNextBtn">Next Round →</button>
+                </div>
+            </div>
+
+            <div class="completion" id="frenchCompletion">
+                <div class="completion-icon">🎉</div>
+                <h2>Bravo!</h2>
+                <p>You've completed all rounds!</p>
+                <div class="completion-score" id="frenchFinalScore">0</div>
+                <button class="btn btn-primary" onclick="restartFrenchGame()">Play Again</button>
+            </div>
+        </div>
+
+        <!-- English Mode -->
+        <div class="tab-content" id="englishContent">
+            <div class="game-area" id="englishGameArea">
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Found</div>
+                        <div class="stat-value" id="englishFoundCount">0/6</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Score</div>
+                        <div class="stat-value" id="englishScore">0</div>
+                    </div>
+                </div>
+
+                <div class="prompt-box">
+                    <div class="prompt-label">🎧 Listen and find:</div>
+                    <div class="controls">
+                        <button class="btn btn-secondary" id="playAudioBtn" onclick="playFrenchAudio()">🔊 Play French</button>
+                    </div>
+                </div>
+
+                <div class="text-area" id="englishText"></div>
+
+                <div class="controls">
+                    <button class="btn btn-next" id="englishNextBtn">Next Round →</button>
+                </div>
+            </div>
+
+            <div class="completion" id="englishCompletion">
+                <div class="completion-icon">🎉</div>
+                <h2>Excellent!</h2>
+                <p>You've completed all rounds!</p>
+                <div class="completion-score" id="englishFinalScore">0</div>
+                <button class="btn btn-primary" onclick="restartEnglishGame()">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chunk Logger -->
+    <div class="chunk-logger collapsed" id="chunkLogger">
+        <div class="logger-header" onclick="toggleLogger()">
+            <div class="logger-title">
+                📚 Chunk Log
+                <span class="logger-badge" id="loggerBadge">0</span>
+            </div>
+            <div class="logger-stats">
+                <span>🇫🇷 Mode: <strong id="frenchModeChunks">0</strong></span>
+                <span>🇬🇧 Mode: <strong id="englishModeChunks">0</strong></span>
+                <span>Total: <strong id="totalChunks">0</strong></span>
+            </div>
+        </div>
+        <div class="logger-content">
+            <textarea class="logger-textarea" id="chunkLogArea" readonly placeholder="English	French (TSV format - paste into spreadsheet)"></textarea>
+        </div>
+        <div class="logger-actions">
+            <button class="logger-btn logger-btn-copy" onclick="copyToClipboard()">📋 Copy</button>
+            <button class="logger-btn logger-btn-export" onclick="exportTSV()">💾 Export TSV</button>
+            <button class="logger-btn logger-btn-clear" onclick="clearLog()">🗑️ Clear</button>
+        </div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <script>
+        // === GAME DATA ===
+        const storyData = [
+            {
+                en: "Jumana woke up. She got up. She looked at herself in the mirror. 'No, no, no!' The contest was in three days!",
+                fr: "Jumana s'est réveillée. Elle s'est levée. Elle s'est regardée dans le miroir. « Non, non, non ! » Le concours était dans trois jours !",
+                chunks: [
+                    { en: "woke up", fr: "s'est réveillée" },
+                    { en: "got up", fr: "s'est levée" },
+                    { en: "looked at herself", fr: "s'est regardée" },
+                    { en: "in the mirror", fr: "dans le miroir" },
+                    { en: "The contest", fr: "Le concours" },
+                    { en: "in three days", fr: "dans trois jours" }
+                ]
+            },
+            {
+                en: "Chef Karim had called. 'Jumana! The Mloukhiya contest will be televised! The whole world will watch! I need a magnificent costume!'",
+                fr: "Le chef Karim avait téléphoné. « Jumana ! Le concours de Mloukhiya sera télévisé ! Le monde entier va regarder ! J'ai besoin d'un costume magnifique ! »",
+                chunks: [
+                    { en: "Chef Karim", fr: "Le chef Karim" },
+                    { en: "had called", fr: "avait téléphoné" },
+                    { en: "will be televised", fr: "sera télévisé" },
+                    { en: "The whole world", fr: "Le monde entier" },
+                    { en: "will watch", fr: "va regarder" },
+                    { en: "a magnificent costume", fr: "un costume magnifique" }
+                ]
+            },
+            {
+                en: "Jumana sat at her table. She started to draw. She drew. She drew again. Nothing. Zero inspiration.",
+                fr: "Jumana s'est assise à sa table. Elle s'est mise à dessiner. Elle a dessiné. Elle a dessiné encore. Rien. Zéro inspiration.",
+                chunks: [
+                    { en: "sat down", fr: "s'est assise" },
+                    { en: "at her table", fr: "à sa table" },
+                    { en: "started to draw", fr: "s'est mise à dessiner" },
+                    { en: "She drew again", fr: "Elle a dessiné encore" },
+                    { en: "Nothing", fr: "Rien" },
+                    { en: "Zero inspiration", fr: "Zéro inspiration" }
+                ]
+            },
+            {
+                en: "She got up. She walked around. She sat down again. Still nothing. 'I can't!' She started to cry.",
+                fr: "Elle s'est levée. Elle s'est promenée. Elle s'est assise encore. Toujours rien. « Je ne peux pas ! » Elle s'est mise à pleurer.",
+                chunks: [
+                    { en: "She got up", fr: "Elle s'est levée" },
+                    { en: "She walked around", fr: "Elle s'est promenée" },
+                    { en: "She sat down again", fr: "Elle s'est assise encore" },
+                    { en: "Still nothing", fr: "Toujours rien" },
+                    { en: "I can't", fr: "Je ne peux pas" },
+                    { en: "started to cry", fr: "s'est mise à pleurer" }
+                ]
+            },
+            {
+                en: "Karim entered with a huge steaming bowl. 'You got discouraged? No! Eat first. Panic later.'",
+                fr: "Karim est entré avec un énorme bol fumant. « Tu t'es découragée ? Non ! Mange d'abord. Panique après. »",
+                chunks: [
+                    { en: "entered with", fr: "est entré avec" },
+                    { en: "a huge steaming bowl", fr: "un énorme bol fumant" },
+                    { en: "You got discouraged", fr: "Tu t'es découragée" },
+                    { en: "Eat first", fr: "Mange d'abord" },
+                    { en: "Panic later", fr: "Panique après" },
+                    { en: "No", fr: "Non" }
+                ]
+            },
+            {
+                en: "The aroma of Mloukhiya filled the room. Roasted garlic. Fresh lemon. Dancing coriander. Jumana served herself. She tasted it. The green sauce touched her tongue—tart, rich, perfect.",
+                fr: "L'arôme de la Mloukhiya a rempli la pièce. L'ail rôti. Le citron frais. La coriandre qui danse. Jumana s'est servie. Elle a goûté. La sauce verte a touché sa langue – aigre, riche, parfaite.",
+                chunks: [
+                    { en: "The aroma", fr: "L'arôme" },
+                    { en: "filled the room", fr: "a rempli la pièce" },
+                    { en: "Roasted garlic", fr: "L'ail rôti" },
+                    { en: "served herself", fr: "s'est servie" },
+                    { en: "She tasted it", fr: "Elle a goûté" },
+                    { en: "The green sauce", fr: "La sauce verte" }
+                ]
+            },
+            {
+                en: "The chicken separated easily. She stopped. 'The olive trees!' she cried. 'Karim! I see them!'",
+                fr: "Le poulet s'est séparé facilement. Elle s'est arrêtée. « Les oliviers ! » a-t-elle crié. « Karim ! Je les vois ! »",
+                chunks: [
+                    { en: "The chicken", fr: "Le poulet" },
+                    { en: "separated easily", fr: "s'est séparé facilement" },
+                    { en: "She stopped", fr: "Elle s'est arrêtée" },
+                    { en: "The olive trees", fr: "Les oliviers" },
+                    { en: "she cried", fr: "a-t-elle crié" },
+                    { en: "I see them", fr: "Je les vois" }
+                ]
+            },
+            {
+                en: "She rushed outside. She knelt under the olive trees. She touched the leaves—silver and green. She touched the red earth. 'That's it!'",
+                fr: "Elle s'est précipitée dehors. Elle s'est agenouillée sous les oliviers. Elle a touché les feuilles – argent et vert. Elle a touché la terre rouge. « C'est ça ! »",
+                chunks: [
+                    { en: "She rushed outside", fr: "Elle s'est précipitée dehors" },
+                    { en: "She knelt", fr: "Elle s'est agenouillée" },
+                    { en: "under the olive trees", fr: "sous les oliviers" },
+                    { en: "She touched the leaves", fr: "Elle a touché les feuilles" },
+                    { en: "the red earth", fr: "la terre rouge" },
+                    { en: "That's it", fr: "C'est ça" }
+                ]
+            },
+            {
+                en: "Jumana got to work. She got up at five o'clock. She went to bed at midnight. Her fingers moved fast, fast, fast. The white jacket. The green threads. The silver olive trees. The yellow lemons.",
+                fr: "Jumana s'est mise au travail. Elle s'est levée à cinq heures. Elle s'est couchée à minuit. Ses doigts se sont déplacés vite, vite, vite. La veste blanche. Les fils verts. Les oliviers argentés. Les citrons jaunes.",
+                chunks: [
+                    { en: "got to work", fr: "s'est mise au travail" },
+                    { en: "got up at five", fr: "s'est levée à cinq heures" },
+                    { en: "went to bed at midnight", fr: "s'est couchée à minuit" },
+                    { en: "Her fingers moved", fr: "Ses doigts se sont déplacés" },
+                    { en: "The white jacket", fr: "La veste blanche" },
+                    { en: "The silver olive trees", fr: "Les oliviers argentés" }
+                ]
+            },
+            {
+                en: "Two days before the contest: CATASTROPHE. Jumana woke up. She got up. She looked at her work and— 'NOOOOO!'",
+                fr: "Deux jours avant le concours : CATASTROPHE. Jumana s'est réveillée. Elle s'est levée. Elle a regardé son travail et— « NOOOOON ! »",
+                chunks: [
+                    { en: "Two days before", fr: "Deux jours avant" },
+                    { en: "CATASTROPHE", fr: "CATASTROPHE" },
+                    { en: "woke up", fr: "s'est réveillée" },
+                    { en: "got up", fr: "s'est levée" },
+                    { en: "She looked at her work", fr: "Elle a regardé son travail" },
+                    { en: "NOOOOO", fr: "NOOOOON" }
+                ]
+            },
+            {
+                en: "Coffee. Everywhere. She had spilled coffee on the costume! The white jacket was brown. Ruined. Destroyed. Dead.",
+                fr: "Du café. Partout. Elle s'est renversé du café sur le costume ! La veste blanche était brune. Ruinée. Détruite. Morte.",
+                chunks: [
+                    { en: "Coffee", fr: "Du café" },
+                    { en: "Everywhere", fr: "Partout" },
+                    { en: "She had spilled coffee", fr: "Elle s'est renversé du café" },
+                    { en: "on the costume", fr: "sur le costume" },
+                    { en: "was brown", fr: "était brune" },
+                    { en: "Ruined", fr: "Ruinée" }
+                ]
+            },
+            {
+                en: "Jumana sat on the floor. She started to cry. 'It's over. I can't.' She called Karim. 'Karim... I spilled coffee on everything. Everything is destroyed.'",
+                fr: "Jumana s'est assise par terre. Elle s'est mise à pleurer. « C'est fini. Je ne peux pas. » Elle a téléphoné à Karim. « Karim... je me suis renversé du café sur tout. Tout est détruit. »",
+                chunks: [
+                    { en: "sat on the floor", fr: "s'est assise par terre" },
+                    { en: "started to cry", fr: "s'est mise à pleurer" },
+                    { en: "It's over", fr: "C'est fini" },
+                    { en: "She called Karim", fr: "Elle a téléphoné à Karim" },
+                    { en: "I spilled coffee", fr: "je me suis renversé du café" },
+                    { en: "Everything is destroyed", fr: "Tout est détruit" }
+                ]
+            },
+            {
+                en: "Karim arrived running. He stopped. He looked at the disaster. 'Jumana. Get up.' 'I can't start over! There are two days left!'",
+                fr: "Karim est arrivé en courant. Il s'est arrêté. Il a regardé le désastre. « Jumana. Lève-toi. » « Je ne peux pas recommencer ! Il reste deux jours ! »",
+                chunks: [
+                    { en: "arrived running", fr: "est arrivé en courant" },
+                    { en: "He stopped", fr: "Il s'est arrêté" },
+                    { en: "He looked at the disaster", fr: "Il a regardé le désastre" },
+                    { en: "Get up", fr: "Lève-toi" },
+                    { en: "I can't start over", fr: "Je ne peux pas recommencer" },
+                    { en: "two days left", fr: "reste deux jours" }
+                ]
+            },
+            {
+                en: "'Get up!' He yelled. 'My mother got up at dawn to make Mloukhiya. She burned herself three times. The oven broke. She continued! You too!'",
+                fr: "« Lève-toi ! » Il a crié. « Ma mère s'est levée à l'aube pour faire la Mloukhiya. Elle s'est brûlée trois fois. Le four s'est cassé. Elle a continué ! Toi aussi ! »",
+                chunks: [
+                    { en: "Get up", fr: "Lève-toi" },
+                    { en: "He yelled", fr: "Il a crié" },
+                    { en: "got up at dawn", fr: "s'est levée à l'aube" },
+                    { en: "She burned herself", fr: "Elle s'est brûlée" },
+                    { en: "The oven broke", fr: "Le four s'est cassé" },
+                    { en: "You too", fr: "Toi aussi" }
+                ]
+            },
+            {
+                en: "Jumana got up slowly. She looked at herself in the mirror. She said to herself: 'You are Jumana. You are strong.'",
+                fr: "Jumana s'est levée lentement. Elle s'est regardée dans le miroir. Elle s'est dit : « Tu es Jumana. Tu es forte. »",
+                chunks: [
+                    { en: "got up slowly", fr: "s'est levée lentement" },
+                    { en: "looked at herself", fr: "s'est regardée" },
+                    { en: "in the mirror", fr: "dans le miroir" },
+                    { en: "said to herself", fr: "s'est dit" },
+                    { en: "You are Jumana", fr: "Tu es Jumana" },
+                    { en: "You are strong", fr: "Tu es forte" }
+                ]
+            },
+            {
+                en: "She got to work. This time: different. Not white. Olive green—like the trees that never die. She hurried. Her fingers moved like the wind.",
+                fr: "Elle s'est mise au travail. Cette fois : différent. Pas blanc. Vert olive – comme les arbres qui ne meurent jamais. Elle s'est dépêchée. Ses doigts se sont déplacés comme le vent.",
+                chunks: [
+                    { en: "got to work", fr: "s'est mise au travail" },
+                    { en: "This time", fr: "Cette fois" },
+                    { en: "Not white", fr: "Pas blanc" },
+                    { en: "Olive green", fr: "Vert olive" },
+                    { en: "She hurried", fr: "Elle s'est dépêchée" },
+                    { en: "moved like the wind", fr: "se sont déplacés comme le vent" }
+                ]
+            },
+            {
+                en: "The day of the contest: four in the morning. Jumana sewed the last lemon. Finished. She collapsed. She fell asleep on her table.",
+                fr: "Le jour du concours : quatre heures du matin. Jumana a cousu le dernier citron. Fini. Elle s'est effondrée. Elle s'est endormie sur sa table.",
+                chunks: [
+                    { en: "The day of the contest", fr: "Le jour du concours" },
+                    { en: "four in the morning", fr: "quatre heures du matin" },
+                    { en: "sewed the last lemon", fr: "a cousu le dernier citron" },
+                    { en: "Finished", fr: "Fini" },
+                    { en: "She collapsed", fr: "Elle s'est effondrée" },
+                    { en: "fell asleep on her table", fr: "s'est endormie sur sa table" }
+                ]
+            },
+            {
+                en: "Karim woke her up. 'Jumana! It's noon! The contest starts in two hours!' She jumped up. She got dressed quickly. They rushed to the studio.",
+                fr: "Karim l'a réveillée. « Jumana ! Il est midi ! Le concours commence dans deux heures ! » Elle s'est levée d'un bond. Elle s'est habillée vite. Ils se sont précipités au studio.",
+                chunks: [
+                    { en: "woke her up", fr: "l'a réveillée" },
+                    { en: "It's noon", fr: "Il est midi" },
+                    { en: "starts in two hours", fr: "commence dans deux heures" },
+                    { en: "jumped up", fr: "s'est levée d'un bond" },
+                    { en: "got dressed quickly", fr: "s'est habillée vite" },
+                    { en: "They rushed", fr: "Ils se sont précipités" }
+                ]
+            },
+            {
+                en: "The cameras. The lights. The judges. Karim changed. He came out. The audience fell silent. Then they stood up. They applauded.",
+                fr: "Les caméras. Les lumières. Les juges. Karim s'est changé. Il est sorti. Le public s'est tu. Puis ils se sont levés. Ils ont applaudi.",
+                chunks: [
+                    { en: "The cameras", fr: "Les caméras" },
+                    { en: "The lights", fr: "Les lumières" },
+                    { en: "changed", fr: "s'est changé" },
+                    { en: "He came out", fr: "Il est sorti" },
+                    { en: "fell silent", fr: "s'est tu" },
+                    { en: "stood up", fr: "se sont levés" }
+                ]
+            },
+            {
+                en: "Karim started to cook. His hands moved quickly. The garlic sizzled. The spices exploded. The aroma of Mloukhiya spread—that smell that says 'home,' that says 'family,' that says 'history.'",
+                fr: "Karim a commencé à cuisiner. Ses mains se sont déplacées rapidement. L'ail a grésillé. Les épices ont explosé. L'arôme de la Mloukhiya s'est répandu – cette odeur qui dit « maison », qui dit « famille », qui dit « histoire ».",
+                chunks: [
+                    { en: "started to cook", fr: "a commencé à cuisiner" },
+                    { en: "His hands moved quickly", fr: "Ses mains se sont déplacées rapidement" },
+                    { en: "The garlic sizzled", fr: "L'ail a grésillé" },
+                    { en: "The spices exploded", fr: "Les épices ont explosé" },
+                    { en: "The aroma spread", fr: "L'arôme s'est répandu" },
+                    { en: "that says 'home'", fr: "qui dit « maison »" }
+                ]
+            },
+            {
+                en: "'This costume,' said Karim to the cameras, 'was almost destroyed. But Jumana got up. She fought. She created something more beautiful. Like our people. Like our olive trees. They fall. They get back up. They live.'",
+                fr: "« Ce costume », a dit Karim aux caméras, « a presque été détruit. Mais Jumana s'est levée. Elle s'est battue. Elle a créé quelque chose de plus beau. Comme notre peuple. Comme nos oliviers. Ils tombent. Ils se relèvent. Ils vivent. »",
+                chunks: [
+                    { en: "This costume", fr: "Ce costume" },
+                    { en: "was almost destroyed", fr: "a presque été détruit" },
+                    { en: "got up", fr: "s'est levée" },
+                    { en: "She fought", fr: "Elle s'est battue" },
+                    { en: "They get back up", fr: "Ils se relèvent" },
+                    { en: "They live", fr: "Ils vivent" }
+                ]
+            },
+            {
+                en: "'And now,' he smiled, 'she's going to play.' 'What?!' Jumana hid. Someone brought her electric guitar. Jumana stepped forward onto the stage.",
+                fr: "« Et maintenant », il a souri, « elle va jouer. » « Quoi ?! » Jumana s'est cachée. Quelqu'un a apporté sa guitare électrique. Jumana s'est avancée sur scène.",
+                chunks: [
+                    { en: "And now", fr: "Et maintenant" },
+                    { en: "he smiled", fr: "il a souri" },
+                    { en: "she's going to play", fr: "elle va jouer" },
+                    { en: "Jumana hid", fr: "Jumana s'est cachée" },
+                    { en: "her electric guitar", fr: "sa guitare électrique" },
+                    { en: "stepped forward onto the stage", fr: "s'est avancée sur scène" }
+                ]
+            },
+            {
+                en: "She sat down. She took the guitar. Her hands rested on the strings. And something strange happened. The fingers that sewed, that created, that embroidered—those same fingers started to play.",
+                fr: "Elle s'est assise. Elle a pris la guitare. Ses mains se sont posées sur les cordes. Et quelque chose d'étrange s'est passé. Les doigts qui cousaient, qui créaient, qui brodaient – ces mêmes doigts ont commencé à jouer.",
+                chunks: [
+                    { en: "She sat down", fr: "Elle s'est assise" },
+                    { en: "She took the guitar", fr: "Elle a pris la guitare" },
+                    { en: "Her hands rested", fr: "Ses mains se sont posées" },
+                    { en: "on the strings", fr: "sur les cordes" },
+                    { en: "something strange happened", fr: "quelque chose d'étrange s'est passé" },
+                    { en: "started to play", fr: "ont commencé à jouer" }
+                ]
+            },
+            {
+                en: "The first notes of 'Ahwak' came out. But rock version. Powerful. Strong. Wild. The audience fell silent. Then they stood up. They danced. They screamed. They lived.",
+                fr: "Les premières notes de « Ahwak » sont sorties. Mais version ROCK. Puissant. Fort. Sauvage. Le public s'est tu. Puis ils se sont levés. Ils se sont mis à danser. À crier. À vivre.",
+                chunks: [
+                    { en: "The first notes", fr: "Les premières notes" },
+                    { en: "came out", fr: "sont sorties" },
+                    { en: "rock version", fr: "version ROCK" },
+                    { en: "fell silent", fr: "s'est tu" },
+                    { en: "stood up", fr: "se sont levés" },
+                    { en: "started to dance", fr: "se sont mis à danser" }
+                ]
+            },
+            {
+                en: "Tradition and modernity. Destruction and creation. Like Mloukhiya—ancient but always new. Karim won. But everyone was talking about Jumana.",
+                fr: "Tradition et modernité. Destruction et création. Comme la Mloukhiya – ancienne mais toujours nouvelle. Karim a gagné. Mais tout le monde parlait de Jumana.",
+                chunks: [
+                    { en: "Tradition and modernity", fr: "Tradition et modernité" },
+                    { en: "Destruction and creation", fr: "Destruction et création" },
+                    { en: "Like Mloukhiya", fr: "Comme la Mloukhiya" },
+                    { en: "ancient but always new", fr: "ancienne mais toujours nouvelle" },
+                    { en: "Karim won", fr: "Karim a gagné" },
+                    { en: "everyone was talking about Jumana", fr: "tout le monde parlait de Jumana" }
+                ]
+            },
+            {
+                en: "That night, at home, Jumana looked at herself in the mirror. She smiled at herself. 'You got up,' she said to herself. 'You fought. You won.' She believed it.",
+                fr: "Cette nuit-là, chez elle, Jumana s'est regardée dans le miroir. Elle s'est souri. « Tu t'es levée », s'est-elle dit. « Tu t'es battue. Tu as gagné. » Elle l'a cru.",
+                chunks: [
+                    { en: "That night", fr: "Cette nuit-là" },
+                    { en: "at home", fr: "chez elle" },
+                    { en: "looked at herself", fr: "s'est regardée" },
+                    { en: "smiled at herself", fr: "s'est souri" },
+                    { en: "You got up", fr: "Tu t'es levée" },
+                    { en: "You fought", fr: "Tu t'es battue" }
+                ]
+            }
+        ];
+
+        // === MUSIC & SOUND ===
+        const bgMusic = document.getElementById('bgMusic');
+        const correctSound = document.getElementById('correctSound');
+        const incorrectSound = document.getElementById('incorrectSound');
+        let isPlaying = false;
+
+        bgMusic.volume = 0.3;
+
+        function toggleMusic() {
+            const btn = document.getElementById('playPauseBtn');
+            if (isPlaying) {
+                bgMusic.pause();
+                btn.textContent = '▶';
+            } else {
+                bgMusic.play();
+                btn.textContent = '⏸';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function changeVolume(value) {
+            bgMusic.volume = value / 100;
+        }
+
+        function playCorrectSound() {
+            correctSound.currentTime = 0;
+            correctSound.play();
+        }
+
+        function playIncorrectSound() {
+            incorrectSound.currentTime = 0;
+            incorrectSound.play();
+        }
+
+        // === TAB SWITCHING ===
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            if (tab === 'french') {
+                document.querySelector('.tab:first-child').classList.add('active');
+                document.getElementById('frenchContent').classList.add('active');
+            } else {
+                document.querySelector('.tab:last-child').classList.add('active');
+                document.getElementById('englishContent').classList.add('active');
+            }
+        }
+
+        // === CHUNK LOGGER ===
+        let sessionChunks = [];
+        let frenchModeCount = 0;
+        let englishModeCount = 0;
+
+        function toggleLogger() {
+            const logger = document.getElementById('chunkLogger');
+            const badge = document.getElementById('loggerBadge');
+            const isCollapsed = logger.classList.toggle('collapsed');
+            
+            if (!isCollapsed && sessionChunks.length > 0) {
+                badge.style.opacity = '0.3';
+            } else if (sessionChunks.length > 0) {
+                badge.style.opacity = '1';
+            }
+        }
+
+        function logChunk(english, french, mode) {
+            const exists = sessionChunks.some(c => c.english === english && c.french === french);
+            if (exists) return;
+
+            sessionChunks.push({ english, french, mode });
+            
+            if (mode === 'french') {
+                frenchModeCount++;
+            } else {
+                englishModeCount++;
+            }
+
+            updateLogDisplay();
+        }
+
+        function updateLogDisplay() {
+            const logArea = document.getElementById('chunkLogArea');
+            const tsvContent = sessionChunks.map(chunk => `${chunk.english}\t${chunk.french}`).join('\n');
+            logArea.value = tsvContent;
+
+            document.getElementById('totalChunks').textContent = sessionChunks.length;
+            document.getElementById('frenchModeChunks').textContent = frenchModeCount;
+            document.getElementById('englishModeChunks').textContent = englishModeCount;
+
+            const badge = document.getElementById('loggerBadge');
+            if (sessionChunks.length > 0) {
+                badge.textContent = sessionChunks.length;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function copyToClipboard() {
+            const logArea = document.getElementById('chunkLogArea');
+            const content = logArea.value;
+            
+            if (!content) {
+                showFeedback('❌ No chunks to copy', 'wrong');
+                return;
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(content).then(() => {
+                    showFeedback('📋 Copied!', 'correct');
+                }).catch(() => {
+                    fallbackCopy(logArea);
+                });
+            } else {
+                fallbackCopy(logArea);
+            }
+        }
+
+        function fallbackCopy(logArea) {
+            logArea.select();
+            try {
+                document.execCommand('copy');
+                showFeedback('📋 Copied!', 'correct');
+            } catch (err) {
+                showFeedback('❌ Copy failed', 'wrong');
+            }
+        }
+
+        function exportTSV() {
+            const logArea = document.getElementById('chunkLogArea');
+            const content = logArea.value;
+            
+            if (!content) {
+                showFeedback('❌ No chunks to export', 'wrong');
+                return;
+            }
+
+            const blob = new Blob([content], { type: 'text/tab-separated-values' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `jumana-chunks-${new Date().toISOString().split('T')[0]}.tsv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            showFeedback('💾 Exported!', 'correct');
+        }
+
+        function clearLog() {
+            if (sessionChunks.length === 0) {
+                showFeedback('⚠️ Log is already empty', 'wrong');
+                return;
+            }
+
+            if (confirm('Are you sure you want to clear the chunk log?')) {
+                sessionChunks = [];
+                frenchModeCount = 0;
+                englishModeCount = 0;
+                updateLogDisplay();
+                showFeedback('🗑️ Log cleared', 'correct');
+            }
+        }
+
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = message;
+            feedback.className = `feedback ${type} show`;
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 800);
+        }
+
+        // === FRENCH MODE ===
+        let frenchShuffledPrompts = [];
+        let frenchCurrentPromptIndex = 0;
+        let frenchCurrentChunkIndex = 0;
+        let frenchScore = 0;
+        let frenchFoundChunks = [];
+
+        function initFrenchGame() {
+            frenchShuffledPrompts = [...storyData].sort(() => Math.random() - 0.5);
+            frenchCurrentPromptIndex = 0;
+            frenchCurrentChunkIndex = 0;
+            frenchScore = 0;
+            frenchFoundChunks = [];
+            
+            document.getElementById('frenchCompletion').classList.remove('show');
+            document.getElementById('frenchGameArea').style.display = 'block';
+            document.getElementById('frenchScore').textContent = '0';
+            document.getElementById('progressFill').style.width = '0%';
+            
+            loadFrenchPrompt();
+        }
+
+        function loadFrenchPrompt() {
+            if (frenchCurrentPromptIndex >= frenchShuffledPrompts.length) {
+                showFrenchCompletion();
+                return;
+            }
+
+            const prompt = frenchShuffledPrompts[frenchCurrentPromptIndex];
+            frenchCurrentChunkIndex = 0;
+            frenchFoundChunks = [];
+
+            const shuffledChunks = [...prompt.chunks].sort(() => Math.random() - 0.5);
+            
+            document.getElementById('frenchPrompt').textContent = shuffledChunks[0].en;
+            document.getElementById('frenchFoundCount').textContent = '0/6';
+            document.getElementById('frenchNextBtn').classList.remove('show');
+
+            let frenchText = prompt.fr;
+            shuffledChunks.forEach((chunk, index) => {
+                const regex = new RegExp(chunk.fr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                frenchText = frenchText.replace(regex, `<span class="chunk" data-chunk="${index}">${chunk.fr}</span>`);
+            });
+
+            document.getElementById('frenchText').innerHTML = frenchText;
+
+            document.querySelectorAll('#frenchText .chunk').forEach(chunk => {
+                chunk.addEventListener('click', handleFrenchChunkClick);
+            });
+
+            prompt.shuffledChunks = shuffledChunks;
+        }
+
+        function handleFrenchChunkClick(e) {
+            const clickedChunk = e.target;
+            const chunkIndex = parseInt(clickedChunk.dataset.chunk);
+            const prompt = frenchShuffledPrompts[frenchCurrentPromptIndex];
+            const targetChunk = prompt.shuffledChunks[frenchCurrentChunkIndex];
+
+            if (prompt.shuffledChunks[chunkIndex].en === targetChunk.en) {
+                clickedChunk.classList.add('correct');
+                clickedChunk.removeEventListener('click', handleFrenchChunkClick);
+                frenchFoundChunks.push(chunkIndex);
+                frenchScore += 10;
+                playCorrectSound();
+                showFeedback('✓ Correct!', 'correct');
+                
+                logChunk(targetChunk.en, targetChunk.fr, 'french');
+                
+                frenchCurrentChunkIndex++;
+                document.getElementById('frenchFoundCount').textContent = `${frenchCurrentChunkIndex}/6`;
+                document.getElementById('frenchScore').textContent = frenchScore;
+                updateFrenchProgress();
+
+                if (frenchCurrentChunkIndex < 6) {
+                    document.getElementById('frenchPrompt').textContent = prompt.shuffledChunks[frenchCurrentChunkIndex].en;
+                } else {
+                    document.getElementById('frenchNextBtn').classList.add('show');
+                }
+            } else {
+                clickedChunk.classList.add('wrong');
+                playIncorrectSound();
+                showFeedback('✗ Try again', 'wrong');
+                setTimeout(() => {
+                    clickedChunk.classList.remove('wrong');
+                }, 500);
+            }
+        }
+
+        function updateFrenchProgress() {
+            const totalChunks = frenchShuffledPrompts.length * 6;
+            const completedChunks = (frenchCurrentPromptIndex * 6) + frenchCurrentChunkIndex;
+            const percentage = (completedChunks / totalChunks) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        function showFrenchCompletion() {
+            document.getElementById('frenchGameArea').style.display = 'none';
+            document.getElementById('frenchCompletion').classList.add('show');
+            document.getElementById('frenchFinalScore').textContent = frenchScore;
+        }
+
+        function restartFrenchGame() {
+            initFrenchGame();
+        }
+
+        document.getElementById('frenchNextBtn').addEventListener('click', () => {
+            frenchCurrentPromptIndex++;
+            loadFrenchPrompt();
+        });
+
+        // === ENGLISH MODE ===
+        let englishShuffledPrompts = [];
+        let englishCurrentPromptIndex = 0;
+        let englishCurrentChunkIndex = 0;
+        let englishScore = 0;
+        let englishFoundChunks = [];
+        let englishShuffledChunks = [];
+        let frenchVoice = null;
+
+        window.speechSynthesis.onvoiceschanged = () => {
+            const voices = window.speechSynthesis.getVoices();
+            frenchVoice = voices.find(voice => voice.lang.startsWith('fr')) || null;
+        };
+
+        function initEnglishGame() {
+            englishShuffledPrompts = [...storyData].sort(() => Math.random() - 0.5);
+            englishCurrentPromptIndex = 0;
+            englishCurrentChunkIndex = 0;
+            englishScore = 0;
+            englishFoundChunks = [];
+            
+            document.getElementById('englishCompletion').classList.remove('show');
+            document.getElementById('englishGameArea').style.display = 'block';
+            document.getElementById('englishScore').textContent = '0';
+            
+            loadEnglishPrompt();
+        }
+
+        function loadEnglishPrompt() {
+            if (englishCurrentPromptIndex >= englishShuffledPrompts.length) {
+                showEnglishCompletion();
+                return;
+            }
+
+            const prompt = englishShuffledPrompts[englishCurrentPromptIndex];
+            englishCurrentChunkIndex = 0;
+            englishFoundChunks = [];
+            englishShuffledChunks = [...prompt.chunks].sort(() => Math.random() - 0.5);
+
+            document.getElementById('englishFoundCount').textContent = '0/6';
+            document.getElementById('englishNextBtn').classList.remove('show');
+
+            let englishText = prompt.en;
+            prompt.chunks.forEach((chunk, index) => {
+                const regex = new RegExp(chunk.en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                englishText = englishText.replace(regex, `<span class="chunk" data-chunk="${index}">${chunk.en}</span>`);
+            });
+
+            document.getElementById('englishText').innerHTML = englishText;
+
+            document.querySelectorAll('#englishText .chunk').forEach(chunk => {
+                chunk.addEventListener('click', handleEnglishChunkClick);
+            });
+
+            setTimeout(() => {
+                playFrenchAudio();
+            }, 500);
+        }
+
+        function playFrenchAudio() {
+            if (englishCurrentChunkIndex >= englishShuffledChunks.length) return;
+
+            const targetChunk = englishShuffledChunks[englishCurrentChunkIndex];
+            let frenchText = targetChunk.fr;
+
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(frenchText);
+            utterance.lang = 'fr-FR';
+            utterance.rate = 0.8;
+            utterance.pitch = 1;
+            
+            if (frenchVoice) {
+                utterance.voice = frenchVoice;
+            }
+
+            const btn = document.getElementById('playAudioBtn');
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+            }, 200);
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function handleEnglishChunkClick(e) {
+            const clickedChunk = e.target;
+            const chunkIndex = parseInt(clickedChunk.dataset.chunk);
+            const prompt = englishShuffledPrompts[englishCurrentPromptIndex];
+            const targetChunk = englishShuffledChunks[englishCurrentChunkIndex];
+
+            if (prompt.chunks[chunkIndex].fr === targetChunk.fr) {
+                clickedChunk.classList.add('correct');
+                clickedChunk.removeEventListener('click', handleEnglishChunkClick);
+                englishFoundChunks.push(chunkIndex);
+                englishScore += 10;
+                playCorrectSound();
+                showFeedback('✓ Correct!', 'correct');
+                
+                logChunk(targetChunk.en, targetChunk.fr, 'english');
+                
+                englishCurrentChunkIndex++;
+                document.getElementById('englishFoundCount').textContent = `${englishCurrentChunkIndex}/6`;
+                document.getElementById('englishScore').textContent = englishScore;
+                updateEnglishProgress();
+
+                setTimeout(() => {
+                    if (englishCurrentChunkIndex < 6) {
+                        playFrenchAudio();
+                    } else {
+                        document.getElementById('englishNextBtn').classList.add('show');
+                    }
+                }, 500);
+            } else {
+                clickedChunk.classList.add('wrong');
+                playIncorrectSound();
+                showFeedback('✗ Try again', 'wrong');
+                setTimeout(() => {
+                    clickedChunk.classList.remove('wrong');
+                }, 500);
+            }
+        }
+
+        function updateEnglishProgress() {
+            const totalChunks = englishShuffledPrompts.length * 6;
+            const completedChunks = (englishCurrentPromptIndex * 6) + englishCurrentChunkIndex;
+            const percentage = (completedChunks / totalChunks) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        function showEnglishCompletion() {
+            document.getElementById('englishGameArea').style.display = 'none';
+            document.getElementById('englishCompletion').classList.add('show');
+            document.getElementById('englishFinalScore').textContent = englishScore;
+        }
+
+        function restartEnglishGame() {
+            initEnglishGame();
+        }
+
+        document.getElementById('englishNextBtn').addEventListener('click', () => {
+            englishCurrentPromptIndex++;
+            loadEnglishPrompt();
+        });
+
+        // Initialize both games on load
+        initFrenchGame();
+        initEnglishGame();
+    </script>
+</body>
+</html>
