@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Mloukhia Tunisienne - Module de Compréhension</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-brown: #8B6F47;
+            --dark-brown: #5C4A3A;
+            --light-cream: #F8F4EF;
+            --cream: #EDE3D6;
+            --accent-gold: #D4A574;
+            --success-green: #6B8E23;
+            --error-red: #C84B31;
+            --text-dark: #3E3E3E;
+            --border-light: #D4C4B0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, var(--light-cream) 0%, var(--cream) 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .hero {
+            position: relative;
+            height: 450px;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.4)), 
+                        url('https://ayshek.com/wp-content/uploads/2024/01/recette-de-mloukhia-tunisienne-2048x1365.jpg') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content h1 {
+            font-family: 'Lora', serif;
+            font-size: 3.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.3em;
+            font-weight: 300;
+            max-width: 800px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+        }
+
+        .content {
+            padding: 60px 50px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            padding: 40px;
+            background: var(--light-cream);
+            border-radius: 12px;
+            border-left: 5px solid var(--primary-brown);
+        }
+
+        .section-title {
+            font-family: 'Lora', serif;
+            font-size: 2em;
+            color: var(--dark-brown);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            font-size: 1.2em;
+        }
+
+        .instructions {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 2px solid var(--border-light);
+        }
+
+        .instructions p {
+            font-size: 1.05em;
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+
+        /* Drag and Drop Styles */
+        .drag-drop-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 25px;
+        }
+
+        .drag-zone, .drop-zone-container {
+            flex: 1;
+        }
+
+        .zone-title {
+            font-family: 'Lora', serif;
+            font-size: 1.2em;
+            color: var(--dark-brown);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .draggable {
+            background: white;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 2px solid var(--border-light);
+            cursor: move;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .draggable:hover {
+            border-color: var(--primary-brown);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .draggable.dragging {
+            opacity: 0.5;
+        }
+
+        .drop-zone {
+            min-height: 60px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 2px dashed var(--border-light);
+            background: white;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 1em;
+        }
+
+        .drop-zone.drag-over {
+            background: var(--cream);
+            border-color: var(--primary-brown);
+            border-style: solid;
+        }
+
+        .drop-zone.filled {
+            background: #E8F5E9;
+            border-color: var(--success-green);
+            border-style: solid;
+        }
+
+        .drop-zone.correct {
+            background: #E8F5E9;
+            border-color: var(--success-green);
+            animation: successPulse 0.5s ease;
+        }
+
+        .drop-zone.incorrect {
+            background: #FFEBEE;
+            border-color: var(--error-red);
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        /* Multiple Choice Styles */
+        .question {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border-light);
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            color: var(--dark-brown);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .option:hover {
+            background: var(--light-cream);
+            border-color: var(--primary-brown);
+        }
+
+        .option.selected {
+            background: var(--cream);
+            border-color: var(--primary-brown);
+        }
+
+        .option.correct {
+            background: #E8F5E9;
+            border-color: var(--success-green);
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        .option.incorrect {
+            background: #FFEBEE;
+            border-color: var(--error-red);
+            color: var(--error-red);
+        }
+
+        /* Dropdown Styles */
+        .fill-blank {
+            font-size: 1.1em;
+            line-height: 2;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border-light);
+        }
+
+        .dropdown {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 5px 15px;
+            border: 2px solid var(--border-light);
+            border-radius: 6px;
+            background: white;
+            font-size: 1em;
+            font-family: 'Open Sans', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown:hover {
+            border-color: var(--primary-brown);
+        }
+
+        .dropdown.correct {
+            background: #E8F5E9;
+            border-color: var(--success-green);
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        .dropdown.incorrect {
+            background: #FFEBEE;
+            border-color: var(--error-red);
+            color: var(--error-red);
+        }
+
+        /* Button Styles */
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--primary-brown);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-brown);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .btn-secondary {
+            background: var(--accent-gold);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-brown);
+            transform: translateY(-2px);
+        }
+
+        /* Score Display */
+        .score-display {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            border: 3px solid var(--primary-brown);
+            z-index: 1000;
+        }
+
+        .score-label {
+            font-size: 0.9em;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .score-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--primary-brown);
+            font-family: 'Lora', serif;
+        }
+
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 30px 50px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            font-weight: 600;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .feedback.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .feedback.success {
+            color: var(--success-green);
+            border: 3px solid var(--success-green);
+        }
+
+        .feedback.error {
+            color: var(--error-red);
+            border: 3px solid var(--error-red);
+        }
+
+        .completion-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+
+        .completion-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-family: 'Lora', serif;
+            font-size: 2.5em;
+            color: var(--dark-brown);
+            margin-bottom: 15px;
+        }
+
+        .modal-score {
+            font-size: 3em;
+            color: var(--primary-brown);
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .drag-drop-container {
+                flex-direction: column;
+            }
+
+            .score-display {
+                top: 15px;
+                right: 15px;
+                padding: 15px 20px;
+            }
+        }
+
+        /* Collapsible Recipe Styles */
+        .recipe-toggle {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            margin-bottom: 30px;
+        }
+
+        .recipe-toggle-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .recipe-toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .recipe-toggle-icon {
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+        }
+
+        .recipe-toggle-btn.active .recipe-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .recipe-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background: white;
+            border-radius: 0 0 12px 12px;
+            margin-top: -12px;
+            padding-top: 12px;
+        }
+
+        .recipe-content.expanded {
+            max-height: 2000px;
+            border: 3px solid var(--primary-brown);
+            border-top: none;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .recipe-section {
+            margin-bottom: 30px;
+        }
+
+        .recipe-section h3 {
+            font-family: 'Lora', serif;
+            color: var(--dark-brown);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--accent-gold);
+            padding-bottom: 10px;
+        }
+
+        .recipe-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .recipe-section li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.8;
+        }
+
+        .recipe-section li:before {
+            content: "•";
+            color: var(--primary-brown);
+            font-weight: bold;
+            font-size: 1.5em;
+            position: absolute;
+            left: 5px;
+        }
+
+        .recipe-section ol {
+            counter-reset: step-counter;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .recipe-section ol li {
+            counter-increment: step-counter;
+            padding: 15px;
+            padding-left: 60px;
+            margin-bottom: 15px;
+            background: var(--light-cream);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .recipe-section ol li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-brown);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="score-display">
+        <div class="score-label">Score</div>
+        <div class="score-value" id="totalScore">0</div>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>La Mloukhia Tunisienne</h1>
+                <p>Découvrez les secrets d'un trésor culinaire de la cuisine tunisienne</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Collapsible Recipe Reference -->
+            <div class="recipe-toggle">
+                <button class="recipe-toggle-btn" onclick="toggleRecipe()">
+                    <span>📖 Recette Complète (Cliquez pour consulter)</span>
+                    <span class="recipe-toggle-icon">▼</span>
+                </button>
+                <div class="recipe-content" id="recipeContent">
+                    <div class="recipe-section">
+                        <h3>🥘 Ingrédients</h3>
+                        <ul>
+                            <li><strong>500 g</strong> de viande de bœuf coupés en morceaux</li>
+                            <li><strong>100 g</strong> de Mloukhia en poudre</li>
+                            <li><strong>200 ml</strong> d'huile d'olive</li>
+                            <li><strong>3 litres</strong> d'eau environ</li>
+                            <li><strong>8 gousses</strong> d'ail écrasées</li>
+                            <li><strong>1 oignon</strong> haché</li>
+                            <li><strong>½ cuillère à soupe</strong> de tomate en conserve</li>
+                            <li><strong>3 feuilles</strong> de laurier</li>
+                            <li><strong>1 cuillère à café</strong> de harissa artisanale</li>
+                            <li>Sel et poivre selon votre goût</li>
+                            <li><strong>1 cuillère à café</strong> de coriandre et carvi</li>
+                            <li><strong>1 cuillère à café</strong> de paprika</li>
+                        </ul>
+                    </div>
+
+                    <div class="recipe-section">
+                        <h3>👨‍🍳 Préparation</h3>
+                        <ol>
+                            <li>Commencez par porter les 3 litres d'eau à ébullition dans une casserole spacieuse.</li>
+                            <li>Pendant ce temps, dans une autre casserole à feu doux, créez une base aromatique en mélangeant les feuilles de laurier avec la poudre de mloukhia, intégrant progressivement les 200 ml d'huile d'olive. Laissez mijoter ce mélange pendant 5 minutes, veillant à obtenir une pâte parfaitement homogène.</li>
+                            <li>Incorporez délicatement l'eau bouillante à la pâte de mloukhia, tout en remuant continuellement avec une spatule en bois pour éviter la formation de grumeaux.</li>
+                            <li>Maintenant, laissez mijoter à feu doux pendant 4 à 5 heures, permettant ainsi à la mloukhia de libérer tous ses arômes et de développer une texture veloutée.</li>
+                            <li>Dans un grand saladier, mélangez l'oignon haché, l'ail et la viande avec un filet d'huile d'olive. Intégrez ensuite les épices, comprenant du sel, du poivre, du paprika, de la coriandre et du carvi, ainsi qu'une cuillère à café de harissa et une tomate finement coupée.</li>
+                            <li>Versez ce mélange de viande dans la préparation de mloukhia, assurant une combinaison harmonieuse des saveurs.</li>
+                            <li>Couvrez la casserole et laissez mijoter à feu très doux pendant deux heures supplémentaires, jusqu'à ce que l'huile remonte à la surface, révélant ainsi le secret du succès de la mloukhia.</li>
+                        </ol>
+                        <p style="margin-top: 20px; font-style: italic; color: var(--primary-brown); font-size: 1.1em; text-align: center;">
+                            Préparez-vous à une explosion de saveurs tunisiennes authentiques ! Bonne dégustation ! 🎉
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Introduction -->
+            <div class="instructions">
+                <p>Bienvenue dans le monde envoûtant des saveurs tunisiennes ! Aujourd'hui, nous vous invitons à explorer un trésor culinaire de la cuisine tunisienne : la recette authentique de la Mloukhia. Plongeons ensemble dans les secrets de la préparation de la Mloukhia, une aventure gustative qui vous transportera directement dans les ruelles animées des marchés tunisiens.</p>
+            </div>
+
+            <!-- Section 1: French-English Key Terms Matching -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">🔤</span>
+                    Activité 1 : Associez les termes français et anglais
+                </h2>
+                <div class="instructions">
+                    <p>Glissez-déposez les termes anglais à côté de leurs équivalents français.</p>
+                </div>
+                <div class="drag-drop-container">
+                    <div class="drag-zone">
+                        <div class="zone-title">English Terms</div>
+                        <div class="draggable" draggable="true" data-vocab="simmered">simmered / let simmer</div>
+                        <div class="draggable" draggable="true" data-vocab="chunks">pieces / chunks</div>
+                        <div class="draggable" draggable="true" data-vocab="boiling">bring to a boil</div>
+                        <div class="draggable" draggable="true" data-vocab="crushed">crushed</div>
+                        <div class="draggable" draggable="true" data-vocab="spatula">wooden spatula</div>
+                        <div class="draggable" draggable="true" data-vocab="lumps">formation of lumps</div>
+                        <div class="draggable" draggable="true" data-vocab="velvet">velvety texture</div>
+                        <div class="draggable" draggable="true" data-vocab="rises">rises to the surface</div>
+                    </div>
+                    <div class="drop-zone-container">
+                        <div class="zone-title">Termes Français</div>
+                        <div class="drop-zone" data-answer="boiling">porter à ébullition</div>
+                        <div class="drop-zone" data-answer="chunks">coupés en morceaux</div>
+                        <div class="drop-zone" data-answer="crushed">écrasées</div>
+                        <div class="drop-zone" data-answer="simmered">laissez mijoter</div>
+                        <div class="drop-zone" data-answer="spatula">spatule en bois</div>
+                        <div class="drop-zone" data-answer="lumps">formation de grumeaux</div>
+                        <div class="drop-zone" data-answer="velvet">texture veloutée</div>
+                        <div class="drop-zone" data-answer="rises">remonte à la surface</div>
+                    </div>
+                </div>
+                <div class="btn-container">
+                    <button class="btn btn-primary" onclick="checkDragDropVocab()">Vérifier</button>
+                    <button class="btn btn-secondary" onclick="resetDragDropVocab()">Recommencer</button>
+                </div>
+            </div>
+
+            <!-- Section 2: Drag and Drop - Match Ingredients with Quantities -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">🥘</span>
+                    Activité 2 : Associez les ingrédients aux quantités
+                </h2>
+                <div class="instructions">
+                    <p>Glissez-déposez les ingrédients à côté de leurs quantités correctes.</p>
+                </div>
+                <div class="drag-drop-container">
+                    <div class="drag-zone">
+                        <div class="zone-title">Ingrédients</div>
+                        <div class="draggable" draggable="true" data-ingredient="viande">Viande de bœuf</div>
+                        <div class="draggable" draggable="true" data-ingredient="mloukhia">Mloukhia en poudre</div>
+                        <div class="draggable" draggable="true" data-ingredient="huile">Huile d'olive</div>
+                        <div class="draggable" draggable="true" data-ingredient="eau">Eau</div>
+                        <div class="draggable" draggable="true" data-ingredient="ail">Ail écrasé</div>
+                    </div>
+                    <div class="drop-zone-container">
+                        <div class="zone-title">Quantités</div>
+                        <div class="drop-zone" data-answer="viande">500 g</div>
+                        <div class="drop-zone" data-answer="mloukhia">100 g</div>
+                        <div class="drop-zone" data-answer="huile">200 ml</div>
+                        <div class="drop-zone" data-answer="eau">3 litres</div>
+                        <div class="drop-zone" data-answer="ail">8 gousses</div>
+                    </div>
+                </div>
+                <div class="btn-container">
+                    <button class="btn btn-primary" onclick="checkDragDrop1()">Vérifier</button>
+                    <button class="btn btn-secondary" onclick="resetDragDrop1()">Recommencer</button>
+                </div>
+            </div>
+
+            <!-- Section 3: Drag and Drop - Order the Steps -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">📋</span>
+                    Activité 3 : Mettez les étapes dans le bon ordre
+                </h2>
+                <div class="instructions">
+                    <p>Organisez les étapes de préparation dans l'ordre chronologique correct.</p>
+                </div>
+                <div class="drag-drop-container">
+                    <div class="drag-zone">
+                        <div class="zone-title">Étapes à organiser</div>
+                        <div class="draggable" draggable="true" data-step="3">Incorporez l'eau bouillante à la pâte</div>
+                        <div class="draggable" draggable="true" data-step="1">Portez l'eau à ébullition</div>
+                        <div class="draggable" draggable="true" data-step="5">Versez le mélange de viande dans la mloukhia</div>
+                        <div class="draggable" draggable="true" data-step="2">Créez une base aromatique avec la mloukhia</div>
+                        <div class="draggable" draggable="true" data-step="4">Préparez le mélange de viande et épices</div>
+                    </div>
+                    <div class="drop-zone-container">
+                        <div class="zone-title">Ordre correct</div>
+                        <div class="drop-zone" data-answer="1">Étape 1</div>
+                        <div class="drop-zone" data-answer="2">Étape 2</div>
+                        <div class="drop-zone" data-answer="3">Étape 3</div>
+                        <div class="drop-zone" data-answer="4">Étape 4</div>
+                        <div class="drop-zone" data-answer="5">Étape 5</div>
+                    </div>
+                </div>
+                <div class="btn-container">
+                    <button class="btn btn-primary" onclick="checkDragDrop2()">Vérifier</button>
+                    <button class="btn btn-secondary" onclick="resetDragDrop2()">Recommencer</button>
+                </div>
+            </div>
+
+            <!-- Section 4: Multiple Choice Questions -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">❓</span>
+                    Activité 4 : Questions à choix multiples
+                </h2>
+                <div class="instructions">
+                    <p>Choisissez la bonne réponse pour chaque question.</p>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">1. Combien de temps doit mijoter la mloukhia après avoir ajouté l'eau bouillante ?</div>
+                    <div class="options">
+                        <div class="option" data-question="q1" data-answer="false">2 à 3 heures</div>
+                        <div class="option" data-question="q1" data-answer="true">4 à 5 heures</div>
+                        <div class="option" data-question="q1" data-answer="false">6 à 7 heures</div>
+                        <div class="option" data-question="q1" data-answer="false">1 heure</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">2. Quel ingrédient utilise-t-on pour créer la base aromatique ?</div>
+                    <div class="options">
+                        <div class="option" data-question="q2" data-answer="false">L'ail et l'oignon</div>
+                        <div class="option" data-question="q2" data-answer="true">Les feuilles de laurier et la poudre de mloukhia</div>
+                        <div class="option" data-question="q2" data-answer="false">Les épices et la harissa</div>
+                        <div class="option" data-question="q2" data-answer="false">La viande et la tomate</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">3. Comment sait-on que la mloukhia est prête ?</div>
+                    <div class="options">
+                        <div class="option" data-question="q3" data-answer="false">Quand la viande est tendre</div>
+                        <div class="option" data-question="q3" data-answer="true">Quand l'huile remonte à la surface</div>
+                        <div class="option" data-question="q3" data-answer="false">Quand elle est très épaisse</div>
+                        <div class="option" data-question="q3" data-answer="false">Après exactement 2 heures</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">4. Quelles épices sont mentionnées dans la recette ?</div>
+                    <div class="options">
+                        <div class="option" data-question="q4" data-answer="false">Cumin, safran et cannelle</div>
+                        <div class="option" data-question="q4" data-answer="true">Paprika, coriandre et carvi</div>
+                        <div class="option" data-question="q4" data-answer="false">Gingembre, curcuma et poivre de Cayenne</div>
+                        <div class="option" data-question="q4" data-answer="false">Muscade, clou de girofle et cardamome</div>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button class="btn btn-primary" onclick="checkMultipleChoice()">Vérifier</button>
+                </div>
+            </div>
+
+            <!-- Section 5: Fill in the Blanks with Dropdowns -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">✍️</span>
+                    Activité 5 : Complétez les phrases
+                </h2>
+                <div class="instructions">
+                    <p>Choisissez les mots corrects dans les menus déroulants pour compléter les phrases.</p>
+                </div>
+
+                <div class="fill-blank">
+                    Pour préparer la mloukhia, on commence par porter 
+                    <select class="dropdown" data-answer="3 litres">
+                        <option value="">---</option>
+                        <option value="2 litres">2 litres</option>
+                        <option value="3 litres">3 litres</option>
+                        <option value="4 litres">4 litres</option>
+                    </select>
+                    d'eau à ébullition.
+                </div>
+
+                <div class="fill-blank">
+                    On crée une base aromatique en mélangeant les feuilles de 
+                    <select class="dropdown" data-answer="laurier">
+                        <option value="">---</option>
+                        <option value="basilic">basilic</option>
+                        <option value="laurier">laurier</option>
+                        <option value="menthe">menthe</option>
+                    </select>
+                    avec la poudre de mloukhia.
+                </div>
+
+                <div class="fill-blank">
+                    Il faut laisser mijoter ce mélange pendant 
+                    <select class="dropdown" data-answer="5 minutes">
+                        <option value="">---</option>
+                        <option value="3 minutes">3 minutes</option>
+                        <option value="5 minutes">5 minutes</option>
+                        <option value="10 minutes">10 minutes</option>
+                    </select>
+                    pour obtenir une pâte homogène.
+                </div>
+
+                <div class="fill-blank">
+                    On remue continuellement avec une spatule en 
+                    <select class="dropdown" data-answer="bois">
+                        <option value="">---</option>
+                        <option value="métal">métal</option>
+                        <option value="bois">bois</option>
+                        <option value="plastique">plastique</option>
+                    </select>
+                    pour éviter la formation de grumeaux.
+                </div>
+
+                <div class="fill-blank">
+                    Après avoir ajouté la viande, on laisse mijoter à feu très doux pendant 
+                    <select class="dropdown" data-answer="deux heures">
+                        <option value="">---</option>
+                        <option value="une heure">une heure</option>
+                        <option value="deux heures">deux heures</option>
+                        <option value="trois heures">trois heures</option>
+                    </select>
+                    supplémentaires.
+                </div>
+
+                <div class="btn-container">
+                    <button class="btn btn-primary" onclick="checkDropdowns()">Vérifier</button>
+                    <button class="btn btn-secondary" onclick="resetDropdowns()">Recommencer</button>
+                </div>
+            </div>
+
+            <!-- Section 6: True/False -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">✅</span>
+                    Activité 6 : Vrai ou Faux
+                </h2>
+                <div class="instructions">
+                    <p>Indiquez si les affirmations suivantes sont vraies ou fausses.</p>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">1. On utilise 500 g de viande de bœuf dans cette recette.</div>
+                    <div class="options">
+                        <div class="option" data-question="tf1" data-answer="true">Vrai</div>
+                        <div class="option" data-question="tf1" data-answer="false">Faux</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">2. Il faut ajouter l'eau froide à la pâte de mloukhia.</div>
+                    <div class="options">
+                        <div class="option" data-question="tf2" data-answer="false">Vrai</div>
+                        <div class="option" data-question="tf2" data-answer="true">Faux</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">3. La recette nécessite 8 gousses d'ail écrasées.</div>
+                    <div class="options">
+                        <div class="option" data-question="tf3" data-answer="true">Vrai</div>
+                        <div class="option" data-question="tf3" data-answer="false">Faux</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">4. On doit laisser mijoter la mloukhia pendant seulement 1 heure au total.</div>
+                    <div class="options">
+                        <div class="option" data-question="tf4" data-answer="false">Vrai</div>
+                        <div class="option" data-question="tf4" data-answer="true">Faux</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">5. Le plat est prêt quand l'huile remonte à la surface.</div>
+                    <div class="options">
+                        <div class="option" data-question="tf5" data-answer="true">Vrai</div>
+                        <div class="option" data-question="tf5" data-answer="false">Faux</div>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button class="btn btn-primary" onclick="checkTrueFalse()">Vérifier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="completion-modal" id="completionModal">
+        <div class="modal-content">
+            <div class="modal-icon">🎉</div>
+            <h2 class="modal-title">Félicitations !</h2>
+            <p>Vous avez terminé toutes les activités !</p>
+            <div class="modal-score" id="finalScore">0</div>
+            <button class="btn btn-primary" onclick="closeModal()">Fermer</button>
+        </div>
+    </div>
+
+    <script>
+        let totalScore = 0;
+        const maxScore = 180; // 6 activities: 40 + 25 + 25 + 40 + 25 + 25
+
+        // Recipe Toggle
+        function toggleRecipe() {
+            const btn = document.querySelector('.recipe-toggle-btn');
+            const content = document.getElementById('recipeContent');
+            
+            btn.classList.toggle('active');
+            content.classList.toggle('expanded');
+        }
+
+        // Drag and Drop Functionality
+        let draggedElement = null;
+
+        document.querySelectorAll('.draggable').forEach(item => {
+            item.addEventListener('dragstart', handleDragStart);
+            item.addEventListener('dragend', handleDragEnd);
+        });
+
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('drop', handleDrop);
+            zone.addEventListener('dragleave', handleDragLeave);
+        });
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            if (draggedElement) {
+                this.textContent = draggedElement.textContent;
+                this.classList.add('filled');
+                this.dataset.droppedItem = draggedElement.dataset.vocab || draggedElement.dataset.ingredient || draggedElement.dataset.step;
+                draggedElement.style.opacity = '0.3';
+                draggedElement.draggable = false;
+            }
+            return false;
+        }
+
+        // Check Vocabulary Matching (Activity 1)
+        function checkDragDropVocab() {
+            let correct = 0;
+            const dropZones = document.querySelectorAll('.content > .section:nth-of-type(1) .drop-zone');
+            
+            dropZones.forEach(zone => {
+                if (zone.dataset.droppedItem === zone.dataset.answer) {
+                    zone.classList.add('correct');
+                    zone.classList.remove('incorrect');
+                    correct++;
+                } else {
+                    zone.classList.add('incorrect');
+                    zone.classList.remove('correct');
+                }
+            });
+
+            const score = correct * 5;
+            updateScore(score);
+            showFeedback(correct === 8 ? '✓ Excellent !' : `✓ ${correct}/8 correct`, correct === 8);
+        }
+
+        function resetDragDropVocab() {
+            const section = document.querySelector('.content > .section:nth-of-type(1)');
+            const draggables = section.querySelectorAll('.draggable');
+            const dropZones = section.querySelectorAll('.drop-zone');
+
+            draggables.forEach(item => {
+                item.style.opacity = '1';
+                item.draggable = true;
+            });
+
+            const originalTexts = [
+                'porter à ébullition',
+                'coupés en morceaux',
+                'écrasées',
+                'laissez mijoter',
+                'spatule en bois',
+                'formation de grumeaux',
+                'texture veloutée',
+                'remonte à la surface'
+            ];
+
+            dropZones.forEach((zone, index) => {
+                zone.textContent = originalTexts[index];
+                zone.classList.remove('filled', 'correct', 'incorrect');
+                delete zone.dataset.droppedItem;
+            });
+        }
+
+        // Check Drag and Drop 1 (Activity 2)
+        function checkDragDrop1() {
+            let correct = 0;
+            const dropZones = document.querySelectorAll('.content > .section:nth-of-type(2) .drop-zone');
+            
+            dropZones.forEach(zone => {
+                if (zone.dataset.droppedItem === zone.dataset.answer) {
+                    zone.classList.add('correct');
+                    zone.classList.remove('incorrect');
+                    correct++;
+                } else {
+                    zone.classList.add('incorrect');
+                    zone.classList.remove('correct');
+                }
+            });
+
+            const score = correct * 5;
+            updateScore(score);
+            showFeedback(correct === 5 ? '✓ Parfait !' : `✓ ${correct}/5 correct`, correct === 5);
+        }
+
+        function resetDragDrop1() {
+            const section = document.querySelector('.content > .section:nth-of-type(2)');
+            const draggables = section.querySelectorAll('.draggable');
+            const dropZones = section.querySelectorAll('.drop-zone');
+
+            draggables.forEach(item => {
+                item.style.opacity = '1';
+                item.draggable = true;
+            });
+
+            dropZones.forEach(zone => {
+                zone.textContent = zone.dataset.answer === 'viande' ? '500 g' :
+                                   zone.dataset.answer === 'mloukhia' ? '100 g' :
+                                   zone.dataset.answer === 'huile' ? '200 ml' :
+                                   zone.dataset.answer === 'eau' ? '3 litres' :
+                                   '8 gousses';
+                zone.classList.remove('filled', 'correct', 'incorrect');
+                delete zone.dataset.droppedItem;
+            });
+        }
+
+        // Check Drag and Drop 2 (Activity 3)
+        function checkDragDrop2() {
+            let correct = 0;
+            const dropZones = document.querySelectorAll('.content > .section:nth-of-type(3) .drop-zone');
+            
+            dropZones.forEach(zone => {
+                if (zone.dataset.droppedItem === zone.dataset.answer) {
+                    zone.classList.add('correct');
+                    zone.classList.remove('incorrect');
+                    correct++;
+                } else {
+                    zone.classList.add('incorrect');
+                    zone.classList.remove('correct');
+                }
+            });
+
+            const score = correct * 5;
+            updateScore(score);
+            showFeedback(correct === 5 ? '✓ Excellent !' : `✓ ${correct}/5 correct`, correct === 5);
+        }
+
+        function resetDragDrop2() {
+            const section = document.querySelector('.content > .section:nth-of-type(3)');
+            const draggables = section.querySelectorAll('.draggable');
+            const dropZones = section.querySelectorAll('.drop-zone');
+
+            draggables.forEach(item => {
+                item.style.opacity = '1';
+                item.draggable = true;
+            });
+
+            dropZones.forEach((zone, index) => {
+                zone.textContent = `Étape ${index + 1}`;
+                zone.classList.remove('filled', 'correct', 'incorrect');
+                delete zone.dataset.droppedItem;
+            });
+        }
+
+        // Multiple Choice
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const question = this.dataset.question;
+                document.querySelectorAll(`[data-question="${question}"]`).forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+
+        function checkMultipleChoice() {
+            let correct = 0;
+            const questions = ['q1', 'q2', 'q3', 'q4'];
+            
+            questions.forEach(q => {
+                const selected = document.querySelector(`[data-question="${q}"].selected`);
+                if (selected) {
+                    if (selected.dataset.answer === 'true') {
+                        selected.classList.add('correct');
+                        selected.classList.remove('incorrect');
+                        correct++;
+                    } else {
+                        selected.classList.add('incorrect');
+                        selected.classList.remove('correct');
+                    }
+                    
+                    // Show correct answer
+                    const correctOption = document.querySelector(`[data-question="${q}"][data-answer="true"]`);
+                    if (correctOption !== selected) {
+                        correctOption.classList.add('correct');
+                    }
+                }
+            });
+
+            const score = correct * 10;
+            updateScore(score);
+            showFeedback(correct === 4 ? '✓ Bravo !' : `✓ ${correct}/4 correct`, correct === 4);
+        }
+
+        // Dropdowns
+        function checkDropdowns() {
+            let correct = 0;
+            const dropdowns = document.querySelectorAll('.dropdown');
+            
+            dropdowns.forEach(dropdown => {
+                if (dropdown.value === dropdown.dataset.answer) {
+                    dropdown.classList.add('correct');
+                    dropdown.classList.remove('incorrect');
+                    correct++;
+                } else {
+                    dropdown.classList.add('incorrect');
+                    dropdown.classList.remove('correct');
+                }
+            });
+
+            const score = correct * 5;
+            updateScore(score);
+            showFeedback(correct === 5 ? '✓ Très bien !' : `✓ ${correct}/5 correct`, correct === 5);
+        }
+
+        function resetDropdowns() {
+            document.querySelectorAll('.dropdown').forEach(dropdown => {
+                dropdown.value = '';
+                dropdown.classList.remove('correct', 'incorrect');
+            });
+        }
+
+        // True/False
+        function checkTrueFalse() {
+            let correct = 0;
+            const questions = ['tf1', 'tf2', 'tf3', 'tf4', 'tf5'];
+            
+            questions.forEach(q => {
+                const selected = document.querySelector(`[data-question="${q}"].selected`);
+                if (selected) {
+                    if (selected.dataset.answer === 'true') {
+                        selected.classList.add('correct');
+                        selected.classList.remove('incorrect');
+                        correct++;
+                    } else {
+                        selected.classList.add('incorrect');
+                        selected.classList.remove('correct');
+                    }
+                    
+                    // Show correct answer
+                    const correctOption = document.querySelector(`[data-question="${q}"][data-answer="true"]`);
+                    if (correctOption !== selected) {
+                        correctOption.classList.add('correct');
+                    }
+                }
+            });
+
+            const score = correct * 5;
+            updateScore(score);
+            showFeedback(correct === 5 ? '✓ Parfait !' : `✓ ${correct}/5 correct`, correct === 5);
+            
+            if (totalScore >= maxScore * 0.7) {
+                setTimeout(showCompletionModal, 1000);
+            }
+        }
+
+        // Score Management
+        function updateScore(points) {
+            totalScore += points;
+            document.getElementById('totalScore').textContent = totalScore;
+        }
+
+        function showFeedback(message, isSuccess) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = message;
+            feedback.className = `feedback ${isSuccess ? 'success' : 'error'} show`;
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        function showCompletionModal() {
+            document.getElementById('finalScore').textContent = `${totalScore}/${maxScore}`;
+            document.getElementById('completionModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('completionModal').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
