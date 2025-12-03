@@ -1,0 +1,2875 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révision Vocabulaire - Histoires Françaises</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #dd6b20;
+            --accent-light: #ed8936;
+            --success: #276749;
+            --success-light: #48bb78;
+            --error: #c53030;
+            --error-light: #fc8181;
+            --bg-cream: #fdf8f3;
+            --bg-paper: #fff9f0;
+            --text-dark: #1a202c;
+            --text-muted: #4a5568;
+            --border: #e2d6c8;
+            --shadow: rgba(26, 54, 93, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: drift 30s linear infinite;
+        }
+
+        @keyframes drift {
+            from { transform: translate(0, 0); }
+            to { transform: translate(30px, 30px); }
+        }
+
+        .header h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            letter-spacing: 0.02em;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        /* Progress Dashboard */
+        .progress-dashboard {
+            background: white;
+            margin: -1.5rem 2rem 2rem;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px var(--shadow);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .progress-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-paper);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .progress-item .number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .progress-item .label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        /* Navigation */
+        .nav-container {
+            padding: 0 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .story-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.25rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 25px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        /* Story Section */
+        .story-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .story-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .story-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px var(--shadow);
+            border-left: 5px solid var(--accent);
+        }
+
+        .story-header h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .story-header .summary {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Module Cards */
+        .module-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px var(--shadow);
+            overflow: hidden;
+        }
+
+        .module-header {
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-paper);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .module-header:hover {
+            background: #f7ede3;
+        }
+
+        .module-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .module-header .toggle-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+            color: var(--text-muted);
+        }
+
+        .module-header.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .module-content {
+            padding: 1.5rem;
+            display: none;
+        }
+
+        .module-content.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 2000px; }
+        }
+
+        /* Vocabulary Table */
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        .vocab-table th {
+            background: var(--primary);
+            color: white;
+            padding: 0.85rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .vocab-table td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .vocab-table tr:nth-child(even) {
+            background: var(--bg-paper);
+        }
+
+        .vocab-table tr:hover {
+            background: #fef3e2;
+        }
+
+        .french-term {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .example-sentence {
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Grammar Box */
+        .grammar-box {
+            background: linear-gradient(135deg, #ebf4ff 0%, #e6fffa 100%);
+            border: 1px solid #bee3f8;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .grammar-box-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .grammar-box-header .icon {
+            background: var(--primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .grammar-explanation {
+            display: none;
+            padding-top: 0.75rem;
+            border-top: 1px dashed #a0c4e8;
+            line-height: 1.8;
+        }
+
+        .grammar-explanation.show {
+            display: block;
+        }
+
+        .grammar-rule {
+            background: white;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .grammar-example {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.7);
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+        }
+
+        /* Exercise Styles */
+        .exercise-block {
+            background: var(--bg-paper);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .exercise-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .exercise-title .badge {
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Fill in the Blank */
+        .fill-blank-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .fill-blank-item .sentence {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.8;
+        }
+
+        .blank-input {
+            display: inline-block;
+            min-width: 120px;
+            padding: 0.4rem 0.75rem;
+            border: 2px dashed var(--border);
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            background: #fefcf8;
+            transition: all 0.2s;
+        }
+
+        .blank-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .blank-input.correct {
+            border-color: var(--success);
+            background: #f0fff4;
+            border-style: solid;
+        }
+
+        .blank-input.incorrect {
+            border-color: var(--error);
+            background: #fff5f5;
+            border-style: solid;
+        }
+
+        /* Multiple Choice */
+        .mc-options {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .mc-option {
+            padding: 0.85rem 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mc-option:hover {
+            border-color: var(--primary-light);
+            background: #f7f3ff;
+        }
+
+        .mc-option.selected {
+            border-color: var(--primary);
+            background: #ebf8ff;
+        }
+
+        .mc-option.correct {
+            border-color: var(--success);
+            background: #f0fff4;
+        }
+
+        .mc-option.incorrect {
+            border-color: var(--error);
+            background: #fff5f5;
+        }
+
+        .mc-option .radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .mc-option.selected .radio {
+            border-color: var(--primary);
+        }
+
+        .mc-option.selected .radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        /* Matching Exercise */
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .matching-column h4 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .matching-item {
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .matching-item:hover {
+            border-color: var(--accent);
+        }
+
+        .matching-item.selected {
+            border-color: var(--accent);
+            background: #fffaf0;
+        }
+
+        .matching-item.matched {
+            border-color: var(--success);
+            background: #f0fff4;
+            cursor: default;
+        }
+
+        /* Text Response */
+        .text-response {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .text-response:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2f855a;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        /* Feedback */
+        .feedback {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .feedback.success {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            color: var(--success);
+        }
+
+        .feedback.error {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            color: var(--error);
+        }
+
+        /* Word Order Exercise */
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            min-height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .word-chip {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            cursor: grab;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .word-chip:hover {
+            border-color: var(--accent);
+            background: #fffaf0;
+        }
+
+        .word-chip.placed {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .sentence-builder {
+            padding: 1rem;
+            background: white;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            min-height: 60px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .sentence-builder .word-chip {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Score Display */
+        .score-display {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .score-display .score-number {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .score-display .score-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Export Section */
+        .export-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px var(--shadow);
+            text-align: center;
+        }
+
+        .export-section h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .export-section p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Comprehension Section */
+        .comprehension-question {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .comprehension-question .question-text {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Locution Highlight */
+        .locution {
+            background: linear-gradient(180deg, transparent 60%, #fed7aa 60%);
+            padding: 0 2px;
+        }
+
+        /* Tooltip */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-dark);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            z-index: 100;
+        }
+
+        .tooltip-container:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Audio Button */
+        .audio-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--primary);
+            padding: 0.25rem;
+            transition: transform 0.2s;
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.2);
+        }
+
+        /* Save Actions */
+        .save-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .save-actions .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-save {
+            background: var(--success);
+            color: white;
+            border: none;
+        }
+
+        .btn-save:hover {
+            background: #2f855a;
+        }
+
+        .btn-load {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 0.4rem 0.9rem !important;
+        }
+
+        .btn-load:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text-dark);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--error);
+        }
+
+        .toast.info {
+            background: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .progress-dashboard {
+                margin: -1rem 1rem 1.5rem;
+                padding: 1rem;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-container {
+                padding: 0 1rem 2rem;
+            }
+
+            .matching-container {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📚 Révision de Vocabulaire</h1>
+        <p>Module interactif — Niveau Intermédiaire-Avancé</p>
+    </header>
+
+    <div class="progress-dashboard">
+        <div class="progress-item">
+            <div class="number" id="totalAnswered">0</div>
+            <div class="label">Questions Répondues</div>
+        </div>
+        <div class="progress-item">
+            <div class="number" id="correctAnswers">0</div>
+            <div class="label">Réponses Correctes</div>
+        </div>
+        <div class="progress-item">
+            <div class="number" id="accuracyRate">0%</div>
+            <div class="label">Taux de Réussite</div>
+        </div>
+        <div class="progress-item">
+            <div class="number" id="storiesCompleted">0/5</div>
+            <div class="label">Histoires Complétées</div>
+        </div>
+        <div class="progress-item save-actions">
+            <button class="btn btn-success btn-save" onclick="saveProgress()">💾 Sauvegarder</button>
+            <button class="btn btn-secondary btn-load" onclick="loadProgress()">📂 Charger</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <nav class="nav-container">
+        <div class="story-nav">
+            <button class="nav-btn active" onclick="showStory('chat')">🐱 Le Chat et la Glace</button>
+            <button class="nav-btn" onclick="showStory('boxeur')">🥊 Le Boxeur de la Terre</button>
+            <button class="nav-btn" onclick="showStory('couturiere')">🧵 La Couturière et le Chef</button>
+            <button class="nav-btn" onclick="showStory('frencher')">👻 Frencher Things</button>
+            <button class="nav-btn" onclick="showStory('vitesse')">🏎️ Le Rêve de Vitesse</button>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <!-- STORY 1: Le Chat et la Glace -->
+        <section id="story-chat" class="story-section active">
+            <div class="story-header">
+                <h2>🐱 Le Chat et la Glace qui Sauve le Monde</h2>
+                <p class="summary">Flocke, un chat blanc, perd sa fourrure à cause du réchauffement climatique. Pia et Quirin construisent un magasin de glace géant pour refroidir l'atmosphère et sauver leur chat.</p>
+            </div>
+
+            <!-- Vocabulary Module -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📖 Vocabulaire Clé et Locutions</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <table class="vocab-table">
+                        <thead>
+                            <tr>
+                                <th>Expression / Locution</th>
+                                <th>Signification</th>
+                                <th>Contexte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="french-term">ne peut pas croire ses yeux</td>
+                                <td>to not believe one's eyes; to be shocked</td>
+                                <td class="example-sentence">"Elle ne peut pas croire ses yeux" quand elle voit Flocke.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">des taches chauves</td>
+                                <td>bald spots</td>
+                                <td class="example-sentence">Le chat a des taches chauves sur son dos.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">la fourrure blanche comme la neige</td>
+                                <td>fur as white as snow (simile)</td>
+                                <td class="example-sentence">Sa fourrure blanche comme la neige disparaît.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">avoir une crise existentielle</td>
+                                <td>to have an existential crisis</td>
+                                <td class="example-sentence">Flocke a une crise existentielle à cause de sa perte de poils.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">le réchauffement climatique</td>
+                                <td>global warming / climate change</td>
+                                <td class="example-sentence">C'est à cause du réchauffement climatique que Flocke perd ses poils.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">on dirait l'été</td>
+                                <td>it looks/feels like summer</td>
+                                <td class="example-sentence">C'est mars, mais on dirait l'été.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">se mettre à pleurer / travailler</td>
+                                <td>to start crying / working</td>
+                                <td class="example-sentence">Il se met à pleurer. / Elle s'est mise au travail.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">enroulé dans une couverture</td>
+                                <td>wrapped in a blanket</td>
+                                <td class="example-sentence">Flocke reste enroulé dans une couverture douce.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">avoir honte</td>
+                                <td>to be ashamed</td>
+                                <td class="example-sentence">Il a trop honte pour sortir.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">le blanchissement des coraux</td>
+                                <td>coral bleaching</td>
+                                <td class="example-sentence">Les coraux perdent leur couleur—c'est le blanchissement.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">se blottir contre quelqu'un</td>
+                                <td>to snuggle up against someone</td>
+                                <td class="example-sentence">Flocke se blottit contre Pia sur la plage.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">un flocon d'espoir</td>
+                                <td>a snowflake of hope (metaphor)</td>
+                                <td class="example-sentence">Je suis un flocon d'espoir qui peut inspirer le changement.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>Grammaire en Contexte: « Se mettre à + infinitif »</span>
+                            <span style="margin-left: auto; font-size: 0.8rem;">Cliquez pour développer ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <p><strong>Structure:</strong> se mettre à + infinitif = to start doing something</p>
+                            <div class="grammar-rule">
+                                Cette expression pronominal indique le <em>commencement</em> d'une action. Elle implique souvent un changement soudain ou une réaction émotionnelle.
+                            </div>
+                            <p><strong>Conjugaison au passé composé:</strong></p>
+                            <div class="grammar-example">
+                                Je me suis mis(e) à pleurer<br>
+                                Tu t'es mis(e) à travailler<br>
+                                Il/Elle s'est mis(e) à courir<br>
+                                Nous nous sommes mis(es) à rire
+                            </div>
+                            <p><strong>Exemples du texte:</strong></p>
+                            <div class="grammar-example">
+                                "Il se met à pleurer." → He starts crying.<br>
+                                "Elle s'est mise au travail." → She got to work / started working.<br>
+                                "Ses yeux se remplissent de larmes." → His eyes fill with tears.
+                            </div>
+                            <p><strong>Expressions similaires:</strong> commencer à, se mettre à, entreprendre de</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fill in the Blank Exercise -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>✏️ Exercice: Complétez avec la bonne locution</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <p style="margin-bottom: 1rem; color: var(--text-muted);">Utilisez les expressions du vocabulaire pour compléter les phrases.</p>
+                    
+                    <div class="fill-blank-item" data-answer="ne peut pas croire ses yeux">
+                        <div class="sentence">1. Quand Pia voit son chat sans fourrure, elle <input type="text" class="blank-input" placeholder="expression...">.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="a honte">
+                        <div class="sentence">2. Flocke refuse de sortir parce qu'il <input type="text" class="blank-input" placeholder="expression..."> de son apparence.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="s'est mise à">
+                        <div class="sentence">3. Après la catastrophe du café, Jumana <input type="text" class="blank-input" placeholder="expression..."> travailler encore plus vite.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="on dirait">
+                        <div class="sentence">4. C'est le mois de mars, mais <input type="text" class="blank-input" placeholder="expression..."> l'été avec cette chaleur.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="enroulé dans">
+                        <div class="sentence">5. Le chat passe ses journées <input type="text" class="blank-input" placeholder="expression..."> une petite couverture douce.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkFillBlanks('story-chat')">Vérifier mes réponses</button>
+                        <button class="btn btn-secondary" onclick="showAnswers('story-chat')">Voir les réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multiple Choice Comprehension -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🎯 Compréhension: Questions à Choix Multiple</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 1 <span class="badge">Vocabulaire en contexte</span></div>
+                        <p style="margin-bottom: 1rem;">Dans le texte, l'expression « des taches chauves » signifie:</p>
+                        <div class="mc-options" data-correct="2">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Des taches de couleur différente</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Des zones sans poils sur la peau</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Des marques de saleté</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Des cicatrices anciennes</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 2 <span class="badge">Inférence</span></div>
+                        <p style="margin-bottom: 1rem;">Pourquoi le nom « Flocke » est-il significatif dans cette histoire?</p>
+                        <div class="mc-options" data-correct="3">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>C'est le nom du propriétaire original du chat</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>C'est un mot français pour « ami »</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>C'est le mot allemand pour « flocon de neige », reflétant sa fourrure blanche et le thème climatique</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>C'est un nom populaire pour les chats en France</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 3 <span class="badge">Analyse</span></div>
+                        <p style="margin-bottom: 1rem;">La métaphore « un flocon peut commencer une avalanche » suggère que:</p>
+                        <div class="mc-options" data-correct="1">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Une petite action peut déclencher un grand changement</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>L'hiver est dangereux dans les montagnes</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Les chats sont fragiles comme la neige</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Le réchauffement climatique cause des avalanches</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkMC(this.closest('.module-content'))">Vérifier mes réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Word Order Exercise -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🔀 Exercice: Remettez les mots en ordre</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <p style="margin-bottom: 1rem; color: var(--text-muted);">Cliquez sur les mots pour construire la phrase correcte.</p>
+                    
+                    <div class="exercise-block" data-answer="Flocke se met à pleurer de vraies larmes">
+                        <div class="exercise-title">Phrase 1</div>
+                        <div class="word-bank">
+                            <span class="word-chip" onclick="placeWord(this)">larmes</span>
+                            <span class="word-chip" onclick="placeWord(this)">pleurer</span>
+                            <span class="word-chip" onclick="placeWord(this)">Flocke</span>
+                            <span class="word-chip" onclick="placeWord(this)">de</span>
+                            <span class="word-chip" onclick="placeWord(this)">se</span>
+                            <span class="word-chip" onclick="placeWord(this)">met</span>
+                            <span class="word-chip" onclick="placeWord(this)">à</span>
+                            <span class="word-chip" onclick="placeWord(this)">vraies</span>
+                        </div>
+                        <div class="sentence-builder" onclick="removeLastWord(this)"></div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block" data-answer="Le chat a une crise existentielle">
+                        <div class="exercise-title">Phrase 2</div>
+                        <div class="word-bank">
+                            <span class="word-chip" onclick="placeWord(this)">existentielle</span>
+                            <span class="word-chip" onclick="placeWord(this)">Le</span>
+                            <span class="word-chip" onclick="placeWord(this)">une</span>
+                            <span class="word-chip" onclick="placeWord(this)">chat</span>
+                            <span class="word-chip" onclick="placeWord(this)">crise</span>
+                            <span class="word-chip" onclick="placeWord(this)">a</span>
+                        </div>
+                        <div class="sentence-builder" onclick="removeLastWord(this)"></div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkWordOrder(this.closest('.module-content'))">Vérifier mes réponses</button>
+                        <button class="btn btn-secondary" onclick="resetWordOrder(this.closest('.module-content'))">Recommencer</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Written Response -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📝 Expression Écrite</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="comprehension-question">
+                        <div class="question-text">En utilisant au moins 3 expressions du vocabulaire de cette histoire, décrivez un moment où vous avez vécu un changement difficile. Comment vous êtes-vous adapté(e)?</div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Expressions suggérées: avoir honte, se mettre à, ne pas croire ses yeux, avoir une crise, s'adapter</p>
+                        <textarea class="text-response" id="chat-written" placeholder="Écrivez votre réponse ici... (minimum 5 phrases)"></textarea>
+                        <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                            Mots: <span id="chat-word-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORY 2: Le Boxeur de la Terre -->
+        <section id="story-boxeur" class="story-section">
+            <div class="story-header">
+                <h2>🥊 Le Boxeur de la Terre</h2>
+                <p class="summary">Gabe perd son travail au restaurant à cause des restrictions sur le bœuf. Il découvre la boxe et devient un champion qui se bat pour l'environnement.</p>
+            </div>
+
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📖 Vocabulaire Clé et Locutions</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <table class="vocab-table">
+                        <thead>
+                            <tr>
+                                <th>Expression / Locution</th>
+                                <th>Signification</th>
+                                <th>Contexte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="french-term">faire la grève</td>
+                                <td>to go on strike</td>
+                                <td class="example-sentence">Les fermiers font la grève pour protester.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">une colère chaude qui brûle</td>
+                                <td>a hot anger that burns (metaphor)</td>
+                                <td class="example-sentence">Il a de la colère, une colère chaude qui brûle dans sa poitrine.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">frapper quelque chose</td>
+                                <td>to hit/punch something</td>
+                                <td class="example-sentence">"Tu veux frapper quelque chose?" demande Coach Martinez.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">le goût du succès / le goût de sang</td>
+                                <td>the taste of success / the taste of blood</td>
+                                <td class="example-sentence">Le goût de sang remplace le goût de succès.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">ouvrir les yeux à quelqu'un</td>
+                                <td>to open someone's eyes</td>
+                                <td class="example-sentence">"Tu m'as ouvert les yeux," dit Bill.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">un monde où nous pouvons tous respirer</td>
+                                <td>a world where we can all breathe</td>
+                                <td class="example-sentence">Je boxe pour un monde où nous pouvons tous respirer.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">des poings durs comme la pierre</td>
+                                <td>fists as hard as stone (simile)</td>
+                                <td class="example-sentence">Ses poings deviennent durs comme la pierre.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">l'argent noir du pétrole</td>
+                                <td>the black money of oil (metaphor)</td>
+                                <td class="example-sentence">L'argent noir du pétrole sponsorise le Blue Jay.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">frapper l'indifférence</td>
+                                <td>to strike/fight indifference</td>
+                                <td class="example-sentence">Ses poings ont frappé plus que Bill—ils ont frappé l'indifférence.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">changer ses habitudes</td>
+                                <td>to change one's habits</td>
+                                <td class="example-sentence">Les gens promettent de changer leurs habitudes.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>Grammaire en Contexte: Le Présent Narratif</span>
+                            <span style="margin-left: auto; font-size: 0.8rem;">Cliquez pour développer ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <p><strong>Observation:</strong> Cette histoire utilise le <em>présent de narration</em> pour créer une tension dramatique.</p>
+                            <div class="grammar-rule">
+                                Le présent narratif (ou historique) est utilisé pour raconter des événements passés comme s'ils se déroulaient maintenant. Cela rend l'histoire plus vivante et immédiate.
+                            </div>
+                            <p><strong>Exemples du texte:</strong></p>
+                            <div class="grammar-example">
+                                "L'arène rugit." (pas "a rugi")<br>
+                                "Bill attaque immédiatement." (pas "a attaqué")<br>
+                                "Gabe lève ses gants." (pas "a levé")
+                            </div>
+                            <p><strong>Effet stylistique:</strong> Le lecteur vit l'action en temps réel. C'est particulièrement efficace pour les scènes d'action comme le combat de boxe.</p>
+                            <p><strong>Comparaison:</strong></p>
+                            <div class="grammar-example">
+                                Passé composé: "Gabe a frappé Bill et Bill est tombé."<br>
+                                Présent narratif: "Gabe frappe Bill. Bill tombe."<br>
+                                → Le présent crée plus de suspense et d'urgence.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matching Exercise -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🔗 Exercice: Associez les expressions</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <p style="margin-bottom: 1rem; color: var(--text-muted);">Cliquez sur une expression française, puis sur sa signification en anglais.</p>
+                    
+                    <div class="matching-container" id="boxeur-matching">
+                        <div class="matching-column">
+                            <h4>Français</h4>
+                            <div class="matching-item" data-match="1" onclick="selectMatching(this, 'fr')">faire la grève</div>
+                            <div class="matching-item" data-match="2" onclick="selectMatching(this, 'fr')">ouvrir les yeux</div>
+                            <div class="matching-item" data-match="3" onclick="selectMatching(this, 'fr')">l'argent noir</div>
+                            <div class="matching-item" data-match="4" onclick="selectMatching(this, 'fr')">frapper l'indifférence</div>
+                            <div class="matching-item" data-match="5" onclick="selectMatching(this, 'fr')">changer ses habitudes</div>
+                        </div>
+                        <div class="matching-column">
+                            <h4>English</h4>
+                            <div class="matching-item" data-match="3" onclick="selectMatching(this, 'en')">dirty money (from oil)</div>
+                            <div class="matching-item" data-match="1" onclick="selectMatching(this, 'en')">to go on strike</div>
+                            <div class="matching-item" data-match="5" onclick="selectMatching(this, 'en')">to change one's habits</div>
+                            <div class="matching-item" data-match="4" onclick="selectMatching(this, 'en')">to fight apathy</div>
+                            <div class="matching-item" data-match="2" onclick="selectMatching(this, 'en')">to open (someone's) eyes</div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="resetMatching('boxeur-matching')">Recommencer</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comprehension -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🎯 Compréhension: Questions à Choix Multiple</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 1 <span class="badge">Symbolisme</span></div>
+                        <p style="margin-bottom: 1rem;">Que représente le combat entre Gabe et Bill « Blue Jay » Brown?</p>
+                        <div class="mc-options" data-correct="2">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Un simple match de boxe sportif</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Le conflit entre l'activisme environnemental et l'industrie pétrolière</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>La rivalité entre deux restaurants</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Un conflit personnel entre deux amis</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 2 <span class="badge">Transformation du personnage</span></div>
+                        <p style="margin-bottom: 1rem;">Comment Bill Brown change-t-il à la fin de l'histoire?</p>
+                        <div class="mc-options" data-correct="3">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Il abandonne la boxe complètement</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Il devient plus agressif envers Gabe</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Il quitte ses sponsors pétroliers et combat pour le climat avec Gabe</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Il ouvre son propre restaurant</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 3 <span class="badge">Interprétation</span></div>
+                        <p style="margin-bottom: 1rem;">L'expression « ses poings ont frappé l'indifférence » signifie que Gabe:</p>
+                        <div class="mc-options" data-correct="1">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>A combattu l'apathie des gens face aux problèmes environnementaux</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>N'a pas réussi à convaincre les gens</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>A frappé des adversaires qui ne se défendaient pas</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Est devenu indifférent aux problèmes</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkMC(this.closest('.module-content'))">Vérifier mes réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fill in the Blank -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>✏️ Exercice: Transformez au présent narratif</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <p style="margin-bottom: 1rem; color: var(--text-muted);">Réécrivez ces phrases au présent pour créer plus de tension dramatique.</p>
+                    
+                    <div class="fill-blank-item" data-answer="attaque">
+                        <div class="sentence">1. Bill a attaqué immédiatement. → Bill <input type="text" class="blank-input" placeholder="verbe au présent..."> immédiatement.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="tombe">
+                        <div class="sentence">2. Le champion est tombé. → Le champion <input type="text" class="blank-input" placeholder="verbe au présent...">.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="lève">
+                        <div class="sentence">3. Gabe a levé ses gants. → Gabe <input type="text" class="blank-input" placeholder="verbe au présent..."> ses gants.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="explose">
+                        <div class="sentence">4. Le public a explosé de joie. → Le public <input type="text" class="blank-input" placeholder="verbe au présent..."> de joie.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkFillBlanks('story-boxeur')">Vérifier mes réponses</button>
+                        <button class="btn btn-secondary" onclick="showAnswers('story-boxeur')">Voir les réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Written Response -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📝 Expression Écrite</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="comprehension-question">
+                        <div class="question-text">Gabe dit: « Ce combat n'était pas pour moi. C'était pour demain. » En utilisant les expressions de cette histoire, expliquez ce que vous feriez pour « combattre pour demain » dans votre propre vie.</div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Expressions suggérées: changer ses habitudes, ouvrir les yeux, frapper l'indifférence, faire la grève</p>
+                        <textarea class="text-response" id="boxeur-written" placeholder="Écrivez votre réponse ici... (minimum 5 phrases)"></textarea>
+                        <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                            Mots: <span id="boxeur-word-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORY 3: La Couturière et le Chef -->
+        <section id="story-couturiere" class="story-section">
+            <div class="story-header">
+                <h2>🧵 La Couturière et le Chef</h2>
+                <p class="summary">Jumana, une couturière, doit créer un costume pour le chef Karim avant un concours télévisé de Mloukhiya. Après une catastrophe, elle trouve la force de recommencer.</p>
+            </div>
+
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📖 Vocabulaire Clé et Locutions</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <table class="vocab-table">
+                        <thead>
+                            <tr>
+                                <th>Expression / Locution</th>
+                                <th>Signification</th>
+                                <th>Contexte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="french-term">se regarder dans le miroir</td>
+                                <td>to look at oneself in the mirror</td>
+                                <td class="example-sentence">Elle s'est regardée dans le miroir et s'est dit: "Tu es forte."</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">se mettre à dessiner / à pleurer</td>
+                                <td>to start drawing / crying</td>
+                                <td class="example-sentence">Elle s'est mise à dessiner. Elle s'est mise à pleurer.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">se précipiter (dehors)</td>
+                                <td>to rush (outside)</td>
+                                <td class="example-sentence">Elle s'est précipitée dehors sous les oliviers.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">s'agenouiller</td>
+                                <td>to kneel down</td>
+                                <td class="example-sentence">Elle s'est agenouillée sous les oliviers.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">se renverser du café sur</td>
+                                <td>to spill coffee on (oneself)</td>
+                                <td class="example-sentence">Elle s'est renversé du café sur le costume!</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">se lever à l'aube</td>
+                                <td>to get up at dawn</td>
+                                <td class="example-sentence">Ma mère s'est levée à l'aube pour préparer le plat.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">se brûler</td>
+                                <td>to burn oneself</td>
+                                <td class="example-sentence">Elle s'est brûlée trois fois mais elle a continué.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">se dépêcher</td>
+                                <td>to hurry</td>
+                                <td class="example-sentence">Elle s'est dépêchée pour finir le costume.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">se souvenir de</td>
+                                <td>to remember</td>
+                                <td class="example-sentence">Elle s'est souvenue que ses doigts pouvaient créer de la beauté.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">s'effondrer</td>
+                                <td>to collapse (from exhaustion)</td>
+                                <td class="example-sentence">Elle s'est effondrée après avoir terminé le costume.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>Grammaire en Contexte: Les Verbes Pronominaux au Passé Composé</span>
+                            <span style="margin-left: auto; font-size: 0.8rem;">Cliquez pour développer ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <p><strong>Règle principale:</strong> Les verbes pronominaux utilisent <strong>être</strong> comme auxiliaire au passé composé.</p>
+                            <div class="grammar-rule">
+                                <strong>Formation:</strong> Sujet + pronom réfléchi + être (conjugué) + participe passé<br>
+                                <em>Attention à l'accord!</em> Le participe passé s'accorde généralement avec le sujet.
+                            </div>
+                            <p><strong>Exemples de l'histoire:</strong></p>
+                            <div class="grammar-example">
+                                Jumana <strong>s'est regardée</strong> (elle = féminin, accord en -ée)<br>
+                                Elle <strong>s'est mise</strong> à travailler (se mettre → mise)<br>
+                                Elle <strong>s'est précipitée</strong> dehors<br>
+                                Elle <strong>s'est brûlée</strong> trois fois
+                            </div>
+                            <p><strong>⚠️ Exception importante:</strong></p>
+                            <div class="grammar-rule">
+                                Quand le COD suit le verbe, <strong>pas d'accord</strong>:<br>
+                                "Elle s'est renvers<strong>é</strong> du café" (café = COD après le verbe)<br>
+                                vs. "La tasse qu'elle s'est renvers<strong>ée</strong>" (la tasse = COD avant)
+                            </div>
+                            <p><strong>Liste des verbes pronominaux de l'histoire:</strong></p>
+                            <div class="grammar-example">
+                                se réveiller → s'est réveillé(e)<br>
+                                se lever → s'est levé(e)<br>
+                                se mettre à → s'est mis(e) à<br>
+                                se précipiter → s'est précipité(e)<br>
+                                s'agenouiller → s'est agenouillé(e)<br>
+                                se dépêcher → s'est dépêché(e)<br>
+                                s'effondrer → s'est effondré(e)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conjugation Exercise -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>✏️ Exercice: Conjuguez les verbes pronominaux</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <p style="margin-bottom: 1rem; color: var(--text-muted);">Conjuguez le verbe pronominal au passé composé. Attention à l'accord!</p>
+                    
+                    <div class="fill-blank-item" data-answer="s'est réveillée">
+                        <div class="sentence">1. Jumana (se réveiller) <input type="text" class="blank-input" placeholder="passé composé..."> à cinq heures.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="se sont levés">
+                        <div class="sentence">2. Les spectateurs (se lever) <input type="text" class="blank-input" placeholder="passé composé..."> pour applaudir.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="s'est mise">
+                        <div class="sentence">3. Elle (se mettre) <input type="text" class="blank-input" placeholder="passé composé..."> à pleurer après la catastrophe.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="s'est brûlé">
+                        <div class="sentence">4. Elle (se brûler) <input type="text" class="blank-input" placeholder="passé composé..."> la main en cuisinant. (COD = la main, après)</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="se sont déplacés">
+                        <div class="sentence">5. Ses doigts (se déplacer) <input type="text" class="blank-input" placeholder="passé composé..."> vite comme le vent.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkFillBlanks('story-couturiere')">Vérifier mes réponses</button>
+                        <button class="btn btn-secondary" onclick="showAnswers('story-couturiere')">Voir les réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comprehension -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🎯 Compréhension: Questions à Choix Multiple</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 1 <span class="badge">Thème</span></div>
+                        <p style="margin-bottom: 1rem;">Quel est le thème principal de cette histoire?</p>
+                        <div class="mc-options" data-correct="2">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>La rivalité entre deux artistes</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>La persévérance et la résilience face aux obstacles</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>L'importance de la cuisine traditionnelle</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Les dangers du travail sous pression</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 2 <span class="badge">Symbolisme</span></div>
+                        <p style="margin-bottom: 1rem;">Que symbolisent les oliviers dans l'histoire?</p>
+                        <div class="mc-options" data-correct="3">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>La nature méditerranéenne</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>La richesse et le luxe</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>La résilience—ils tombent mais se relèvent toujours</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>La tradition culinaire</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 3 <span class="badge">Détail</span></div>
+                        <p style="margin-bottom: 1rem;">Pourquoi Jumana change-t-elle la couleur du costume après l'accident?</p>
+                        <div class="mc-options" data-correct="4">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Parce que Karim préfère le vert</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Parce que le blanc n'est plus à la mode</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Parce qu'elle n'a plus de tissu blanc</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Elle choisit le vert olive—comme les arbres qui ne meurent jamais</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkMC(this.closest('.module-content'))">Vérifier mes réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Written Response -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📝 Expression Écrite</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="comprehension-question">
+                        <div class="question-text">Racontez une journée difficile de votre vie en utilisant au moins 5 verbes pronominaux au passé composé. Décrivez ce qui s'est passé et comment vous avez surmonté les difficultés.</div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Verbes suggérés: se réveiller, se lever, se dépêcher, se mettre à, se souvenir, s'effondrer, se relever</p>
+                        <textarea class="text-response" id="couturiere-written" placeholder="Écrivez votre réponse ici... (minimum 6 phrases avec verbes pronominaux soulignés)"></textarea>
+                        <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                            Mots: <span id="couturiere-word-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORY 4: Frencher Things -->
+        <section id="story-frencher" class="story-section">
+            <div class="story-header">
+                <h2>👻 Frencher Things</h2>
+                <p class="summary">Jordyn doit sauver son amie Maryn qui a disparu dans une dimension parallèle appelée « L'Envers ». Elle découvre qu'elle a des pouvoirs spéciaux liés à sa voix.</p>
+            </div>
+
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📖 Vocabulaire Clé et Locutions</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <table class="vocab-table">
+                        <thead>
+                            <tr>
+                                <th>Expression / Locution</th>
+                                <th>Signification</th>
+                                <th>Contexte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="french-term">quelque chose de terrible s'est passé</td>
+                                <td>something terrible happened</td>
+                                <td class="example-sentence">Ce soir, quelque chose de terrible s'est passé.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">avoir peur</td>
+                                <td>to be afraid</td>
+                                <td class="example-sentence">Jordyn avait peur, mais elle était courageuse.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">sentir bizarre / sentir la mort</td>
+                                <td>to smell weird / to smell like death</td>
+                                <td class="example-sentence">L'air sentait bizarre, comme quelque chose de pourri.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">une fissure géante</td>
+                                <td>a giant crack/rift</td>
+                                <td class="example-sentence">Elle a vu une fissure géante dans un arbre.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">on n'a pas le choix</td>
+                                <td>we have no choice</td>
+                                <td class="example-sentence">"Maryn est là-dedans! On n'a pas le choix!"</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">de l'autre côté</td>
+                                <td>on the other side</td>
+                                <td class="example-sentence">De l'autre côté, tout était différent.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">des particules flottaient</td>
+                                <td>particles were floating</td>
+                                <td class="example-sentence">Des particules blanches flottaient dans l'air comme de la neige.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">en plein air</td>
+                                <td>in mid-air; suspended</td>
+                                <td class="example-sentence">Le monstre s'est arrêté en plein air!</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">hurler de douleur</td>
+                                <td>to scream in pain</td>
+                                <td class="example-sentence">Le Frenchagorgon a hurlé de douleur!</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">laisser tranquille</td>
+                                <td>to leave alone</td>
+                                <td class="example-sentence">"Laisse mon amie tranquille!" a crié Jordyn.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>Grammaire en Contexte: L'Imparfait vs. Le Passé Composé</span>
+                            <span style="margin-left: auto; font-size: 0.8rem;">Cliquez pour développer ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <p><strong>Dans cette histoire:</strong> On utilise les deux temps pour créer l'atmosphère et raconter les actions.</p>
+                            <div class="grammar-rule">
+                                <strong>L'imparfait</strong> = description, contexte, émotions, actions en cours<br>
+                                <strong>Le passé composé</strong> = actions complètes, événements ponctuels
+                            </div>
+                            <p><strong>Exemples de l'histoire:</strong></p>
+                            <div class="grammar-example">
+                                <strong>Imparfait (contexte/description):</strong><br>
+                                "Il faisait nuit." (description du temps)<br>
+                                "L'air était froid et humide." (description sensorielle)<br>
+                                "Jordyn avait peur." (état émotionnel)<br>
+                                "Des particules flottaient." (action continue)<br><br>
+                                <strong>Passé composé (actions):</strong><br>
+                                "Son téléphone a sonné." (événement ponctuel)<br>
+                                "Ils ont traversé le portail." (action complète)<br>
+                                "Le monstre a explosé." (événement unique)
+                            </div>
+                            <p><strong>Combinaison typique:</strong></p>
+                            <div class="grammar-example">
+                                "Jordyn <strong>était</strong> chez elle (imparfait: contexte)<br>
+                                quand son téléphone <strong>a sonné</strong>." (passé composé: interruption)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fill in the Blank -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>✏️ Exercice: Imparfait ou Passé Composé?</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <p style="margin-bottom: 1rem; color: var(--text-muted);">Choisissez le temps correct: imparfait (IMP) ou passé composé (PC).</p>
+                    
+                    <div class="fill-blank-item" data-answer="faisait">
+                        <div class="sentence">1. Il (faire - IMP) <input type="text" class="blank-input" placeholder="conjugaison..."> nuit quand ils sont arrivés.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="a vu">
+                        <div class="sentence">2. Soudain, Jordyn (voir - PC) <input type="text" class="blank-input" placeholder="conjugaison..."> une fissure géante.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="avait">
+                        <div class="sentence">3. Jordyn (avoir - IMP) <input type="text" class="blank-input" placeholder="conjugaison..."> peur, mais elle était courageuse.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="ont traversé">
+                        <div class="sentence">4. Ensemble, ils (traverser - PC) <input type="text" class="blank-input" placeholder="conjugaison..."> le portail.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="flottaient">
+                        <div class="sentence">5. Des particules blanches (flotter - IMP) <input type="text" class="blank-input" placeholder="conjugaison..."> dans l'air.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkFillBlanks('story-frencher')">Vérifier mes réponses</button>
+                        <button class="btn btn-secondary" onclick="showAnswers('story-frencher')">Voir les réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Word Order -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🔀 Exercice: Remettez les mots en ordre</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="exercise-block" data-answer="Laisse mon amie tranquille">
+                        <div class="exercise-title">Phrase 1 - Impératif</div>
+                        <div class="word-bank">
+                            <span class="word-chip" onclick="placeWord(this)">tranquille</span>
+                            <span class="word-chip" onclick="placeWord(this)">mon</span>
+                            <span class="word-chip" onclick="placeWord(this)">amie</span>
+                            <span class="word-chip" onclick="placeWord(this)">Laisse</span>
+                        </div>
+                        <div class="sentence-builder" onclick="removeLastWord(this)"></div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block" data-answer="On n'a pas le choix">
+                        <div class="exercise-title">Phrase 2 - Négation</div>
+                        <div class="word-bank">
+                            <span class="word-chip" onclick="placeWord(this)">choix</span>
+                            <span class="word-chip" onclick="placeWord(this)">pas</span>
+                            <span class="word-chip" onclick="placeWord(this)">n'a</span>
+                            <span class="word-chip" onclick="placeWord(this)">On</span>
+                            <span class="word-chip" onclick="placeWord(this)">le</span>
+                        </div>
+                        <div class="sentence-builder" onclick="removeLastWord(this)"></div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkWordOrder(this.closest('.module-content'))">Vérifier mes réponses</button>
+                        <button class="btn btn-secondary" onclick="resetWordOrder(this.closest('.module-content'))">Recommencer</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comprehension -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🎯 Compréhension: Questions à Choix Multiple</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 1 <span class="badge">Pouvoirs</span></div>
+                        <p style="margin-bottom: 1rem;">Quel est le pouvoir spécial de Jordyn?</p>
+                        <div class="mc-options" data-correct="3">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Elle peut voler</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Elle peut devenir invisible</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Sa voix et son chant ont des pouvoirs destructeurs contre les monstres</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Elle peut lire les pensées</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 2 <span class="badge">Description</span></div>
+                        <p style="margin-bottom: 1rem;">Comment l'auteur décrit-il « L'Envers »?</p>
+                        <div class="mc-options" data-correct="1">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Un Hawkins avec un ciel noir et rouge, des arbres morts, et une odeur de mort</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Un monde coloré et joyeux</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Une forêt normale la nuit</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Un laboratoire souterrain</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkMC(this.closest('.module-content'))">Vérifier mes réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Written Response -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📝 Expression Écrite</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="comprehension-question">
+                        <div class="question-text">Décrivez une scène effrayante (réelle ou imaginaire) en utilisant l'imparfait pour le contexte et le passé composé pour les actions. Utilisez au moins 3 expressions sensorielles (l'air sentait..., il faisait..., on entendait...).</div>
+                        <textarea class="text-response" id="frencher-written" placeholder="Écrivez votre réponse ici... (minimum 6 phrases)"></textarea>
+                        <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                            Mots: <span id="frencher-word-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORY 5: Le Rêve de Vitesse -->
+        <section id="story-vitesse" class="story-section">
+            <div class="story-header">
+                <h2>🏎️ Le Rêve de Vitesse</h2>
+                <p class="summary">Cédric, un coureur talentueux mais avec un français imparfait, doit passer un examen oral pour obtenir sa licence. Il rivalise avec Philippe, qui parle parfaitement mais conduit mal.</p>
+            </div>
+
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📖 Vocabulaire Clé et Locutions</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <table class="vocab-table">
+                        <thead>
+                            <tr>
+                                <th>Expression / Locution</th>
+                                <th>Signification</th>
+                                <th>Contexte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="french-term">faillir + infinitif</td>
+                                <td>to almost do something</td>
+                                <td class="example-sentence">J'ai failli crasher. J'ai failli avoir un accident.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">avaler difficilement</td>
+                                <td>to swallow with difficulty (nervously)</td>
+                                <td class="example-sentence">Cédric avale difficilement avant l'examen.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">son cœur battait comme un tambour</td>
+                                <td>his heart was beating like a drum</td>
+                                <td class="example-sentence">Mon cœur battait comme un tambour fou.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">déraper</td>
+                                <td>to skid / to lose control</td>
+                                <td class="example-sentence">La voiture a commencé à déraper sur la route mouillée.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">au dernier moment</td>
+                                <td>at the last moment</td>
+                                <td class="example-sentence">Au dernier moment, j'ai tourné le volant.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">éviter le mur</td>
+                                <td>to avoid the wall</td>
+                                <td class="example-sentence">J'ai évité le mur de justesse.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">une raison de gagner</td>
+                                <td>a reason to win</td>
+                                <td class="example-sentence">J'ai une raison de gagner plus importante que l'orgueil.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">devenir viral</td>
+                                <td>to go viral</td>
+                                <td class="example-sentence">Cette nuit-là, la vidéo devient virale.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">les mots sortent maladroitement</td>
+                                <td>the words come out clumsily</td>
+                                <td class="example-sentence">Il pense en français, mais les mots sortent maladroitement.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">ce qui ne peut pas s'enseigner</td>
+                                <td>what cannot be taught</td>
+                                <td class="example-sentence">Ce talent—ne peut pas s'enseigner.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>Grammaire en Contexte: « Faillir + infinitif » (Nearly/Almost)</span>
+                            <span style="margin-left: auto; font-size: 0.8rem;">Cliquez pour développer ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <p><strong>Usage:</strong> « Faillir » + infinitif exprime qu'une action a presque eu lieu mais ne s'est pas produite.</p>
+                            <div class="grammar-rule">
+                                <strong>Structure:</strong> faillir (conjugué) + infinitif<br>
+                                = to almost/nearly (do something)
+                            </div>
+                            <p><strong>Conjugaison au passé composé:</strong></p>
+                            <div class="grammar-example">
+                                J'ai failli tomber. (I almost fell.)<br>
+                                Tu as failli rater le bus. (You almost missed the bus.)<br>
+                                Il a failli avoir un accident. (He almost had an accident.)<br>
+                                Nous avons failli oublier. (We almost forgot.)
+                            </div>
+                            <p><strong>Exemples de l'histoire:</strong></p>
+                            <div class="grammar-example">
+                                "J'ai <strong>failli</strong> crasher."<br>
+                                "J'ai <strong>failli</strong> percuter le mur."<br>
+                                "J'ai <strong>failli</strong> avoir un accident."
+                            </div>
+                            <p><strong>Synonymes:</strong> manquer de, être sur le point de, presque</p>
+                            <div class="grammar-example">
+                                J'ai failli tomber = J'ai manqué de tomber = Je suis presque tombé(e)
+                            </div>
+                            <p><strong>⚠️ Attention:</strong> « Tomber » utilise <em>être</em> au passé composé, pas « avoir »!</p>
+                        </div>
+                    </div>
+
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>Grammaire en Contexte: Les Comparatifs</span>
+                            <span style="margin-left: auto; font-size: 0.8rem;">Cliquez pour développer ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <p><strong>Structures comparatives dans le texte:</strong></p>
+                            <div class="grammar-rule">
+                                <strong>plus... que</strong> = more... than<br>
+                                <strong>moins... que</strong> = less... than<br>
+                                <strong>aussi... que</strong> = as... as<br>
+                                <strong>mieux/meilleur que</strong> = better than
+                            </div>
+                            <div class="grammar-example">
+                                "Son français est <strong>plus élégant qu'</strong>un poème."<br>
+                                "Il conduit <strong>mieux que</strong> Philippe."<br>
+                                "Son français est <strong>pire que</strong> le mien."<br>
+                                "Cette voiture coûte <strong>plus que</strong> la maison de Cédric."
+                            </div>
+                            <p><strong>Attention aux irréguliers:</strong></p>
+                            <div class="grammar-example">
+                                bon → meilleur (pas "plus bon")<br>
+                                bien → mieux (pas "plus bien")<br>
+                                mauvais → pire OU plus mauvais<br>
+                                mal → pis OU plus mal
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fill in the Blank -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>✏️ Exercice: Utilisez « faillir + infinitif »</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <p style="margin-bottom: 1rem; color: var(--text-muted);">Reformulez ces phrases en utilisant « faillir » au passé composé.</p>
+                    
+                    <div class="fill-blank-item" data-answer="ai failli">
+                        <div class="sentence">1. J'ai presque eu un accident. → J' <input type="text" class="blank-input" placeholder="faillir..."> avoir un accident.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="a failli">
+                        <div class="sentence">2. Elle a presque raté son examen. → Elle <input type="text" class="blank-input" placeholder="faillir..."> rater son examen.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="avons failli">
+                        <div class="sentence">3. Nous avons presque oublié le rendez-vous. → Nous <input type="text" class="blank-input" placeholder="faillir..."> oublier le rendez-vous.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="ont failli">
+                        <div class="sentence">4. Les voitures ont presque percuté le mur. → Les voitures <input type="text" class="blank-input" placeholder="faillir..."> percuter le mur.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkFillBlanks('story-vitesse')">Vérifier mes réponses</button>
+                        <button class="btn btn-secondary" onclick="showAnswers('story-vitesse')">Voir les réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparatives Exercise -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>✏️ Exercice: Les Comparatifs</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <p style="margin-bottom: 1rem; color: var(--text-muted);">Complétez avec le bon comparatif: plus, moins, aussi, mieux, meilleur, pire.</p>
+                    
+                    <div class="fill-blank-item" data-answer="plus">
+                        <div class="sentence">1. Son français est <input type="text" class="blank-input" placeholder="comparatif..."> élégant qu'un poème.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="mieux">
+                        <div class="sentence">2. Cédric conduit <input type="text" class="blank-input" placeholder="comparatif..."> que Philippe.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="pire">
+                        <div class="sentence">3. "Son français est <input type="text" class="blank-input" placeholder="comparatif..."> que le mien!" crie Philippe.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="fill-blank-item" data-answer="meilleur">
+                        <div class="sentence">4. Philippe parle <input type="text" class="blank-input" placeholder="comparatif..."> français, mais Cédric est un <input type="text" class="blank-input" data-answer2="meilleur" placeholder="comparatif..."> pilote.</div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkFillBlanks('story-vitesse', true)">Vérifier mes réponses</button>
+                        <button class="btn btn-secondary" onclick="showAnswers('story-vitesse')">Voir les réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comprehension -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🎯 Compréhension: Questions à Choix Multiple</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 1 <span class="badge">Contraste</span></div>
+                        <p style="margin-bottom: 1rem;">Quel est le contraste principal entre Cédric et Philippe?</p>
+                        <div class="mc-options" data-correct="2">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Philippe est plus jeune que Cédric</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Philippe parle parfaitement mais conduit mal; Cédric parle mal mais conduit extraordinairement</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Cédric est riche et Philippe est pauvre</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Philippe veut aider son chien, Cédric veut la gloire</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 2 <span class="badge">Motivation</span></div>
+                        <p style="margin-bottom: 1rem;">Pourquoi Cédric a-t-il besoin de gagner de l'argent?</p>
+                        <div class="mc-options" data-correct="3">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Pour acheter une nouvelle voiture</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Pour voyager à Monaco</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Pour payer le traitement médical de son chien Roux</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Pour impressionner Philippe</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 3 <span class="badge">Message</span></div>
+                        <p style="margin-bottom: 1rem;">Quel message l'examinateur communique-t-il à la fin?</p>
+                        <div class="mc-options" data-correct="4">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>La perfection linguistique est essentielle pour réussir</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Philippe mérite de gagner grâce à son éducation</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Les examens de français sont injustes</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="radio"></span>
+                                <span>Le talent naturel et la passion sont plus importants que la perfection technique</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkMC(this.closest('.module-content'))">Vérifier mes réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Written Response -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📝 Expression Écrite</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="comprehension-question">
+                        <div class="question-text">L'examinateur dit: « La course n'est pas une dissertation. C'est de l'art. » Êtes-vous d'accord que la passion et le talent naturel sont plus importants que la perfection technique? Utilisez des comparatifs dans votre réponse.</div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Expressions suggérées: plus important que, mieux que, aussi... que, faillir + infinitif</p>
+                        <textarea class="text-response" id="vitesse-written" placeholder="Écrivez votre réponse ici... (minimum 6 phrases)"></textarea>
+                        <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                            Mots: <span id="vitesse-word-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Export Section -->
+        <div class="export-section">
+            <h3>📊 Exportez Vos Résultats</h3>
+            <p>Téléchargez un résumé de vos réponses et votre score pour mesurer votre apprentissage.</p>
+            <div class="btn-group" style="justify-content: center;">
+                <button class="btn btn-primary" onclick="exportResults()">📥 Exporter en TXT</button>
+                <button class="btn btn-secondary" onclick="resetAll()">🔄 Recommencer Tout</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global state
+        let stats = {
+            totalAnswered: 0,
+            correctAnswers: 0,
+            storiesCompleted: new Set()
+        };
+
+        let matchingState = {
+            selectedFr: null,
+            selectedEn: null
+        };
+
+        let userResponses = {};
+
+        // Navigation
+        function showStory(storyId) {
+            document.querySelectorAll('.story-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('story-' + storyId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Module toggle
+        function toggleModule(header) {
+            header.classList.toggle('expanded');
+            const content = header.nextElementSibling;
+            content.classList.toggle('show');
+        }
+
+        // Grammar toggle
+        function toggleGrammar(header) {
+            const explanation = header.nextElementSibling;
+            explanation.classList.toggle('show');
+        }
+
+        // Fill in the blank checking
+        function checkFillBlanks(sectionId, hasMultiple = false) {
+            const section = document.getElementById(sectionId);
+            const items = section.querySelectorAll('.fill-blank-item');
+            
+            items.forEach(item => {
+                const inputs = item.querySelectorAll('.blank-input');
+                const feedback = item.querySelector('.feedback');
+                const answer = item.dataset.answer.toLowerCase().trim();
+                
+                inputs.forEach((input, idx) => {
+                    const userAnswer = input.value.toLowerCase().trim();
+                    const correctAnswer = idx === 0 ? answer : (input.dataset.answer2 || '').toLowerCase().trim();
+                    
+                    if (userAnswer === correctAnswer || 
+                        (correctAnswer && userAnswer === correctAnswer)) {
+                        input.classList.remove('incorrect');
+                        input.classList.add('correct');
+                        if (idx === 0) {
+                            feedback.textContent = '✓ Correct!';
+                            feedback.className = 'feedback show success';
+                            updateStats(true);
+                        }
+                    } else if (userAnswer !== '') {
+                        input.classList.remove('correct');
+                        input.classList.add('incorrect');
+                        if (idx === 0) {
+                            feedback.textContent = '✗ Essayez encore. Réponse: ' + answer;
+                            feedback.className = 'feedback show error';
+                            updateStats(false);
+                        }
+                    }
+                });
+                
+                // Store response
+                const storyKey = sectionId.replace('story-', '');
+                if (!userResponses[storyKey]) userResponses[storyKey] = {};
+                userResponses[storyKey]['fill-' + Array.from(items).indexOf(item)] = inputs[0].value;
+            });
+        }
+
+        function showAnswers(sectionId) {
+            const section = document.getElementById(sectionId);
+            const items = section.querySelectorAll('.fill-blank-item');
+            
+            items.forEach(item => {
+                const input = item.querySelector('.blank-input');
+                const feedback = item.querySelector('.feedback');
+                const answer = item.dataset.answer;
+                
+                input.value = answer;
+                input.classList.add('correct');
+                feedback.textContent = 'Réponse: ' + answer;
+                feedback.className = 'feedback show success';
+            });
+        }
+
+        // Multiple choice
+        function selectOption(option) {
+            const container = option.closest('.mc-options');
+            container.querySelectorAll('.mc-option').forEach(o => {
+                o.classList.remove('selected');
+            });
+            option.classList.add('selected');
+        }
+
+        function checkMC(moduleContent) {
+            const blocks = moduleContent.querySelectorAll('.exercise-block');
+            
+            blocks.forEach((block, blockIdx) => {
+                const options = block.querySelector('.mc-options');
+                const correct = parseInt(options.dataset.correct);
+                const selected = options.querySelector('.mc-option.selected');
+                const feedback = block.querySelector('.feedback');
+                
+                if (selected) {
+                    const selectedIdx = Array.from(options.children).indexOf(selected) + 1;
+                    
+                    options.querySelectorAll('.mc-option').forEach(o => {
+                        o.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    if (selectedIdx === correct) {
+                        selected.classList.add('correct');
+                        feedback.textContent = '✓ Excellent!';
+                        feedback.className = 'feedback show success';
+                        updateStats(true);
+                    } else {
+                        selected.classList.add('incorrect');
+                        options.children[correct - 1].classList.add('correct');
+                        feedback.textContent = '✗ La bonne réponse est indiquée en vert.';
+                        feedback.className = 'feedback show error';
+                        updateStats(false);
+                    }
+                }
+            });
+        }
+
+        // Matching exercise
+        function selectMatching(item, lang) {
+            if (item.classList.contains('matched')) return;
+            
+            const container = item.closest('.matching-container');
+            
+            if (lang === 'fr') {
+                container.querySelectorAll('.matching-column:first-child .matching-item').forEach(i => {
+                    if (!i.classList.contains('matched')) i.classList.remove('selected');
+                });
+                item.classList.add('selected');
+                matchingState.selectedFr = item;
+            } else {
+                container.querySelectorAll('.matching-column:last-child .matching-item').forEach(i => {
+                    if (!i.classList.contains('matched')) i.classList.remove('selected');
+                });
+                item.classList.add('selected');
+                matchingState.selectedEn = item;
+            }
+            
+            // Check for match
+            if (matchingState.selectedFr && matchingState.selectedEn) {
+                if (matchingState.selectedFr.dataset.match === matchingState.selectedEn.dataset.match) {
+                    matchingState.selectedFr.classList.add('matched');
+                    matchingState.selectedEn.classList.add('matched');
+                    matchingState.selectedFr.classList.remove('selected');
+                    matchingState.selectedEn.classList.remove('selected');
+                    updateStats(true);
+                } else {
+                    updateStats(false);
+                }
+                matchingState.selectedFr = null;
+                matchingState.selectedEn = null;
+            }
+        }
+
+        function resetMatching(containerId) {
+            const container = document.getElementById(containerId);
+            container.querySelectorAll('.matching-item').forEach(item => {
+                item.classList.remove('selected', 'matched');
+            });
+            matchingState = { selectedFr: null, selectedEn: null };
+        }
+
+        // Word order exercise
+        function placeWord(chip) {
+            if (chip.classList.contains('placed')) return;
+            
+            const builder = chip.closest('.exercise-block').querySelector('.sentence-builder');
+            const newChip = chip.cloneNode(true);
+            newChip.onclick = function() { removeWord(this); };
+            builder.appendChild(newChip);
+            chip.classList.add('placed');
+        }
+
+        function removeWord(chip) {
+            const block = chip.closest('.exercise-block');
+            const text = chip.textContent;
+            const bank = block.querySelector('.word-bank');
+            
+            bank.querySelectorAll('.word-chip').forEach(c => {
+                if (c.textContent === text && c.classList.contains('placed')) {
+                    c.classList.remove('placed');
+                }
+            });
+            
+            chip.remove();
+        }
+
+        function removeLastWord(builder) {
+            if (event.target === builder) {
+                const chips = builder.querySelectorAll('.word-chip');
+                if (chips.length > 0) {
+                    removeWord(chips[chips.length - 1]);
+                }
+            }
+        }
+
+        function checkWordOrder(moduleContent) {
+            const blocks = moduleContent.querySelectorAll('.exercise-block');
+            
+            blocks.forEach(block => {
+                const answer = block.dataset.answer;
+                const builder = block.querySelector('.sentence-builder');
+                const feedback = block.querySelector('.feedback');
+                
+                const userSentence = Array.from(builder.querySelectorAll('.word-chip'))
+                    .map(c => c.textContent).join(' ');
+                
+                if (userSentence === answer) {
+                    feedback.textContent = '✓ Parfait!';
+                    feedback.className = 'feedback show success';
+                    updateStats(true);
+                } else if (userSentence !== '') {
+                    feedback.textContent = '✗ Essayez encore. Réponse correcte: ' + answer;
+                    feedback.className = 'feedback show error';
+                    updateStats(false);
+                }
+            });
+        }
+
+        function resetWordOrder(moduleContent) {
+            moduleContent.querySelectorAll('.exercise-block').forEach(block => {
+                block.querySelector('.sentence-builder').innerHTML = '';
+                block.querySelectorAll('.word-bank .word-chip').forEach(c => {
+                    c.classList.remove('placed');
+                });
+                block.querySelector('.feedback').className = 'feedback';
+            });
+        }
+
+        // Stats update
+        function updateStats(correct) {
+            stats.totalAnswered++;
+            if (correct) stats.correctAnswers++;
+            
+            document.getElementById('totalAnswered').textContent = stats.totalAnswered;
+            document.getElementById('correctAnswers').textContent = stats.correctAnswers;
+            
+            const accuracy = stats.totalAnswered > 0 
+                ? Math.round((stats.correctAnswers / stats.totalAnswered) * 100) 
+                : 0;
+            document.getElementById('accuracyRate').textContent = accuracy + '%';
+        }
+
+        // Word count for text areas
+        document.querySelectorAll('.text-response').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                const id = this.id;
+                const countSpan = document.getElementById(id.replace('-written', '-word-count'));
+                if (countSpan) {
+                    const words = this.value.trim().split(/\s+/).filter(w => w.length > 0);
+                    countSpan.textContent = words.length;
+                }
+                
+                // Store response
+                const storyKey = id.split('-')[0];
+                if (!userResponses[storyKey]) userResponses[storyKey] = {};
+                userResponses[storyKey]['written'] = this.value;
+            });
+        });
+
+        // Export results
+        function exportResults() {
+            let output = '=== RÉSULTATS DE RÉVISION VOCABULAIRE ===\n';
+            output += 'Date: ' + new Date().toLocaleString('fr-FR') + '\n\n';
+            
+            output += '--- STATISTIQUES ---\n';
+            output += 'Questions répondues: ' + stats.totalAnswered + '\n';
+            output += 'Réponses correctes: ' + stats.correctAnswers + '\n';
+            const accuracy = stats.totalAnswered > 0 
+                ? Math.round((stats.correctAnswers / stats.totalAnswered) * 100) 
+                : 0;
+            output += 'Taux de réussite: ' + accuracy + '%\n\n';
+            
+            output += '--- RÉPONSES ÉCRITES ---\n';
+            
+            const storyNames = {
+                'chat': 'Le Chat et la Glace',
+                'boxeur': 'Le Boxeur de la Terre',
+                'couturiere': 'La Couturière et le Chef',
+                'frencher': 'Frencher Things',
+                'vitesse': 'Le Rêve de Vitesse'
+            };
+            
+            for (const [story, responses] of Object.entries(userResponses)) {
+                output += '\n' + (storyNames[story] || story) + ':\n';
+                if (responses.written) {
+                    output += responses.written + '\n';
+                }
+            }
+            
+            // Create download
+            const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'revision_vocabulaire_resultats.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Reset all
+        function resetAll() {
+            if (confirm('Êtes-vous sûr(e) de vouloir recommencer? Tous vos progrès seront perdus.')) {
+                localStorage.removeItem('frenchVocabProgress');
+                location.reload();
+            }
+        }
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Save progress
+        function saveProgress() {
+            try {
+                // Collect all input values
+                const inputData = {};
+                document.querySelectorAll('.blank-input').forEach((input, idx) => {
+                    if (input.value) {
+                        inputData['input_' + idx] = input.value;
+                    }
+                });
+
+                // Collect all text responses
+                const textResponses = {};
+                document.querySelectorAll('.text-response').forEach(textarea => {
+                    if (textarea.value) {
+                        textResponses[textarea.id] = textarea.value;
+                    }
+                });
+
+                // Collect MC selections
+                const mcSelections = {};
+                document.querySelectorAll('.mc-options').forEach((options, idx) => {
+                    const selected = options.querySelector('.mc-option.selected');
+                    if (selected) {
+                        mcSelections['mc_' + idx] = Array.from(options.children).indexOf(selected);
+                    }
+                });
+
+                // Collect matched items
+                const matchedItems = [];
+                document.querySelectorAll('.matching-item.matched').forEach(item => {
+                    matchedItems.push(item.dataset.match);
+                });
+
+                const saveData = {
+                    stats: {
+                        totalAnswered: stats.totalAnswered,
+                        correctAnswers: stats.correctAnswers,
+                        storiesCompleted: Array.from(stats.storiesCompleted)
+                    },
+                    userResponses: userResponses,
+                    inputData: inputData,
+                    textResponses: textResponses,
+                    mcSelections: mcSelections,
+                    matchedItems: matchedItems,
+                    timestamp: new Date().toISOString()
+                };
+
+                localStorage.setItem('frenchVocabProgress', JSON.stringify(saveData));
+                showToast('✓ Progrès sauvegardé!', 'success');
+            } catch (e) {
+                console.error('Save error:', e);
+                showToast('✗ Erreur de sauvegarde', 'error');
+            }
+        }
+
+        // Load progress
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('frenchVocabProgress');
+                if (!saved) {
+                    showToast('Aucune sauvegarde trouvée', 'info');
+                    return;
+                }
+
+                const data = JSON.parse(saved);
+                
+                // Restore stats
+                if (data.stats) {
+                    stats.totalAnswered = data.stats.totalAnswered || 0;
+                    stats.correctAnswers = data.stats.correctAnswers || 0;
+                    stats.storiesCompleted = new Set(data.stats.storiesCompleted || []);
+                    
+                    document.getElementById('totalAnswered').textContent = stats.totalAnswered;
+                    document.getElementById('correctAnswers').textContent = stats.correctAnswers;
+                    const accuracy = stats.totalAnswered > 0 
+                        ? Math.round((stats.correctAnswers / stats.totalAnswered) * 100) 
+                        : 0;
+                    document.getElementById('accuracyRate').textContent = accuracy + '%';
+                    document.getElementById('storiesCompleted').textContent = stats.storiesCompleted.size + '/5';
+                }
+
+                // Restore user responses
+                if (data.userResponses) {
+                    userResponses = data.userResponses;
+                }
+
+                // Restore input values
+                if (data.inputData) {
+                    document.querySelectorAll('.blank-input').forEach((input, idx) => {
+                        if (data.inputData['input_' + idx]) {
+                            input.value = data.inputData['input_' + idx];
+                        }
+                    });
+                }
+
+                // Restore text responses
+                if (data.textResponses) {
+                    for (const [id, value] of Object.entries(data.textResponses)) {
+                        const textarea = document.getElementById(id);
+                        if (textarea) {
+                            textarea.value = value;
+                            // Update word count
+                            const countSpan = document.getElementById(id.replace('-written', '-word-count'));
+                            if (countSpan) {
+                                const words = value.trim().split(/\s+/).filter(w => w.length > 0);
+                                countSpan.textContent = words.length;
+                            }
+                        }
+                    }
+                }
+
+                // Restore MC selections
+                if (data.mcSelections) {
+                    document.querySelectorAll('.mc-options').forEach((options, idx) => {
+                        if (data.mcSelections['mc_' + idx] !== undefined) {
+                            const optionIdx = data.mcSelections['mc_' + idx];
+                            if (options.children[optionIdx]) {
+                                options.children[optionIdx].classList.add('selected');
+                            }
+                        }
+                    });
+                }
+
+                // Restore matched items
+                if (data.matchedItems && data.matchedItems.length > 0) {
+                    document.querySelectorAll('.matching-item').forEach(item => {
+                        if (data.matchedItems.includes(item.dataset.match)) {
+                            item.classList.add('matched');
+                        }
+                    });
+                }
+
+                const saveDate = new Date(data.timestamp).toLocaleString('fr-FR');
+                showToast('✓ Progrès chargé (' + saveDate + ')', 'success');
+            } catch (e) {
+                console.error('Load error:', e);
+                showToast('✗ Erreur de chargement', 'error');
+            }
+        }
+
+        // Auto-save every 2 minutes
+        setInterval(() => {
+            const hasContent = document.querySelector('.blank-input[value]') || 
+                              document.querySelector('.text-response').value ||
+                              stats.totalAnswered > 0;
+            if (hasContent) {
+                saveProgress();
+            }
+        }, 120000);
+
+        // Initialize - expand first module of active story
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstModule = document.querySelector('.story-section.active .module-header');
+            if (firstModule) {
+                firstModule.classList.add('expanded');
+                firstModule.nextElementSibling.classList.add('show');
+            }
+
+            // Check for saved progress
+            const saved = localStorage.getItem('frenchVocabProgress');
+            if (saved) {
+                showToast('💾 Sauvegarde détectée - Cliquez "Charger" pour restaurer', 'info');
+            }
+        });
+    </script>
+</body>
+</html>
