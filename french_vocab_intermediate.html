@@ -1,0 +1,2321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révision Vocabulaire - Français III</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-light: #14b8a6;
+            --primary-dark: #0d5d56;
+            --secondary: #7c3aed;
+            --accent: #f59e0b;
+            --success: #059669;
+            --success-light: #34d399;
+            --error: #dc2626;
+            --error-light: #f87171;
+            --bg-light: #f0fdfa;
+            --bg-card: #ffffff;
+            --bg-warm: #fffbeb;
+            --text-dark: #134e4a;
+            --text-muted: #5b7c78;
+            --border: #99f6e4;
+            --shadow: rgba(15, 118, 110, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, #1e3a5f 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+            animation: drift 60s linear infinite;
+        }
+
+        @keyframes drift {
+            from { transform: translate(0, 0); }
+            to { transform: translate(100px, 100px); }
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.6rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            letter-spacing: 0.01em;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%);
+            color: white;
+            padding: 0.35rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-top: 0.75rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Progress Dashboard */
+        .progress-dashboard {
+            background: white;
+            margin: -1.5rem 2rem 2rem;
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px var(--shadow);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            position: relative;
+            z-index: 10;
+            border: 2px solid var(--border);
+        }
+
+        .progress-item {
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #ccfbf1 100%);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .progress-item .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .progress-item .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .progress-item.save-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            justify-content: center;
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        }
+
+        .progress-item .btn {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        /* Navigation */
+        .nav-container {
+            padding: 0 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .story-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 30px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        /* Story Section */
+        .story-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .story-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .story-header {
+            background: white;
+            padding: 1.75rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            border-left: 6px solid var(--secondary);
+            border: 2px solid var(--border);
+            border-left: 6px solid var(--secondary);
+        }
+
+        .story-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .story-header .summary {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Module Cards */
+        .module-card {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            overflow: hidden;
+            border: 2px solid var(--border);
+        }
+
+        .module-header {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #ccfbf1 100%);
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .module-header:hover {
+            background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+        }
+
+        .module-header h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .module-header .toggle-icon {
+            font-size: 1rem;
+            transition: transform 0.3s;
+            color: var(--text-muted);
+        }
+
+        .module-header.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .module-content {
+            padding: 1.5rem;
+            display: none;
+        }
+
+        .module-content.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Vocabulary Table */
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .vocab-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .vocab-table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .vocab-table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .vocab-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        .vocab-table tr:hover td {
+            background: var(--bg-light);
+        }
+
+        .vocab-table .french-term {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .vocab-table .example-sentence {
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Grammar Box */
+        .grammar-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin: 1.25rem 0;
+        }
+
+        .grammar-box-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
+        .grammar-box-header .icon {
+            background: #f59e0b;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .grammar-explanation {
+            display: none;
+            padding-top: 0.75rem;
+            border-top: 2px dashed #fbbf24;
+            line-height: 1.8;
+            color: #78350f;
+        }
+
+        .grammar-explanation.show {
+            display: block;
+        }
+
+        .grammar-rule {
+            background: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin: 0.75rem 0;
+            border-left: 4px solid var(--accent);
+            font-size: 0.95rem;
+        }
+
+        .grammar-example {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.8);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin: 0.75rem 0;
+            line-height: 1.9;
+        }
+
+        .highlight {
+            background: var(--accent);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #78350f;
+        }
+
+        .highlight-alt {
+            background: var(--primary-light);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Exercise Styles */
+        .exercise-block {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #fff 100%);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .exercise-title {
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .exercise-title .badge {
+            background: var(--secondary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Fill in the Blank */
+        .fill-blank-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+        }
+
+        .fill-blank-item .sentence {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            line-height: 2;
+        }
+
+        .blank-input {
+            display: inline-block;
+            min-width: 120px;
+            padding: 0.4rem 0.6rem;
+            border: 2px dashed var(--border);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            background: var(--bg-light);
+            transition: all 0.2s;
+        }
+
+        .blank-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            border-style: solid;
+        }
+
+        .blank-input.correct {
+            border-color: var(--success);
+            background: #ecfdf5;
+            border-style: solid;
+        }
+
+        .blank-input.incorrect {
+            border-color: var(--error);
+            background: #fef2f2;
+            border-style: solid;
+        }
+
+        /* Multiple Choice */
+        .mc-options {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .mc-option {
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .mc-option:hover {
+            border-color: var(--primary-light);
+            background: var(--bg-light);
+            transform: translateX(5px);
+        }
+
+        .mc-option.selected {
+            border-color: var(--primary);
+            background: #ccfbf1;
+        }
+
+        .mc-option.correct {
+            border-color: var(--success);
+            background: #ecfdf5;
+        }
+
+        .mc-option.incorrect {
+            border-color: var(--error);
+            background: #fef2f2;
+        }
+
+        .mc-option .letter {
+            width: 28px;
+            height: 28px;
+            background: var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .mc-option.selected .letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        .mc-option.correct .letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .mc-option.incorrect .letter {
+            background: var(--error);
+            color: white;
+        }
+
+        /* Matching Exercise */
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .matching-column h4 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .matching-item {
+            padding: 0.65rem 0.85rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 0.4rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .matching-item:hover {
+            border-color: var(--secondary);
+            background: #f5f3ff;
+        }
+
+        .matching-item.selected {
+            border-color: var(--secondary);
+            background: #ede9fe;
+        }
+
+        .matching-item.matched {
+            border-color: var(--success);
+            background: #ecfdf5;
+            cursor: default;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.7rem 1.35rem;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1.25rem;
+        }
+
+        /* Feedback */
+        .feedback {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            display: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .feedback.success {
+            background: #ecfdf5;
+            border: 2px solid #a7f3d0;
+            color: #065f46;
+        }
+
+        .feedback.error {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            color: #991b1b;
+        }
+
+        /* Text Response / Written Expression */
+        .written-expression {
+            background: linear-gradient(135deg, var(--bg-warm) 0%, #fef3c7 100%);
+            border: 2px solid #fde68a;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .written-expression .prompt {
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .written-expression .hints {
+            font-size: 0.85rem;
+            color: #a16207;
+            margin-bottom: 0.75rem;
+            font-style: italic;
+        }
+
+        .text-response {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.85rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.2s;
+            background: white;
+        }
+
+        .text-response:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .word-counter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .word-counter .count {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .word-counter .limit-warning {
+            color: var(--error);
+        }
+
+        /* Export Section */
+        .export-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-top: 2rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            text-align: center;
+            border: 2px solid var(--border);
+        }
+
+        .export-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .export-section p {
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+        }
+
+        /* Comprehension Question */
+        .comprehension-question {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .comprehension-question .question-text {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text-dark);
+            color: white;
+            padding: 0.85rem 1.75rem;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--error); }
+        .toast.info { background: var(--primary); }
+
+        /* Tip Box */
+        .tip-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 2px solid #60a5fa;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: #1e40af;
+        }
+
+        .tip-box strong {
+            color: #1d4ed8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.9rem;
+            }
+
+            .progress-dashboard {
+                margin: -1rem 1rem 1.5rem;
+                padding: 1rem;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-container {
+                padding: 0 1rem 2rem;
+            }
+
+            .matching-container {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📖 Histoires Français III</h1>
+        <p>Module de Vocabulaire et Grammaire</p>
+        <span class="level-badge">⭐ Niveau Intermediate-Mid</span>
+    </header>
+
+    <div class="progress-dashboard">
+        <div class="progress-item">
+            <div class="number" id="totalAnswered">0</div>
+            <div class="label">Questions</div>
+        </div>
+        <div class="progress-item">
+            <div class="number" id="correctAnswers">0</div>
+            <div class="label">Correctes</div>
+        </div>
+        <div class="progress-item">
+            <div class="number" id="accuracyRate">0%</div>
+            <div class="label">Réussite</div>
+        </div>
+        <div class="progress-item">
+            <div class="number" id="storiesCompleted">0/3</div>
+            <div class="label">Histoires</div>
+        </div>
+        <div class="progress-item save-actions">
+            <button class="btn btn-success" onclick="saveProgress()">💾 Sauvegarder</button>
+            <button class="btn btn-secondary" onclick="loadProgress()">📂 Charger</button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <nav class="nav-container">
+        <div class="story-nav">
+            <button class="nav-btn active" onclick="showStory('dayton')">🏃 Dayton et la Course Magique</button>
+            <button class="nav-btn" onclick="showStory('mapo')">🍜 Le Secret du Mapo Tofu</button>
+            <button class="nav-btn" onclick="showStory('henri')">🐙 Henri et Pieuvrewise</button>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <!-- STORY 1: Dayton et la Course Magique -->
+        <section id="story-dayton" class="story-section active">
+            <div class="story-header">
+                <h2>🏃 Dayton et la Course Magique</h2>
+                <p class="summary">Dayton veut battre le record mondial de cross-country. S'il réussit, il recevra des pouvoirs de sorcier et des billets pour les Bengals! Une histoire de persévérance, de doute, et de magie.</p>
+            </div>
+
+            <!-- Vocabulary Module -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📚 Vocabulaire Clé</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <table class="vocab-table">
+                        <thead>
+                            <tr>
+                                <th>Expression</th>
+                                <th>Signification</th>
+                                <th>Contexte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="french-term">battre le record</td>
+                                <td>to break the record</td>
+                                <td class="example-sentence">Dayton veut battre le record mondial.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">s'entraîner</td>
+                                <td>to train (oneself)</td>
+                                <td class="example-sentence">Il s'est entraîné pendant trois ans.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">abandonner</td>
+                                <td>to give up / to abandon</td>
+                                <td class="example-sentence">Dayton refuse d'abandonner.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">persévérer</td>
+                                <td>to persevere</td>
+                                <td class="example-sentence">Tu as persévéré quand la douleur te disait d'abandonner.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">le doute s'infiltre</td>
+                                <td>doubt creeps in</td>
+                                <td class="example-sentence">Le doute s'infiltre dans son esprit comme de l'eau froide.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">accélérer / ralentir</td>
+                                <td>to accelerate / to slow down</td>
+                                <td class="example-sentence">Dayton accélère. Il ne ralentit pas.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">franchir la ligne d'arrivée</td>
+                                <td>to cross the finish line</td>
+                                <td class="example-sentence">Il a 16 secondes pour franchir la ligne!</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">s'effondrer</td>
+                                <td>to collapse</td>
+                                <td class="example-sentence">Dayton traverse la ligne et s'effondre sur le sol.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">la sueur coule</td>
+                                <td>sweat runs/flows</td>
+                                <td class="example-sentence">La sueur coule dans ses yeux. Ça pique.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">inspirer quelqu'un</td>
+                                <td>to inspire someone</td>
+                                <td class="example-sentence">Dayton a inspiré Cooper.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Grammar 1: Si Clauses -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📐 Grammaire: Les Phrases avec SI (Conditionnel)</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>SI + Présent → Futur Simple</span>
+                            <span style="margin-left: auto; font-size: 0.75rem; color: #92400e;">Cliquez ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <div class="grammar-rule">
+                                <strong>Structure:</strong> SI + présent, futur simple<br>
+                                Cette structure exprime une condition réelle et possible.
+                            </div>
+                            <p><strong>De l'histoire:</strong></p>
+                            <div class="grammar-example">
+                                <span class="highlight">S'</span>il <span class="highlight">bat</span> le record, il <span class="highlight-alt">recevra</span> deux choses incroyables.<br>
+                                (If he breaks the record, he will receive...)<br><br>
+                                <strong>Autres exemples:</strong><br>
+                                Si tu <span class="highlight">travailles</span> dur, tu <span class="highlight-alt">réussiras</span>.<br>
+                                Si nous <span class="highlight">courons</span> vite, nous <span class="highlight-alt">gagnerons</span>.
+                            </div>
+                            <div class="tip-box">
+                                <strong>⚠️ Attention:</strong> On n'utilise JAMAIS le futur après SI!<br>
+                                ❌ Si tu viendras... ✅ Si tu viens...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Exercice: Complétez avec le futur simple</div>
+                        
+                        <div class="fill-blank-item" data-answer="gagneras">
+                            <div class="sentence">1. Si tu t'entraînes tous les jours, tu <input type="text" class="blank-input" placeholder="(gagner)...">.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="serai">
+                            <div class="sentence">2. Si je bats le record, je <input type="text" class="blank-input" placeholder="(être)..."> célèbre.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="pourront">
+                            <div class="sentence">3. Si les coureurs persévèrent, ils <input type="text" class="blank-input" placeholder="(pouvoir)..."> réussir.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="aura">
+                            <div class="sentence">4. Si Dayton abandonne, il n' <input type="text" class="blank-input" placeholder="(avoir)..."> pas de pouvoirs magiques.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="checkFillBlanks('dayton-si')">✓ Vérifier</button>
+                            <button class="btn btn-secondary" onclick="showAnswers('dayton-si')">👁 Réponses</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grammar 2: Reflexive Verbs in Passé Composé -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📐 Grammaire: Les Verbes Pronominaux au Passé Composé</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>SE + verbe → auxiliaire ÊTRE + accord</span>
+                            <span style="margin-left: auto; font-size: 0.75rem; color: #92400e;">Cliquez ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <div class="grammar-rule">
+                                <strong>Formation:</strong> Sujet + ÊTRE (conjugué) + participe passé (accordé!)<br>
+                                Tous les verbes pronominaux utilisent ÊTRE au passé composé.
+                            </div>
+                            <p><strong>Exemples de l'histoire:</strong></p>
+                            <div class="grammar-example">
+                                Il <span class="highlight">s'est entraîné</span> pendant trois ans.<br>
+                                Il <span class="highlight">s'est entraîné</span> tous les jours.<br>
+                                Le doute <span class="highlight">s'est infiltré</span> dans son esprit.<br>
+                                Dayton <span class="highlight">s'est effondré</span> sur le sol.<br><br>
+                                <strong>Avec accord féminin:</strong><br>
+                                Elle <span class="highlight">s'est entraînée</span>. (+ e pour féminin)<br>
+                                Elles <span class="highlight">se sont effrondrées</span>. (+ es pour féminin pluriel)
+                            </div>
+                            <div class="tip-box">
+                                <strong>💡 Rappel:</strong> s'entraîner, s'effondrer, s'infiltrer, se souvenir, se plaindre, s'arrêter...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Exercice: Conjuguez au passé composé (attention à l'accord!)</div>
+                        
+                        <div class="fill-blank-item" data-answer="s'est entraîné">
+                            <div class="sentence">1. Dayton (s'entraîner) <input type="text" class="blank-input" style="min-width:150px;" placeholder="..."> sous la pluie.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="se sont arrêtés">
+                            <div class="sentence">2. Les autres coureurs (s'arrêter) <input type="text" class="blank-input" style="min-width:150px;" placeholder="...">.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="s'est effondrée">
+                            <div class="sentence">3. Marie (s'effondrer) <input type="text" class="blank-input" style="min-width:150px;" placeholder="..."> après la course.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="se sont plaints">
+                            <div class="sentence">4. Ses muscles (se plaindre) <input type="text" class="blank-input" style="min-width:150px;" placeholder="...">.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="checkFillBlanks('dayton-pronominal')">✓ Vérifier</button>
+                            <button class="btn btn-secondary" onclick="showAnswers('dayton-pronominal')">👁 Réponses</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comprehension -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🎯 Compréhension</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 1</div>
+                        <p style="margin-bottom: 0.75rem;">Quelles sont les deux récompenses que Dayton recevra s'il bat le record?</p>
+                        <div class="mc-options" data-correct="2">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">A</span>
+                                <span>De l'argent et une voiture</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">B</span>
+                                <span>Des pouvoirs de sorcier et des billets pour les Bengals</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">C</span>
+                                <span>Une médaille d'or et un trophée</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 2</div>
+                        <p style="margin-bottom: 0.75rem;">Selon l'histoire, d'où vient la vraie force?</p>
+                        <div class="mc-options" data-correct="3">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">A</span>
+                                <span>Des muscles</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">B</span>
+                                <span>De l'entraînement</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">C</span>
+                                <span>Du cœur</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 3</div>
+                        <p style="margin-bottom: 0.75rem;">Quelle est « la vraie leçon » que Dayton comprend à la fin?</p>
+                        <div class="mc-options" data-correct="2">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">A</span>
+                                <span>Les pouvoirs magiques sont très utiles</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">B</span>
+                                <span>La vraie magie est l'impact qu'on a sur les autres</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">C</span>
+                                <span>Il faut courir tous les jours</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkMC(this.closest('.module-content'))">✓ Vérifier</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expression Écrite -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📝 Expression Écrite</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="written-expression">
+                        <div class="prompt">Racontez un moment où vous avez voulu abandonner mais vous avez persévéré. Qu'est-ce qui vous a motivé(e) à continuer?</div>
+                        <div class="hints">Utilisez: s'entraîner, abandonner, persévérer, le doute, accélérer, réussir + SI + présent → futur</div>
+                        <textarea class="text-response" id="dayton-written" placeholder="Un jour, je voulais abandonner quand..."></textarea>
+                        <div class="word-counter">
+                            <span>Mots: <span class="count" id="dayton-word-count">0</span> / 100 max</span>
+                            <span id="dayton-limit-warning" class="limit-warning" style="display:none;">⚠️ Limite dépassée!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORY 2: Le Secret du Mapo Tofu -->
+        <section id="story-mapo" class="story-section">
+            <div class="story-header">
+                <h2>🍜 Le Secret du Mapo Tofu</h2>
+                <p class="summary">Emily et Olivia doivent sauver leur mère, kidnappée par Chef Wang pour sa recette de mapo tofu parfait. Emily utilise son violon pour résoudre le mystère et enseigner une leçon sur la perfection.</p>
+            </div>
+
+            <!-- Vocabulary Module -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📚 Vocabulaire Clé</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <table class="vocab-table">
+                        <thead>
+                            <tr>
+                                <th>Expression</th>
+                                <th>Signification</th>
+                                <th>Contexte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="french-term">se concentrer</td>
+                                <td>to concentrate</td>
+                                <td class="example-sentence">Elle ne peut pas se concentrer.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">disparaître / disparu</td>
+                                <td>to disappear / disappeared</td>
+                                <td class="example-sentence">Maman a disparu!</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">capturer / kidnapper</td>
+                                <td>to capture / to kidnap</td>
+                                <td class="example-sentence">Quelqu'un l'a capturée.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">libérer</td>
+                                <td>to free / to release</td>
+                                <td class="example-sentence">Vous allez la libérer. Maintenant.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">ça dépend de</td>
+                                <td>it depends on</td>
+                                <td class="example-sentence">Ça dépend de l'humeur, de la température...</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">s'entendre bien avec</td>
+                                <td>to get along well with</td>
+                                <td class="example-sentence">Elles ne s'entendent pas toujours bien.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">réfléchir</td>
+                                <td>to think / to reflect</td>
+                                <td class="example-sentence">Emily réfléchit. Elle a une idée!</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">troublé / ému</td>
+                                <td>troubled / moved (emotionally)</td>
+                                <td class="example-sentence">Le chef semble troublé, ému.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">piquant(e)</td>
+                                <td>spicy</td>
+                                <td class="example-sentence">Le piquant du piment et la chaleur du poivre.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">soyeux / comme de la soie</td>
+                                <td>silky / like silk</td>
+                                <td class="example-sentence">Le tofu fond dans la bouche comme de la soie.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Grammar 1: Depuis + Duration -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📐 Grammaire: DEPUIS + durée / ÇA FAIT... QUE</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>Exprimer la durée d'une action qui continue</span>
+                            <span style="margin-left: auto; font-size: 0.75rem; color: #92400e;">Cliquez ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <div class="grammar-rule">
+                                <strong>DEPUIS + durée</strong> = for/since (action continues to present)<br>
+                                <strong>ÇA FAIT + durée + QUE</strong> = it's been... that (same meaning)
+                            </div>
+                            <p><strong>De l'histoire:</strong></p>
+                            <div class="grammar-example">
+                                Emily joue du violon <span class="highlight">depuis quatre ans</span>.<br>
+                                = <span class="highlight">Ça fait quatre ans qu'</span>Emily joue du violon.<br><br>
+                                Elle étudie le piano <span class="highlight">depuis huit ans</span>.<br>
+                                = <span class="highlight">Ça fait huit ans qu'</span>elle étudie le piano.<br><br>
+                                <span class="highlight">Ça fait deux heures que</span> j'essaie de te contacter!<br>
+                                Maman travaille sur cette recette <span class="highlight">depuis trois ans</span>.
+                            </div>
+                            <div class="tip-box">
+                                <strong>⚠️ Important:</strong> En français, on utilise le PRÉSENT (pas le passé!) avec « depuis » pour une action qui continue.<br>
+                                ❌ J'ai joué depuis 4 ans ✅ Je joue depuis 4 ans
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Exercice 1: Transformez avec DEPUIS ou ÇA FAIT... QUE</div>
+                        
+                        <div class="fill-blank-item" data-answer="depuis">
+                            <div class="sentence">1. J'apprends le français ______ cinq ans. <input type="text" class="blank-input" placeholder="..."></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="ça fait">
+                            <div class="sentence">2. ______ une heure que nous attendons! <input type="text" class="blank-input" placeholder="..."></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="depuis">
+                            <div class="sentence">3. Chef Wang cherche cette recette ______ des années. <input type="text" class="blank-input" placeholder="..."></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="checkFillBlanks('mapo-depuis')">✓ Vérifier</button>
+                            <button class="btn btn-secondary" onclick="showAnswers('mapo-depuis')">👁 Réponses</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Exercice 2: Réécrivez les phrases</div>
+                        <p style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem;">Réécrivez avec l'autre structure (DEPUIS → ÇA FAIT ou vice versa).</p>
+                        
+                        <div class="fill-blank-item" data-answer="ça fait trois ans que maman travaille">
+                            <div class="sentence">1. Maman travaille sur cette recette depuis trois ans.<br>→ <input type="text" class="blank-input" style="min-width: 280px;" placeholder="Ça fait..."> sur cette recette.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="elle joue du violon depuis quatre ans">
+                            <div class="sentence">2. Ça fait quatre ans qu'elle joue du violon.<br>→ <input type="text" class="blank-input" style="min-width: 280px;" placeholder="Elle...">.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="checkFillBlanks('mapo-transform')">✓ Vérifier</button>
+                            <button class="btn btn-secondary" onclick="showAnswers('mapo-transform')">👁 Réponses</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grammar 2: Direct Speech -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📐 Grammaire: Le Discours Direct</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>Rapporter les paroles exactes</span>
+                            <span style="margin-left: auto; font-size: 0.75rem; color: #92400e;">Cliquez ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <div class="grammar-rule">
+                                <strong>Structure:</strong> Sujet + verbe de parole : « paroles »<br>
+                                <strong>Verbes utiles:</strong> dire, demander, crier, répondre, murmurer, chuchoter
+                            </div>
+                            <p><strong>De l'histoire:</strong></p>
+                            <div class="grammar-example">
+                                —Emily ! <span class="highlight">dit</span> son professeur. Qu'est-ce qui se passe ?<br>
+                                —Enfin ! <span class="highlight">crie</span> sa sœur.<br>
+                                —Maman... quelqu'un l'a capturée, <span class="highlight">explique</span> Olivia.<br>
+                                « Nous sommes ses filles, » <span class="highlight">dit</span> Emily. « Et vous allez la libérer. »<br>
+                                —Partez, <span class="highlight">dit</span>-il finalement.
+                            </div>
+                            <div class="tip-box">
+                                <strong>💡 Inversion:</strong> En français écrit, on inverse souvent le sujet et le verbe après le dialogue:<br>
+                                « Je veux partir, » <span class="highlight">dit-il</span>. (pas "il dit")
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Exercice: Choisissez le verbe approprié</div>
+                        
+                        <div class="fill-blank-item" data-answer="demande">
+                            <div class="sentence">1. « Où est maman? » ______ Olivia nerveusement. <input type="text" class="blank-input" placeholder="(dit/demande/crie)"></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="crie">
+                            <div class="sentence">2. « VIENS ICI MAINTENANT! » ______ le chef en colère. <input type="text" class="blank-input" placeholder="(murmure/chuchote/crie)"></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="murmure">
+                            <div class="sentence">3. « C'est lui, » ______ Olivia à voix basse. <input type="text" class="blank-input" placeholder="(murmure/crie/explique)"></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="répond">
+                            <div class="sentence">4. « Non, » ______ leur mère calmement. <input type="text" class="blank-input" placeholder="(demande/répond/questionne)"></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="checkFillBlanks('mapo-dialogue')">✓ Vérifier</button>
+                            <button class="btn btn-secondary" onclick="showAnswers('mapo-dialogue')">👁 Réponses</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comprehension -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🎯 Compréhension</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 1</div>
+                        <p style="margin-bottom: 0.75rem;">Pourquoi est-ce que Chef Wang a kidnappé la mère d'Emily?</p>
+                        <div class="mc-options" data-correct="2">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">A</span>
+                                <span>Il veut son argent</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">B</span>
+                                <span>Il veut sa recette de mapo tofu parfait</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">C</span>
+                                <span>Il veut qu'elle travaille dans son restaurant</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 2</div>
+                        <p style="margin-bottom: 0.75rem;">Comment Emily convainc-t-elle le chef de libérer sa mère?</p>
+                        <div class="mc-options" data-correct="3">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">A</span>
+                                <span>Elle lui donne de l'argent</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">B</span>
+                                <span>Elle appelle la police</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">C</span>
+                                <span>Elle joue du violon et parle de l'imperfection</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 3</div>
+                        <p style="margin-bottom: 0.75rem;">Qu'est-ce que la mère comprend à la fin de l'histoire?</p>
+                        <div class="mc-options" data-correct="1">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">A</span>
+                                <span>L'important, c'est de partager et créer ensemble</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">B</span>
+                                <span>Elle doit garder sa recette secrète</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">C</span>
+                                <span>La perfection est le but de la cuisine</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkMC(this.closest('.module-content'))">✓ Vérifier</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expression Écrite -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📝 Expression Écrite</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="written-expression">
+                        <div class="prompt">Emily dit que la perfection n'existe pas. Êtes-vous d'accord? Décrivez une activité que vous pratiquez depuis longtemps. Est-ce que vous cherchez la perfection?</div>
+                        <div class="hints">Utilisez: depuis + durée, ça fait... que, se concentrer, réfléchir, ça dépend de, la perfection</div>
+                        <textarea class="text-response" id="mapo-written" placeholder="Je pratique... depuis..."></textarea>
+                        <div class="word-counter">
+                            <span>Mots: <span class="count" id="mapo-word-count">0</span> / 100 max</span>
+                            <span id="mapo-limit-warning" class="limit-warning" style="display:none;">⚠️ Limite dépassée!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORY 3: Henri et Pieuvrewise -->
+        <section id="story-henri" class="story-section">
+            <div class="story-header">
+                <h2>🐙 Henri et Pieuvrewise</h2>
+                <p class="summary">Henri rencontre une pieuvre effrayante avec du maquillage de clown qui lui promet de nager plus vite. Mais le pacte a un prix terrible: Henri se transforme en pieuvre! Inspiré de Stephen King.</p>
+            </div>
+
+            <!-- Vocabulary Module -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📚 Vocabulaire Clé</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <table class="vocab-table">
+                        <thead>
+                            <tr>
+                                <th>Expression</th>
+                                <th>Signification</th>
+                                <th>Contexte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="french-term">une pieuvre</td>
+                                <td>an octopus</td>
+                                <td class="example-sentence">Il voit une pieuvre avec du maquillage de clown!</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">les tentacules</td>
+                                <td>tentacles</td>
+                                <td class="example-sentence">Les tentacules de Pieuvrewise sont froides et glissantes.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">les ventouses</td>
+                                <td>suction cups</td>
+                                <td class="example-sentence">Il a des ventouses sur ses doigts!</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">se transformer en</td>
+                                <td>to transform into</td>
+                                <td class="example-sentence">Pieuvrewise veut le transformer en pieuvre!</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">la malédiction / maudit(e)</td>
+                                <td>the curse / cursed</td>
+                                <td class="example-sentence">La malédiction se brisera si tu gagnes.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">briser</td>
+                                <td>to break (a curse, spell)</td>
+                                <td class="example-sentence">La malédiction est brisée!</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">plonger</td>
+                                <td>to dive</td>
+                                <td class="example-sentence">Henri plonge. L'eau l'appelle.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">murmurer</td>
+                                <td>to whisper / to murmur</td>
+                                <td class="example-sentence">« Tu vas perdre, » murmure le vent.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">terrifiant(e)</td>
+                                <td>terrifying</td>
+                                <td class="example-sentence">Elle a un sourire terrifiant.</td>
+                            </tr>
+                            <tr>
+                                <td class="french-term">redevenir</td>
+                                <td>to become again</td>
+                                <td class="example-sentence">Tu ne peux jamais redevenir humain!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Grammar 1: Comparatives -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📐 Grammaire: Les Comparatifs</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>PLUS / MOINS / AUSSI + adjectif/adverbe + QUE</span>
+                            <span style="margin-left: auto; font-size: 0.75rem; color: #92400e;">Cliquez ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <div class="grammar-rule">
+                                <strong>Structure:</strong><br>
+                                • <span class="highlight">plus</span> + adj/adv + <span class="highlight">que</span> = more... than<br>
+                                • <span class="highlight">moins</span> + adj/adv + <span class="highlight">que</span> = less... than<br>
+                                • <span class="highlight">aussi</span> + adj/adv + <span class="highlight">que</span> = as... as
+                            </div>
+                            <p><strong>De l'histoire:</strong></p>
+                            <div class="grammar-example">
+                                Il nage <span class="highlight">plus vite que</span> ses amis.<br>
+                                Il nage <span class="highlight">plus vite que</span> son frère.<br>
+                                Il ne nage jamais <span class="highlight">aussi vite que</span> les champions.<br>
+                                Henri nage <span class="highlight">mieux qu'</span>avant.<br>
+                                Il nage <span class="highlight">plus vite qu'</span>il n'a jamais nagé.<br>
+                                Tu es <span class="highlight">plus fort que</span> moi.
+                            </div>
+                            <div class="tip-box">
+                                <strong>⚠️ Irréguliers:</strong><br>
+                                bon → <span class="highlight">meilleur</span> (pas "plus bon")<br>
+                                bien → <span class="highlight">mieux</span> (pas "plus bien")<br>
+                                mauvais → <span class="highlight">pire</span> (ou "plus mauvais")
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Exercice 1: Complétez avec plus, moins, aussi, mieux, ou meilleur</div>
+                        
+                        <div class="fill-blank-item" data-answer="plus vite que">
+                            <div class="sentence">1. Henri nage ______ ses amis. <input type="text" class="blank-input" style="min-width:140px;" placeholder="(faster than)"></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="aussi vite que">
+                            <div class="sentence">2. Il ne nage jamais ______ les champions. <input type="text" class="blank-input" style="min-width:140px;" placeholder="(as fast as)"></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="mieux qu'">
+                            <div class="sentence">3. Henri nage ______ avant. <input type="text" class="blank-input" style="min-width:140px;" placeholder="(better than)"></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="plus fort que">
+                            <div class="sentence">4. Tu es ______ moi. <input type="text" class="blank-input" style="min-width:140px;" placeholder="(stronger than)"></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="moins terrifiant que">
+                            <div class="sentence">5. Maintenant, Pieuvrewise est ______ avant. <input type="text" class="blank-input" style="min-width:180px;" placeholder="(less terrifying than)"></div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="checkFillBlanks('henri-comparatifs')">✓ Vérifier</button>
+                            <button class="btn btn-secondary" onclick="showAnswers('henri-comparatifs')">👁 Réponses</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grammar 2: NE...JAMAIS / NE...PLUS -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📐 Grammaire: La Négation Avancée (NE...JAMAIS / NE...PLUS)</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="grammar-box">
+                        <div class="grammar-box-header" onclick="toggleGrammar(this)">
+                            <span class="icon">📐</span>
+                            <span>Expressions négatives variées</span>
+                            <span style="margin-left: auto; font-size: 0.75rem; color: #92400e;">Cliquez ▼</span>
+                        </div>
+                        <div class="grammar-explanation">
+                            <div class="grammar-rule">
+                                <strong>NE...JAMAIS</strong> = never<br>
+                                <strong>NE...PLUS</strong> = no more / no longer / not anymore<br>
+                                <strong>NE...RIEN</strong> = nothing<br>
+                                <strong>NE...PERSONNE</strong> = no one
+                            </div>
+                            <p><strong>De l'histoire:</strong></p>
+                            <div class="grammar-example">
+                                Il <span class="highlight">ne</span> nage <span class="highlight">jamais</span> aussi vite que les champions.<br>
+                                Tu <span class="highlight">ne</span> peux <span class="highlight">jamais</span> redevenir humain!<br>
+                                Je <span class="highlight">ne</span> nagerai <span class="highlight">plus jamais</span> avec toi.<br>
+                                Il <span class="highlight">ne</span> nage <span class="highlight">plus</span> dans l'océan.<br>
+                                Ce <span class="highlight">n'</span>est <span class="highlight">pas</span> normal!
+                            </div>
+                            <div class="tip-box">
+                                <strong>💡 Au passé composé:</strong> NE + auxiliaire + JAMAIS/PLUS + participe passé<br>
+                                Il <span class="highlight">n'</span>a <span class="highlight">jamais</span> nagé dans l'océan.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Exercice: Transformez à la négation indiquée</div>
+                        
+                        <div class="fill-blank-item" data-answer="ne nage plus">
+                            <div class="sentence">1. Henri nage dans l'océan. (ne...plus)<br>→ Henri <input type="text" class="blank-input" style="min-width:150px;" placeholder="..."> dans l'océan.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="n'a jamais vu">
+                            <div class="sentence">2. Il a vu une pieuvre avec du maquillage. (ne...jamais)<br>→ Il <input type="text" class="blank-input" style="min-width:150px;" placeholder="..."> une pieuvre avec du maquillage.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="ne veut plus">
+                            <div class="sentence">3. Henri veut être une pieuvre. (ne...plus)<br>→ Henri <input type="text" class="blank-input" style="min-width:150px;" placeholder="..."> être une pieuvre.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="fill-blank-item" data-answer="ne voit rien">
+                            <div class="sentence">4. Il voit quelque chose. (ne...rien)<br>→ Il <input type="text" class="blank-input" style="min-width:150px;" placeholder="...">.</div>
+                            <div class="feedback"></div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="checkFillBlanks('henri-negation')">✓ Vérifier</button>
+                            <button class="btn btn-secondary" onclick="showAnswers('henri-negation')">👁 Réponses</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comprehension -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🎯 Compréhension</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 1</div>
+                        <p style="margin-bottom: 0.75rem;">Qu'est-ce que Pieuvrewise promet à Henri?</p>
+                        <div class="mc-options" data-correct="2">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">A</span>
+                                <span>De l'argent</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">B</span>
+                                <span>De nager plus vite</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">C</span>
+                                <span>De devenir célèbre</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 2</div>
+                        <p style="margin-bottom: 0.75rem;">Comment Henri peut-il briser la malédiction?</p>
+                        <div class="mc-options" data-correct="1">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">A</span>
+                                <span>En gagnant sa prochaine compétition de natation</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">B</span>
+                                <span>En tuant Pieuvrewise</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">C</span>
+                                <span>En trouvant un sorcier</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="exercise-block">
+                        <div class="exercise-title">Question 3</div>
+                        <p style="margin-bottom: 0.75rem;">À quoi pense Henri pendant la course qui l'aide à gagner?</p>
+                        <div class="mc-options" data-correct="3">
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">A</span>
+                                <span>À Pieuvrewise</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">B</span>
+                                <span>À la victoire</span>
+                            </div>
+                            <div class="mc-option" onclick="selectOption(this)">
+                                <span class="letter">C</span>
+                                <span>À sa famille et son désir d'être humain</span>
+                            </div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkMC(this.closest('.module-content'))">✓ Vérifier</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matching -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>🔗 Exercice: Associez le vocabulaire</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <p style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem;">Cliquez sur un mot français, puis sur sa traduction.</p>
+                    
+                    <div class="matching-container" id="henri-matching">
+                        <div class="matching-column">
+                            <h4>Français</h4>
+                            <div class="matching-item" data-match="1" onclick="selectMatching(this, 'fr')">la malédiction</div>
+                            <div class="matching-item" data-match="2" onclick="selectMatching(this, 'fr')">se transformer</div>
+                            <div class="matching-item" data-match="3" onclick="selectMatching(this, 'fr')">plonger</div>
+                            <div class="matching-item" data-match="4" onclick="selectMatching(this, 'fr')">murmurer</div>
+                            <div class="matching-item" data-match="5" onclick="selectMatching(this, 'fr')">terrifiant</div>
+                            <div class="matching-item" data-match="6" onclick="selectMatching(this, 'fr')">briser</div>
+                        </div>
+                        <div class="matching-column">
+                            <h4>English</h4>
+                            <div class="matching-item" data-match="3" onclick="selectMatching(this, 'en')">to dive</div>
+                            <div class="matching-item" data-match="6" onclick="selectMatching(this, 'en')">to break</div>
+                            <div class="matching-item" data-match="1" onclick="selectMatching(this, 'en')">the curse</div>
+                            <div class="matching-item" data-match="5" onclick="selectMatching(this, 'en')">terrifying</div>
+                            <div class="matching-item" data-match="4" onclick="selectMatching(this, 'en')">to whisper</div>
+                            <div class="matching-item" data-match="2" onclick="selectMatching(this, 'en')">to transform</div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="resetMatching('henri-matching')">🔄 Recommencer</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expression Écrite -->
+            <div class="module-card">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <h3>📝 Expression Écrite</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="module-content">
+                    <div class="written-expression">
+                        <div class="prompt">Henri a fait un pacte dangereux avec Pieuvrewise. Imaginez: un monstre vous offre un pouvoir spécial, mais il y a un prix terrible. Quel pouvoir choisiriez-vous? Accepteriez-vous?</div>
+                        <div class="hints">Utilisez: se transformer en, plus... que, moins... que, ne...jamais, la malédiction, terrifiant, briser</div>
+                        <textarea class="text-response" id="henri-written" placeholder="Si un monstre m'offrait un pouvoir..."></textarea>
+                        <div class="word-counter">
+                            <span>Mots: <span class="count" id="henri-word-count">0</span> / 100 max</span>
+                            <span id="henri-limit-warning" class="limit-warning" style="display:none;">⚠️ Limite dépassée!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Export Section -->
+        <div class="export-section">
+            <h3>📊 Exporter Mes Résultats</h3>
+            <p>Téléchargez vos réponses et votre score.</p>
+            <div class="btn-group" style="justify-content: center;">
+                <button class="btn btn-primary" onclick="exportResults()">📥 Exporter en TXT</button>
+                <button class="btn btn-secondary" onclick="resetAll()">🔄 Recommencer</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global state
+        let stats = {
+            totalAnswered: 0,
+            correctAnswers: 0,
+            storiesCompleted: new Set()
+        };
+
+        let matchingState = {
+            selectedFr: null,
+            selectedEn: null
+        };
+
+        let userResponses = {};
+
+        // Navigation
+        function showStory(storyId) {
+            document.querySelectorAll('.story-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('story-' + storyId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Module toggle
+        function toggleModule(header) {
+            header.classList.toggle('expanded');
+            const content = header.nextElementSibling;
+            content.classList.toggle('show');
+        }
+
+        // Grammar toggle
+        function toggleGrammar(header) {
+            const explanation = header.nextElementSibling;
+            explanation.classList.toggle('show');
+        }
+
+        // Fill in the blank checking
+        function checkFillBlanks(sectionId) {
+            const section = document.getElementById('story-' + sectionId.split('-')[0]) || document.querySelector('.story-section.active');
+            let items;
+            
+            // Find the correct exercise block
+            if (sectionId.includes('-')) {
+                const exerciseBlocks = section.querySelectorAll('.exercise-block, .module-content');
+                exerciseBlocks.forEach(block => {
+                    const blockItems = block.querySelectorAll('.fill-blank-item');
+                    if (blockItems.length > 0) {
+                        const firstAnswer = blockItems[0].dataset.answer;
+                        if (matchesSection(sectionId, firstAnswer)) {
+                            items = blockItems;
+                        }
+                    }
+                });
+            }
+            
+            if (!items) {
+                items = section.querySelectorAll('.fill-blank-item');
+            }
+            
+            items.forEach(item => {
+                const input = item.querySelector('.blank-input');
+                const feedback = item.querySelector('.feedback');
+                const answer = item.dataset.answer.toLowerCase().trim();
+                const userAnswer = input.value.toLowerCase().trim();
+                
+                // Check for multiple acceptable answers
+                const acceptableAnswers = answer.split('|').map(a => a.trim());
+                
+                if (acceptableAnswers.includes(userAnswer) || userAnswer === answer) {
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                    feedback.textContent = '✓ Correct!';
+                    feedback.className = 'feedback show success';
+                    updateStats(true);
+                } else if (userAnswer !== '') {
+                    input.classList.remove('correct');
+                    input.classList.add('incorrect');
+                    feedback.textContent = '✗ Essayez encore!';
+                    feedback.className = 'feedback show error';
+                    updateStats(false);
+                }
+            });
+        }
+
+        function matchesSection(sectionId, answer) {
+            const sectionMap = {
+                'dayton-si': ['gagneras', 'serai', 'pourront', 'aura'],
+                'dayton-pronominal': ["s'est entraîné", 'se sont arrêtés', "s'est effondrée", 'se sont plaints'],
+                'mapo-depuis': ['depuis', 'ça fait'],
+                'mapo-transform': ['ça fait trois ans', 'elle joue du violon'],
+                'mapo-dialogue': ['demande', 'crie', 'murmure', 'répond'],
+                'henri-comparatifs': ['plus vite que', 'aussi vite que', "mieux qu'", 'plus fort que', 'moins terrifiant que'],
+                'henri-negation': ['ne nage plus', "n'a jamais vu", 'ne veut plus', 'ne voit rien']
+            };
+            
+            const answers = sectionMap[sectionId];
+            if (answers) {
+                return answers.some(a => answer.toLowerCase().includes(a.toLowerCase()));
+            }
+            return false;
+        }
+
+        function showAnswers(sectionId) {
+            const section = document.querySelector('.story-section.active');
+            const items = section.querySelectorAll('.fill-blank-item');
+            
+            items.forEach(item => {
+                const input = item.querySelector('.blank-input');
+                const feedback = item.querySelector('.feedback');
+                const answer = item.dataset.answer;
+                
+                input.value = answer;
+                input.classList.remove('incorrect');
+                input.classList.add('correct');
+                feedback.textContent = '→ ' + answer;
+                feedback.className = 'feedback show success';
+            });
+        }
+
+        // Multiple choice
+        function selectOption(option) {
+            const container = option.closest('.mc-options');
+            container.querySelectorAll('.mc-option').forEach(o => {
+                o.classList.remove('selected');
+            });
+            option.classList.add('selected');
+        }
+
+        function checkMC(moduleContent) {
+            const blocks = moduleContent.querySelectorAll('.exercise-block');
+            
+            blocks.forEach((block, blockIdx) => {
+                const options = block.querySelector('.mc-options');
+                if (!options) return;
+                
+                const correct = parseInt(options.dataset.correct);
+                const selected = options.querySelector('.mc-option.selected');
+                const feedback = block.querySelector('.feedback');
+                
+                if (selected) {
+                    const selectedIdx = Array.from(options.children).indexOf(selected) + 1;
+                    
+                    options.querySelectorAll('.mc-option').forEach(o => {
+                        o.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    if (selectedIdx === correct) {
+                        selected.classList.add('correct');
+                        feedback.textContent = '✓ Excellent!';
+                        feedback.className = 'feedback show success';
+                        updateStats(true);
+                    } else {
+                        selected.classList.add('incorrect');
+                        options.children[correct - 1].classList.add('correct');
+                        feedback.textContent = '✗ La bonne réponse est en vert.';
+                        feedback.className = 'feedback show error';
+                        updateStats(false);
+                    }
+                }
+            });
+        }
+
+        // Matching exercise
+        function selectMatching(item, lang) {
+            if (item.classList.contains('matched')) return;
+            
+            const container = item.closest('.matching-container');
+            
+            if (lang === 'fr') {
+                container.querySelectorAll('.matching-column:first-child .matching-item').forEach(i => {
+                    if (!i.classList.contains('matched')) i.classList.remove('selected');
+                });
+                item.classList.add('selected');
+                matchingState.selectedFr = item;
+            } else {
+                container.querySelectorAll('.matching-column:last-child .matching-item').forEach(i => {
+                    if (!i.classList.contains('matched')) i.classList.remove('selected');
+                });
+                item.classList.add('selected');
+                matchingState.selectedEn = item;
+            }
+            
+            if (matchingState.selectedFr && matchingState.selectedEn) {
+                if (matchingState.selectedFr.dataset.match === matchingState.selectedEn.dataset.match) {
+                    matchingState.selectedFr.classList.add('matched');
+                    matchingState.selectedEn.classList.add('matched');
+                    matchingState.selectedFr.classList.remove('selected');
+                    matchingState.selectedEn.classList.remove('selected');
+                    updateStats(true);
+                    showToast('✓ Correct!', 'success');
+                } else {
+                    updateStats(false);
+                    showToast('✗ Essayez encore!', 'error');
+                }
+                matchingState.selectedFr = null;
+                matchingState.selectedEn = null;
+            }
+        }
+
+        function resetMatching(containerId) {
+            const container = document.getElementById(containerId);
+            container.querySelectorAll('.matching-item').forEach(item => {
+                item.classList.remove('selected', 'matched');
+            });
+            matchingState = { selectedFr: null, selectedEn: null };
+        }
+
+        // Stats update
+        function updateStats(correct) {
+            stats.totalAnswered++;
+            if (correct) stats.correctAnswers++;
+            
+            document.getElementById('totalAnswered').textContent = stats.totalAnswered;
+            document.getElementById('correctAnswers').textContent = stats.correctAnswers;
+            
+            const accuracy = stats.totalAnswered > 0 
+                ? Math.round((stats.correctAnswers / stats.totalAnswered) * 100) 
+                : 0;
+            document.getElementById('accuracyRate').textContent = accuracy + '%';
+        }
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Word count for text areas with limit
+        document.querySelectorAll('.text-response').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                const id = this.id;
+                const countSpan = document.getElementById(id.replace('-written', '-word-count'));
+                const warningSpan = document.getElementById(id.replace('-written', '-limit-warning'));
+                
+                if (countSpan) {
+                    const words = this.value.trim().split(/\s+/).filter(w => w.length > 0);
+                    const wordCount = words.length;
+                    countSpan.textContent = wordCount;
+                    
+                    if (wordCount > 100 && warningSpan) {
+                        warningSpan.style.display = 'inline';
+                        countSpan.style.color = 'var(--error)';
+                    } else if (warningSpan) {
+                        warningSpan.style.display = 'none';
+                        countSpan.style.color = 'inherit';
+                    }
+                }
+                
+                const storyKey = id.split('-')[0];
+                if (!userResponses[storyKey]) userResponses[storyKey] = {};
+                userResponses[storyKey]['written'] = this.value;
+            });
+        });
+
+        // Save progress
+        function saveProgress() {
+            try {
+                const inputData = {};
+                document.querySelectorAll('.blank-input').forEach((input, idx) => {
+                    if (input.value) {
+                        inputData['input_' + idx] = input.value;
+                    }
+                });
+
+                const textResponses = {};
+                document.querySelectorAll('.text-response').forEach(textarea => {
+                    if (textarea.value) {
+                        textResponses[textarea.id] = textarea.value;
+                    }
+                });
+
+                const mcSelections = {};
+                document.querySelectorAll('.mc-options').forEach((options, idx) => {
+                    const selected = options.querySelector('.mc-option.selected');
+                    if (selected) {
+                        mcSelections['mc_' + idx] = Array.from(options.children).indexOf(selected);
+                    }
+                });
+
+                const matchedItems = [];
+                document.querySelectorAll('.matching-item.matched').forEach(item => {
+                    matchedItems.push(item.dataset.match);
+                });
+
+                const saveData = {
+                    stats: {
+                        totalAnswered: stats.totalAnswered,
+                        correctAnswers: stats.correctAnswers
+                    },
+                    userResponses: userResponses,
+                    inputData: inputData,
+                    textResponses: textResponses,
+                    mcSelections: mcSelections,
+                    matchedItems: matchedItems,
+                    timestamp: new Date().toISOString()
+                };
+
+                localStorage.setItem('frenchVocabIntermediateProgress', JSON.stringify(saveData));
+                showToast('✓ Progrès sauvegardé!', 'success');
+            } catch (e) {
+                console.error('Save error:', e);
+                showToast('✗ Erreur', 'error');
+            }
+        }
+
+        // Load progress
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('frenchVocabIntermediateProgress');
+                if (!saved) {
+                    showToast('Pas de sauvegarde', 'info');
+                    return;
+                }
+
+                const data = JSON.parse(saved);
+                
+                if (data.stats) {
+                    stats.totalAnswered = data.stats.totalAnswered || 0;
+                    stats.correctAnswers = data.stats.correctAnswers || 0;
+                    
+                    document.getElementById('totalAnswered').textContent = stats.totalAnswered;
+                    document.getElementById('correctAnswers').textContent = stats.correctAnswers;
+                    const accuracy = stats.totalAnswered > 0 
+                        ? Math.round((stats.correctAnswers / stats.totalAnswered) * 100) 
+                        : 0;
+                    document.getElementById('accuracyRate').textContent = accuracy + '%';
+                }
+
+                if (data.userResponses) {
+                    userResponses = data.userResponses;
+                }
+
+                if (data.inputData) {
+                    document.querySelectorAll('.blank-input').forEach((input, idx) => {
+                        if (data.inputData['input_' + idx]) {
+                            input.value = data.inputData['input_' + idx];
+                        }
+                    });
+                }
+
+                if (data.textResponses) {
+                    for (const [id, value] of Object.entries(data.textResponses)) {
+                        const textarea = document.getElementById(id);
+                        if (textarea) {
+                            textarea.value = value;
+                            const countSpan = document.getElementById(id.replace('-written', '-word-count'));
+                            if (countSpan) {
+                                const words = value.trim().split(/\s+/).filter(w => w.length > 0);
+                                countSpan.textContent = words.length;
+                            }
+                        }
+                    }
+                }
+
+                if (data.mcSelections) {
+                    document.querySelectorAll('.mc-options').forEach((options, idx) => {
+                        if (data.mcSelections['mc_' + idx] !== undefined) {
+                            const optionIdx = data.mcSelections['mc_' + idx];
+                            if (options.children[optionIdx]) {
+                                options.children[optionIdx].classList.add('selected');
+                            }
+                        }
+                    });
+                }
+
+                if (data.matchedItems && data.matchedItems.length > 0) {
+                    document.querySelectorAll('.matching-item').forEach(item => {
+                        if (data.matchedItems.includes(item.dataset.match)) {
+                            item.classList.add('matched');
+                        }
+                    });
+                }
+
+                showToast('✓ Progrès chargé!', 'success');
+            } catch (e) {
+                console.error('Load error:', e);
+                showToast('✗ Erreur', 'error');
+            }
+        }
+
+        // Export results
+        function exportResults() {
+            let output = '=== MES RÉSULTATS - FRANÇAIS III ===\n';
+            output += 'Date: ' + new Date().toLocaleString('fr-FR') + '\n';
+            output += 'Niveau: Intermediate-Mid\n\n';
+            
+            output += '--- STATISTIQUES ---\n';
+            output += 'Questions répondues: ' + stats.totalAnswered + '\n';
+            output += 'Réponses correctes: ' + stats.correctAnswers + '\n';
+            const accuracy = stats.totalAnswered > 0 
+                ? Math.round((stats.correctAnswers / stats.totalAnswered) * 100) 
+                : 0;
+            output += 'Taux de réussite: ' + accuracy + '%\n\n';
+            
+            output += '--- MES EXPRESSIONS ÉCRITES ---\n';
+            
+            const storyNames = {
+                'dayton': 'Dayton et la Course Magique',
+                'mapo': 'Le Secret du Mapo Tofu',
+                'henri': 'Henri et Pieuvrewise'
+            };
+            
+            for (const [story, responses] of Object.entries(userResponses)) {
+                if (responses.written) {
+                    output += '\n' + (storyNames[story] || story) + ':\n';
+                    output += responses.written + '\n';
+                    const words = responses.written.trim().split(/\s+/).filter(w => w.length > 0);
+                    output += '(' + words.length + ' mots)\n';
+                }
+            }
+            
+            const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'resultats_francais_iii.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Reset all
+        function resetAll() {
+            if (confirm('Recommencer? Tout sera effacé!')) {
+                localStorage.removeItem('frenchVocabIntermediateProgress');
+                location.reload();
+            }
+        }
+
+        // Auto-save every 2 minutes
+        setInterval(() => {
+            if (stats.totalAnswered > 0) {
+                saveProgress();
+            }
+        }, 120000);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstModule = document.querySelector('.story-section.active .module-header');
+            if (firstModule) {
+                firstModule.classList.add('expanded');
+                firstModule.nextElementSibling.classList.add('show');
+            }
+
+            const saved = localStorage.getItem('frenchVocabIntermediateProgress');
+            if (saved) {
+                showToast('💾 Sauvegarde trouvée!', 'info');
+            }
+        });
+    </script>
+</body>
+</html>
