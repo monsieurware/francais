@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabou Français - Jeu de Vocabulaire</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --primary-dark: #EE5A5A;
+            --secondary: #4ECDC4;
+            --secondary-dark: #3DBDB5;
+            --accent: #FFE66D;
+            --dark: #2C3E50;
+            --light: #F7F9FC;
+            --danger: #E74C3C;
+            --success: #27AE60;
+            --player1: #FF6B6B;
+            --player2: #4ECDC4;
+            --player3: #A29BFE;
+            --easy-gradient: linear-gradient(135deg, #4ECDC4 0%, #44B3AB 100%);
+            --hard-gradient: linear-gradient(135deg, #FF6B6B 0%, #EE5A5A 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-container {
+            max-width: 520px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2.8rem;
+            color: white;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+        }
+
+        /* Mode Toggle */
+        .mode-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mode-btn {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mode-btn.easy {
+            background: var(--easy-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .mode-btn.hard {
+            background: var(--hard-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .mode-btn.inactive {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .mode-btn:hover:not(.inactive) {
+            transform: translateY(-2px);
+        }
+
+        /* Player Selection */
+        .player-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .player-section-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .player-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .player-count-btn {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            background: white;
+            color: var(--dark);
+        }
+
+        .player-count-btn.active {
+            border-color: var(--secondary);
+            background: rgba(78, 205, 196, 0.1);
+            color: var(--secondary-dark);
+        }
+
+        .player-count-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Player Scoreboard */
+        .scoreboard {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .player-score {
+            background: white;
+            border-radius: 15px;
+            padding: 12px 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            min-width: 100px;
+            border: 3px solid transparent;
+        }
+
+        .player-score.active {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .player-score.player-1 {
+            border-color: var(--player1);
+        }
+
+        .player-score.player-1.active {
+            background: linear-gradient(135deg, #fff 0%, #fff0f0 100%);
+        }
+
+        .player-score.player-2 {
+            border-color: var(--player2);
+        }
+
+        .player-score.player-2.active {
+            background: linear-gradient(135deg, #fff 0%, #f0fffd 100%);
+        }
+
+        .player-score.player-3 {
+            border-color: var(--player3);
+        }
+
+        .player-score.player-3.active {
+            background: linear-gradient(135deg, #fff 0%, #f5f3ff 100%);
+        }
+
+        .player-name {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .player-1 .player-name { color: var(--player1); }
+        .player-2 .player-name { color: var(--player2); }
+        .player-3 .player-name { color: var(--player3); }
+
+        .player-points {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .player-score.hidden {
+            display: none;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.95);
+            padding: 12px 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Timer */
+        .timer-container {
+            text-align: center;
+        }
+
+        .timer {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            transition: color 0.3s;
+        }
+
+        .timer.warning {
+            color: #F39C12;
+            animation: pulse 0.5s ease infinite;
+        }
+
+        .timer.danger {
+            color: var(--danger);
+            animation: pulse 0.3s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Card */
+        .card-container {
+            perspective: 1000px;
+            margin-bottom: 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: var(--easy-gradient);
+        }
+
+        .card.hard-mode::before {
+            background: var(--hard-gradient);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-badge.easy {
+            background: rgba(78, 205, 196, 0.15);
+            color: var(--secondary-dark);
+        }
+
+        .card-badge.hard {
+            background: rgba(255, 107, 107, 0.15);
+            color: var(--primary-dark);
+        }
+
+        .target-word {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark);
+            text-align: center;
+            margin: 25px 0 20px;
+            line-height: 1.2;
+        }
+
+        .taboo-label {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .taboo-label::before,
+        .taboo-label::after {
+            content: '';
+            height: 1px;
+            width: 30px;
+            background: #ddd;
+        }
+
+        .taboo-words {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .taboo-word {
+            background: linear-gradient(135deg, #ff6b6b15 0%, #ee5a5a15 100%);
+            border: 2px solid #ffcccc;
+            border-radius: 12px;
+            padding: 10px 18px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--danger);
+            position: relative;
+        }
+
+        .taboo-word::before {
+            content: '✕';
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.85rem;
+            opacity: 0.5;
+        }
+
+        /* Definition Section */
+        .definition-section {
+            margin-top: auto;
+            border-top: 2px dashed #eee;
+            padding-top: 12px;
+        }
+
+        .reveal-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #a8e6cf 0%, #88d8b0 100%);
+            border: none;
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #2d5a3d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(136, 216, 176, 0.4);
+        }
+
+        .definition {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 12px;
+            font-style: italic;
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .definition.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .control-btn {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.95rem;
+            padding: 12px 8px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .control-btn .icon {
+            font-size: 1.3rem;
+        }
+
+        .control-btn.skip {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            color: #6d5a00;
+        }
+
+        .control-btn.correct {
+            background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+            color: white;
+        }
+
+        .control-btn.next-player {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Bottom Buttons */
+        .bottom-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .shuffle-btn, .end-game-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .shuffle-btn {
+            background: linear-gradient(135deg, #dfe6e9 0%, #b2bec3 100%);
+            color: var(--dark);
+        }
+
+        .end-game-btn {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            color: white;
+        }
+
+        .shuffle-btn:hover, .end-game-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .shuffle-btn .icon, .end-game-btn .icon {
+            font-size: 1.1rem;
+        }
+
+        /* Start Screen */
+        .start-screen {
+            background: white;
+            border-radius: 25px;
+            padding: 35px 25px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .start-screen h2 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.7rem;
+            color: var(--dark);
+            margin-bottom: 12px;
+        }
+
+        .start-screen p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .start-btn {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2rem;
+            padding: 15px 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Game Over Screen */
+        .game-over {
+            background: white;
+            border-radius: 25px;
+            padding: 35px 25px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .game-over h2 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+
+        .winner-announcement {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .winner-announcement.player-1 {
+            background: rgba(255, 107, 107, 0.15);
+            color: var(--player1);
+        }
+
+        .winner-announcement.player-2 {
+            background: rgba(78, 205, 196, 0.15);
+            color: var(--player2);
+        }
+
+        .winner-announcement.player-3 {
+            background: rgba(162, 155, 254, 0.15);
+            color: var(--player3);
+        }
+
+        .final-scores {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .final-player-score {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px 25px;
+            min-width: 100px;
+        }
+
+        .final-player-score .name {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .final-player-score.player-1 .name { color: var(--player1); }
+        .final-player-score.player-2 .name { color: var(--player2); }
+        .final-player-score.player-3 .name { color: var(--player3); }
+
+        .final-player-score .score {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .final-player-score.winner {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            transform: scale(1.1);
+        }
+
+        .play-again-btn {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .play-again-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Category Badge */
+        .category-badge {
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        /* Current Player Indicator */
+        .current-player-indicator {
+            text-align: center;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 10px;
+            padding: 8px 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 25px;
+            display: inline-block;
+        }
+
+        .current-player-indicator.player-1 { background: var(--player1); }
+        .current-player-indicator.player-2 { background: var(--player2); }
+        .current-player-indicator.player-3 { background: var(--player3); }
+
+        .indicator-wrapper {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        /* Card count display */
+        .card-count {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .target-word {
+                font-size: 1.9rem;
+            }
+
+            .mode-btn {
+                padding: 8px 18px;
+                font-size: 0.9rem;
+            }
+
+            .player-score {
+                min-width: 80px;
+                padding: 10px 15px;
+            }
+
+            .player-points {
+                font-size: 1.5rem;
+            }
+
+            .control-btn {
+                padding: 10px 6px;
+                font-size: 0.85rem;
+            }
+
+            .control-btn .icon {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <header class="header">
+            <h1>🎯 Tabou Français</h1>
+            <p>Décrivez le mot sans utiliser les mots interdits !</p>
+        </header>
+
+        <!-- Mode Toggle -->
+        <div class="mode-toggle">
+            <button class="mode-btn easy" id="easyBtn" onclick="setMode('easy')">Facile</button>
+            <button class="mode-btn hard inactive" id="hardBtn" onclick="setMode('hard')">Difficile</button>
+        </div>
+
+        <!-- Player Selection (shown on start screen) -->
+        <div class="player-section" id="playerSection">
+            <div class="player-section-title">Nombre de joueurs</div>
+            <div class="player-toggle">
+                <button class="player-count-btn active" id="player1Btn" onclick="setPlayerCount(1)">1 Joueur</button>
+                <button class="player-count-btn" id="player2Btn" onclick="setPlayerCount(2)">2 Joueurs</button>
+                <button class="player-count-btn" id="player3Btn" onclick="setPlayerCount(3)">3 Joueurs</button>
+            </div>
+        </div>
+
+        <!-- Card Count Display -->
+        <div class="card-count" id="cardCountDisplay">Mode Facile: 150 cartes disponibles</div>
+
+        <!-- Start Screen -->
+        <div class="start-screen" id="startScreen">
+            <h2>Prêt à jouer ?</h2>
+            <p>Faites deviner le mot cible à votre équipe sans utiliser les 3 mots interdits. Vous avez 45 secondes par carte !</p>
+            <button class="start-btn" onclick="startGame()">Commencer !</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="hidden">
+            <!-- Current Player Indicator -->
+            <div class="indicator-wrapper">
+                <span class="current-player-indicator player-1" id="currentPlayerIndicator">Tour de Joueur 1</span>
+            </div>
+
+            <!-- Scoreboard -->
+            <div class="scoreboard" id="scoreboard">
+                <div class="player-score player-1 active" id="scorePlayer1">
+                    <div class="player-name">Joueur 1</div>
+                    <div class="player-points" id="points1">0</div>
+                </div>
+                <div class="player-score player-2 hidden" id="scorePlayer2">
+                    <div class="player-name">Joueur 2</div>
+                    <div class="player-points" id="points2">0</div>
+                </div>
+                <div class="player-score player-3 hidden" id="scorePlayer3">
+                    <div class="player-name">Joueur 3</div>
+                    <div class="player-points" id="points3">0</div>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value" id="roundNumber">1</div>
+                    <div class="stat-label">Tour</div>
+                </div>
+                <div class="timer-container">
+                    <div class="timer" id="timer">45</div>
+                    <div class="stat-label">Secondes</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="cardNumber">1/150</div>
+                    <div class="stat-label">Carte</div>
+                </div>
+            </div>
+
+            <!-- Card -->
+            <div class="card-container">
+                <div class="card" id="card">
+                    <span class="category-badge" id="categoryBadge">Catégorie</span>
+                    <span class="card-badge easy" id="difficultyBadge">Facile</span>
+                    
+                    <div class="target-word" id="targetWord">le mot</div>
+                    
+                    <div class="taboo-label">Mots Interdits</div>
+                    
+                    <div class="taboo-words">
+                        <div class="taboo-word" id="taboo1">mot 1</div>
+                        <div class="taboo-word" id="taboo2">mot 2</div>
+                        <div class="taboo-word" id="taboo3">mot 3</div>
+                    </div>
+
+                    <div class="definition-section">
+                        <button class="reveal-btn" id="revealBtn" onclick="revealDefinition()">
+                            💡 Révéler la définition
+                        </button>
+                        <div class="definition" id="definition">
+                            Définition ici...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <button class="control-btn skip" onclick="skipCard()">
+                    <span class="icon">⏭️</span>
+                    Passer
+                </button>
+                <button class="control-btn correct" onclick="correctAnswer()">
+                    <span class="icon">✅</span>
+                    Correct !
+                </button>
+                <button class="control-btn next-player" onclick="nextPlayer()">
+                    <span class="icon">👤</span>
+                    Joueur suivant
+                </button>
+            </div>
+
+            <div class="bottom-controls">
+                <button class="shuffle-btn" onclick="shuffleCards()">
+                    <span class="icon">🔀</span>
+                    Mélanger
+                </button>
+                <button class="end-game-btn" onclick="endGame()">
+                    <span class="icon">🏁</span>
+                    Terminer
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div class="game-over hidden" id="gameOverScreen">
+            <h2>🎉 Partie terminée !</h2>
+            <div class="winner-announcement player-1" id="winnerAnnouncement">
+                🏆 Joueur 1 gagne !
+            </div>
+            <div class="final-scores" id="finalScores">
+                <div class="final-player-score player-1 winner" id="finalScore1">
+                    <div class="name">Joueur 1</div>
+                    <div class="score" id="finalPoints1">0</div>
+                </div>
+                <div class="final-player-score player-2 hidden" id="finalScore2">
+                    <div class="name">Joueur 2</div>
+                    <div class="score" id="finalPoints2">0</div>
+                </div>
+                <div class="final-player-score player-3 hidden" id="finalScore3">
+                    <div class="name">Joueur 3</div>
+                    <div class="score" id="finalPoints3">0</div>
+                </div>
+            </div>
+            <button class="play-again-btn" onclick="resetGame()">Rejouer</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== CARD DATA ====================
+        
+        const easyCards = [
+            // ===== BASIC ADJECTIVES (30) =====
+            { word: "rapide", taboo: ["vite", "lent", "vitesse"], definition: "Qui se déplace ou agit avec beaucoup de vitesse.", category: "Adjectif" },
+            { word: "fort", taboo: ["muscles", "puissant", "faible"], definition: "Qui a beaucoup de force physique.", category: "Adjectif" },
+            { word: "faible", taboo: ["fort", "énergie", "fragile"], definition: "Qui manque de force ou de puissance.", category: "Adjectif" },
+            { word: "chaud", taboo: ["température", "froid", "été"], definition: "Qui a une température élevée.", category: "Adjectif" },
+            { word: "froid", taboo: ["température", "chaud", "hiver"], definition: "Qui a une basse température.", category: "Adjectif" },
+            { word: "mouillé", taboo: ["eau", "sec", "pluie"], definition: "Couvert ou imprégné d'eau ou de liquide.", category: "Adjectif" },
+            { word: "sec", taboo: ["mouillé", "eau", "désert"], definition: "Qui ne contient pas d'eau ou d'humidité.", category: "Adjectif" },
+            { word: "propre", taboo: ["sale", "laver", "nettoyer"], definition: "Qui n'est pas sale, qui est bien nettoyé.", category: "Adjectif" },
+            { word: "sale", taboo: ["propre", "laver", "poussière"], definition: "Qui n'est pas propre, qui a de la saleté.", category: "Adjectif" },
+            { word: "léger", taboo: ["poids", "lourd", "plume"], definition: "Qui pèse peu, qui n'est pas lourd.", category: "Adjectif" },
+            { word: "lourd", taboo: ["poids", "difficile", "léger"], definition: "Qui a un poids important.", category: "Adjectif" },
+            { word: "heureux", taboo: ["joie", "triste", "sourire"], definition: "Qui éprouve du bonheur, de la satisfaction.", category: "Adjectif" },
+            { word: "triste", taboo: ["pleurer", "malheureux", "larmes"], definition: "Qui éprouve du chagrin ou de la mélancolie.", category: "Adjectif" },
+            { word: "gentil", taboo: ["aimable", "méchant", "aider"], definition: "Qui est agréable et bienveillant envers les autres.", category: "Adjectif" },
+            { word: "méchant", taboo: ["cruel", "gentil", "mal"], definition: "Qui fait du mal aux autres intentionnellement.", category: "Adjectif" },
+            { word: "jeune", taboo: ["âge", "vieux", "enfant"], definition: "Qui n'est pas âgé, qui a peu d'années.", category: "Adjectif" },
+            { word: "vieux", taboo: ["âge", "jeune", "ancien"], definition: "Qui a beaucoup d'années, qui est âgé.", category: "Adjectif" },
+            { word: "fatigué", taboo: ["dormir", "énergie", "repos"], definition: "Qui ressent le besoin de se reposer.", category: "Adjectif" },
+            { word: "délicieux", taboo: ["goût", "manger", "bon"], definition: "Qui a un goût très agréable.", category: "Adjectif" },
+            { word: "énorme", taboo: ["grand", "taille", "petit"], definition: "Qui est très grand ou très gros.", category: "Adjectif" },
+            { word: "calme", taboo: ["tranquille", "nerveux", "paix"], definition: "Qui est paisible, sans agitation.", category: "Adjectif" },
+            { word: "grand", taboo: ["taille", "petit", "haut"], definition: "Qui a une taille importante.", category: "Adjectif" },
+            { word: "petit", taboo: ["taille", "grand", "minuscule"], definition: "Qui a une petite taille.", category: "Adjectif" },
+            { word: "beau", taboo: ["joli", "laid", "apparence"], definition: "Qui est agréable à regarder.", category: "Adjectif" },
+            { word: "nouveau", taboo: ["récent", "ancien", "neuf"], definition: "Qui existe depuis peu de temps.", category: "Adjectif" },
+            { word: "facile", taboo: ["simple", "difficile", "effort"], definition: "Qui ne demande pas beaucoup d'effort.", category: "Adjectif" },
+            { word: "difficile", taboo: ["dur", "facile", "compliqué"], definition: "Qui demande beaucoup d'effort.", category: "Adjectif" },
+            { word: "plein", taboo: ["vide", "rempli", "complet"], definition: "Qui contient autant que possible.", category: "Adjectif" },
+            { word: "vide", taboo: ["plein", "rien", "contenu"], definition: "Qui ne contient rien.", category: "Adjectif" },
+            { word: "long", taboo: ["court", "longueur", "taille"], definition: "Qui a une grande longueur.", category: "Adjectif" },
+            
+            // ===== BASIC VERBS (25) =====
+            { word: "courir", taboo: ["vite", "jambes", "marathon"], definition: "Se déplacer rapidement en faisant des pas rapides.", category: "Verbe" },
+            { word: "nager", taboo: ["eau", "piscine", "océan"], definition: "Se déplacer dans l'eau en utilisant son corps.", category: "Verbe" },
+            { word: "manger", taboo: ["nourriture", "faim", "bouche"], definition: "Mettre des aliments dans sa bouche et les avaler.", category: "Verbe" },
+            { word: "boire", taboo: ["eau", "soif", "liquide"], definition: "Avaler un liquide.", category: "Verbe" },
+            { word: "dormir", taboo: ["lit", "nuit", "fatigue"], definition: "Être dans un état de repos avec les yeux fermés.", category: "Verbe" },
+            { word: "pleurer", taboo: ["larmes", "triste", "yeux"], definition: "Verser des larmes, souvent à cause d'une émotion.", category: "Verbe" },
+            { word: "rire", taboo: ["drôle", "heureux", "sourire"], definition: "Exprimer la joie par des sons.", category: "Verbe" },
+            { word: "crier", taboo: ["fort", "voix", "bruit"], definition: "Parler très fort ou pousser des sons intenses.", category: "Verbe" },
+            { word: "gagner", taboo: ["victoire", "premier", "compétition"], definition: "Obtenir la victoire dans un jeu ou une compétition.", category: "Verbe" },
+            { word: "perdre", taboo: ["défaite", "dernier", "échec"], definition: "Ne pas gagner, subir une défaite.", category: "Verbe" },
+            { word: "cacher", taboo: ["secret", "invisible", "trouver"], definition: "Mettre quelque chose où on ne peut pas le voir.", category: "Verbe" },
+            { word: "chercher", taboo: ["trouver", "regarder", "perdre"], definition: "Essayer de trouver quelque chose.", category: "Verbe" },
+            { word: "trouver", taboo: ["chercher", "découvrir", "perdre"], definition: "Découvrir ce qu'on cherchait.", category: "Verbe" },
+            { word: "donner", taboo: ["recevoir", "cadeau", "prendre"], definition: "Transférer quelque chose à quelqu'un.", category: "Verbe" },
+            { word: "prendre", taboo: ["donner", "main", "attraper"], definition: "Saisir quelque chose avec la main.", category: "Verbe" },
+            { word: "acheter", taboo: ["argent", "magasin", "vendre"], definition: "Obtenir quelque chose en payant.", category: "Verbe" },
+            { word: "vendre", taboo: ["argent", "acheter", "magasin"], definition: "Céder quelque chose contre de l'argent.", category: "Verbe" },
+            { word: "ouvrir", taboo: ["fermer", "porte", "clé"], definition: "Faire en sorte qu'on puisse entrer ou voir à l'intérieur.", category: "Verbe" },
+            { word: "fermer", taboo: ["ouvrir", "porte", "clé"], definition: "Empêcher l'accès ou la vue.", category: "Verbe" },
+            { word: "commencer", taboo: ["début", "finir", "premier"], definition: "Faire les premiers pas d'une action.", category: "Verbe" },
+            { word: "finir", taboo: ["fin", "commencer", "terminer"], definition: "Arriver à la fin de quelque chose.", category: "Verbe" },
+            { word: "aider", taboo: ["assistance", "problème", "ensemble"], definition: "Apporter son soutien à quelqu'un.", category: "Verbe" },
+            { word: "attendre", taboo: ["patience", "temps", "arriver"], definition: "Rester quelque part jusqu'à ce que quelque chose arrive.", category: "Verbe" },
+            { word: "écouter", taboo: ["oreilles", "son", "musique"], definition: "Prêter attention aux sons.", category: "Verbe" },
+            { word: "regarder", taboo: ["yeux", "voir", "télévision"], definition: "Diriger ses yeux vers quelque chose.", category: "Verbe" },
+            
+            // ===== BODY PARTS (12) =====
+            { word: "le cœur", taboo: ["battre", "amour", "poitrine"], definition: "Organe qui pompe le sang dans le corps.", category: "Corps" },
+            { word: "les yeux", taboo: ["voir", "regarder", "visage"], definition: "Organes de la vue sur le visage.", category: "Corps" },
+            { word: "le nez", taboo: ["visage", "sentir", "respirer"], definition: "Partie du visage qui sert à respirer et sentir.", category: "Corps" },
+            { word: "la bouche", taboo: ["manger", "parler", "dents"], definition: "Ouverture du visage pour manger et parler.", category: "Corps" },
+            { word: "les doigts", taboo: ["main", "cinq", "toucher"], definition: "Les cinq parties au bout de la main.", category: "Corps" },
+            { word: "les jambes", taboo: ["marcher", "courir", "pieds"], definition: "Membres du corps utilisés pour marcher.", category: "Corps" },
+            { word: "la tête", taboo: ["cerveau", "cheveux", "visage"], definition: "Partie du corps au-dessus du cou.", category: "Corps" },
+            { word: "les bras", taboo: ["mains", "corps", "lever"], definition: "Membres du corps entre l'épaule et la main.", category: "Corps" },
+            { word: "le dos", taboo: ["corps", "derrière", "colonne"], definition: "Partie arrière du corps humain.", category: "Corps" },
+            { word: "le ventre", taboo: ["estomac", "manger", "corps"], definition: "Partie du corps entre la poitrine et les jambes.", category: "Corps" },
+            { word: "les oreilles", taboo: ["entendre", "son", "tête"], definition: "Organes de l'audition sur les côtés de la tête.", category: "Corps" },
+            { word: "les cheveux", taboo: ["tête", "coiffer", "couleur"], definition: "Ce qui pousse sur la tête.", category: "Corps" },
+            
+            // ===== NATURE (12) =====
+            { word: "le soleil", taboo: ["ciel", "lumière", "jour"], definition: "L'étoile qui éclaire et réchauffe la Terre.", category: "Nature" },
+            { word: "la lune", taboo: ["nuit", "ciel", "étoiles"], definition: "L'astre qui brille dans le ciel la nuit.", category: "Nature" },
+            { word: "l'océan", taboo: ["eau", "salé", "poisson"], definition: "Grande étendue d'eau salée sur la Terre.", category: "Nature" },
+            { word: "la pluie", taboo: ["eau", "ciel", "mouillé"], definition: "Eau qui tombe du ciel.", category: "Nature" },
+            { word: "la neige", taboo: ["blanc", "froid", "hiver"], definition: "Eau gelée qui tombe du ciel en flocons blancs.", category: "Nature" },
+            { word: "l'arbre", taboo: ["feuilles", "bois", "forêt"], definition: "Grande plante avec un tronc et des branches.", category: "Nature" },
+            { word: "la fleur", taboo: ["plante", "jardin", "parfum"], definition: "Partie colorée d'une plante.", category: "Nature" },
+            { word: "la montagne", taboo: ["haute", "neige", "grimper"], definition: "Très grande élévation de terrain.", category: "Nature" },
+            { word: "la rivière", taboo: ["eau", "couler", "poisson"], definition: "Cours d'eau qui coule vers la mer.", category: "Nature" },
+            { word: "le ciel", taboo: ["bleu", "nuages", "soleil"], definition: "L'espace au-dessus de nos têtes.", category: "Nature" },
+            { word: "la mer", taboo: ["eau", "plage", "vagues"], definition: "Grande étendue d'eau salée.", category: "Nature" },
+            { word: "le sable", taboo: ["plage", "château", "jaune"], definition: "Petits grains qu'on trouve sur la plage.", category: "Nature" },
+            
+            // ===== FOOD (15) =====
+            { word: "le pain", taboo: ["boulangerie", "manger", "farine"], definition: "Aliment fait de farine cuit au four.", category: "Nourriture" },
+            { word: "le fromage", taboo: ["lait", "France", "manger"], definition: "Aliment fait à partir de lait fermenté.", category: "Nourriture" },
+            { word: "la pomme", taboo: ["fruit", "rouge", "arbre"], definition: "Fruit rond qui peut être rouge, vert ou jaune.", category: "Nourriture" },
+            { word: "le chocolat", taboo: ["sucré", "cacao", "dessert"], definition: "Aliment sucré fait à partir de cacao.", category: "Nourriture" },
+            { word: "la glace", taboo: ["froid", "été", "dessert"], definition: "Dessert froid et sucré qu'on lèche.", category: "Nourriture" },
+            { word: "le gâteau", taboo: ["anniversaire", "sucré", "dessert"], definition: "Pâtisserie sucrée souvent pour les fêtes.", category: "Nourriture" },
+            { word: "la pizza", taboo: ["Italie", "tomate", "fromage"], definition: "Plat italien avec de la pâte et des garnitures.", category: "Nourriture" },
+            { word: "les frites", taboo: ["pommes de terre", "huile", "McDonald's"], definition: "Bâtonnets de pommes de terre frits.", category: "Nourriture" },
+            { word: "le poulet", taboo: ["viande", "oiseau", "cuisine"], definition: "Viande d'un oiseau de ferme.", category: "Nourriture" },
+            { word: "le riz", taboo: ["Asie", "blanc", "grain"], definition: "Petits grains blancs, base de nombreux plats.", category: "Nourriture" },
+            { word: "la salade", taboo: ["légumes", "vert", "vinaigrette"], definition: "Plat de légumes crus souvent avec une sauce.", category: "Nourriture" },
+            { word: "la soupe", taboo: ["liquide", "chaud", "bol"], definition: "Plat liquide chaud avec des légumes.", category: "Nourriture" },
+            { word: "le petit-déjeuner", taboo: ["matin", "manger", "café"], definition: "Le premier repas de la journée.", category: "Nourriture" },
+            { word: "le dessert", taboo: ["sucré", "fin", "repas"], definition: "Plat sucré servi à la fin du repas.", category: "Nourriture" },
+            { word: "la boisson", taboo: ["boire", "liquide", "verre"], definition: "Tout liquide qu'on peut boire.", category: "Nourriture" },
+            
+            // ===== ANIMALS (15) =====
+            { word: "le chien", taboo: ["animal", "aboyer", "chat"], definition: "Animal domestique qui aboie.", category: "Animal" },
+            { word: "le chat", taboo: ["animal", "miauler", "chien"], definition: "Animal domestique qui miaule.", category: "Animal" },
+            { word: "l'oiseau", taboo: ["voler", "ailes", "ciel"], definition: "Animal avec des ailes qui peut voler.", category: "Animal" },
+            { word: "le poisson", taboo: ["nager", "eau", "océan"], definition: "Animal qui vit dans l'eau.", category: "Animal" },
+            { word: "le cheval", taboo: ["monter", "galoper", "animal"], definition: "Grand animal qu'on peut monter.", category: "Animal" },
+            { word: "la vache", taboo: ["lait", "ferme", "animal"], definition: "Animal de ferme qui donne du lait.", category: "Animal" },
+            { word: "le cochon", taboo: ["ferme", "rose", "animal"], definition: "Animal de ferme rose qui fait oink.", category: "Animal" },
+            { word: "le lapin", taboo: ["oreilles", "carotte", "animal"], definition: "Petit animal avec de longues oreilles.", category: "Animal" },
+            { word: "l'éléphant", taboo: ["trompe", "grand", "Afrique"], definition: "Très grand animal avec une trompe.", category: "Animal" },
+            { word: "le lion", taboo: ["roi", "Afrique", "rugir"], definition: "Grand félin appelé le roi des animaux.", category: "Animal" },
+            { word: "le singe", taboo: ["banane", "arbre", "zoo"], definition: "Animal qui ressemble à l'homme.", category: "Animal" },
+            { word: "la queue", taboo: ["animal", "derrière", "chien"], definition: "Partie du corps de l'animal à l'arrière.", category: "Animal" },
+            { word: "les pattes", taboo: ["animal", "marcher", "quatre"], definition: "Les jambes des animaux.", category: "Animal" },
+            { word: "les ailes", taboo: ["oiseau", "voler", "avion"], definition: "Parties du corps qui permettent de voler.", category: "Animal" },
+            { word: "le bec", taboo: ["oiseau", "manger", "jaune"], definition: "La bouche d'un oiseau.", category: "Animal" },
+            
+            // ===== FAMILY (10) =====
+            { word: "la mère", taboo: ["maman", "famille", "père"], definition: "La femme qui t'a donné naissance.", category: "Famille" },
+            { word: "le père", taboo: ["papa", "famille", "mère"], definition: "L'homme qui est ton parent.", category: "Famille" },
+            { word: "le frère", taboo: ["sœur", "famille", "garçon"], definition: "Garçon qui a les mêmes parents que toi.", category: "Famille" },
+            { word: "la sœur", taboo: ["frère", "famille", "fille"], definition: "Fille qui a les mêmes parents que toi.", category: "Famille" },
+            { word: "les grands-parents", taboo: ["vieux", "famille", "parents"], definition: "Les parents de tes parents.", category: "Famille" },
+            { word: "le beau-père", taboo: ["père", "mariage", "famille"], definition: "Le nouveau mari de ta mère, ou le père de ton conjoint.", category: "Famille" },
+            { word: "la belle-mère", taboo: ["mère", "mariage", "famille"], definition: "La nouvelle femme de ton père, ou la mère de ton conjoint.", category: "Famille" },
+            { word: "le neveu", taboo: ["garçon", "oncle", "tante"], definition: "Le fils de ton frère ou de ta sœur.", category: "Famille" },
+            { word: "la nièce", taboo: ["fille", "oncle", "tante"], definition: "La fille de ton frère ou de ta sœur.", category: "Famille" },
+            { word: "les petits-enfants", taboo: ["grands-parents", "enfants", "génération"], definition: "Les enfants de tes enfants.", category: "Famille" },
+            
+            // ===== SPORTS (10) =====
+            { word: "le ballon", taboo: ["rond", "jouer", "sport"], definition: "Objet sphérique utilisé dans beaucoup de sports.", category: "Sport" },
+            { word: "l'équipe", taboo: ["joueurs", "ensemble", "gagner"], definition: "Groupe de personnes qui jouent ensemble.", category: "Sport" },
+            { word: "le terrain", taboo: ["jouer", "herbe", "match"], definition: "L'endroit où on joue un sport.", category: "Sport" },
+            { word: "le match", taboo: ["jouer", "gagner", "sport"], definition: "Une rencontre sportive entre deux équipes.", category: "Sport" },
+            { word: "l'entraîneur", taboo: ["équipe", "pratiquer", "coach"], definition: "Personne qui dirige et prépare une équipe.", category: "Sport" },
+            { word: "le but", taboo: ["football", "marquer", "gardien"], definition: "Cage où il faut envoyer le ballon.", category: "Sport" },
+            { word: "le joueur", taboo: ["sport", "équipe", "match"], definition: "Personne qui participe à un sport.", category: "Sport" },
+            { word: "la natation", taboo: ["nager", "piscine", "eau"], definition: "Sport qui consiste à nager.", category: "Sport" },
+            { word: "le basketball", taboo: ["panier", "ballon", "NBA"], definition: "Sport où on lance un ballon dans un panier.", category: "Sport" },
+            { word: "le football", taboo: ["ballon", "but", "équipe"], definition: "Sport où on tape dans un ballon avec les pieds.", category: "Sport" },
+            
+            // ===== CLOTHES (10) =====
+            { word: "les baskets", taboo: ["pieds", "sport", "Nike"], definition: "Chaussures confortables pour le sport ou la marche.", category: "Vêtements" },
+            { word: "le manteau", taboo: ["hiver", "froid", "vêtement"], definition: "Vêtement long et chaud pour l'extérieur.", category: "Vêtements" },
+            { word: "la robe", taboo: ["femme", "vêtement", "élégant"], definition: "Vêtement féminin d'une seule pièce.", category: "Vêtements" },
+            { word: "le pantalon", taboo: ["jambes", "vêtement", "jean"], definition: "Vêtement qui couvre les deux jambes.", category: "Vêtements" },
+            { word: "la chemise", taboo: ["boutons", "vêtement", "travail"], definition: "Vêtement avec des boutons devant.", category: "Vêtements" },
+            { word: "les chaussettes", taboo: ["pieds", "chaussures", "paire"], definition: "Ce qu'on met aux pieds avant les chaussures.", category: "Vêtements" },
+            { word: "l'écharpe", taboo: ["cou", "hiver", "chaud"], definition: "Long tissu qu'on porte autour du cou.", category: "Vêtements" },
+            { word: "le chapeau", taboo: ["tête", "soleil", "porter"], definition: "Accessoire qu'on porte sur la tête.", category: "Vêtements" },
+            { word: "les lunettes", taboo: ["yeux", "voir", "soleil"], definition: "Accessoire qu'on porte sur le nez pour mieux voir.", category: "Vêtements" },
+            { word: "la ceinture", taboo: ["pantalon", "taille", "cuir"], definition: "Accessoire qu'on porte autour de la taille.", category: "Vêtements" },
+            
+            // ===== HOUSE (12) =====
+            { word: "la maison", taboo: ["habiter", "famille", "toit"], definition: "Bâtiment où on vit.", category: "Maison" },
+            { word: "la chambre", taboo: ["dormir", "lit", "pièce"], definition: "Pièce où on dort.", category: "Maison" },
+            { word: "la cuisine", taboo: ["manger", "préparer", "pièce"], definition: "Pièce où on prépare les repas.", category: "Maison" },
+            { word: "la salle de bains", taboo: ["douche", "toilettes", "laver"], definition: "Pièce où on se lave.", category: "Maison" },
+            { word: "le salon", taboo: ["canapé", "télévision", "pièce"], definition: "Pièce principale pour se détendre.", category: "Maison" },
+            { word: "le lit", taboo: ["dormir", "chambre", "nuit"], definition: "Meuble où on dort.", category: "Maison" },
+            { word: "la table", taboo: ["manger", "chaise", "meuble"], definition: "Meuble avec une surface plate.", category: "Maison" },
+            { word: "la chaise", taboo: ["asseoir", "table", "meuble"], definition: "Meuble pour s'asseoir.", category: "Maison" },
+            { word: "la porte", taboo: ["ouvrir", "fermer", "entrer"], definition: "Ce qui permet d'entrer dans une pièce.", category: "Maison" },
+            { word: "la fenêtre", taboo: ["verre", "regarder", "lumière"], definition: "Ouverture dans le mur pour voir dehors.", category: "Maison" },
+            { word: "l'escalier", taboo: ["monter", "descendre", "marches"], definition: "Ce qui permet de changer d'étage.", category: "Maison" },
+            { word: "le jardin", taboo: ["fleurs", "herbe", "dehors"], definition: "Espace vert autour de la maison.", category: "Maison" },
+            
+            // ===== TRAVEL (8) =====
+            { word: "l'aéroport", taboo: ["avion", "voyager", "départ"], definition: "Lieu où les avions décollent et atterrissent.", category: "Voyage" },
+            { word: "le passeport", taboo: ["identité", "voyage", "pays"], definition: "Document officiel pour voyager à l'étranger.", category: "Voyage" },
+            { word: "la valise", taboo: ["vêtements", "voyage", "bagages"], definition: "Sac rigide pour transporter ses affaires en voyage.", category: "Voyage" },
+            { word: "le billet", taboo: ["avion", "train", "acheter"], definition: "Papier qui prouve qu'on a payé pour un transport.", category: "Voyage" },
+            { word: "les souvenirs", taboo: ["cadeau", "voyage", "mémoire"], definition: "Petits objets qu'on achète pour se rappeler d'un voyage.", category: "Voyage" },
+            { word: "l'hôtel", taboo: ["dormir", "vacances", "chambre"], definition: "Établissement où on paie pour dormir.", category: "Voyage" },
+            { word: "la plage", taboo: ["mer", "sable", "vacances"], definition: "Bord de mer avec du sable.", category: "Voyage" },
+            { word: "les vacances", taboo: ["repos", "été", "voyage"], definition: "Période où on ne travaille pas.", category: "Voyage" },
+            
+            // ===== LANDMARKS (8) =====
+            { word: "la Tour Eiffel", taboo: ["Paris", "fer", "monument"], definition: "Monument célèbre en métal à Paris.", category: "Lieu" },
+            { word: "le Louvre", taboo: ["musée", "Mona Lisa", "Paris"], definition: "Célèbre musée d'art à Paris.", category: "Lieu" },
+            { word: "la Statue de la Liberté", taboo: ["New York", "France", "liberté"], definition: "Grande statue offerte par la France aux États-Unis.", category: "Lieu" },
+            { word: "la Maison-Blanche", taboo: ["président", "Washington", "politique"], definition: "Résidence officielle du président américain.", category: "Lieu" },
+            { word: "Hollywood", taboo: ["films", "célébrités", "Californie"], definition: "Quartier de Los Angeles célèbre pour le cinéma.", category: "Lieu" },
+            { word: "Disneyland", taboo: ["Mickey", "parc", "attractions"], definition: "Parc d'attractions créé par Walt Disney.", category: "Lieu" },
+            { word: "la Grande Muraille", taboo: ["Chine", "long", "ancien"], definition: "Très long mur construit en Chine.", category: "Lieu" },
+            { word: "Big Ben", taboo: ["Londres", "horloge", "tour"], definition: "Célèbre horloge à Londres.", category: "Lieu" },
+            
+            // ===== FAMOUS PEOPLE (6) =====
+            { word: "Taylor Swift", taboo: ["chanteuse", "Eras Tour", "musique"], definition: "Chanteuse américaine très populaire.", category: "Célébrité" },
+            { word: "Michael Jordan", taboo: ["basketball", "Nike", "Chicago"], definition: "Célèbre joueur de basketball américain.", category: "Célébrité" },
+            { word: "Walt Disney", taboo: ["Mickey Mouse", "films", "parc d'attractions"], definition: "Créateur d'un empire de dessins animés.", category: "Célébrité" },
+            { word: "LeBron James", taboo: ["basketball", "Lakers", "champion"], definition: "Star actuelle du basketball américain.", category: "Célébrité" },
+            { word: "Beyoncé", taboo: ["chanteuse", "danser", "musique"], definition: "Superstar américaine de la musique pop.", category: "Célébrité" },
+            { word: "Lionel Messi", taboo: ["football", "Argentine", "Barcelone"], definition: "Célèbre joueur de football argentin.", category: "Célébrité" },
+            
+            // ===== SCHOOL (7) =====
+            { word: "l'école", taboo: ["apprendre", "élèves", "professeur"], definition: "Lieu où les enfants vont apprendre.", category: "École" },
+            { word: "le professeur", taboo: ["enseigner", "école", "élèves"], definition: "Personne qui enseigne aux élèves.", category: "École" },
+            { word: "les devoirs", taboo: ["maison", "école", "travail"], definition: "Travail scolaire à faire chez soi.", category: "École" },
+            { word: "la note", taboo: ["examen", "école", "résultat"], definition: "Résultat chiffré d'un travail scolaire.", category: "École" },
+            { word: "réussir", taboo: ["examen", "gagner", "succès"], definition: "Obtenir un bon résultat, avoir du succès.", category: "École" },
+            { word: "le cahier", taboo: ["écrire", "école", "papier"], definition: "Livre avec des pages blanches pour écrire.", category: "École" },
+            { word: "le stylo", taboo: ["écrire", "encre", "papier"], definition: "Instrument pour écrire avec de l'encre.", category: "École" },
+            
+            // ===== WEATHER (5) =====
+            { word: "l'orage", taboo: ["tonnerre", "éclairs", "pluie"], definition: "Phénomène météo avec du tonnerre et des éclairs.", category: "Météo" },
+            { word: "le brouillard", taboo: ["voir", "nuage", "route"], definition: "Nuage au niveau du sol qui réduit la visibilité.", category: "Météo" },
+            { word: "le vent", taboo: ["air", "souffler", "froid"], definition: "Air qui se déplace.", category: "Météo" },
+            { word: "le nuage", taboo: ["ciel", "blanc", "pluie"], definition: "Masse blanche ou grise dans le ciel.", category: "Météo" },
+            { word: "l'arc-en-ciel", taboo: ["couleurs", "pluie", "soleil"], definition: "Arc de couleurs dans le ciel après la pluie.", category: "Météo" },
+            
+            // ===== TRANSPORTATION (5) =====
+            { word: "la voiture", taboo: ["conduire", "roues", "route"], definition: "Véhicule à quatre roues pour se déplacer.", category: "Transport" },
+            { word: "l'avion", taboo: ["voler", "ciel", "aéroport"], definition: "Véhicule qui vole dans le ciel.", category: "Transport" },
+            { word: "le train", taboo: ["rails", "gare", "voyage"], definition: "Véhicule sur rails pour transporter des gens.", category: "Transport" },
+            { word: "le vélo", taboo: ["pédaler", "roues", "cycliste"], definition: "Véhicule à deux roues qu'on fait avancer en pédalant.", category: "Transport" },
+            { word: "le bus", taboo: ["transport", "arrêt", "passagers"], definition: "Grand véhicule pour transporter beaucoup de personnes.", category: "Transport" },
+            
+            // ===== COLORS (5) =====
+            { word: "le rouge", taboo: ["couleur", "sang", "tomate"], definition: "Couleur du sang et des tomates.", category: "Couleur" },
+            { word: "le bleu", taboo: ["couleur", "ciel", "mer"], definition: "Couleur du ciel et de la mer.", category: "Couleur" },
+            { word: "le vert", taboo: ["couleur", "herbe", "nature"], definition: "Couleur de l'herbe et des feuilles.", category: "Couleur" },
+            { word: "le jaune", taboo: ["couleur", "soleil", "banane"], definition: "Couleur du soleil et des bananes.", category: "Couleur" },
+            { word: "le noir", taboo: ["couleur", "sombre", "nuit"], definition: "Couleur de la nuit, absence de lumière.", category: "Couleur" },
+        ];
+
+        const hardCards = [
+            // ===== ADVANCED ADJECTIVES (35) =====
+            { word: "brûlant", taboo: ["chaud", "feu", "soleil"], definition: "Extrêmement chaud, qui peut causer des brûlures.", category: "Adjectif" },
+            { word: "nerveux", taboo: ["anxieux", "stress", "calme"], definition: "Qui montre de l'agitation ou de l'inquiétude.", category: "Adjectif" },
+            { word: "brillant", taboo: ["lumière", "intelligent", "étoile"], definition: "Qui brille ou qui est très intelligent.", category: "Adjectif" },
+            { word: "flou", taboo: ["voir", "clair", "lunettes"], definition: "Qui n'est pas net, difficile à distinguer.", category: "Adjectif" },
+            { word: "doré", taboo: ["or", "couleur", "jaune"], definition: "Qui a la couleur de l'or.", category: "Adjectif" },
+            { word: "insupportable", taboo: ["difficile", "impossible", "tolérer"], definition: "Qu'on ne peut pas supporter ou tolérer.", category: "Adjectif" },
+            { word: "mystérieux", taboo: ["secret", "inconnu", "étrange"], definition: "Qui est difficile à comprendre ou expliquer.", category: "Adjectif" },
+            { word: "impressionnant", taboo: ["incroyable", "admirer", "wow"], definition: "Qui provoque l'admiration ou l'étonnement.", category: "Adjectif" },
+            { word: "infini", taboo: ["fin", "éternel", "jamais"], definition: "Qui n'a pas de fin, qui est sans limites.", category: "Adjectif" },
+            { word: "contagieux", taboo: ["maladie", "attraper", "virus"], definition: "Qui peut se transmettre d'une personne à l'autre.", category: "Adjectif" },
+            { word: "soyeux", taboo: ["doux", "tissu", "soie"], definition: "Qui a la texture douce et lisse de la soie.", category: "Adjectif" },
+            { word: "équilibré", taboo: ["stable", "balance", "égal"], definition: "Qui est en état d'équilibre, bien proportionné.", category: "Adjectif" },
+            { word: "piquant", taboo: ["épicé", "piment", "langue"], definition: "Qui a un goût fort qui pique la bouche.", category: "Adjectif" },
+            { word: "épais", taboo: ["gros", "mince", "dense"], definition: "Qui a une grande épaisseur.", category: "Adjectif" },
+            { word: "fumant", taboo: ["chaud", "vapeur", "cuisine"], definition: "Qui produit de la fumée ou de la vapeur.", category: "Adjectif" },
+            { word: "troublé", taboo: ["inquiet", "problème", "calme"], definition: "Qui est perturbé, qui n'a pas l'esprit en paix.", category: "Adjectif" },
+            { word: "ému", taboo: ["touché", "pleurer", "émotion"], definition: "Qui ressent une émotion forte.", category: "Adjectif" },
+            { word: "vivant", taboo: ["vie", "mort", "respirer"], definition: "Qui est en vie, qui n'est pas mort.", category: "Adjectif" },
+            { word: "unique", taboo: ["seul", "spécial", "rare"], definition: "Qui est le seul de son espèce.", category: "Adjectif" },
+            { word: "terrifiant", taboo: ["peur", "horreur", "effrayant"], definition: "Qui provoque une grande peur.", category: "Adjectif" },
+            { word: "glissant", taboo: ["tomber", "mouillé", "sol"], definition: "Sur quoi on peut facilement glisser.", category: "Adjectif" },
+            { word: "puissant", taboo: ["fort", "pouvoir", "force"], definition: "Qui a beaucoup de pouvoir ou de force.", category: "Adjectif" },
+            { word: "courageux", taboo: ["brave", "peur", "héros"], definition: "Qui fait preuve de courage face au danger.", category: "Adjectif" },
+            { word: "peureux", taboo: ["peur", "courageux", "timide"], definition: "Qui a facilement peur.", category: "Adjectif" },
+            { word: "fier", taboo: ["orgueil", "accomplir", "content"], definition: "Qui ressent de la satisfaction pour ses accomplissements.", category: "Adjectif" },
+            { word: "ancien", taboo: ["vieux", "nouveau", "histoire"], definition: "Qui existe depuis longtemps.", category: "Adjectif" },
+            { word: "laid", taboo: ["beau", "apparence", "moche"], definition: "Qui n'est pas agréable à regarder.", category: "Adjectif" },
+            { word: "aigre", taboo: ["goût", "citron", "acide"], definition: "Qui a un goût acide désagréable.", category: "Adjectif" },
+            { word: "bizarre", taboo: ["étrange", "normal", "curieux"], definition: "Qui sort de l'ordinaire de façon surprenante.", category: "Adjectif" },
+            { word: "dangereux", taboo: ["risque", "attention", "sécurité"], definition: "Qui présente un danger, qui peut faire du mal.", category: "Adjectif" },
+            { word: "reconnaissant", taboo: ["merci", "gratitude", "apprécier"], definition: "Qui éprouve de la gratitude.", category: "Adjectif" },
+            { word: "épuisé", taboo: ["fatigué", "énergie", "dormir"], definition: "Extrêmement fatigué, sans énergie.", category: "Adjectif" },
+            { word: "enthousiaste", taboo: ["content", "énergie", "passion"], definition: "Qui montre beaucoup d'intérêt et d'énergie.", category: "Adjectif" },
+            { word: "déçu", taboo: ["triste", "espoir", "attendre"], definition: "Qui n'a pas obtenu ce qu'il espérait.", category: "Adjectif" },
+            { word: "jaloux", taboo: ["envie", "autre", "posséder"], definition: "Qui envie ce que les autres ont.", category: "Adjectif" },
+            
+            // ===== ADVANCED VERBS (30) =====
+            { word: "trembler", taboo: ["peur", "froid", "corps"], definition: "Faire de petits mouvements involontaires.", category: "Verbe" },
+            { word: "abandonner", taboo: ["arrêter", "quitter", "renoncer"], definition: "Cesser de faire quelque chose, renoncer.", category: "Verbe" },
+            { word: "s'entraîner", taboo: ["pratiquer", "sport", "exercice"], definition: "Pratiquer régulièrement pour s'améliorer.", category: "Verbe" },
+            { word: "accélérer", taboo: ["vite", "vitesse", "rapide"], definition: "Augmenter sa vitesse.", category: "Verbe" },
+            { word: "franchir", taboo: ["passer", "traverser", "ligne"], definition: "Passer de l'autre côté de quelque chose.", category: "Verbe" },
+            { word: "plonger", taboo: ["eau", "sauter", "piscine"], definition: "Sauter dans l'eau la tête la première.", category: "Verbe" },
+            { word: "s'effondrer", taboo: ["tomber", "sol", "fatigué"], definition: "Tomber complètement, s'écrouler.", category: "Verbe" },
+            { word: "briller", taboo: ["lumière", "soleil", "étoile"], definition: "Émettre ou refléter de la lumière.", category: "Verbe" },
+            { word: "persévérer", taboo: ["continuer", "effort", "difficile"], definition: "Continuer malgré les difficultés.", category: "Verbe" },
+            { word: "inspirer", taboo: ["motiver", "encourager", "exemple"], definition: "Donner envie à quelqu'un de faire quelque chose.", category: "Verbe" },
+            { word: "disparaître", taboo: ["partir", "invisible", "voir"], definition: "Cesser d'être visible ou présent.", category: "Verbe" },
+            { word: "capturer", taboo: ["attraper", "prisonnier", "prendre"], definition: "Prendre quelqu'un ou quelque chose par la force.", category: "Verbe" },
+            { word: "fondre", taboo: ["liquide", "chaleur", "glace"], definition: "Passer de l'état solide à liquide.", category: "Verbe" },
+            { word: "chuchoter", taboo: ["parler", "silence", "secret"], definition: "Parler très doucement, à voix basse.", category: "Verbe" },
+            { word: "réfléchir", taboo: ["penser", "cerveau", "idée"], definition: "Utiliser son esprit pour analyser quelque chose.", category: "Verbe" },
+            { word: "libérer", taboo: ["libre", "prison", "sortir"], definition: "Rendre la liberté à quelqu'un.", category: "Verbe" },
+            { word: "voler", taboo: ["prendre", "crime", "argent"], definition: "Prendre quelque chose qui appartient à quelqu'un d'autre.", category: "Verbe" },
+            { word: "hésiter", taboo: ["douter", "décision", "incertain"], definition: "Ne pas savoir quoi décider.", category: "Verbe" },
+            { word: "murmurer", taboo: ["parler", "bas", "voix"], definition: "Parler à voix très basse.", category: "Verbe" },
+            { word: "se briser", taboo: ["casser", "morceaux", "verre"], definition: "Se casser en plusieurs morceaux.", category: "Verbe" },
+            { word: "transformer", taboo: ["changer", "devenir", "différent"], definition: "Changer complètement de forme ou de nature.", category: "Verbe" },
+            { word: "s'inquiéter", taboo: ["peur", "problème", "stress"], definition: "Avoir des pensées négatives sur l'avenir.", category: "Verbe" },
+            { word: "exiger", taboo: ["demander", "vouloir", "obligation"], definition: "Demander quelque chose avec autorité.", category: "Verbe" },
+            { word: "avouer", taboo: ["dire", "vérité", "secret"], definition: "Reconnaître quelque chose de difficile à dire.", category: "Verbe" },
+            { word: "se plaindre", taboo: ["problème", "négatif", "parler"], definition: "Exprimer son mécontentement.", category: "Verbe" },
+            { word: "supplier", taboo: ["demander", "s'il te plaît", "désespéré"], definition: "Demander avec insistance et émotion.", category: "Verbe" },
+            { word: "trahir", taboo: ["confiance", "ami", "secret"], definition: "Manquer à la confiance de quelqu'un.", category: "Verbe" },
+            { word: "mériter", taboo: ["gagner", "droit", "travail"], definition: "Être digne de recevoir quelque chose.", category: "Verbe" },
+            { word: "survivre", taboo: ["vivre", "mort", "danger"], definition: "Continuer à vivre malgré le danger.", category: "Verbe" },
+            { word: "échouer", taboo: ["rater", "examen", "perdre"], definition: "Ne pas réussir, avoir un mauvais résultat.", category: "Verbe" },
+            
+            // ===== ABSTRACT NOUNS (25) =====
+            { word: "le rêve", taboo: ["dormir", "nuit", "espoir"], definition: "Images et histoires qu'on voit quand on dort.", category: "Abstrait" },
+            { word: "le doute", taboo: ["incertain", "penser", "confiance"], definition: "État d'esprit quand on n'est pas sûr.", category: "Abstrait" },
+            { word: "la force", taboo: ["fort", "puissant", "muscles"], definition: "Capacité physique ou morale.", category: "Abstrait" },
+            { word: "la douleur", taboo: ["mal", "souffrir", "blessure"], definition: "Sensation physique désagréable.", category: "Abstrait" },
+            { word: "la récompense", taboo: ["gagner", "prix", "mériter"], definition: "Ce qu'on reçoit pour avoir bien fait quelque chose.", category: "Abstrait" },
+            { word: "l'espoir", taboo: ["positif", "futur", "rêve"], definition: "Sentiment que quelque chose de bon va arriver.", category: "Abstrait" },
+            { word: "la confiance", taboo: ["croire", "soi-même", "sûr"], definition: "Sentiment de croire en quelqu'un ou en soi.", category: "Abstrait" },
+            { word: "le bonheur", taboo: ["heureux", "joie", "content"], definition: "État de grande satisfaction et de joie.", category: "Abstrait" },
+            { word: "l'amour", taboo: ["cœur", "romantique", "aimer"], definition: "Sentiment très fort d'affection pour quelqu'un.", category: "Abstrait" },
+            { word: "la liberté", taboo: ["libre", "prison", "choix"], definition: "État de quelqu'un qui n'est pas contrôlé.", category: "Abstrait" },
+            { word: "la paix", taboo: ["guerre", "calme", "tranquille"], definition: "Absence de guerre ou de conflit.", category: "Abstrait" },
+            { word: "la justice", taboo: ["juste", "tribunal", "loi"], definition: "Principe qui consiste à traiter chacun équitablement.", category: "Abstrait" },
+            { word: "la sagesse", taboo: ["intelligent", "expérience", "vieux"], definition: "Qualité de quelqu'un qui a beaucoup d'expérience et de jugement.", category: "Abstrait" },
+            { word: "la fierté", taboo: ["fier", "accomplissement", "orgueil"], definition: "Sentiment de satisfaction de soi-même.", category: "Abstrait" },
+            { word: "la honte", taboo: ["embarrassé", "rouge", "mal"], definition: "Sentiment désagréable quand on a fait quelque chose de mal.", category: "Abstrait" },
+            { word: "la colère", taboo: ["fâché", "crier", "rouge"], definition: "Émotion forte quand quelque chose nous énerve.", category: "Abstrait" },
+            { word: "la peur", taboo: ["effrayé", "danger", "trembler"], definition: "Émotion face à un danger réel ou imaginaire.", category: "Abstrait" },
+            { word: "la jalousie", taboo: ["envie", "autre", "posséder"], definition: "Sentiment d'envie envers quelqu'un.", category: "Abstrait" },
+            { word: "le courage", taboo: ["brave", "peur", "héros"], definition: "Force morale face au danger.", category: "Abstrait" },
+            { word: "la patience", taboo: ["attendre", "calme", "temps"], definition: "Capacité à attendre sans s'énerver.", category: "Abstrait" },
+            { word: "l'ambition", taboo: ["succès", "travail", "but"], definition: "Désir fort de réussir.", category: "Abstrait" },
+            { word: "la créativité", taboo: ["imagination", "art", "idée"], definition: "Capacité à créer des choses nouvelles.", category: "Abstrait" },
+            { word: "la générosité", taboo: ["donner", "gentil", "partager"], definition: "Qualité de quelqu'un qui donne beaucoup.", category: "Abstrait" },
+            { word: "l'honnêteté", taboo: ["vérité", "mentir", "sincère"], definition: "Qualité de quelqu'un qui dit la vérité.", category: "Abstrait" },
+            { word: "la curiosité", taboo: ["question", "savoir", "apprendre"], definition: "Désir de découvrir et d'apprendre.", category: "Abstrait" },
+            
+            // ===== STORY VOCABULARY (20) =====
+            { word: "le sorcier", taboo: ["magie", "baguette", "Harry Potter"], definition: "Personne qui pratique la magie.", category: "Fantaisie" },
+            { word: "la magie", taboo: ["sorcier", "pouvoir", "impossible"], definition: "Pouvoir surnaturel de faire des choses impossibles.", category: "Fantaisie" },
+            { word: "la malédiction", taboo: ["magie", "mauvais", "sorcière"], definition: "Sort magique qui apporte le malheur.", category: "Fantaisie" },
+            { word: "les poumons", taboo: ["respirer", "air", "corps"], definition: "Organes dans la poitrine pour respirer.", category: "Corps" },
+            { word: "la sueur", taboo: ["chaud", "corps", "eau"], definition: "Liquide qui sort de la peau quand on a chaud.", category: "Corps" },
+            { word: "les muscles", taboo: ["fort", "corps", "exercice"], definition: "Tissus du corps qui permettent le mouvement.", category: "Corps" },
+            { word: "les veines", taboo: ["sang", "corps", "bleu"], definition: "Tubes dans le corps qui transportent le sang.", category: "Corps" },
+            { word: "la paume", taboo: ["main", "intérieur", "ligne"], definition: "L'intérieur de la main.", category: "Corps" },
+            { word: "la blessure", taboo: ["mal", "sang", "accident"], definition: "Dommage au corps causé par un accident.", category: "Corps" },
+            { word: "le violon", taboo: ["musique", "cordes", "orchestre"], definition: "Instrument de musique à quatre cordes.", category: "Musique" },
+            { word: "la recette", taboo: ["cuisine", "ingrédients", "préparer"], definition: "Instructions pour préparer un plat.", category: "Cuisine" },
+            { word: "le piment", taboo: ["épicé", "rouge", "cuisine"], definition: "Légume qui donne un goût très fort et épicé.", category: "Cuisine" },
+            { word: "l'ail", taboo: ["cuisine", "blanc", "odeur"], definition: "Plante à forte odeur utilisée en cuisine.", category: "Cuisine" },
+            { word: "le gingembre", taboo: ["épice", "racine", "asiatique"], definition: "Racine épicée utilisée en cuisine asiatique.", category: "Cuisine" },
+            { word: "la pieuvre", taboo: ["tentacules", "océan", "huit"], definition: "Animal marin avec huit bras.", category: "Animal" },
+            { word: "les tentacules", taboo: ["pieuvre", "bras", "huit"], definition: "Bras longs et flexibles de certains animaux marins.", category: "Animal" },
+            { word: "le chronomètre", taboo: ["temps", "secondes", "course"], definition: "Instrument pour mesurer le temps avec précision.", category: "Objet" },
+            { word: "les étincelles", taboo: ["feu", "lumière", "petit"], definition: "Petites particules de feu ou de lumière.", category: "Nature" },
+            { word: "la ligne d'arrivée", taboo: ["course", "fin", "gagner"], definition: "Endroit qui marque la fin d'une course.", category: "Sport" },
+            { word: "le maquillage", taboo: ["visage", "beauté", "couleur"], definition: "Produits cosmétiques pour le visage.", category: "Beauté" },
+            
+            // ===== ANIMAL VOCABULARY (18) =====
+            { word: "la fourrure", taboo: ["animal", "poil", "chaud"], definition: "Ensemble des poils qui couvrent certains animaux.", category: "Animal" },
+            { word: "les griffes", taboo: ["chat", "sharp", "attaquer"], definition: "Ongles pointus de certains animaux.", category: "Animal" },
+            { word: "le pelage", taboo: ["animal", "poil", "couleur"], definition: "L'ensemble des poils d'un animal.", category: "Animal" },
+            { word: "les écailles", taboo: ["poisson", "serpent", "peau"], definition: "Petites plaques qui couvrent la peau des poissons.", category: "Animal" },
+            { word: "les nageoires", taboo: ["poisson", "nager", "requin"], definition: "Parties du corps d'un poisson pour nager.", category: "Animal" },
+            { word: "les moustaches", taboo: ["chat", "visage", "poil"], definition: "Longs poils sur le museau de certains animaux.", category: "Animal" },
+            { word: "la crinière", taboo: ["lion", "cheval", "cheveux"], definition: "Longs poils sur le cou du lion ou du cheval.", category: "Animal" },
+            { word: "les cornes", taboo: ["taureau", "tête", "vache"], definition: "Pointes dures sur la tête de certains animaux.", category: "Animal" },
+            { word: "le museau", taboo: ["chien", "nez", "animal"], definition: "Partie du visage d'un animal avec le nez et la bouche.", category: "Animal" },
+            { word: "les sabots", taboo: ["cheval", "pied", "vache"], definition: "Pieds durs de certains animaux comme le cheval.", category: "Animal" },
+            { word: "la carapace", taboo: ["tortue", "protection", "dur"], definition: "Coquille dure qui protège la tortue.", category: "Animal" },
+            { word: "les antennes", taboo: ["insecte", "tête", "sentir"], definition: "Organes sensoriels sur la tête des insectes.", category: "Animal" },
+            { word: "le poil", taboo: ["corps", "animal", "cheveux"], definition: "Filament qui pousse sur la peau.", category: "Animal" },
+            { word: "la proie", taboo: ["chasser", "manger", "prédateur"], definition: "Animal chassé et mangé par un autre.", category: "Animal" },
+            { word: "le prédateur", taboo: ["chasser", "dangereux", "proie"], definition: "Animal qui chasse d'autres animaux.", category: "Animal" },
+            { word: "le mammifère", taboo: ["animal", "lait", "chien"], definition: "Animal dont les femelles allaitent leurs petits.", category: "Animal" },
+            { word: "le reptile", taboo: ["serpent", "froid", "écailles"], definition: "Animal à sang froid comme le serpent ou le lézard.", category: "Animal" },
+            { word: "les plumes", taboo: ["oiseau", "voler", "léger"], definition: "Ce qui couvre le corps des oiseaux.", category: "Animal" },
+            
+            // ===== TRAVEL (10) =====
+            { word: "la douane", taboo: ["frontière", "passeport", "contrôle"], definition: "Service de contrôle à la frontière.", category: "Voyage" },
+            { word: "l'embarquement", taboo: ["avion", "porte", "monter"], definition: "Action de monter dans un avion ou un bateau.", category: "Voyage" },
+            { word: "le vol", taboo: ["avion", "aéroport", "destination"], definition: "Trajet en avion d'un point à un autre.", category: "Voyage" },
+            { word: "la croisière", taboo: ["bateau", "vacances", "mer"], definition: "Voyage de plaisir sur un grand bateau.", category: "Voyage" },
+            { word: "l'auberge de jeunesse", taboo: ["dormir", "pas cher", "voyageur"], definition: "Hébergement économique pour jeunes voyageurs.", category: "Voyage" },
+            { word: "le décalage horaire", taboo: ["fatigue", "fuseau", "avion"], definition: "Fatigue causée par le changement de fuseau horaire.", category: "Voyage" },
+            { word: "la carte d'embarquement", taboo: ["avion", "siège", "imprimer"], definition: "Document pour monter dans l'avion.", category: "Voyage" },
+            { word: "l'escale", taboo: ["avion", "arrêt", "aéroport"], definition: "Arrêt intermédiaire pendant un voyage.", category: "Voyage" },
+            { word: "le guichet", taboo: ["billet", "acheter", "gare"], definition: "Endroit où on achète des billets.", category: "Voyage" },
+            { word: "les bagages", taboo: ["valise", "voyage", "aéroport"], definition: "Ensemble des sacs et valises d'un voyageur.", category: "Voyage" },
+            
+            // ===== LANDMARKS (10) =====
+            { word: "le Grand Canyon", taboo: ["Arizona", "profond", "nature"], definition: "Immense gorge naturelle aux États-Unis.", category: "Lieu" },
+            { word: "Times Square", taboo: ["New York", "lumières", "Broadway"], definition: "Place célèbre avec beaucoup de lumières à New York.", category: "Lieu" },
+            { word: "le pont du Golden Gate", taboo: ["San Francisco", "rouge", "baie"], definition: "Célèbre pont suspendu de couleur orange.", category: "Lieu" },
+            { word: "les chutes du Niagara", taboo: ["cascade", "Canada", "touriste"], definition: "Célèbres cascades entre les États-Unis et le Canada.", category: "Lieu" },
+            { word: "le Mont Rushmore", taboo: ["présidents", "sculpture", "Dakota du Sud"], definition: "Montagne avec des visages de présidents sculptés.", category: "Lieu" },
+            { word: "le Colisée", taboo: ["Rome", "gladiateurs", "ancien"], definition: "Ancien amphithéâtre romain.", category: "Lieu" },
+            { word: "le Taj Mahal", taboo: ["Inde", "blanc", "amour"], definition: "Célèbre mausolée blanc en Inde.", category: "Lieu" },
+            { word: "Machu Picchu", taboo: ["Pérou", "Incas", "montagne"], definition: "Ancienne cité inca au Pérou.", category: "Lieu" },
+            { word: "les Pyramides de Gizeh", taboo: ["Égypte", "pharaon", "désert"], definition: "Anciennes tombes des pharaons égyptiens.", category: "Lieu" },
+            { word: "la Tour de Pise", taboo: ["Italie", "penché", "tour"], definition: "Célèbre tour inclinée en Italie.", category: "Lieu" },
+            
+            // ===== FAMOUS PEOPLE (10) =====
+            { word: "Napoléon Bonaparte", taboo: ["empereur", "France", "guerre"], definition: "Célèbre empereur français du 19ème siècle.", category: "Célébrité" },
+            { word: "Claude Monet", taboo: ["peintre", "impressionnisme", "nénuphars"], definition: "Peintre français célèbre pour ses jardins.", category: "Célébrité" },
+            { word: "Oprah Winfrey", taboo: ["télévision", "talk-show", "livre"], definition: "Célèbre présentatrice de télévision américaine.", category: "Célébrité" },
+            { word: "Albert Einstein", taboo: ["scientifique", "génie", "relativité"], definition: "Physicien célèbre pour sa théorie révolutionnaire.", category: "Célébrité" },
+            { word: "Martin Luther King Jr.", taboo: ["droits civiques", "discours", "paix"], definition: "Leader américain des droits civiques.", category: "Célébrité" },
+            { word: "Serena Williams", taboo: ["tennis", "championne", "athlète"], definition: "Célèbre joueuse de tennis américaine.", category: "Célébrité" },
+            { word: "Elon Musk", taboo: ["Tesla", "SpaceX", "milliardaire"], definition: "Entrepreneur célèbre dans la technologie.", category: "Célébrité" },
+            { word: "Frida Kahlo", taboo: ["peintre", "Mexique", "autoportrait"], definition: "Artiste mexicaine célèbre pour ses autoportraits.", category: "Célébrité" },
+            { word: "Nelson Mandela", taboo: ["Afrique du Sud", "prison", "président"], definition: "Leader sud-africain contre l'apartheid.", category: "Célébrité" },
+            { word: "Marie Curie", taboo: ["scientifique", "radioactivité", "Nobel"], definition: "Scientifique célèbre pour ses recherches sur la radioactivité.", category: "Célébrité" },
+            
+            // ===== TECHNOLOGY (10) =====
+            { word: "le mot de passe", taboo: ["secret", "ordinateur", "entrer"], definition: "Code secret pour accéder à un compte.", category: "Technologie" },
+            { word: "télécharger", taboo: ["internet", "fichier", "ordinateur"], definition: "Copier un fichier d'internet vers son appareil.", category: "Technologie" },
+            { word: "le réseau social", taboo: ["Facebook", "Instagram", "amis"], definition: "Plateforme pour communiquer en ligne.", category: "Technologie" },
+            { word: "l'écran", taboo: ["regarder", "ordinateur", "téléphone"], definition: "Surface qui affiche les images d'un appareil.", category: "Technologie" },
+            { word: "le chargeur", taboo: ["batterie", "électricité", "téléphone"], definition: "Appareil pour recharger la batterie.", category: "Technologie" },
+            { word: "sauvegarder", taboo: ["garder", "fichier", "perdre"], definition: "Enregistrer des données pour ne pas les perdre.", category: "Technologie" },
+            { word: "le logiciel", taboo: ["ordinateur", "programme", "application"], definition: "Programme informatique.", category: "Technologie" },
+            { word: "le piratage", taboo: ["illégal", "ordinateur", "voler"], definition: "Accès illégal à un système informatique.", category: "Technologie" },
+            { word: "l'algorithme", taboo: ["ordinateur", "calcul", "étapes"], definition: "Suite d'instructions pour résoudre un problème.", category: "Technologie" },
+            { word: "la notification", taboo: ["téléphone", "message", "alerte"], definition: "Message d'alerte sur un appareil.", category: "Technologie" },
+            
+            // ===== PROFESSIONS (12) =====
+            { word: "l'avocat", taboo: ["justice", "tribunal", "défendre"], definition: "Personne qui défend les gens devant la justice.", category: "Profession" },
+            { word: "l'infirmier", taboo: ["hôpital", "malade", "médecin"], definition: "Personne qui soigne les malades à l'hôpital.", category: "Profession" },
+            { word: "le pompier", taboo: ["feu", "sauver", "urgence"], definition: "Personne qui éteint les incendies.", category: "Profession" },
+            { word: "le chef d'entreprise", taboo: ["patron", "travail", "diriger"], definition: "Personne qui dirige une entreprise.", category: "Profession" },
+            { word: "le fonctionnaire", taboo: ["gouvernement", "État", "bureau"], definition: "Personne qui travaille pour le gouvernement.", category: "Profession" },
+            { word: "le chirurgien", taboo: ["opération", "hôpital", "médecin"], definition: "Médecin qui fait des opérations.", category: "Profession" },
+            { word: "le journaliste", taboo: ["nouvelles", "écrire", "télévision"], definition: "Personne qui rapporte les nouvelles.", category: "Profession" },
+            { word: "l'architecte", taboo: ["bâtiment", "dessiner", "construire"], definition: "Personne qui conçoit des bâtiments.", category: "Profession" },
+            { word: "le traducteur", taboo: ["langues", "texte", "traduire"], definition: "Personne qui traduit d'une langue à une autre.", category: "Profession" },
+            { word: "le psychologue", taboo: ["esprit", "parler", "problème"], definition: "Spécialiste de l'esprit et du comportement.", category: "Profession" },
+            { word: "le vétérinaire", taboo: ["animal", "soigner", "médecin"], definition: "Médecin pour les animaux.", category: "Profession" },
+            { word: "le comptable", taboo: ["argent", "chiffres", "entreprise"], definition: "Personne qui gère les finances d'une entreprise.", category: "Profession" },
+            
+            // ===== FOOD & COOKING (10) =====
+            { word: "le goûter", taboo: ["après-midi", "enfants", "biscuits"], definition: "Petit repas léger pris l'après-midi.", category: "Nourriture" },
+            { word: "les fruits de mer", taboo: ["océan", "crevettes", "restaurant"], definition: "Animaux marins comestibles comme les crevettes.", category: "Nourriture" },
+            { word: "le plat principal", taboo: ["repas", "viande", "entrée"], definition: "Plat le plus important d'un repas.", category: "Nourriture" },
+            { word: "l'entrée", taboo: ["premier", "repas", "petit"], definition: "Premier plat servi avant le plat principal.", category: "Nourriture" },
+            { word: "l'addition", taboo: ["payer", "restaurant", "argent"], definition: "Facture à payer au restaurant.", category: "Nourriture" },
+            { word: "le pourboire", taboo: ["argent", "serveur", "restaurant"], definition: "Argent supplémentaire donné au serveur.", category: "Nourriture" },
+            { word: "la spécialité", taboo: ["plat", "région", "célèbre"], definition: "Plat typique d'une région.", category: "Nourriture" },
+            { word: "la cuisine du monde", taboo: ["pays", "international", "restaurant"], definition: "Nourriture de différents pays.", category: "Nourriture" },
+            { word: "végétarien", taboo: ["viande", "légumes", "manger"], definition: "Qui ne mange pas de viande.", category: "Nourriture" },
+            { word: "bio", taboo: ["naturel", "chimique", "santé"], definition: "Produit cultivé sans produits chimiques.", category: "Nourriture" },
+            
+            // ===== SCHOOL & EDUCATION (8) =====
+            { word: "l'examen", taboo: ["test", "école", "étudier"], definition: "Épreuve pour évaluer les connaissances.", category: "École" },
+            { word: "la matière", taboo: ["cours", "école", "sujet"], definition: "Discipline enseignée à l'école.", category: "École" },
+            { word: "le diplôme", taboo: ["études", "certificat", "université"], definition: "Document qui certifie qu'on a terminé des études.", category: "École" },
+            { word: "la bourse", taboo: ["argent", "études", "aide"], definition: "Aide financière pour les études.", category: "École" },
+            { word: "le stage", taboo: ["travail", "expérience", "entreprise"], definition: "Période de formation pratique en entreprise.", category: "École" },
+            { word: "la thèse", taboo: ["recherche", "doctorat", "écrire"], definition: "Long travail de recherche pour un doctorat.", category: "École" },
+            { word: "le cours magistral", taboo: ["professeur", "université", "amphi"], definition: "Cours donné à un grand nombre d'étudiants.", category: "École" },
+            { word: "la dissertation", taboo: ["écrire", "argument", "essai"], definition: "Texte argumentatif écrit pour l'école.", category: "École" },
+            
+            // ===== WEATHER (7) =====
+            { word: "la tempête", taboo: ["vent", "violent", "danger"], definition: "Phénomène météo violent avec beaucoup de vent.", category: "Météo" },
+            { word: "une averse", taboo: ["pluie", "soudain", "court"], definition: "Pluie forte mais de courte durée.", category: "Météo" },
+            { word: "la canicule", taboo: ["chaud", "été", "chaleur"], definition: "Période de chaleur extrême.", category: "Météo" },
+            { word: "la sécheresse", taboo: ["eau", "pluie", "désert"], definition: "Période prolongée sans pluie.", category: "Météo" },
+            { word: "l'inondation", taboo: ["eau", "pluie", "catastrophe"], definition: "Débordement d'eau qui couvre les terres.", category: "Météo" },
+            { word: "le verglas", taboo: ["glace", "route", "dangereux"], definition: "Fine couche de glace sur le sol.", category: "Météo" },
+            { word: "la grêle", taboo: ["glace", "tomber", "dommage"], definition: "Petits morceaux de glace qui tombent du ciel.", category: "Météo" },
+            
+            // ===== ENVIRONMENT (10) =====
+            { word: "le réchauffement climatique", taboo: ["température", "planète", "pollution"], definition: "Augmentation de la température de la Terre.", category: "Environnement" },
+            { word: "le recyclage", taboo: ["déchets", "plastique", "environnement"], definition: "Processus pour réutiliser les matériaux.", category: "Environnement" },
+            { word: "la pollution", taboo: ["air", "sale", "environnement"], definition: "Contamination de l'environnement.", category: "Environnement" },
+            { word: "l'énergie renouvelable", taboo: ["solaire", "vent", "électricité"], definition: "Énergie qui ne s'épuise pas.", category: "Environnement" },
+            { word: "l'empreinte carbone", taboo: ["CO2", "environnement", "pollution"], definition: "Quantité de CO2 produite par une activité.", category: "Environnement" },
+            { word: "la déforestation", taboo: ["arbres", "couper", "forêt"], definition: "Destruction des forêts.", category: "Environnement" },
+            { word: "l'espèce en danger", taboo: ["animal", "extinction", "protéger"], definition: "Animal ou plante qui risque de disparaître.", category: "Environnement" },
+            { word: "le développement durable", taboo: ["environnement", "futur", "ressources"], definition: "Développement qui préserve l'environnement.", category: "Environnement" },
+            { word: "les pesticides", taboo: ["chimique", "agriculture", "insectes"], definition: "Produits chimiques pour tuer les insectes nuisibles.", category: "Environnement" },
+            { word: "la biodiversité", taboo: ["espèces", "nature", "variété"], definition: "Variété des êtres vivants sur Terre.", category: "Environnement" },
+            
+            // ===== HEALTH (10) =====
+            { word: "le symptôme", taboo: ["maladie", "signe", "médecin"], definition: "Signe qui indique une maladie.", category: "Santé" },
+            { word: "le vaccin", taboo: ["piqûre", "maladie", "protéger"], definition: "Substance qui protège contre une maladie.", category: "Santé" },
+            { word: "l'ordonnance", taboo: ["médecin", "médicament", "papier"], definition: "Document du médecin pour obtenir des médicaments.", category: "Santé" },
+            { word: "la consultation", taboo: ["médecin", "rendez-vous", "examen"], definition: "Visite chez le médecin.", category: "Santé" },
+            { word: "les urgences", taboo: ["hôpital", "grave", "ambulance"], definition: "Service hospitalier pour les cas graves.", category: "Santé" },
+            { word: "l'allergie", taboo: ["réaction", "nourriture", "éternuer"], definition: "Réaction négative du corps à certaines substances.", category: "Santé" },
+            { word: "le régime", taboo: ["manger", "poids", "nourriture"], definition: "Alimentation contrôlée pour la santé.", category: "Santé" },
+            { word: "la thérapie", taboo: ["traitement", "psychologue", "guérir"], definition: "Traitement pour améliorer la santé.", category: "Santé" },
+            { word: "le diagnostic", taboo: ["médecin", "maladie", "identifier"], definition: "Identification d'une maladie par le médecin.", category: "Santé" },
+            { word: "la convalescence", taboo: ["guérir", "repos", "maladie"], definition: "Période de récupération après une maladie.", category: "Santé" },
+        ];
+
+        // ==================== GAME STATE ====================
+        
+        let currentMode = 'easy';
+        let currentCards = [];
+        let currentIndex = 0;
+        let playerCount = 1;
+        let currentPlayer = 1;
+        let playerScores = [0, 0, 0];
+        let timer = 45;
+        let timerInterval = null;
+        let gameStarted = false;
+        let roundNumber = 1;
+
+        // ==================== FUNCTIONS ====================
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('easyBtn').classList.toggle('inactive', mode !== 'easy');
+            document.getElementById('hardBtn').classList.toggle('inactive', mode !== 'hard');
+            
+            const cardCount = mode === 'easy' ? easyCards.length : hardCards.length;
+            document.getElementById('cardCountDisplay').textContent = 
+                `Mode ${mode === 'easy' ? 'Facile' : 'Difficile'}: ${cardCount} cartes disponibles`;
+            
+            if (gameStarted) {
+                shuffleCards();
+            }
+        }
+
+        function setPlayerCount(count) {
+            playerCount = count;
+            
+            // Update buttons
+            document.getElementById('player1Btn').classList.toggle('active', count === 1);
+            document.getElementById('player2Btn').classList.toggle('active', count === 2);
+            document.getElementById('player3Btn').classList.toggle('active', count === 3);
+            
+            // Update visibility in game screen
+            updatePlayerVisibility();
+        }
+
+        function updatePlayerVisibility() {
+            document.getElementById('scorePlayer1').classList.remove('hidden');
+            document.getElementById('scorePlayer2').classList.toggle('hidden', playerCount < 2);
+            document.getElementById('scorePlayer3').classList.toggle('hidden', playerCount < 3);
+            
+            document.getElementById('finalScore1').classList.remove('hidden');
+            document.getElementById('finalScore2').classList.toggle('hidden', playerCount < 2);
+            document.getElementById('finalScore3').classList.toggle('hidden', playerCount < 3);
+        }
+
+        function updateCurrentPlayerIndicator() {
+            const indicator = document.getElementById('currentPlayerIndicator');
+            indicator.textContent = `Tour de Joueur ${currentPlayer}`;
+            indicator.className = `current-player-indicator player-${currentPlayer}`;
+            
+            // Update active states on scoreboard
+            for (let i = 1; i <= 3; i++) {
+                const scoreEl = document.getElementById(`scorePlayer${i}`);
+                scoreEl.classList.toggle('active', i === currentPlayer);
+            }
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function shuffleCards() {
+            currentCards = shuffleArray(currentMode === 'easy' ? easyCards : hardCards);
+            currentIndex = 0;
+            updateCard();
+            updateStats();
+        }
+
+        function startGame() {
+            gameStarted = true;
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('playerSection').classList.add('hidden');
+            document.getElementById('cardCountDisplay').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('gameOverScreen').classList.add('hidden');
+            
+            playerScores = [0, 0, 0];
+            currentPlayer = 1;
+            roundNumber = 1;
+            updatePlayerVisibility();
+            updateCurrentPlayerIndicator();
+            updateScoreDisplay();
+            shuffleCards();
+            startTimer();
+        }
+
+        function updateCard() {
+            if (currentIndex >= currentCards.length) {
+                // Reshuffle if we've gone through all cards
+                shuffleCards();
+            }
+
+            const card = currentCards[currentIndex];
+            document.getElementById('targetWord').textContent = card.word;
+            document.getElementById('taboo1').textContent = card.taboo[0];
+            document.getElementById('taboo2').textContent = card.taboo[1];
+            document.getElementById('taboo3').textContent = card.taboo[2];
+            document.getElementById('definition').textContent = card.definition;
+            document.getElementById('categoryBadge').textContent = card.category;
+            
+            // Reset definition visibility
+            document.getElementById('definition').classList.remove('visible');
+            document.getElementById('revealBtn').classList.remove('hidden');
+            
+            // Update difficulty badge
+            const badge = document.getElementById('difficultyBadge');
+            const cardEl = document.getElementById('card');
+            if (currentMode === 'easy') {
+                badge.textContent = 'Facile';
+                badge.className = 'card-badge easy';
+                cardEl.classList.remove('hard-mode');
+            } else {
+                badge.textContent = 'Difficile';
+                badge.className = 'card-badge hard';
+                cardEl.classList.add('hard-mode');
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('roundNumber').textContent = roundNumber;
+            document.getElementById('cardNumber').textContent = `${currentIndex + 1}/${currentCards.length}`;
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('points1').textContent = playerScores[0];
+            document.getElementById('points2').textContent = playerScores[1];
+            document.getElementById('points3').textContent = playerScores[2];
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timer = 45;
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timer--;
+                updateTimerDisplay();
+                
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    nextPlayer();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('timer');
+            timerEl.textContent = timer;
+            
+            timerEl.classList.remove('warning', 'danger');
+            if (timer <= 10) {
+                timerEl.classList.add('danger');
+            } else if (timer <= 20) {
+                timerEl.classList.add('warning');
+            }
+        }
+
+        function revealDefinition() {
+            document.getElementById('definition').classList.add('visible');
+            document.getElementById('revealBtn').classList.add('hidden');
+        }
+
+        function correctAnswer() {
+            playerScores[currentPlayer - 1]++;
+            updateScoreDisplay();
+            currentIndex++;
+            updateCard();
+            updateStats();
+            startTimer();
+        }
+
+        function skipCard() {
+            currentIndex++;
+            updateCard();
+            updateStats();
+            // Don't reset timer on skip
+        }
+
+        function nextPlayer() {
+            clearInterval(timerInterval);
+            
+            if (playerCount === 1) {
+                roundNumber++;
+            } else {
+                currentPlayer++;
+                if (currentPlayer > playerCount) {
+                    currentPlayer = 1;
+                    roundNumber++;
+                }
+            }
+            
+            currentIndex++;
+            updateCurrentPlayerIndicator();
+            updateCard();
+            updateStats();
+            startTimer();
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            gameStarted = false;
+            
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('gameOverScreen').classList.remove('hidden');
+            
+            // Update final scores
+            document.getElementById('finalPoints1').textContent = playerScores[0];
+            document.getElementById('finalPoints2').textContent = playerScores[1];
+            document.getElementById('finalPoints3').textContent = playerScores[2];
+            
+            // Determine winner
+            let maxScore = Math.max(...playerScores.slice(0, playerCount));
+            let winners = [];
+            for (let i = 0; i < playerCount; i++) {
+                if (playerScores[i] === maxScore) {
+                    winners.push(i + 1);
+                }
+            }
+            
+            // Update winner announcement
+            const announcement = document.getElementById('winnerAnnouncement');
+            if (playerCount === 1) {
+                announcement.textContent = `🏆 Score final: ${playerScores[0]} points!`;
+                announcement.className = 'winner-announcement player-1';
+            } else if (winners.length > 1) {
+                announcement.textContent = `🏆 Égalité! Joueurs ${winners.join(' et ')}`;
+                announcement.className = `winner-announcement player-${winners[0]}`;
+            } else {
+                announcement.textContent = `🏆 Joueur ${winners[0]} gagne!`;
+                announcement.className = `winner-announcement player-${winners[0]}`;
+            }
+            
+            // Highlight winner(s)
+            for (let i = 1; i <= 3; i++) {
+                const el = document.getElementById(`finalScore${i}`);
+                el.classList.toggle('winner', winners.includes(i) && playerCount > 1);
+            }
+            
+            updatePlayerVisibility();
+        }
+
+        function resetGame() {
+            document.getElementById('gameOverScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+            document.getElementById('playerSection').classList.remove('hidden');
+            document.getElementById('cardCountDisplay').classList.remove('hidden');
+            playerScores = [0, 0, 0];
+            currentPlayer = 1;
+            currentIndex = 0;
+            roundNumber = 1;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setMode('easy');
+            setPlayerCount(1);
+        });
+    </script>
+</body>
+</html>
