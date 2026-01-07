@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODD 5 : Égalité entre les sexes | IB French B</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --coral: #FF6B5B;
+            --coral-dark: #E54D3D;
+            --coral-light: #FFE8E5;
+            --sand: #F7F3EE;
+            --charcoal: #2D2D2D;
+            --slate: #5A5A5A;
+            --cream: #FFFCF8;
+            --accent-teal: #3D8B8B;
+            --accent-gold: #D4A853;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--sand);
+            color: var(--charcoal);
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--coral) 0%, var(--coral-dark) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 60%;
+            height: 200%;
+            background: rgba(255,255,255,0.08);
+            transform: rotate(15deg);
+            pointer-events: none;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .odd-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .odd-badge span {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        header h1 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            font-size: 1.15rem;
+            opacity: 0.95;
+            max-width: 600px;
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--cream);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0.25rem;
+            padding: 0.75rem 1rem;
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--slate);
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: var(--coral-light);
+            color: var(--coral-dark);
+        }
+
+        .nav-btn.active {
+            background: var(--coral);
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.35rem;
+            color: var(--coral-dark);
+            margin: 2rem 0 1rem;
+            font-weight: 500;
+        }
+
+        /* Champs Lexicaux Cards */
+        .lexical-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .lexical-card {
+            background: var(--cream);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            border: 1px solid rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lexical-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--coral);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .lexical-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .lexical-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+        }
+
+        .lexical-card h4 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.15rem;
+            color: var(--coral-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lexical-card h4 .icon {
+            font-size: 1.3rem;
+        }
+
+        .vocab-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .vocab-item {
+            background: var(--coral-light);
+            padding: 0.4rem 0.85rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            color: var(--coral-dark);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .vocab-item:hover {
+            background: var(--coral);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Tournures de Phrase */
+        .phrase-category {
+            background: var(--cream);
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .phrase-header {
+            background: linear-gradient(135deg, var(--coral-light) 0%, var(--sand) 100%);
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Fraunces', serif;
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            transition: background 0.2s ease;
+        }
+
+        .phrase-header:hover {
+            background: var(--coral-light);
+        }
+
+        .phrase-header .arrow {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+            color: var(--coral);
+        }
+
+        .phrase-header.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .phrase-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .phrase-content.open {
+            max-height: 1000px;
+        }
+
+        .phrase-list {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .phrase-item {
+            padding: 1rem 1.25rem;
+            background: var(--sand);
+            border-radius: 0.75rem;
+            border-left: 3px solid var(--coral);
+            font-size: 0.95rem;
+        }
+
+        .phrase-item .fr {
+            color: var(--charcoal);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .phrase-item .usage {
+            color: var(--slate);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        /* Reading Section */
+        .reading-card {
+            background: var(--cream);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .reading-card .source {
+            font-size: 0.8rem;
+            color: var(--slate);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .reading-text {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--charcoal);
+        }
+
+        .reading-text .highlight {
+            background: linear-gradient(transparent 60%, var(--coral-light) 60%);
+            padding: 0 0.2rem;
+        }
+
+        /* Quiz Section */
+        .quiz-container {
+            background: var(--cream);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .quiz-question {
+            margin-bottom: 2rem;
+        }
+
+        .quiz-question p {
+            font-family: 'Fraunces', serif;
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            padding: 1rem 1.25rem;
+            background: var(--sand);
+            border: 2px solid transparent;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--coral);
+            background: var(--coral-light);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--coral);
+            background: var(--coral-light);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--accent-teal);
+            background: #E8F5F5;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #D64545;
+            background: #FFE8E8;
+        }
+
+        .check-btn {
+            background: var(--coral);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        .check-btn:hover {
+            background: var(--coral-dark);
+            transform: translateY(-2px);
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: #E8F5F5;
+            color: var(--accent-teal);
+        }
+
+        .feedback.incorrect {
+            background: #FFE8E8;
+            color: #D64545;
+        }
+
+        /* Matching Exercise */
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 700px) {
+            .matching-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .matching-column h4 {
+            font-family: 'Fraunces', serif;
+            color: var(--coral-dark);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .matching-item {
+            padding: 1rem;
+            background: var(--sand);
+            border-radius: 0.75rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            font-size: 0.95rem;
+        }
+
+        .matching-item:hover {
+            border-color: var(--coral-light);
+        }
+
+        .matching-item.selected {
+            border-color: var(--coral);
+            background: var(--coral-light);
+        }
+
+        .matching-item.matched {
+            border-color: var(--accent-teal);
+            background: #E8F5F5;
+            cursor: default;
+        }
+
+        /* Statistics Callout */
+        .stat-callout {
+            background: linear-gradient(135deg, var(--coral) 0%, var(--coral-dark) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .stat-number {
+            font-family: 'Fraunces', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-text {
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        /* Progress Tracker */
+        .progress-bar {
+            background: var(--sand);
+            height: 6px;
+            border-radius: 3px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--coral) 0%, var(--accent-gold) 100%);
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        /* Drag Drop Categorization */
+        .category-exercise {
+            margin-top: 2rem;
+        }
+
+        .drag-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding: 1.5rem;
+            background: var(--sand);
+            border-radius: 0.75rem;
+            min-height: 80px;
+            margin-bottom: 1.5rem;
+        }
+
+        .drag-item {
+            background: var(--cream);
+            padding: 0.6rem 1rem;
+            border-radius: 2rem;
+            cursor: grab;
+            border: 2px solid var(--coral-light);
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .drag-item:hover {
+            border-color: var(--coral);
+            transform: scale(1.05);
+        }
+
+        .drag-item.dragging {
+            opacity: 0.5;
+        }
+
+        .drop-zones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .drop-zone {
+            background: var(--cream);
+            border: 2px dashed var(--coral-light);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            min-height: 150px;
+            transition: all 0.2s ease;
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--coral);
+            background: var(--coral-light);
+        }
+
+        .drop-zone h4 {
+            font-family: 'Fraunces', serif;
+            color: var(--coral-dark);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .drop-zone .dropped-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .dropped-item {
+            background: var(--coral-light);
+            padding: 0.5rem 0.9rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            color: var(--coral-dark);
+        }
+
+        /* Definition Tooltip */
+        .tooltip-wrapper {
+            position: relative;
+            display: inline;
+        }
+
+        .definition-word {
+            border-bottom: 2px dotted var(--coral);
+            cursor: help;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--charcoal);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .tooltip-wrapper:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Intro Section */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 800px) {
+            .intro-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .intro-text {
+            background: var(--cream);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .intro-text p {
+            margin-bottom: 1rem;
+        }
+
+        .key-facts {
+            background: linear-gradient(180deg, var(--coral-light) 0%, var(--cream) 100%);
+            padding: 1.5rem;
+            border-radius: 1rem;
+        }
+
+        .key-facts h4 {
+            font-family: 'Fraunces', serif;
+            color: var(--coral-dark);
+            margin-bottom: 1rem;
+        }
+
+        .fact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .fact-icon {
+            background: var(--coral);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        /* Score Display */
+        .score-display {
+            background: var(--cream);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            margin-top: 2rem;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .score-display .score-number {
+            font-family: 'Fraunces', serif;
+            font-size: 3rem;
+            color: var(--coral);
+            font-weight: 700;
+        }
+
+        .score-display .score-label {
+            color: var(--slate);
+            font-size: 0.9rem;
+        }
+
+        /* Accordion for vocabulary definitions */
+        .vocab-accordion {
+            margin-top: 1rem;
+        }
+
+        .vocab-accordion-item {
+            background: var(--cream);
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .vocab-accordion-header {
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            transition: background 0.2s ease;
+        }
+
+        .vocab-accordion-header:hover {
+            background: var(--coral-light);
+        }
+
+        .vocab-accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .vocab-accordion-content.open {
+            max-height: 200px;
+        }
+
+        .vocab-accordion-inner {
+            padding: 0 1.25rem 1rem;
+            color: var(--slate);
+            font-size: 0.9rem;
+        }
+
+        .vocab-accordion-inner em {
+            display: block;
+            margin-top: 0.5rem;
+            color: var(--coral-dark);
+            font-style: normal;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--charcoal);
+            color: rgba(255,255,255,0.7);
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--coral);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="odd-badge">
+                <span>5</span> Objectif de Développement Durable
+            </div>
+            <h1>Égalité entre les sexes</h1>
+            <p>Module interactif IB French B — Exploration du vocabulaire, des expressions et de la compréhension écrite</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-inner">
+            <button class="nav-btn active" data-section="intro">Introduction</button>
+            <button class="nav-btn" data-section="champs">Champs lexicaux</button>
+            <button class="nav-btn" data-section="tournures">Tournures de phrase</button>
+            <button class="nav-btn" data-section="lecture">Compréhension</button>
+            <button class="nav-btn" data-section="exercices">Exercices</button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- INTRO SECTION -->
+        <section id="intro" class="active">
+            <h2>L'Égalité des genres : un enjeu mondial</h2>
+            
+            <div class="intro-grid">
+                <div class="intro-text">
+                    <p>Les femmes et les filles représentent la moitié de la population mondiale et par conséquent, la moitié de son potentiel. Cependant, de nos jours, les inégalités entre les sexes persistent partout et entravent le progrès social.</p>
+                    <p>Les inégalités fondées sur le genre existent dans tous les pays et dans tous les aspects de la vie sociale. Un nombre important d'études suggère que les femmes et les hommes ont souvent un accès, une utilisation, des expériences et des connaissances différenciés dans de nombreux domaines essentiels.</p>
+                    <p>L'autonomisation des femmes et des filles est essentielle pour promouvoir la croissance économique et le développement social. La pleine participation des femmes permettrait d'augmenter les taux de croissance nationaux de plusieurs points de pourcentage.</p>
+                </div>
+                <div class="key-facts">
+                    <h4>Chiffres clés</h4>
+                    <div class="fact-item">
+                        <div class="fact-icon">!</div>
+                        <span>143 pays ont inscrit l'égalité dans leur constitution, mais 52 autres ne l'ont pas encore fait</span>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-icon">!</div>
+                        <span>Les femmes gagnent en moyenne 24% de moins que les hommes</span>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-icon">!</div>
+                        <span>15 millions de filles sont mariées avant 18 ans chaque année</span>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-icon">!</div>
+                        <span>35% des femmes ont subi des violences physiques ou sexuelles</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-callout">
+                <div class="stat-number">24%</div>
+                <div class="stat-text">En moyenne, dans le monde, les femmes sur le marché du travail gagnent toujours 24% de moins que les hommes — un écart qui persiste malgré des décennies de progrès.</div>
+            </div>
+
+            <h3>Les liens avec d'autres droits humains</h3>
+            <p>L'inégalité entre les genres affecte un large éventail d'autres droits humains :</p>
+            
+            <div class="lexical-grid" style="margin-top: 1rem;">
+                <div class="lexical-card">
+                    <h4><span class="icon">🏥</span> Droit à la santé</h4>
+                    <p style="font-size: 0.95rem; color: var(--slate);">Les femmes enceintes ont une tolérance moindre aux substances toxiques. L'accès aux soins de santé maternelle reste inégal.</p>
+                </div>
+                <div class="lexical-card">
+                    <h4><span class="icon">📚</span> Droit à l'éducation</h4>
+                    <p style="font-size: 0.95rem; color: var(--slate);">Le mariage précoce et les tabous autour des menstruations empêchent les filles d'accéder à l'éducation.</p>
+                </div>
+                <div class="lexical-card">
+                    <h4><span class="icon">🏠</span> Droit au logement</h4>
+                    <p style="font-size: 0.95rem; color: var(--slate);">Dans de nombreux pays, la propriété des terrains est souvent refusée aux femmes en raison de lois familiales discriminatoires.</p>
+                </div>
+                <div class="lexical-card">
+                    <h4><span class="icon">🍞</span> Droit à l'alimentation</h4>
+                    <p style="font-size: 0.95rem; color: var(--slate);">Les filles n'ont parfois pas accès à une alimentation adéquate, ce qui entraîne un taux de mortalité plus élevé.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHAMPS LEXICAUX -->
+        <section id="champs">
+            <h2>Champs lexicaux</h2>
+            <p style="color: var(--slate); margin-bottom: 1.5rem;">Cliquez sur un mot pour voir sa définition et son usage en contexte.</p>
+
+            <div class="lexical-grid">
+                <div class="lexical-card">
+                    <h4><span class="icon">⚖️</span> L'égalité et les droits</h4>
+                    <div class="vocab-list">
+                        <span class="vocab-item" data-def="Égalité des droits et opportunités entre les genres" data-ex="L'égalité des genres fait référence à l'égalité des droits, des responsabilités et des opportunités.">l'égalité des genres (f.)</span>
+                        <span class="vocab-item" data-def="Traitement inégal basé sur le sexe ou le genre" data-ex="La discrimination fondée sur le genre persiste dans tous les aspects de la vie sociale.">la discrimination (f.)</span>
+                        <span class="vocab-item" data-def="Donner du pouvoir, rendre capable d'agir" data-ex="L'autonomisation des femmes est essentielle pour le développement social.">autonomiser</span>
+                        <span class="vocab-item" data-def="La capacité à agir de façon indépendante" data-ex="L'autonomisation permet aux femmes de contrôler leur propre vie.">l'autonomisation (f.)</span>
+                        <span class="vocab-item" data-def="Droits fondamentaux appartenant à tout être humain" data-ex="Les droits humains à l'eau et à l'assainissement doivent être garantis.">les droits humains (m.)</span>
+                        <span class="vocab-item" data-def="Être différent ou inégal selon le genre" data-ex="Les hommes et les femmes ont un accès différencié aux ressources.">différencié(e)</span>
+                        <span class="vocab-item" data-def="Équité entre les sexes dans l'accès aux ressources" data-ex="La parité doit être atteinte à tous les niveaux de la société.">la parité (f.)</span>
+                    </div>
+                </div>
+
+                <div class="lexical-card">
+                    <h4><span class="icon">🚫</span> Les obstacles et défis</h4>
+                    <div class="vocab-list">
+                        <span class="vocab-item" data-def="Écart ou différence significative entre groupes" data-ex="Les vastes fossés séparent les hommes et les femmes dans leur capacité à accéder aux ressources.">le fossé (m.)</span>
+                        <span class="vocab-item" data-def="Ce qui empêche le progrès ou l'accès" data-ex="Il subsiste des entraves à l'accès des filles à l'école.">l'entrave (f.)</span>
+                        <span class="vocab-item" data-def="Violence dirigée contre une personne en raison de son genre" data-ex="La violence sexiste se produit dans les toilettes publiques et les lieux isolés.">la violence sexiste (f.)</span>
+                        <span class="vocab-item" data-def="Idée préconçue et généralisée sur un groupe" data-ex="Les stéréotypes de genre limitent les opportunités des femmes.">le stéréotype (m.)</span>
+                        <span class="vocab-item" data-def="Sujet interdit ou marqué par la honte sociale" data-ex="Un puissant tabou entoure les menstruations dans de nombreuses cultures.">le tabou (m.)</span>
+                        <span class="vocab-item" data-def="Marque d'infamie ou de honte sociale" data-ex="La stigmatisation empêche les femmes de parler de leurs besoins.">la stigmatisation (f.)</span>
+                        <span class="vocab-item" data-def="Fait de traiter quelqu'un comme inférieur" data-ex="Le mariage précoce perpétue l'asservissement des filles.">l'asservissement (m.)</span>
+                    </div>
+                </div>
+
+                <div class="lexical-card">
+                    <h4><span class="icon">💧</span> L'eau et l'assainissement</h4>
+                    <div class="vocab-list">
+                        <span class="vocab-item" data-def="Ensemble des moyens pour évacuer les eaux usées" data-ex="L'accès à l'assainissement est un droit humain fondamental.">l'assainissement (m.)</span>
+                        <span class="vocab-item" data-def="Pratiques de propreté et de santé" data-ex="L'hygiène menstruelle reste un sujet tabou.">l'hygiène (f.)</span>
+                        <span class="vocab-item" data-def="Acte de fournir de l'eau aux ménages" data-ex="Les femmes sont souvent responsables de l'approvisionnement en eau.">l'approvisionnement (m.)</span>
+                        <span class="vocab-item" data-def="Défécation dans des espaces ouverts" data-ex="La défécation en plein air expose les femmes à la violence.">la défécation en plein air (f.)</span>
+                        <span class="vocab-item" data-def="Qui est infecté par des substances nocives" data-ex="Les femmes sont en contact physique avec l'eau contaminée.">contaminé(e)</span>
+                        <span class="vocab-item" data-def="Substances chimiques dangereuses pour la santé" data-ex="Les femmes enceintes ont une tolérance moindre aux toxines.">les toxines (f.)</span>
+                    </div>
+                </div>
+
+                <div class="lexical-card">
+                    <h4><span class="icon">👥</span> Les groupes vulnérables</h4>
+                    <div class="vocab-list">
+                        <span class="vocab-item" data-def="Mis à l'écart de la société ou des opportunités" data-ex="Les femmes marginalisées font face à des obstacles supplémentaires.">marginalisé(e)</span>
+                        <span class="vocab-item" data-def="Personne dont l'identité de genre diffère du sexe assigné" data-ex="Les personnes transgenres subissent des violences dans les espaces publics.">transgenre</span>
+                        <span class="vocab-item" data-def="Qui ne correspond pas aux normes de genre traditionnelles" data-ex="Les personnes non conformes au genre sont exclues de nombreux espaces.">non conforme au genre</span>
+                        <span class="vocab-item" data-def="Situation où plusieurs facteurs de discrimination se combinent" data-ex="L'intersectionnalité aggrave les effets de la discrimination.">l'intersectionnalité (f.)</span>
+                        <span class="vocab-item" data-def="Qui cumule plusieurs facteurs de vulnérabilité" data-ex="Les femmes handicapées sont doublement vulnérables.">doublement vulnérable</span>
+                    </div>
+                </div>
+
+                <div class="lexical-card">
+                    <h4><span class="icon">🏛️</span> Les institutions et politiques</h4>
+                    <div class="vocab-list">
+                        <span class="vocab-item" data-def="Ce que les États doivent faire selon le droit" data-ex="Les États ont des obligations en matière de droits humains.">les obligations (f.)</span>
+                        <span class="vocab-item" data-def="Organisme chargé de surveiller l'application des règles" data-ex="Les instances de régulation doivent contrôler la mise en œuvre.">l'instance de régulation (f.)</span>
+                        <span class="vocab-item" data-def="Qui tient compte des différences entre les genres" data-ex="Des mesures sensibles au genre sont nécessaires.">sensible au genre</span>
+                        <span class="vocab-item" data-def="Mesures temporaires pour corriger les inégalités" data-ex="Des mesures positives temporaires seront nécessaires.">les mesures positives (f.)</span>
+                        <span class="vocab-item" data-def="Action de vérifier l'application des règles" data-ex="Le suivi des progrès est essentiel pour garantir l'égalité.">le suivi (m.)</span>
+                        <span class="vocab-item" data-def="Cadre juridique et institutionnel" data-ex="Le cadre juridique doit contenir des dispositions sur la non-discrimination.">le cadre juridique (m.)</span>
+                    </div>
+                </div>
+
+                <div class="lexical-card">
+                    <h4><span class="icon">💪</span> L'action et le changement</h4>
+                    <div class="vocab-list">
+                        <span class="vocab-item" data-def="Remettre en question les normes établies" data-ex="Il faut remettre en question les stéréotypes de genre.">remettre en question</span>
+                        <span class="vocab-item" data-def="Corriger ou réparer une situation injuste" data-ex="Les États doivent rectifier les lois discriminatoires.">rectifier</span>
+                        <span class="vocab-item" data-def="Action de défendre une cause" data-ex="Le plaidoyer est essentiel pour changer les mentalités.">le plaidoyer (m.)</span>
+                        <span class="vocab-item" data-def="Action d'informer et de faire prendre conscience" data-ex="Les campagnes de sensibilisation visent à changer les attitudes.">la sensibilisation (f.)</span>
+                        <span class="vocab-item" data-def="Actions concrètes pour atteindre un objectif" data-ex="Des interventions sensibles au genre sont prioritaires.">les interventions (f.)</span>
+                        <span class="vocab-item" data-def="Qui change en profondeur les structures sociales" data-ex="Une approche transformatrice est nécessaire pour l'égalité.">transformateur/-trice</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vocabulary Modal/Tooltip Display -->
+            <div id="vocab-display" style="display: none; margin-top: 2rem;">
+                <div class="reading-card">
+                    <h4 id="vocab-word" style="font-family: 'Fraunces', serif; color: var(--coral-dark); margin-bottom: 0.5rem;"></h4>
+                    <p id="vocab-def" style="margin-bottom: 0.75rem;"></p>
+                    <p id="vocab-ex" style="font-style: italic; color: var(--slate); font-size: 0.95rem;"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOURNURES DE PHRASE -->
+        <section id="tournures">
+            <h2>Tournures de phrase</h2>
+            <p style="color: var(--slate); margin-bottom: 1.5rem;">Expressions utiles pour discuter de l'égalité des genres à l'écrit et à l'oral.</p>
+
+            <div class="phrase-category">
+                <div class="phrase-header" onclick="togglePhrase(this)">
+                    <span>🎯 Exprimer l'importance d'un enjeu</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="phrase-content">
+                    <div class="phrase-list">
+                        <div class="phrase-item">
+                            <div class="fr">L'égalité des genres est essentielle pour...</div>
+                            <div class="usage">Pour introduire l'importance du sujet</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Il est impératif de / Il est crucial que...</div>
+                            <div class="usage">Pour souligner l'urgence d'agir</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">...représente un enjeu majeur pour...</div>
+                            <div class="usage">Pour situer l'importance dans un contexte</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">La promotion de l'égalité est fondamentale à tous les domaines de...</div>
+                            <div class="usage">Pour montrer l'étendue de l'impact</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">...ne peut être sous-estimé(e)</div>
+                            <div class="usage">Pour insister sur la gravité</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phrase-category">
+                <div class="phrase-header" onclick="togglePhrase(this)">
+                    <span>📊 Présenter des statistiques</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="phrase-content">
+                    <div class="phrase-list">
+                        <div class="phrase-item">
+                            <div class="fr">Selon les estimations, ... millions de...</div>
+                            <div class="usage">Pour introduire des données chiffrées</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Un nombre important et croissant d'études suggère que...</div>
+                            <div class="usage">Pour citer des recherches</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Environ un tiers / la moitié / X pour cent de...</div>
+                            <div class="usage">Pour donner des proportions</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Au niveau mondial, près de... chaque année</div>
+                            <div class="usage">Pour présenter des statistiques globales</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Les chiffres démontrent que...</div>
+                            <div class="usage">Pour appuyer un argument avec des données</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phrase-category">
+                <div class="phrase-header" onclick="togglePhrase(this)">
+                    <span>⚠️ Décrire les problèmes</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="phrase-content">
+                    <div class="phrase-list">
+                        <div class="phrase-item">
+                            <div class="fr">Les inégalités persistent partout et entravent...</div>
+                            <div class="usage">Pour décrire l'ampleur du problème</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">...sont confronté(e)s à des obstacles supplémentaires</div>
+                            <div class="usage">Pour parler des défis spécifiques</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Les effets sont aggravés lorsqu'ils se recoupent avec...</div>
+                            <div class="usage">Pour expliquer l'intersectionnalité</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">...ont un impact disproportionné sur...</div>
+                            <div class="usage">Pour montrer les inégalités d'impact</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Cette situation entraîne / provoque / engendre...</div>
+                            <div class="usage">Pour décrire les conséquences</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">...se traduisent par un manque de...</div>
+                            <div class="usage">Pour expliquer les résultats négatifs</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phrase-category">
+                <div class="phrase-header" onclick="togglePhrase(this)">
+                    <span>🔧 Proposer des solutions</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="phrase-content">
+                    <div class="phrase-list">
+                        <div class="phrase-item">
+                            <div class="fr">Les États doivent / devraient...</div>
+                            <div class="usage">Pour exprimer une obligation</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Il convient de / Il est nécessaire de...</div>
+                            <div class="usage">Pour suggérer une action</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Des mesures spéciales doivent être adoptées pour...</div>
+                            <div class="usage">Pour recommander des actions concrètes</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">...pourrait servir de point de départ pour...</div>
+                            <div class="usage">Pour proposer une approche</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Cette approche exige de remettre en question...</div>
+                            <div class="usage">Pour expliquer ce qui doit changer</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Il est important que les politiques mentionnent explicitement...</div>
+                            <div class="usage">Pour demander de la clarté</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phrase-category">
+                <div class="phrase-header" onclick="togglePhrase(this)">
+                    <span>🔄 Exprimer la causalité</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="phrase-content">
+                    <div class="phrase-list">
+                        <div class="phrase-item">
+                            <div class="fr">En raison de / À cause de...</div>
+                            <div class="usage">Pour indiquer la cause</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">...ce qui entraîne / ce qui provoque...</div>
+                            <div class="usage">Pour montrer la conséquence</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">...contribue à / favorise...</div>
+                            <div class="usage">Pour expliquer un facteur</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">...peut être largement attribué à...</div>
+                            <div class="usage">Pour identifier la cause principale</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Par conséquent / De ce fait / Ainsi...</div>
+                            <div class="usage">Pour introduire une conséquence logique</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phrase-category">
+                <div class="phrase-header" onclick="togglePhrase(this)">
+                    <span>⚖️ Nuancer son propos</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="phrase-content">
+                    <div class="phrase-list">
+                        <div class="phrase-item">
+                            <div class="fr">Bien que... puisse sembler..., en pratique...</div>
+                            <div class="usage">Pour opposer apparence et réalité</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Dans le même temps, / Parallèlement,...</div>
+                            <div class="usage">Pour ajouter une perspective</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Cependant / Néanmoins / Toutefois...</div>
+                            <div class="usage">Pour introduire une nuance</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">...ne peuvent être considéré(e)s comme un groupe homogène</div>
+                            <div class="usage">Pour éviter les généralisations</div>
+                        </div>
+                        <div class="phrase-item">
+                            <div class="fr">Il est essentiel de reconnaître que...</div>
+                            <div class="usage">Pour souligner un point important</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LECTURE / COMPRÉHENSION -->
+        <section id="lecture">
+            <h2>Compréhension écrite</h2>
+
+            <div class="reading-card">
+                <div class="source">Extrait 1 — Rapport du Rapporteur spécial de l'ONU</div>
+                <div class="reading-text">
+                    <p>Les inégalités fondées sur le genre existent dans tous les pays et dans tous les aspects de la vie sociale, et trouvent un écho dans les <span class="highlight">vastes fossés</span> qui séparent les hommes et les femmes dans leur capacité à accéder, à gérer et à bénéficier de l'eau, de l'assainissement et de l'hygiène.</p>
+                    <p style="margin-top: 1rem;">Cette approche exige de <span class="highlight">remettre en question</span> les normes sociales, les stéréotypes et les modèles intrafamiliaux, tout en favorisant des <span class="highlight">interventions sensibles au genre</span> qui donnent la priorité à la mise en œuvre des besoins spécifiques des femmes.</p>
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <h3 style="margin-top: 0;">Questions de compréhension</h3>
+                
+                <div class="quiz-question" data-correct="2">
+                    <p>1. Selon le texte, que faut-il « remettre en question » pour atteindre l'égalité ?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-index="0">Les lois économiques internationales</div>
+                        <div class="quiz-option" data-index="1">Les technologies modernes de l'eau</div>
+                        <div class="quiz-option" data-index="2">Les normes sociales, stéréotypes et modèles intrafamiliaux</div>
+                        <div class="quiz-option" data-index="3">Les frontières nationales</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="1">
+                    <p>2. Que signifie « les vastes fossés » dans ce contexte ?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-index="0">Des canaux d'irrigation</div>
+                        <div class="quiz-option" data-index="1">Des différences et inégalités importantes</div>
+                        <div class="quiz-option" data-index="2">Des espaces géographiques</div>
+                        <div class="quiz-option" data-index="3">Des problèmes environnementaux</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <div class="reading-card" style="margin-top: 2rem;">
+                <div class="source">Extrait 2 — La violence sexiste</div>
+                <div class="reading-text">
+                    <p>Les femmes, les filles, les garçons et les personnes non conformes au genre sont victimes de violence sexiste lorsqu'ils accèdent aux toilettes et autres installations sanitaires. Les femmes craignent la violence des hommes dans les toilettes publiques et les lieux de <span class="highlight">défécation en plein air</span>, ainsi que le long des routes menant à ces deux endroits.</p>
+                    <p style="margin-top: 1rem;">Outre le risque de violence physique, les femmes et les filles peuvent également être confrontées à un <span class="highlight">stress psychosocial</span> lié à l'assainissement, notamment la peur de la violence sexuelle.</p>
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question" data-correct="0">
+                    <p>3. Quels groupes sont mentionnés comme victimes de violence sexiste ?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-index="0">Les femmes, filles, garçons et personnes non conformes au genre</div>
+                        <div class="quiz-option" data-index="1">Uniquement les femmes adultes</div>
+                        <div class="quiz-option" data-index="2">Les hommes politiques</div>
+                        <div class="quiz-option" data-index="3">Les travailleurs du secteur de l'eau</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="2">
+                    <p>4. Quel type de stress est mentionné en plus de la violence physique ?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-index="0">Le stress financier</div>
+                        <div class="quiz-option" data-index="1">Le stress professionnel</div>
+                        <div class="quiz-option" data-index="2">Le stress psychosocial</div>
+                        <div class="quiz-option" data-index="3">Le stress académique</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <div class="reading-card" style="margin-top: 2rem;">
+                <div class="source">Extrait 3 — L'intersectionnalité</div>
+                <div class="reading-text">
+                    <p>Les effets de la discrimination de genre sont aggravés lorsqu'ils se recoupent avec d'autres bases de discrimination, telles que : la pauvreté, le manque de sécurité d'emploi, l'âge, la profession, l'état civil, la caste, l'identité de genre, l'orientation sexuelle, le fait d'être sans-abri, l'incontinence ou le handicap.</p>
+                    <p style="margin-top: 1rem;">Les femmes qui souffrent d'obstacles supplémentaires à l'égalité seront plus susceptibles de ne pas avoir accès à l'eau, aux installations sanitaires et à l'hygiène, de faire face à l'exclusion ou de connaître la vulnérabilité.</p>
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question" data-correct="1">
+                    <p>5. Que signifie « l'intersectionnalité » dans ce contexte ?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-index="0">Un carrefour routier</div>
+                        <div class="quiz-option" data-index="1">Le croisement de plusieurs formes de discrimination</div>
+                        <div class="quiz-option" data-index="2">Une technique agricole</div>
+                        <div class="quiz-option" data-index="3">Un type de gouvernement</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <button class="check-btn" onclick="checkAllAnswers()" style="margin-top: 1.5rem;">Vérifier mes réponses</button>
+
+            <div class="score-display" id="score-display" style="display: none;">
+                <div class="score-number" id="final-score">0/5</div>
+                <div class="score-label">Bonnes réponses</div>
+            </div>
+        </section>
+
+        <!-- EXERCICES -->
+        <section id="exercices">
+            <h2>Exercices interactifs</h2>
+
+            <h3>1. Associez les termes à leurs définitions</h3>
+            <p style="color: var(--slate); margin-bottom: 1rem;">Cliquez sur un terme, puis sur sa définition correspondante.</p>
+
+            <div class="matching-container" id="matching-exercise">
+                <div class="matching-column">
+                    <h4>Termes</h4>
+                    <div class="matching-item" data-match="A" data-type="term">l'autonomisation</div>
+                    <div class="matching-item" data-match="B" data-type="term">l'assainissement</div>
+                    <div class="matching-item" data-match="C" data-type="term">l'intersectionnalité</div>
+                    <div class="matching-item" data-match="D" data-type="term">la stigmatisation</div>
+                    <div class="matching-item" data-match="E" data-type="term">sensible au genre</div>
+                </div>
+                <div class="matching-column">
+                    <h4>Définitions</h4>
+                    <div class="matching-item" data-match="C" data-type="def">Croisement de plusieurs formes de discrimination</div>
+                    <div class="matching-item" data-match="A" data-type="def">Processus de donner du pouvoir à quelqu'un</div>
+                    <div class="matching-item" data-match="E" data-type="def">Qui tient compte des différences entre les genres</div>
+                    <div class="matching-item" data-match="B" data-type="def">Ensemble des moyens pour évacuer les eaux usées</div>
+                    <div class="matching-item" data-match="D" data-type="def">Fait de marquer quelqu'un d'une honte sociale</div>
+                </div>
+            </div>
+
+            <h3>2. Classez les expressions par fonction</h3>
+            <p style="color: var(--slate); margin-bottom: 1rem;">Glissez chaque expression dans la catégorie appropriée.</p>
+
+            <div class="category-exercise">
+                <div class="drag-items" id="drag-source">
+                    <div class="drag-item" draggable="true" data-category="cause">En raison de</div>
+                    <div class="drag-item" draggable="true" data-category="solution">Il convient de</div>
+                    <div class="drag-item" draggable="true" data-category="consequence">Ce qui entraîne</div>
+                    <div class="drag-item" draggable="true" data-category="solution">Les États doivent</div>
+                    <div class="drag-item" draggable="true" data-category="cause">À cause de</div>
+                    <div class="drag-item" draggable="true" data-category="consequence">Par conséquent</div>
+                    <div class="drag-item" draggable="true" data-category="solution">Des mesures doivent être adoptées</div>
+                    <div class="drag-item" draggable="true" data-category="consequence">Ainsi</div>
+                </div>
+
+                <div class="drop-zones">
+                    <div class="drop-zone" data-category="cause">
+                        <h4>Exprimer la cause</h4>
+                        <div class="dropped-items"></div>
+                    </div>
+                    <div class="drop-zone" data-category="consequence">
+                        <h4>Exprimer la conséquence</h4>
+                        <div class="dropped-items"></div>
+                    </div>
+                    <div class="drop-zone" data-category="solution">
+                        <h4>Proposer une solution</h4>
+                        <div class="dropped-items"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>3. Complétez les phrases</h3>
+            <p style="color: var(--slate); margin-bottom: 1rem;">Choisissez le mot approprié pour chaque phrase.</p>
+
+            <div class="quiz-container">
+                <div class="quiz-question" data-correct="1">
+                    <p>Les femmes sont souvent responsables de l'__________ en eau des ménages.</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-index="0">assainissement</div>
+                        <div class="quiz-option" data-index="1">approvisionnement</div>
+                        <div class="quiz-option" data-index="2">autonomisation</div>
+                        <div class="quiz-option" data-index="3">asservissement</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="2">
+                    <p>L'égalité des genres est un droit __________.</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-index="0">économique</div>
+                        <div class="quiz-option" data-index="1">provisoire</div>
+                        <div class="quiz-option" data-index="2">fondamental</div>
+                        <div class="quiz-option" data-index="3">optionnel</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="0">
+                    <p>Les __________ de genre limitent les opportunités des femmes.</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-index="0">stéréotypes</div>
+                        <div class="quiz-option" data-index="1">statistiques</div>
+                        <div class="quiz-option" data-index="2">stratégies</div>
+                        <div class="quiz-option" data-index="3">systèmes</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="3">
+                    <p>Des mesures __________ au genre sont nécessaires pour atteindre l'égalité.</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-index="0">indifférentes</div>
+                        <div class="quiz-option" data-index="1">neutres</div>
+                        <div class="quiz-option" data-index="2">aveugles</div>
+                        <div class="quiz-option" data-index="3">sensibles</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <button class="check-btn" onclick="checkExerciseAnswers()" style="margin-top: 1.5rem;">Vérifier mes réponses</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>Module IB French B — ODD 5 : Égalité entre les sexes</p>
+        <p style="margin-top: 0.5rem;">Sources : Rapport du Rapporteur spécial de l'ONU sur les droits humains à l'eau et à l'assainissement • ONU Objectifs de Développement Durable</p>
+    </footer>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.section).classList.add('active');
+            });
+        });
+
+        // Phrase accordion
+        function togglePhrase(header) {
+            header.classList.toggle('open');
+            header.nextElementSibling.classList.toggle('open');
+        }
+
+        // Vocabulary display
+        document.querySelectorAll('.vocab-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const display = document.getElementById('vocab-display');
+                document.getElementById('vocab-word').textContent = item.textContent;
+                document.getElementById('vocab-def').textContent = item.dataset.def;
+                document.getElementById('vocab-ex').textContent = '« ' + item.dataset.ex + ' »';
+                display.style.display = 'block';
+                display.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        });
+
+        // Quiz functionality
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const question = option.closest('.quiz-question');
+                question.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+
+        function checkAllAnswers() {
+            let correct = 0;
+            const questions = document.querySelectorAll('#lecture .quiz-question');
+            
+            questions.forEach(q => {
+                const selected = q.querySelector('.quiz-option.selected');
+                const correctIndex = parseInt(q.dataset.correct);
+                const feedback = q.querySelector('.feedback');
+                
+                q.querySelectorAll('.quiz-option').forEach(o => {
+                    o.classList.remove('correct', 'incorrect');
+                });
+                
+                if (selected) {
+                    const selectedIndex = parseInt(selected.dataset.index);
+                    if (selectedIndex === correctIndex) {
+                        selected.classList.add('correct');
+                        feedback.textContent = '✓ Correct !';
+                        feedback.className = 'feedback show correct';
+                        correct++;
+                    } else {
+                        selected.classList.add('incorrect');
+                        q.querySelectorAll('.quiz-option')[correctIndex].classList.add('correct');
+                        feedback.textContent = '✗ Incorrect. Voir la bonne réponse ci-dessus.';
+                        feedback.className = 'feedback show incorrect';
+                    }
+                }
+            });
+            
+            const scoreDisplay = document.getElementById('score-display');
+            document.getElementById('final-score').textContent = correct + '/' + questions.length;
+            scoreDisplay.style.display = 'block';
+        }
+
+        function checkExerciseAnswers() {
+            const questions = document.querySelectorAll('#exercices .quiz-question');
+            
+            questions.forEach(q => {
+                const selected = q.querySelector('.quiz-option.selected');
+                const correctIndex = parseInt(q.dataset.correct);
+                const feedback = q.querySelector('.feedback');
+                
+                q.querySelectorAll('.quiz-option').forEach(o => {
+                    o.classList.remove('correct', 'incorrect');
+                });
+                
+                if (selected) {
+                    const selectedIndex = parseInt(selected.dataset.index);
+                    if (selectedIndex === correctIndex) {
+                        selected.classList.add('correct');
+                        feedback.textContent = '✓ Correct !';
+                        feedback.className = 'feedback show correct';
+                    } else {
+                        selected.classList.add('incorrect');
+                        q.querySelectorAll('.quiz-option')[correctIndex].classList.add('correct');
+                        feedback.textContent = '✗ Incorrect. Voir la bonne réponse ci-dessus.';
+                        feedback.className = 'feedback show incorrect';
+                    }
+                }
+            });
+        }
+
+        // Matching exercise
+        let selectedTerm = null;
+        const matchingItems = document.querySelectorAll('#matching-exercise .matching-item');
+        
+        matchingItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                
+                if (item.dataset.type === 'term') {
+                    matchingItems.forEach(i => {
+                        if (i.dataset.type === 'term') i.classList.remove('selected');
+                    });
+                    item.classList.add('selected');
+                    selectedTerm = item;
+                } else if (item.dataset.type === 'def' && selectedTerm) {
+                    if (item.dataset.match === selectedTerm.dataset.match) {
+                        item.classList.add('matched');
+                        selectedTerm.classList.add('matched');
+                        selectedTerm.classList.remove('selected');
+                        selectedTerm = null;
+                    } else {
+                        item.style.animation = 'shake 0.3s ease';
+                        setTimeout(() => item.style.animation = '', 300);
+                    }
+                }
+            });
+        });
+
+        // Drag and drop
+        const dragItems = document.querySelectorAll('.drag-item');
+        const dropZones = document.querySelectorAll('.drop-zone');
+
+        dragItems.forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', item.textContent);
+                e.dataTransfer.setData('category', item.dataset.category);
+                item.classList.add('dragging');
+            });
+            
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+            });
+        });
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('drag-over');
+            });
+            
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('drag-over');
+            });
+            
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                
+                const text = e.dataTransfer.getData('text/plain');
+                const category = e.dataTransfer.getData('category');
+                
+                const droppedItem = document.createElement('div');
+                droppedItem.className = 'dropped-item';
+                droppedItem.textContent = text;
+                
+                if (category === zone.dataset.category) {
+                    droppedItem.style.background = '#E8F5F5';
+                    droppedItem.style.color = 'var(--accent-teal)';
+                } else {
+                    droppedItem.style.background = '#FFE8E8';
+                    droppedItem.style.color = '#D64545';
+                }
+                
+                zone.querySelector('.dropped-items').appendChild(droppedItem);
+                
+                // Remove from source
+                const sourceItem = document.querySelector(`.drag-item[draggable="true"]`);
+                document.querySelectorAll('.drag-item').forEach(item => {
+                    if (item.textContent === text) {
+                        item.remove();
+                    }
+                });
+            });
+        });
+
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
