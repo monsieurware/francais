@@ -201,6 +201,34 @@
         .progress-step.current { background: var(--accent-blue); }
         .progress-text { font-size: 0.85rem; color: var(--text-secondary); white-space: nowrap; margin-left: 0.5rem; }
 
+        .user-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .user-text {
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            padding: 1.25rem;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-green);
+            color: var(--text-secondary);
+        }
+
         .interviewer-box {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
@@ -396,6 +424,11 @@
         <!-- Screen: Dialogue -->
         <div class="screen" id="screenDialogue">
             <div class="progress-bar" id="progressBar"></div>
+
+            <div class="user-box" id="userBox" style="display: none;">
+                <div class="user-label">🗣️ Vous :</div>
+                <div class="user-text" id="userText"></div>
+            </div>
 
             <div class="interviewer-box">
                 <div class="interviewer-label">🎧 L'interlocuteur :</div>
@@ -1060,8 +1093,10 @@ const App = {
     scenario: null,
     round: 0,
     selected: null,
+    selectedText: null,
     lastType: null,
     lastResponse: null,
+    lastQuestion: null,
     scores: { ideale: 0, acceptable: 0, mauvaise: 0 },
     textHidden: false,
 
@@ -1153,8 +1188,10 @@ const App = {
         this.round = 0;
         this.scores = { ideale: 0, acceptable: 0, mauvaise: 0 };
         this.selected = null;
+        this.selectedText = null;
         this.lastType = null;
         this.lastResponse = null;
+        this.lastQuestion = null;
 
         document.getElementById('ctxTitle').innerHTML = `${this.scenario.icon} ${this.scenario.title}`;
         document.getElementById('ctxText').textContent = this.scenario.context;
@@ -1173,8 +1210,10 @@ const App = {
         this.round = 0;
         this.scores = { ideale: 0, acceptable: 0, mauvaise: 0 };
         this.selected = null;
+        this.selectedText = null;
         this.lastType = null;
         this.lastResponse = null;
+        this.lastQuestion = null;
         this.showScreen('screenDialogue');
         this.renderRound();
     },
@@ -1189,6 +1228,15 @@ const App = {
             this.scenario.rounds.map((_, i) =>
                 `<div class="progress-step ${i < this.round ? 'done' : ''} ${i === this.round ? 'current' : ''}"></div>`
             ).join('') + `<span class="progress-text">${this.round + 1}/${total}</span>`;
+
+        // Show user's previous question (rounds 1+)
+        const userBox = document.getElementById('userBox');
+        if (this.round > 0 && this.lastQuestion) {
+            document.getElementById('userText').textContent = `« ${this.lastQuestion} »`;
+            userBox.style.display = 'block';
+        } else {
+            userBox.style.display = 'none';
+        }
 
         // Show either opening (round 0) or last response (rounds 1+)
         const displayText = this.round === 0 ? this.scenario.opening : this.lastResponse;
@@ -1228,6 +1276,7 @@ const App = {
         document.querySelectorAll('.question-item').forEach(q => q.classList.remove('selected'));
         el.classList.add('selected');
         this.selected = el.dataset.type;
+        this.selectedText = el.querySelector('.question-content').textContent.replace(/[«»]/g, '').trim();
         document.getElementById('btnValidate').disabled = false;
     },
 
@@ -1242,13 +1291,26 @@ const App = {
         const response = r.responses[type];
         const feedback = r.feedback[type];
 
-        // Store response for next round
-        this.lastResponse = response;
+        // Store question and response for next round (only if not mauvaise)
+        if (type !== 'mauvaise') {
+            this.lastQuestion = this.selectedText;
+            this.lastResponse = response;
+        }
 
         const icons = { mauvaise: '❌', acceptable: '⚠️', ideale: '✅' };
         const titles = { mauvaise: 'Question inappropriée', acceptable: 'Correct, mais basique', ideale: 'Excellent !' };
         document.getElementById('feedbackHeader').innerHTML = `${icons[type]} ${titles[type]}`;
-        document.getElementById('feedbackContent').innerHTML = `<p>${feedback}</p>`;
+        
+        // For mauvaise, show the awkward response so user understands the consequence
+        if (type === 'mauvaise') {
+            document.getElementById('feedbackContent').innerHTML = `
+                <p style="margin-bottom: 1rem;"><strong>L'interlocuteur répond :</strong></p>
+                <p style="font-style: italic; margin-bottom: 1rem;">« ${response} »</p>
+                <p>${feedback}</p>
+            `;
+        } else {
+            document.getElementById('feedbackContent').innerHTML = `<p>${feedback}</p>`;
+        }
 
         const btn = document.getElementById('btnContinue');
         if (type === 'mauvaise') {
