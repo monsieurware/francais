@@ -30,11 +30,7 @@
             line-height: 1.6;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
 
         .header {
             text-align: center;
@@ -169,11 +165,7 @@
             text-align: center;
         }
 
-        .context-title {
-            font-family: 'Source Serif 4', serif;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
+        .context-title { font-family: 'Source Serif 4', serif; font-size: 1.5rem; margin-bottom: 1.5rem; }
 
         .context-text {
             text-align: left;
@@ -204,22 +196,10 @@
             border-radius: 10px;
         }
 
-        .progress-step {
-            flex: 1;
-            height: 6px;
-            background: var(--bg-tertiary);
-            border-radius: 3px;
-        }
-
+        .progress-step { flex: 1; height: 6px; background: var(--bg-tertiary); border-radius: 3px; }
         .progress-step.done { background: var(--accent-green); }
         .progress-step.current { background: var(--accent-blue); }
-
-        .progress-text {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            margin-left: 0.5rem;
-        }
+        .progress-text { font-size: 0.85rem; color: var(--text-secondary); white-space: nowrap; margin-left: 0.5rem; }
 
         .interviewer-box {
             background: var(--bg-secondary);
@@ -297,18 +277,8 @@
             margin-top: 2px;
         }
 
-        .question-item.selected .question-radio {
-            border-color: var(--accent-blue);
-            background: var(--accent-blue);
-        }
-
-        .question-item.selected .question-radio::after {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-        }
+        .question-item.selected .question-radio { border-color: var(--accent-blue); background: var(--accent-blue); }
+        .question-item.selected .question-radio::after { content: ''; width: 8px; height: 8px; background: white; border-radius: 50%; }
 
         .question-content { font-size: 1rem; line-height: 1.6; }
 
@@ -378,7 +348,6 @@
             <span class="level-badge">Niveau cible : NCLC 8</span>
         </header>
 
-        <!-- API Panel -->
         <div class="api-panel">
             <span>🔑</span>
             <input type="password" id="apiKey" placeholder="Clé API ElevenLabs">
@@ -409,7 +378,7 @@
             <div class="interviewer-box">
                 <div class="interviewer-label">🎧 L'interlocuteur :</div>
                 <div class="interviewer-text" id="interviewerText"></div>
-                <button class="audio-btn" onclick="App.playAudio()">🔊 Écouter</button>
+                <button class="audio-btn" onclick="App.playCurrentAudio()">🔊 Écouter</button>
             </div>
 
             <div class="questions-section" id="questionsSection">
@@ -424,7 +393,7 @@
             <div class="feedback-box" id="feedbackBox">
                 <div class="feedback-header" id="feedbackHeader"></div>
                 <div class="feedback-content" id="feedbackContent"></div>
-                <div class="feedback-actions" id="feedbackActions">
+                <div class="feedback-actions">
                     <button class="btn btn-primary" id="btnContinue" onclick="App.continue()">Continuer →</button>
                 </div>
             </div>
@@ -452,17 +421,19 @@
 
 <script>
 // ============================================================
-// SCENARIO DATA
+// SCENARIO DATA - Each response leads naturally to next topic
 // ============================================================
 const SCENARIOS = [
+    // ========== SCENARIO 1: LOUER UN APPARTEMENT ==========
     {
         icon: '🏠',
         title: 'Louer un appartement',
         context: `Vous avez vu une annonce sur le site d'une agence immobilière pour un appartement de trois pièces situé dans le quartier du Plateau-Mont-Royal à Montréal. Le loyer affiché est de 1 450 $ par mois. Vous téléphonez à l'agence pour obtenir plus de renseignements avant de prendre rendez-vous pour une visite.`,
         objective: `<strong>Votre objectif :</strong> Poser des questions précises et professionnelles pour obtenir toutes les informations nécessaires sur l'appartement.`,
+        opening: `Agence Immobilière Dumoulin, bonjour. Je suis Nathalie, comment puis-je vous aider ?`,
         rounds: [
             {
-                interviewer: `Agence Immobilière Dumoulin, bonjour. Je suis Nathalie, comment puis-je vous aider ?`,
+                // Round 1: User identifies the apartment
                 options: [
                     { text: `C'est pour un appartement.`, type: 'mauvaise' },
                     { text: `Bonjour, j'appelle pour une annonce que j'ai vue.`, type: 'mauvaise' },
@@ -470,9 +441,9 @@ const SCENARIOS = [
                     { text: `Bonjour Madame. Je vous appelle au sujet de l'appartement de trois pièces situé rue Saint-Denis, dans le Plateau-Mont-Royal. Pourriez-vous me confirmer s'il est toujours disponible ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Euh, oui... c'est à quel sujet ? Vous cherchez un appartement en particulier ?`,
-                    acceptable: `Oui, c'est toujours disponible. C'est pour le T3 sur le Plateau, c'est ça ?`,
-                    ideale: `Ah oui, le trois-pièces rue Saint-Denis ! Oui, il est toujours disponible. Vous avez des questions sur l'appartement ?`
+                    mauvaise: `Euh, oui... c'est à quel sujet exactement ? Nous avons plusieurs annonces en ce moment.`,
+                    acceptable: `Oui, le T3 sur le Plateau est toujours disponible. Il est à 1 450 $ par mois. Vous avez des questions ?`,
+                    ideale: `Ah oui, le trois-pièces rue Saint-Denis ! Oui, il est toujours disponible, à 1 450 $ par mois. Qu'aimeriez-vous savoir sur cet appartement ?`
                 },
                 feedback: {
                     mauvaise: `Votre phrase ne précise pas de quel appartement il s'agit. L'interlocuteur doit demander des clarifications. À NCLC 8, soyez précis dès le départ.`,
@@ -481,586 +452,574 @@ const SCENARIOS = [
                 }
             },
             {
-                interviewer: `Oui, l'appartement est disponible à partir du premier mars. Qu'est-ce que vous aimeriez savoir ?`,
+                // Round 2: User asks about rent/charges
                 options: [
                     { text: `C'est cher ?`, type: 'mauvaise' },
-                    { text: `Le loyer, c'est combien ?`, type: 'mauvaise' },
-                    { text: `Pourriez-vous me confirmer le montant du loyer mensuel ?`, type: 'acceptable' },
-                    { text: `Je voudrais savoir si le loyer de 1 450 $ inclut les charges, notamment le chauffage et l'électricité ?`, type: 'ideale' },
+                    { text: `Le loyer, c'est combien exactement ?`, type: 'mauvaise' },
+                    { text: `Pourriez-vous me préciser si des charges sont incluses dans le loyer ?`, type: 'acceptable' },
+                    { text: `Je voudrais savoir si le loyer de 1 450 $ inclut les charges, notamment le chauffage, l'eau chaude et l'électricité ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Euh... le loyer ? C'est 1 450 $ comme indiqué sur l'annonce.`,
-                    acceptable: `Le loyer est de 1 450 $ par mois. Les charges ne sont pas comprises.`,
-                    ideale: `Le loyer est de 1 450 $ par mois, charges comprises — ça inclut le chauffage et l'eau. L'électricité est à votre charge.`
+                    mauvaise: `Le loyer est de 1 450 $, comme indiqué. C'est un bon prix pour le quartier.`,
+                    acceptable: `Les charges ne sont pas comprises. Il faut compter environ 80 $ de plus par mois pour l'électricité et le chauffage.`,
+                    ideale: `Le loyer de 1 450 $ inclut le chauffage et l'eau chaude. Seule l'électricité est à votre charge, environ 50 $ par mois car l'appartement est bien isolé. Voulez-vous des détails sur l'appartement lui-même ?`
                 },
                 feedback: {
                     mauvaise: `« C'est cher ? » est trop vague et informel. Le prix est dans l'annonce. Demandez plutôt des détails sur les charges.`,
-                    acceptable: `Bonne question, mais anticipez en demandant directement si les charges sont incluses.`,
-                    ideale: `Parfait ! Vous avez anticipé un détail important (les charges). C'est le niveau NCLC 8.`
+                    acceptable: `Bonne question sur les charges. Vous pourriez être plus complet en mentionnant les différents types de charges.`,
+                    ideale: `Parfait ! Vous avez anticipé tous les détails importants concernant les charges. C'est le niveau NCLC 8.`
                 }
             },
             {
-                interviewer: `C'est un appartement lumineux avec de grandes fenêtres. Il y a un salon, deux chambres, une cuisine équipée et une salle de bain.`,
+                // Round 3: User asks about size/layout
                 options: [
                     { text: `C'est grand comment ?`, type: 'mauvaise' },
-                    { text: `Il y a combien de pièces ?`, type: 'mauvaise' },
+                    { text: `Il y a combien de pièces exactement ?`, type: 'mauvaise' },
                     { text: `Quelle est la superficie de l'appartement ?`, type: 'acceptable' },
-                    { text: `Pourriez-vous me donner la superficie totale ainsi que l'étage ? Y a-t-il un ascenseur ?`, type: 'ideale' },
+                    { text: `Pourriez-vous me donner la superficie totale et la répartition des pièces ? À quel étage se trouve l'appartement et y a-t-il un ascenseur ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Euh, c'est grand, oui. Environ 75 mètres carrés, je crois.`,
-                    acceptable: `L'appartement fait 75 mètres carrés. C'est au troisième étage.`,
-                    ideale: `L'appartement fait 78 mètres carrés. Il est au troisième étage avec ascenseur. Le salon fait 25 m² et les chambres 12 et 14 m².`
+                    mauvaise: `C'est un trois-pièces, donc un salon et deux chambres. C'est assez spacieux.`,
+                    acceptable: `L'appartement fait 78 mètres carrés. C'est au troisième étage d'un immeuble de quatre étages.`,
+                    ideale: `L'appartement fait 78 mètres carrés : un salon de 25 m², deux chambres de 12 et 14 m², une cuisine équipée et une salle de bain. C'est au troisième étage avec ascenseur. Pour le dossier de location, avez-vous des questions sur les documents requis ?`
                 },
                 feedback: {
-                    mauvaise: `Trop vague. Demandez la superficie exacte ou des détails précis.`,
-                    acceptable: `Bonne question. Vous pourriez aussi demander l'étage ou l'ascenseur.`,
-                    ideale: `Excellent ! Question complète couvrant plusieurs aspects importants.`
+                    mauvaise: `Trop vague. Demandez la superficie exacte et des détails pratiques comme l'étage.`,
+                    acceptable: `Bonne question sur la superficie. Vous pourriez aussi demander l'étage et l'ascenseur en une seule question.`,
+                    ideale: `Excellent ! Question complète couvrant superficie, répartition et aspects pratiques.`
                 }
             },
             {
-                interviewer: `Pour les conditions, nous demandons un dépôt de garantie d'un mois et des références de votre ancien propriétaire.`,
+                // Round 4: User asks about documents/conditions
                 options: [
                     { text: `Il faut quoi comme papiers ?`, type: 'mauvaise' },
-                    { text: `C'est quoi les conditions ?`, type: 'mauvaise' },
-                    { text: `Quels documents dois-je fournir pour le dossier ?`, type: 'acceptable' },
-                    { text: `Pourriez-vous me détailler les pièces justificatives à fournir ? Y a-t-il des exigences sur les revenus ou les garanties ?`, type: 'ideale' },
+                    { text: `C'est quoi les conditions pour louer ?`, type: 'mauvaise' },
+                    { text: `Quels documents dois-je fournir pour constituer mon dossier ?`, type: 'acceptable' },
+                    { text: `Pourriez-vous me détailler les pièces justificatives nécessaires pour le dossier de candidature ? Y a-t-il des exigences particulières concernant les revenus ou un garant ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Il faut des papiers, oui. Pièce d'identité, fiches de paie...`,
-                    acceptable: `Nous demandons une pièce d'identité, trois fiches de paie et une lettre de référence.`,
-                    ideale: `Nous avons besoin d'une pièce d'identité, trois fiches de paie, preuve d'emploi et lettre de référence. Le dépôt est encaissé à la signature.`
+                    mauvaise: `Il faut les documents habituels : pièce d'identité, fiches de paie... Vous connaissez.`,
+                    acceptable: `Nous demandons une pièce d'identité, vos trois dernières fiches de paie, et une lettre de référence de votre ancien propriétaire. Le dépôt de garantie est d'un mois de loyer.`,
+                    ideale: `Pour le dossier : pièce d'identité, trois dernières fiches de paie, attestation d'emploi, et une référence de votre ancien propriétaire. Nous demandons des revenus d'au moins trois fois le loyer. Le dépôt est d'un mois, encaissé à la signature. Souhaitez-vous organiser une visite ?`
                 },
                 feedback: {
-                    mauvaise: `Trop informel. Utilisez un registre soutenu et soyez plus précis.`,
-                    acceptable: `Bonne question. Demandez aussi les conditions spécifiques.`,
-                    ideale: `Parfait ! Question complète et professionnelle.`
+                    mauvaise: `Trop informel. Utilisez un registre soutenu et soyez plus précis dans votre demande.`,
+                    acceptable: `Bonne question. Pensez à demander aussi les conditions de revenus ou de garantie.`,
+                    ideale: `Parfait ! Question complète et professionnelle qui anticipe tous les aspects administratifs.`
                 }
             },
             {
-                interviewer: `Nous organisons des visites du mardi au samedi. J'ai des disponibilités jeudi après-midi et samedi matin.`,
+                // Round 5: User schedules a visit
                 options: [
                     { text: `Je peux venir quand ?`, type: 'mauvaise' },
-                    { text: `C'est possible de visiter ?`, type: 'mauvaise' },
-                    { text: `Quels créneaux avez-vous pour une visite ?`, type: 'acceptable' },
-                    { text: `Serait-il possible de planifier une visite ? Je suis disponible jeudi après-midi ou samedi matin. Quel créneau vous conviendrait ?`, type: 'ideale' },
+                    { text: `C'est possible de visiter bientôt ?`, type: 'mauvaise' },
+                    { text: `Quelles sont vos disponibilités pour une visite ?`, type: 'acceptable' },
+                    { text: `Serait-il possible d'organiser une visite ? Je suis disponible jeudi après-midi ou samedi matin. Quel créneau vous conviendrait le mieux ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Euh, vous voulez venir quand exactement ?`,
-                    acceptable: `Jeudi, je peux proposer 14h ou 16h. Samedi, 10h ou 11h30.`,
-                    ideale: `Parfait ! Jeudi j'ai 14h, 15h30 et 16h. Samedi, 10h ou 11h30. La visite dure 20 minutes. Qu'est-ce qui vous arrange ?`
+                    mauvaise: `On peut organiser quelque chose. Vous êtes disponible quand ?`,
+                    acceptable: `Je peux vous proposer jeudi à 14h ou 16h, ou samedi à 10h. Qu'est-ce qui vous arrange ?`,
+                    ideale: `Parfait ! Je vous propose samedi à 10h, ça vous convient ? L'adresse est le 4521, rue Saint-Denis. La visite dure environ 20 minutes. Vous aurez besoin d'autre chose avant la visite ?`
                 },
                 feedback: {
-                    mauvaise: `Trop direct et manque de politesse. Proposez vos disponibilités.`,
-                    acceptable: `Bonne démarche. Soyez plus précis en proposant vos propres créneaux.`,
-                    ideale: `Excellent ! Vous proposez des créneaux précis tout en restant flexible.`
+                    mauvaise: `Trop direct et manque de politesse. Proposez vos propres disponibilités.`,
+                    acceptable: `Bonne démarche. Proposer vos créneaux facilite l'organisation.`,
+                    ideale: `Excellent ! Vous proposez des créneaux précis tout en restant flexible. Très professionnel.`
                 }
             },
             {
-                interviewer: `Parfait, je vous note pour samedi à 10h. L'adresse est le 4521, rue Saint-Denis. Autre chose ?`,
+                // Round 6: User closes politely
                 options: [
                     { text: `Non c'est bon.`, type: 'mauvaise' },
-                    { text: `OK, à samedi.`, type: 'mauvaise' },
-                    { text: `Non, merci beaucoup. À samedi.`, type: 'acceptable' },
-                    { text: `Non, je pense avoir toutes les informations. Je vous remercie pour votre disponibilité. Je serai au 4521, rue Saint-Denis samedi à 10h. Bonne journée !`, type: 'ideale' },
+                    { text: `OK, à samedi alors.`, type: 'mauvaise' },
+                    { text: `Non merci, c'est parfait. À samedi !`, type: 'acceptable' },
+                    { text: `Non, je crois avoir toutes les informations nécessaires. Je vous remercie pour votre disponibilité, Nathalie. Je serai donc au 4521, rue Saint-Denis samedi à 10h. Excellente journée !`, type: 'ideale' },
                 ],
                 responses: {
                     mauvaise: `D'accord. Au revoir.`,
-                    acceptable: `Très bien. À samedi alors. Au revoir.`,
-                    ideale: `Parfait ! À samedi 10h. Au plaisir de vous rencontrer. Bonne journée !`
+                    acceptable: `Très bien, à samedi alors. Bonne journée !`,
+                    ideale: `Merci à vous ! Je vous attends samedi à 10h. N'hésitez pas à rappeler si vous avez d'autres questions. Excellente journée !`
                 },
                 feedback: {
-                    mauvaise: `Trop bref. Confirmez les détails et remerciez.`,
-                    acceptable: `Bien. Récapituler les informations serait encore mieux.`,
-                    ideale: `Parfait ! Récapitulatif professionnel et courtois.`
+                    mauvaise: `Trop bref et impoli. Confirmez les détails et remerciez votre interlocuteur.`,
+                    acceptable: `Correct, mais récapituler les informations montrerait votre professionnalisme.`,
+                    ideale: `Parfait ! Récapitulatif des informations, remerciements personnalisés et formule de politesse appropriée.`
                 }
             }
         ]
     },
+
+    // ========== SCENARIO 2: RETOURNER UN PRODUIT ==========
     {
         icon: '🛍️',
         title: 'Retourner un produit',
-        context: `Vous avez acheté un ordinateur portable en ligne il y a deux semaines. L'écran affiche des lignes horizontales et l'appareil surchauffe. Vous contactez le service client pour un échange ou remboursement.`,
-        objective: `<strong>Votre objectif :</strong> Expliquer le problème et obtenir une solution (échange ou remboursement).`,
+        context: `Vous avez acheté un ordinateur portable en ligne il y a deux semaines. Depuis hier, l'écran affiche des lignes horizontales et l'appareil surchauffe anormalement. Vous contactez le service client pour signaler le problème et demander un échange ou un remboursement.`,
+        objective: `<strong>Votre objectif :</strong> Expliquer clairement le problème et obtenir une solution satisfaisante (échange ou remboursement).`,
+        opening: `TechnoPlus, service client, bonjour. Je suis Marc. Comment puis-je vous aider aujourd'hui ?`,
         rounds: [
             {
-                interviewer: `TechnoPlus, service client, bonjour. Je suis Marc. Comment puis-je vous aider ?`,
                 options: [
                     { text: `Mon ordi marche plus.`, type: 'mauvaise' },
                     { text: `J'ai un problème avec un achat.`, type: 'mauvaise' },
-                    { text: `Bonjour, j'ai acheté un ordinateur et il ne fonctionne plus correctement.`, type: 'acceptable' },
-                    { text: `Bonjour Marc. Je vous contacte au sujet d'un ordinateur acheté il y a deux semaines. L'écran présente des lignes et l'appareil surchauffe. J'aimerais procéder à un échange ou remboursement.`, type: 'ideale' },
+                    { text: `Bonjour, j'ai acheté un ordinateur il y a deux semaines et il ne fonctionne plus correctement.`, type: 'acceptable' },
+                    { text: `Bonjour Marc. Je vous contacte au sujet d'un ordinateur portable commandé il y a deux semaines. Depuis hier, l'écran présente des lignes horizontales et l'appareil surchauffe. J'aimerais procéder à un échange ou un remboursement.`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Euh... c'est quoi comme appareil exactement ?`,
-                    acceptable: `D'accord. C'est un ordinateur portable ? Vous l'avez acheté quand ?`,
-                    ideale: `Je suis désolé pour ce désagrément. Puis-je avoir votre numéro de commande pour accéder à votre dossier ?`
+                    mauvaise: `D'accord... c'est quoi comme appareil exactement ? Vous pouvez me donner plus de détails ?`,
+                    acceptable: `Je vois. Quel type de problème rencontrez-vous exactement ? Et avez-vous votre numéro de commande ?`,
+                    ideale: `Je suis désolé pour ce désagrément. Laissez-moi accéder à votre dossier. Pouvez-vous me décrire plus précisément les symptômes que vous observez ?`
                 },
                 feedback: {
-                    mauvaise: `Trop vague. Précisez le produit et le problème exact.`,
-                    acceptable: `Vous avez mentionné le produit. Ajoutez la date d'achat et le problème précis.`,
+                    mauvaise: `Trop vague. Précisez le produit, le problème et ce que vous souhaitez obtenir.`,
+                    acceptable: `Vous avez identifié le produit et la période. Ajoutez le problème précis et votre demande.`,
                     ideale: `Excellent ! Tous les éléments essentiels sont présents pour un traitement rapide.`
                 }
             },
             {
-                interviewer: `Je vois votre commande. L'ordinateur est sous garantie. Pouvez-vous décrire les problèmes ?`,
                 options: [
-                    { text: `Ben, ça marche pas bien.`, type: 'mauvaise' },
-                    { text: `L'écran a des problèmes.`, type: 'mauvaise' },
-                    { text: `L'écran affiche des lignes horizontales depuis hier et il chauffe beaucoup.`, type: 'acceptable' },
-                    { text: `Des lignes horizontales vertes et roses apparaissent sur l'écran depuis hier. L'appareil chauffe excessivement après dix minutes, le ventilateur tourne à pleine vitesse. Je n'ai installé aucun logiciel inhabituel.`, type: 'ideale' },
+                    { text: `Ben, ça marche pas bien quoi.`, type: 'mauvaise' },
+                    { text: `L'écran a des problèmes et il chauffe.`, type: 'mauvaise' },
+                    { text: `L'écran affiche des lignes horizontales colorées depuis hier, et l'ordinateur devient très chaud rapidement.`, type: 'acceptable' },
+                    { text: `Depuis hier, des lignes horizontales vertes et roses apparaissent sur l'écran, surtout dans la partie inférieure. De plus, l'appareil chauffe excessivement après dix minutes d'utilisation, le ventilateur tourne en permanence. Je n'ai installé aucun nouveau logiciel.`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Des lignes ? Comment ça exactement ?`,
-                    acceptable: `D'accord, ce problème est apparu soudainement ?`,
-                    ideale: `Ces symptômes indiquent un problème matériel. Vu la garantie, nous proposons un échange ou remboursement. Quelle option préférez-vous ?`
+                    mauvaise: `Des problèmes comment ? Il faudrait être plus précis pour que je puisse vous aider.`,
+                    acceptable: `D'accord, ces symptômes semblent indiquer un problème matériel. L'appareil est sous garantie. Que souhaitez-vous faire ?`,
+                    ideale: `Ces symptômes indiquent clairement un défaut matériel, probablement la carte graphique ou le système de refroidissement. Votre appareil est sous garantie. Je peux vous proposer un échange standard ou un remboursement intégral. Quelle option préférez-vous ?`
                 },
                 feedback: {
-                    mauvaise: `« Ça marche pas » est trop vague. Décrivez les symptômes précis.`,
-                    acceptable: `Bonne description. Ajoutez des détails sur les circonstances.`,
-                    ideale: `Parfait ! Description précise et chronologique.`
+                    mauvaise: `« Ça marche pas » est trop vague. Décrivez les symptômes précisément.`,
+                    acceptable: `Bonne description. Ajouter des détails (couleurs, durée, circonstances) aide au diagnostic.`,
+                    ideale: `Parfait ! Description précise et chronologique qui facilite le diagnostic.`
                 }
             },
             {
-                interviewer: `Je vous propose un échange ou un remboursement. Il faudra nous retourner l'appareil.`,
                 options: [
                     { text: `Je sais pas, c'est quoi le mieux ?`, type: 'mauvaise' },
                     { text: `Je veux un échange.`, type: 'mauvaise' },
-                    { text: `Je préférerais un échange. Comment se passe le retour ?`, type: 'acceptable' },
-                    { text: `Je préférerais un échange. Pourriez-vous m'expliquer la procédure ? Combien de temps pour recevoir le nouvel appareil et dois-je renvoyer l'ancien en premier ?`, type: 'ideale' },
+                    { text: `Je préférerais un échange. Comment se passe la procédure de retour ?`, type: 'acceptable' },
+                    { text: `Je préférerais un échange. Pourriez-vous m'expliquer la procédure exacte ? Notamment, combien de temps faudra-t-il pour recevoir le nouvel appareil et dois-je renvoyer l'ancien d'abord ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Qu'est-ce que vous préférez ?`,
-                    acceptable: `Pour l'échange, comptez 3 à 5 jours après réception du retour.`,
-                    ideale: `Nous pouvons envoyer le nouvel appareil sous 48h et vous aurez 14 jours pour retourner l'ancien. Le remboursement prend 5-7 jours après réception.`
+                    mauvaise: `C'est à vous de décider. Échange ou remboursement ?`,
+                    acceptable: `Pour l'échange, nous vous envoyons le nouvel appareil sous 3 à 5 jours après réception du retour. Comment souhaitez-vous renvoyer l'appareil défectueux ?`,
+                    ideale: `Pour l'échange, nous pouvons vous envoyer le nouvel appareil en express sous 48h, et vous aurez 14 jours pour nous retourner l'ancien. Les frais de retour sont à notre charge. Préférez-vous déposer le colis en point relais ou un enlèvement à domicile ?`
                 },
                 feedback: {
-                    mauvaise: `Indiquez clairement votre préférence.`,
-                    acceptable: `Vous avez indiqué votre choix. Demandez les détails de procédure.`,
-                    ideale: `Excellent ! Préférence claire et questions pratiques importantes.`
+                    mauvaise: `Exprimez clairement votre préférence et posez des questions sur la procédure.`,
+                    acceptable: `Bon choix avec question de suivi. Demandez aussi les délais précis.`,
+                    ideale: `Excellent ! Préférence claire et questions pratiques importantes sur les délais.`
                 }
             },
             {
-                interviewer: `Vous pouvez déposer le colis en point relais ou nous organisons un enlèvement à domicile. Frais à notre charge.`,
                 options: [
-                    { text: `C'est où ?`, type: 'mauvaise' },
-                    { text: `Comment je fais ?`, type: 'mauvaise' },
-                    { text: `Pourriez-vous me donner l'adresse du point relais le plus proche ?`, type: 'acceptable' },
-                    { text: `Je préférerais un enlèvement à domicile. Quels créneaux proposez-vous ? Et comment préparer le colis ?`, type: 'ideale' },
+                    { text: `C'est où le point relais ?`, type: 'mauvaise' },
+                    { text: `Comment je fais pour renvoyer ?`, type: 'mauvaise' },
+                    { text: `Un enlèvement à domicile m'arrangerait. Quand serait-ce possible ?`, type: 'acceptable' },
+                    { text: `Je préférerais un enlèvement à domicile. Quels créneaux horaires proposez-vous et dois-je préparer le colis d'une manière particulière ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Où ça un point relais ?`,
-                    acceptable: `Il y a un point relais à moins d'un km. Je peux vous envoyer l'adresse.`,
-                    ideale: `Pour l'enlèvement, je peux programmer demain entre 9h-12h ou 14h-17h. Gardez l'emballage d'origine si possible.`
+                    mauvaise: `Pour le point relais, je peux vous envoyer l'adresse. Ou vous préférez autre chose ?`,
+                    acceptable: `Je peux programmer un enlèvement demain. Le matin ou l'après-midi ?`,
+                    ideale: `Parfait. Je peux programmer l'enlèvement demain entre 9h et 12h ou entre 14h et 17h. Gardez l'emballage d'origine si possible, sinon n'importe quel carton solide convient. Je vous envoie une étiquette de retour par courriel. Voulez-vous une confirmation écrite de tout cela ?`
                 },
                 feedback: {
-                    mauvaise: `Trop vague. Demandez des précisions sur les options.`,
-                    acceptable: `Bonne question. Demandez aussi les horaires ou préparation.`,
-                    ideale: `Parfait ! Questions pratiques précises.`
+                    mauvaise: `Question trop vague. Précisez vos préférences et posez des questions pratiques.`,
+                    acceptable: `Bonne question. Demandez aussi comment préparer le colis.`,
+                    ideale: `Parfait ! Questions pratiques et précises sur la logistique.`
                 }
             },
             {
-                interviewer: `Enlèvement programmé pour demain entre 9h et 12h. Vous recevrez un SMS de confirmation.`,
                 options: [
                     { text: `OK.`, type: 'mauvaise' },
-                    { text: `Je vais recevoir une confirmation ?`, type: 'mauvaise' },
-                    { text: `Pourriez-vous m'envoyer une confirmation par courriel ?`, type: 'acceptable' },
-                    { text: `Parfait. Pourriez-vous m'envoyer un récapitulatif avec le numéro de dossier et les informations de suivi ?`, type: 'ideale' },
+                    { text: `Oui, envoyez-moi un courriel.`, type: 'mauvaise' },
+                    { text: `Oui, une confirmation par courriel serait parfait. Merci.`, type: 'acceptable' },
+                    { text: `Oui, je souhaiterais recevoir un récapitulatif par courriel avec le numéro de dossier, les détails de l'enlèvement et le suivi de l'échange.`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Oui, vous recevrez un SMS.`,
-                    acceptable: `Oui, vous recevrez un courriel avec le numéro de suivi.`,
-                    ideale: `Je vous envoie un courriel avec numéro de dossier, détails d'enlèvement et suivi. Vous pourrez suivre l'avancement sur notre site.`
+                    mauvaise: `D'accord, je vous envoie ça. Autre chose ?`,
+                    acceptable: `Je vous envoie la confirmation tout de suite avec les détails. Avez-vous d'autres questions ?`,
+                    ideale: `Je vous envoie immédiatement un courriel récapitulatif avec votre numéro de dossier, les détails de l'enlèvement programmé demain matin, et un lien pour suivre l'expédition de votre nouvel appareil. Y a-t-il autre chose que je puisse faire pour vous ?`
                 },
                 feedback: {
-                    mauvaise: `Réponse trop basique. Demandez un numéro de suivi.`,
-                    acceptable: `Bonne question. Demandez aussi un numéro de référence.`,
-                    ideale: `Excellent ! Confirmation écrite et numéro de suivi demandés.`
+                    mauvaise: `Trop bref. Précisez ce que vous souhaitez recevoir.`,
+                    acceptable: `Bien. Demander le numéro de dossier et le suivi serait encore mieux.`,
+                    ideale: `Excellent ! Vous vous assurez d'avoir tous les éléments pour suivre votre dossier.`
                 }
             },
             {
-                interviewer: `Tout est enregistré. Vous recevrez la confirmation dans quelques minutes. Autre chose ?`,
                 options: [
-                    { text: `Non. Salut.`, type: 'mauvaise' },
-                    { text: `C'est bon, merci.`, type: 'mauvaise' },
-                    { text: `Non, c'est parfait. Merci beaucoup. Bonne journée.`, type: 'acceptable' },
-                    { text: `Non, tout est clair. Merci pour votre professionnalisme. J'attends l'enlèvement demain et le nouvel appareil sous 48h. Excellente journée !`, type: 'ideale' },
+                    { text: `Non, salut.`, type: 'mauvaise' },
+                    { text: `Non, c'est bon. Merci.`, type: 'mauvaise' },
+                    { text: `Non, je crois que tout est clair. Merci beaucoup pour votre aide. Bonne journée !`, type: 'acceptable' },
+                    { text: `Non, vous avez répondu à toutes mes questions. Je récapitule : enlèvement demain matin, nouvel appareil sous 48h. Je vous remercie pour votre efficacité et votre professionnalisme, Marc. Excellente journée !`, type: 'ideale' },
                 ],
                 responses: {
                     mauvaise: `Au revoir.`,
-                    acceptable: `De rien. Bonne journée, au revoir.`,
-                    ideale: `Merci à vous. Tout sera réglé rapidement. Excellente journée !`
+                    acceptable: `De rien, bonne journée et n'hésitez pas à nous recontacter si besoin.`,
+                    ideale: `Merci à vous pour votre patience ! Tout sera réglé rapidement. N'hésitez pas à nous recontacter via votre numéro de dossier si vous avez la moindre question. Excellente journée !`
                 },
                 feedback: {
-                    mauvaise: `Trop abrupt. Remerciez votre interlocuteur.`,
-                    acceptable: `Bien. Récapituler serait encore mieux.`,
-                    ideale: `Parfait ! Conclusion professionnelle avec récapitulatif.`
+                    mauvaise: `Trop abrupt. Remerciez votre interlocuteur pour son aide.`,
+                    acceptable: `Bonne conclusion. Un récapitulatif montrerait votre professionnalisme.`,
+                    ideale: `Parfait ! Conclusion professionnelle avec récapitulatif et remerciements personnalisés.`
                 }
             }
         ]
     },
+
+    // ========== SCENARIO 3: OFFRE D'EMPLOI ==========
     {
         icon: '💼',
         title: "Se renseigner sur une offre d'emploi",
-        context: `Vous avez vu une offre pour un poste de chargé de communication chez ÉcoTech Solutions. CDI, « salaire selon expérience ». Vous appelez pour en savoir plus.`,
-        objective: `<strong>Votre objectif :</strong> Obtenir des informations sur le poste, les conditions et le processus de recrutement.`,
+        context: `Vous avez vu une offre d'emploi pour un poste de chargé de communication dans une entreprise de technologies environnementales, ÉcoTech Solutions. L'annonce mentionne un CDI et « salaire selon expérience ». Vous appelez pour obtenir plus de renseignements avant d'envoyer votre candidature.`,
+        objective: `<strong>Votre objectif :</strong> Obtenir des informations précises sur le poste, les conditions et le processus de recrutement.`,
+        opening: `ÉcoTech Solutions, bonjour. Ressources humaines, Sophie à l'appareil.`,
         rounds: [
             {
-                interviewer: `ÉcoTech Solutions, bonjour. Ressources humaines, Sophie à l'appareil.`,
                 options: [
                     { text: `C'est pour un emploi.`, type: 'mauvaise' },
-                    { text: `Bonjour, vous avez des postes ?`, type: 'mauvaise' },
-                    { text: `Bonjour, j'appelle pour le poste de chargé de communication. Il est toujours disponible ?`, type: 'acceptable' },
-                    { text: `Bonjour Sophie. Je me permets de vous appeler au sujet de l'offre de chargé de communication. J'aurais quelques questions avant de soumettre ma candidature. Le poste est-il toujours ouvert ?`, type: 'ideale' },
+                    { text: `Bonjour, vous avez encore des postes disponibles ?`, type: 'mauvaise' },
+                    { text: `Bonjour, j'appelle pour le poste de chargé de communication. Il est toujours ouvert ?`, type: 'acceptable' },
+                    { text: `Bonjour Sophie. Je me permets de vous appeler au sujet de l'offre de chargé de communication publiée sur votre site. J'aurais quelques questions avant de soumettre ma candidature. Le poste est-il toujours à pourvoir ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Pour quel poste exactement ?`,
-                    acceptable: `Oui, le poste est encore ouvert. Vous avez des questions ?`,
-                    ideale: `Bonjour ! Oui, le poste est à pourvoir. La date limite est le 15 du mois prochain. Que souhaitez-vous savoir ?`
+                    mauvaise: `Quel poste vous intéresse exactement ? Nous avons plusieurs offres en ce moment.`,
+                    acceptable: `Oui, le poste est encore ouvert. La date limite est dans deux semaines. Que voulez-vous savoir ?`,
+                    ideale: `Bonjour ! Oui, le poste de chargé de communication est toujours à pourvoir. La date limite pour postuler est le 15 du mois prochain. Je vous écoute, quelles sont vos questions ?`
                 },
                 feedback: {
-                    mauvaise: `Trop vague. Identifiez clairement le poste.`,
-                    acceptable: `Poste identifié, mais formulation plus professionnelle possible.`,
-                    ideale: `Excellent ! Demande professionnelle et précise.`
+                    mauvaise: `Trop vague. Identifiez clairement le poste et exprimez votre demande.`,
+                    acceptable: `Poste identifié, mais une formulation plus professionnelle montrerait votre motivation.`,
+                    ideale: `Excellent ! Demande professionnelle et structurée qui montre votre sérieux.`
                 }
             },
             {
-                interviewer: `Le poste est rattaché au marketing. Vous gérerez la communication externe avec une équipe de cinq personnes.`,
                 options: [
                     { text: `Je ferais quoi exactement ?`, type: 'mauvaise' },
-                    { text: `C'est quoi le travail ?`, type: 'mauvaise' },
-                    { text: `Pourriez-vous me détailler les missions principales ?`, type: 'acceptable' },
-                    { text: `Pourriez-vous me présenter les missions principales et les projets concrets ? Y a-t-il des responsabilités particulières ?`, type: 'ideale' },
+                    { text: `C'est quoi les missions ?`, type: 'mauvaise' },
+                    { text: `Pourriez-vous me détailler les missions principales du poste ?`, type: 'acceptable' },
+                    { text: `Pourriez-vous me présenter les missions principales ainsi que les projets concrets sur lesquels je serais amené à travailler ? Y a-t-il des responsabilités particulières liées à ce poste ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Vous faites de la communication externe...`,
-                    acceptable: `Les missions incluent communiqués de presse, réseaux sociaux et événements.`,
-                    ideale: `Vous serez en charge de la stratégie digitale, communiqués de presse, réseaux sociaux et relations médias. Vous organiserez aussi notre salon annuel de l'environnement.`
+                    mauvaise: `C'est un poste de communication, donc vous ferez de la communication externe, des réseaux sociaux...`,
+                    acceptable: `Les missions incluent la rédaction de communiqués de presse, la gestion des réseaux sociaux et l'organisation d'événements. Vous travaillerez avec une équipe de cinq personnes.`,
+                    ideale: `Le poste comprend la stratégie de communication digitale, la rédaction de communiqués, la gestion des réseaux sociaux et les relations presse. Vous organiserez aussi notre salon annuel de l'environnement. L'équipe compte cinq personnes et le poste est rattaché à la direction marketing. Avez-vous des questions sur le profil recherché ?`
                 },
                 feedback: {
                     mauvaise: `Trop informel. Demandez les missions de manière professionnelle.`,
-                    acceptable: `Bonne question. Demandez aussi les responsabilités spécifiques.`,
-                    ideale: `Parfait ! Question complète sur missions et projets.`
+                    acceptable: `Bonne question. Demander aussi les projets spécifiques montrerait votre intérêt.`,
+                    ideale: `Parfait ! Question complète qui couvre missions, projets et responsabilités.`
                 }
             },
             {
-                interviewer: `Nous cherchons trois ans d'expérience minimum, excellente maîtrise du français écrit et capacité à gérer plusieurs projets.`,
                 options: [
-                    { text: `C'est tout ?`, type: 'mauvaise' },
                     { text: `Il faut quoi comme diplôme ?`, type: 'mauvaise' },
-                    { text: `Y a-t-il des compétences techniques requises, comme certains logiciels ?`, type: 'acceptable' },
-                    { text: `En dehors de l'expérience, y a-t-il des compétences techniques attendues ? Outils numériques, compétences rédactionnelles ou langues étrangères ?`, type: 'ideale' },
+                    { text: `C'est quoi le profil recherché ?`, type: 'mauvaise' },
+                    { text: `Quelles sont les compétences techniques attendues pour ce poste ?`, type: 'acceptable' },
+                    { text: `En dehors de l'expérience en communication, y a-t-il des compétences techniques spécifiques attendues ? Je pense notamment aux outils numériques, aux langues étrangères ou à des certifications particulières.`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Pas d'autres compétences particulières...`,
-                    acceptable: `La maîtrise d'Adobe serait un plus. L'anglais aussi.`,
-                    ideale: `Nous apprécions la suite Adobe, le SEO et une sensibilité environnementale. L'anglais professionnel est un atout pour nos partenaires internationaux.`
+                    mauvaise: `On cherche quelqu'un avec de l'expérience en communication. Trois ans minimum.`,
+                    acceptable: `Nous demandons trois ans d'expérience, une excellente maîtrise du français écrit, et la capacité de gérer plusieurs projets. La suite Adobe serait un plus.`,
+                    ideale: `Nous recherchons trois ans d'expérience en communication, une excellente maîtrise du français écrit, et des compétences en gestion de projet. La suite Adobe et les outils SEO sont appréciés. L'anglais professionnel est un atout pour nos partenaires internationaux. Voulez-vous connaître les conditions du poste ?`
                 },
                 feedback: {
-                    mauvaise: `Question mal structurée. Demandez des compétences spécifiques.`,
-                    acceptable: `Bonne question. Approfondissez sur les langues ou certifications.`,
-                    ideale: `Excellent ! Question stratégique pour votre candidature.`
+                    mauvaise: `Question trop basique. Ciblez les compétences techniques ou linguistiques.`,
+                    acceptable: `Bonne question. Mentionner des domaines spécifiques montre votre préparation.`,
+                    ideale: `Excellent ! Question stratégique qui vous permet de mettre en valeur vos compétences.`
                 }
             },
             {
-                interviewer: `Le salaire est entre 45 000 et 55 000 $ selon l'expérience, avec plusieurs avantages sociaux.`,
                 options: [
-                    { text: `C'est tout ?`, type: 'mauvaise' },
-                    { text: `C'est négociable ?`, type: 'mauvaise' },
-                    { text: `Pourriez-vous préciser les avantages sociaux ?`, type: 'acceptable' },
-                    { text: `Merci pour ces précisions. Pourriez-vous détailler les avantages sociaux ? Assurance, retraite, télétravail ?`, type: 'ideale' },
+                    { text: `C'est payé combien ?`, type: 'mauvaise' },
+                    { text: `Et le salaire ?`, type: 'mauvaise' },
+                    { text: `Pourriez-vous me préciser la fourchette salariale et les avantages sociaux ?`, type: 'acceptable' },
+                    { text: `Je vous remercie pour ces informations. Pourriez-vous me détailler les conditions du poste : fourchette salariale, avantages sociaux, et possibilités de télétravail ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Il y a des avantages, oui...`,
-                    acceptable: `Assurance collective, trois semaines de vacances et deux jours de télétravail.`,
-                    ideale: `Assurance complète santé et dentaire, régime de retraite avec contribution employeur, quatre semaines de vacances, télétravail deux jours par semaine, et budget formation annuel.`
+                    mauvaise: `Le salaire dépend de l'expérience. C'est indiqué dans l'annonce.`,
+                    acceptable: `La fourchette est entre 45 000 et 55 000 $ selon l'expérience. Nous offrons une assurance collective et trois semaines de vacances.`,
+                    ideale: `Le salaire est entre 45 000 et 55 000 $ selon l'expérience. Les avantages incluent une assurance complète santé et dentaire, un régime de retraite avec contribution employeur, quatre semaines de vacances, et deux jours de télétravail par semaine. Avez-vous des questions sur le processus de recrutement ?`
                 },
                 feedback: {
-                    mauvaise: `Évitez les jugements. Demandez les détails des avantages.`,
-                    acceptable: `Bonne question. Demandez aussi les conditions de travail.`,
-                    ideale: `Parfait ! Question complète pour évaluer l'offre globale.`
+                    mauvaise: `Trop direct et informel. Demandez les conditions de manière professionnelle.`,
+                    acceptable: `Bonne question. Inclure le télétravail et autres avantages serait plus complet.`,
+                    ideale: `Parfait ! Question complète qui couvre tous les aspects des conditions de travail.`
                 }
             },
             {
-                interviewer: `Le processus comprend sélection sur CV, entretien avec le responsable marketing, puis rencontre avec la DRH.`,
                 options: [
-                    { text: `C'est long ?`, type: 'mauvaise' },
                     { text: `C'est quand les entretiens ?`, type: 'mauvaise' },
-                    { text: `Quel est le calendrier prévu pour le recrutement ?`, type: 'acceptable' },
-                    { text: `Pourriez-vous préciser le calendrier ? Quand les entretiens sont-ils prévus et quelle est la date d'entrée en poste envisagée ?`, type: 'ideale' },
+                    { text: `Comment ça se passe pour postuler ?`, type: 'mauvaise' },
+                    { text: `Quel est le calendrier prévu pour le processus de recrutement ?`, type: 'acceptable' },
+                    { text: `Pourriez-vous me préciser les étapes du processus de recrutement, le calendrier prévu, et la date d'entrée en poste envisagée ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Ça prend quelques semaines...`,
-                    acceptable: `Le processus prend deux à trois semaines. Décision fin janvier.`,
-                    ideale: `Environ trois semaines. Réponse sous huit jours si retenu. Premier entretien en visio, 45 minutes. Second en présentiel avec mise en situation. Début de contrat prévu en février.`
+                    mauvaise: `Envoyez votre CV et on vous recontactera si ça correspond.`,
+                    acceptable: `Le processus comprend une sélection sur CV, puis un entretien avec le responsable marketing et un avec la DRH. Comptez deux à trois semaines.`,
+                    ideale: `Le processus se déroule en trois étapes : sélection sur CV sous huit jours, premier entretien en visioconférence de 45 minutes avec le responsable marketing, puis entretien en présentiel avec mise en situation et rencontre avec la DRH. La prise de poste est prévue en février. Avez-vous d'autres questions ?`
                 },
                 feedback: {
-                    mauvaise: `Trop vague. Demandez les étapes et dates précises.`,
-                    acceptable: `Bonne question. Demandez aussi le format des entretiens.`,
-                    ideale: `Excellent ! Question stratégique pour planifier votre candidature.`
+                    mauvaise: `Trop vague. Demandez les étapes précises et le calendrier.`,
+                    acceptable: `Bonne question sur le calendrier. Demander la date de début enrichirait votre question.`,
+                    ideale: `Excellent ! Question complète qui vous permet de bien planifier votre candidature.`
                 }
             },
             {
-                interviewer: `Envoyez votre CV et lettre à recrutement@ecotech.ca. D'autres questions ?`,
                 options: [
                     { text: `OK, au revoir.`, type: 'mauvaise' },
-                    { text: `D'accord, j'envoie mon CV.`, type: 'mauvaise' },
-                    { text: `Merci beaucoup. Je vous envoie ma candidature prochainement. Bonne journée.`, type: 'acceptable' },
-                    { text: `Merci infiniment pour ces précisions, Sophie. Le poste correspond exactement à mes attentes. J'envoie mon dossier dans les meilleurs délais. Excellente journée !`, type: 'ideale' },
+                    { text: `D'accord, j'envoie mon CV. Merci.`, type: 'mauvaise' },
+                    { text: `Non, merci beaucoup pour ces informations. Je vous envoie ma candidature très prochainement. Bonne journée !`, type: 'acceptable' },
+                    { text: `Non, vous avez répondu à toutes mes questions. Ce poste correspond parfaitement à mon profil et à mes attentes. Je vous envoie mon dossier complet dans les prochains jours à l'adresse indiquée. Je vous remercie pour votre disponibilité, Sophie. Excellente journée !`, type: 'ideale' },
                 ],
                 responses: {
                     mauvaise: `Au revoir.`,
-                    acceptable: `Très bien, nous attendons votre candidature. Bonne journée.`,
-                    ideale: `Merci pour votre intérêt ! Nous attendons votre candidature avec plaisir. Excellente journée !`
+                    acceptable: `Très bien, nous attendons votre candidature. Bonne journée !`,
+                    ideale: `Merci pour votre intérêt ! Nous serons ravis de recevoir votre candidature. L'adresse est recrutement@ecotech.ca. N'hésitez pas à rappeler si vous avez d'autres questions. Excellente journée et à bientôt j'espère !`
                 },
                 feedback: {
-                    mauvaise: `Trop abrupt. Remerciez et confirmez votre intérêt.`,
-                    acceptable: `Bien. Montrez votre enthousiasme pour le poste.`,
-                    ideale: `Parfait ! Conclusion professionnelle et motivée.`
+                    mauvaise: `Trop abrupt. Exprimez votre intérêt et remerciez votre interlocuteur.`,
+                    acceptable: `Bonne conclusion. Montrer votre enthousiasme renforcerait l'impression positive.`,
+                    ideale: `Parfait ! Conclusion professionnelle qui exprime votre motivation et laisse une excellente impression.`
                 }
             }
         ]
     },
+
+    // ========== SCENARIO 4: MODIFIER UNE RÉSERVATION ==========
     {
         icon: '🏨',
         title: 'Modifier une réservation',
-        context: `Vous avez réservé une chambre d'hôtel à Québec du 15 au 17 mars. Suite à un changement d'emploi du temps, vous devez modifier les dates.`,
-        objective: `<strong>Votre objectif :</strong> Modifier vos dates, vérifier les disponibilités et les éventuels frais.`,
+        context: `Vous avez réservé une chambre d'hôtel à Québec pour un voyage d'affaires, du 15 au 17 mars. Suite à un changement dans votre emploi du temps, vous devez modifier les dates de votre séjour. Vous appelez l'hôtel Le Château Frontenac pour modifier votre réservation.`,
+        objective: `<strong>Votre objectif :</strong> Modifier vos dates de réservation, vérifier les disponibilités et vous assurer qu'il n'y a pas de frais supplémentaires.`,
+        opening: `Hôtel Le Château Frontenac, service des réservations. Bonsoir, Philippe à votre service.`,
         rounds: [
             {
-                interviewer: `Hôtel Le Château Frontenac, service réservations. Bonsoir, Philippe à votre service.`,
                 options: [
                     { text: `Je veux changer ma réservation.`, type: 'mauvaise' },
                     { text: `Bonsoir, j'ai réservé une chambre et je dois modifier.`, type: 'mauvaise' },
-                    { text: `Bonsoir, j'ai une réservation pour les 15 et 16 mars. J'aimerais la modifier.`, type: 'acceptable' },
-                    { text: `Bonsoir Philippe. J'ai une réservation au nom de Tremblay pour les nuits du 15 et 16 mars. Suite à un imprévu professionnel, j'aurais besoin de modifier les dates. Est-ce possible ?`, type: 'ideale' },
+                    { text: `Bonsoir, j'ai une réservation pour les 15 et 16 mars et j'aimerais modifier les dates.`, type: 'acceptable' },
+                    { text: `Bonsoir Philippe. J'ai une réservation au nom de Tremblay pour les nuits du 15 et 16 mars. Suite à un imprévu professionnel, j'aurais besoin de décaler les dates de mon séjour. Serait-ce possible ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Vous avez une réservation à quel nom ?`,
-                    acceptable: `D'accord. À quel nom est la réservation ?`,
-                    ideale: `Je vois votre réservation. Chambre Supérieure pour les 15 et 16 mars. Quelles nouvelles dates souhaiteriez-vous ?`
+                    mauvaise: `Bonsoir. À quel nom est la réservation et pour quelles dates ?`,
+                    acceptable: `Bonsoir. Je retrouve votre réservation. C'est bien une chambre Supérieure ? Quelles seraient les nouvelles dates souhaitées ?`,
+                    ideale: `Bonsoir Monsieur Tremblay. Je vois votre réservation : une chambre Supérieure pour les nuits du 15 et 16 mars. Bien sûr, nous pouvons étudier un changement de dates. Quelles seraient vos nouvelles dates ?`
                 },
                 feedback: {
-                    mauvaise: `Trop vague. Donnez votre nom ou numéro de réservation.`,
-                    acceptable: `Demande identifiée. Fournir directement les détails serait plus efficace.`,
-                    ideale: `Excellent ! Tous les éléments pour retrouver la réservation.`
+                    mauvaise: `Trop direct. Donnez votre nom et les détails de la réservation.`,
+                    acceptable: `Dates mentionnées, mais fournir votre nom faciliterait la recherche.`,
+                    ideale: `Excellent ! Tous les éléments nécessaires pour identifier rapidement votre réservation.`
                 }
             },
             {
-                interviewer: `J'ai votre réservation. Chambre Supérieure pour les 15 et 16 mars. Quelles nouvelles dates ?`,
                 options: [
-                    { text: `Plus tard dans le mois ?`, type: 'mauvaise' },
-                    { text: `La semaine d'après ?`, type: 'mauvaise' },
-                    { text: `J'aimerais décaler au 22 et 23 mars. C'est disponible ?`, type: 'acceptable' },
-                    { text: `J'aurais besoin de reporter aux nuits du 22 et 23 mars. Auriez-vous des disponibilités, idéalement pour le même type de chambre ?`, type: 'ideale' },
+                    { text: `Plus tard dans le mois, c'est possible ?`, type: 'mauvaise' },
+                    { text: `La semaine d'après, vous avez de la place ?`, type: 'mauvaise' },
+                    { text: `J'aimerais décaler au 22 et 23 mars. Avez-vous des disponibilités ?`, type: 'acceptable' },
+                    { text: `J'aurais besoin de reporter mon séjour aux nuits du 22 et 23 mars. Auriez-vous des disponibilités pour ces dates, idéalement pour le même type de chambre ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Plus tard quand exactement ?`,
-                    acceptable: `Le 22 et 23, je vérifie... Oui, c'est disponible.`,
-                    ideale: `Je vérifie. Oui, chambre Supérieure disponible pour les 22 et 23 mars. Souhaitez-vous conserver ce type de chambre ?`
+                    mauvaise: `Plus tard quand exactement ? J'ai besoin de dates précises pour vérifier.`,
+                    acceptable: `Laissez-moi vérifier... Oui, nous avons de la disponibilité pour les 22 et 23 mars. Par contre, le tarif est légèrement différent.`,
+                    ideale: `Je vérifie immédiatement... Oui, nous avons une chambre Supérieure disponible pour les nuits du 22 et 23 mars. Je dois vous informer que le tarif est de 285 $ par nuit au lieu de 265 $, car il y a le Festival de musique de Québec ce week-end-là. Cela vous convient-il ?`
                 },
                 feedback: {
                     mauvaise: `« Plus tard » est trop vague. Donnez des dates précises.`,
-                    acceptable: `Dates données. Demandez aussi la disponibilité du même type de chambre.`,
-                    ideale: `Parfait ! Dates précises et question sur les disponibilités.`
+                    acceptable: `Bonne précision des dates. Demander le même type de chambre serait plus complet.`,
+                    ideale: `Parfait ! Dates précises et demande explicite pour le même type de chambre.`
                 }
             },
             {
-                interviewer: `Le tarif pour ces dates est de 285 $ au lieu de 265 $ — il y a un festival en ville ce week-end.`,
                 options: [
-                    { text: `C'est cher !`, type: 'mauvaise' },
-                    { text: `Pourquoi c'est plus cher ?`, type: 'mauvaise' },
-                    { text: `D'accord, je comprends. Ça me convient.`, type: 'acceptable' },
-                    { text: `Je comprends pour la différence. Y aurait-il un geste commercial possible, comme un surclassement ou le petit-déjeuner inclus ?`, type: 'ideale' },
+                    { text: `C'est cher ! Pourquoi ça augmente ?`, type: 'mauvaise' },
+                    { text: `20 $ de plus ? Vous n'avez pas mieux ?`, type: 'mauvaise' },
+                    { text: `Je comprends pour la différence de tarif. C'est d'accord pour moi.`, type: 'acceptable' },
+                    { text: `Je comprends pour le festival. Y aurait-il un geste commercial possible pour compenser cette différence, comme le petit-déjeuner inclus ou un surclassement ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `C'est le tarif standard pour cette période...`,
-                    acceptable: `Très bien. Je modifie la réservation.`,
-                    ideale: `Je peux vous offrir le petit-déjeuner continental pour les deux matins, soit 80 $ de valeur. Cela vous conviendrait ?`
+                    mauvaise: `C'est le tarif en période de festival. C'est la même chose partout en ville.`,
+                    acceptable: `Très bien. Je modifie donc votre réservation. Concernant le paiement, souhaitez-vous régler maintenant ou à l'arrivée ?`,
+                    ideale: `Je peux tout à fait vous offrir le petit-déjeuner continental pour les deux matins, ce qui représente une valeur de 80 $. Cela compenserait largement la différence de tarif. Est-ce que cela vous conviendrait ?`
                 },
                 feedback: {
-                    mauvaise: `Évitez les commentaires négatifs. Demandez des alternatives.`,
-                    acceptable: `Acceptation correcte. Négocier un avantage serait plus stratégique.`,
-                    ideale: `Excellent ! Négociation professionnelle et courtoise.`
+                    mauvaise: `Évitez les commentaires négatifs. Demandez plutôt des alternatives ou avantages.`,
+                    acceptable: `Acceptation correcte, mais négocier un avantage serait plus stratégique.`,
+                    ideale: `Excellent ! Négociation professionnelle et courtoise pour obtenir une compensation.`
                 }
             },
             {
-                interviewer: `Je peux vous offrir le petit-déjeuner continental pour les deux matins. Ça vous convient ?`,
                 options: [
-                    { text: `OK.`, type: 'mauvaise' },
-                    { text: `D'accord pour le petit-déjeuner.`, type: 'mauvaise' },
-                    { text: `Oui, c'est très bien. Le petit-déjeuner est servi à quelle heure ?`, type: 'acceptable' },
-                    { text: `Parfait, j'accepte avec plaisir. Pourriez-vous me préciser les horaires du petit-déjeuner et s'il est possible d'avoir une chambre avec vue ?`, type: 'ideale' },
+                    { text: `OK, ça va.`, type: 'mauvaise' },
+                    { text: `Oui, d'accord pour le petit-déjeuner.`, type: 'mauvaise' },
+                    { text: `Oui, c'est parfait. Merci beaucoup. Le petit-déjeuner est servi à quelle heure ?`, type: 'acceptable' },
+                    { text: `C'est une excellente proposition, j'accepte avec plaisir. Pourriez-vous me préciser les horaires du petit-déjeuner et serait-il possible de demander une chambre en étage élevé avec vue ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Très bien.`,
-                    acceptable: `Le petit-déjeuner est servi de 7h à 10h au restaurant Le Champlain.`,
-                    ideale: `Petit-déjeuner de 6h30 à 10h30 au Champlain. Je note votre préférence pour une chambre avec vue ou en étage élevé. Autre chose ?`
+                    mauvaise: `Très bien. Autre chose ?`,
+                    acceptable: `Le petit-déjeuner est servi de 7h à 10h au restaurant Le Champlain. Avez-vous d'autres demandes ?`,
+                    ideale: `Parfait ! Je note votre préférence pour un étage élevé avec vue. Le petit-déjeuner est servi de 6h30 à 10h30 au restaurant Le Champlain. Pour le paiement, préférez-vous régler maintenant ou à votre arrivée ?`
                 },
                 feedback: {
-                    mauvaise: `Trop bref. Demandez des détails pratiques.`,
-                    acceptable: `Bonne question. Ajoutez une préférence sur la chambre.`,
-                    ideale: `Parfait ! Confirmation et question pratique pertinente.`
+                    mauvaise: `Trop bref. Posez des questions pratiques sur le service offert.`,
+                    acceptable: `Bonne question sur les horaires. Ajouter une préférence de chambre serait judicieux.`,
+                    ideale: `Parfait ! Vous profitez de l'occasion pour demander des détails et exprimer vos préférences.`
                 }
             },
             {
-                interviewer: `Je note votre préférence. La modification n'entraîne pas de frais. Paiement à l'arrivée ou maintenant ?`,
                 options: [
                     { text: `À l'arrivée.`, type: 'mauvaise' },
                     { text: `Je paye comment ?`, type: 'mauvaise' },
-                    { text: `Je préférerais régler à l'arrivée. C'est possible ?`, type: 'acceptable' },
-                    { text: `Je souhaiterais régler à l'arrivée. Une empreinte de carte est-elle nécessaire ? Et quels modes de paiement acceptez-vous ?`, type: 'ideale' },
+                    { text: `Je préférerais régler à l'arrivée. Une garantie par carte est-elle nécessaire ?`, type: 'acceptable' },
+                    { text: `Je souhaiterais régler à l'arrivée si possible. Une empreinte de carte bancaire est-elle requise pour garantir la réservation ? Et quels modes de paiement acceptez-vous ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `D'accord, à l'arrivée.`,
-                    acceptable: `Oui, paiement à l'arrivée possible. Une empreinte de carte garantira la réservation.`,
-                    ideale: `Paiement à l'arrivée, aucun problème. Empreinte de carte pour garantie, prélèvement au départ. Nous acceptons toutes les cartes. D'autres questions ?`
+                    mauvaise: `D'accord. Je note paiement à l'arrivée. C'est tout ?`,
+                    acceptable: `Oui, une empreinte de carte sera prise pour garantir la réservation. Le paiement se fera au départ. Autre chose ?`,
+                    ideale: `Bien sûr. Une empreinte de carte sera prise pour garantir la réservation, mais le prélèvement ne sera effectué qu'à votre départ. Nous acceptons toutes les cartes bancaires et les paiements par débit. Votre réservation est maintenant modifiée. Puis-je faire autre chose pour vous ?`
                 },
                 feedback: {
-                    mauvaise: `Réponse trop directe. Demandez les modalités.`,
-                    acceptable: `Bon choix. Demandez si une garantie est requise.`,
-                    ideale: `Excellent ! Modalités de paiement clarifiées.`
+                    mauvaise: `Réponse trop directe. Demandez les modalités de paiement et de garantie.`,
+                    acceptable: `Bonne question sur la garantie. Demander les modes de paiement serait plus complet.`,
+                    ideale: `Excellent ! Vous clarifiez toutes les modalités financières.`
                 }
             },
             {
-                interviewer: `Votre réservation est modifiée pour les 22 et 23 mars avec petit-déjeuner. Autre chose ?`,
                 options: [
                     { text: `Non merci, au revoir.`, type: 'mauvaise' },
-                    { text: `C'est tout, merci.`, type: 'mauvaise' },
-                    { text: `Non, tout est en ordre. Merci beaucoup. Bonne soirée.`, type: 'acceptable' },
-                    { text: `Non, tout est parfait. Je récapitule : chambre Supérieure les 22 et 23 mars, petit-déjeuner inclus. Merci pour votre professionnalisme, Philippe. Bonne soirée !`, type: 'ideale' },
+                    { text: `Non, c'est tout. Merci.`, type: 'mauvaise' },
+                    { text: `Non, tout est parfait. Merci beaucoup pour votre aide. Bonne soirée !`, type: 'acceptable' },
+                    { text: `Non, je crois que tout est en ordre. Je récapitule : chambre Supérieure les 22 et 23 mars, petit-déjeuner inclus, préférence pour un étage élevé avec vue, paiement à l'arrivée. Je vous remercie pour votre flexibilité et votre professionnalisme, Philippe. Excellente soirée !`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Au revoir.`,
-                    acceptable: `De rien. Bonne soirée et à bientôt.`,
-                    ideale: `Merci à vous ! Chambre avec vue notée. Au plaisir de vous accueillir. Excellente soirée !`
+                    mauvaise: `Au revoir, bonne soirée.`,
+                    acceptable: `De rien. Nous avons hâte de vous accueillir. Bonne soirée !`,
+                    ideale: `C'est exactement cela ! Tout est bien noté. Nous avons hâte de vous accueillir au Château Frontenac. Merci de votre confiance et excellente soirée, Monsieur Tremblay !`
                 },
                 feedback: {
-                    mauvaise: `Trop bref. Récapitulez et remerciez.`,
-                    acceptable: `Bien. Un récapitulatif serait idéal.`,
-                    ideale: `Parfait ! Récapitulatif professionnel et courtois.`
+                    mauvaise: `Trop bref. Récapitulez les modifications et remerciez.`,
+                    acceptable: `Bonne conclusion. Un récapitulatif montrerait votre attention aux détails.`,
+                    ideale: `Parfait ! Récapitulatif complet et remerciements personnalisés. Très professionnel.`
                 }
             }
         ]
     },
+
+    // ========== SCENARIO 5: S'INSCRIRE À UN COURS ==========
     {
         icon: '🎾',
         title: "S'inscrire à un cours",
-        context: `Vous voulez reprendre le sport et avez entendu parler des cours de tennis au Centre sportif du Parc. Vous téléphonez pour vous renseigner sur les cours adultes débutants.`,
-        objective: `<strong>Votre objectif :</strong> Obtenir des informations sur les cours (horaires, tarifs, inscription).`,
+        context: `Vous souhaitez reprendre une activité sportive et vous avez entendu parler des cours de tennis proposés par le Centre sportif du Parc. Vous téléphonez pour obtenir des informations sur les cours pour adultes débutants et les modalités d'inscription.`,
+        objective: `<strong>Votre objectif :</strong> Obtenir des informations sur les cours disponibles (horaires, tarifs, niveaux) et comprendre la procédure d'inscription.`,
+        opening: `Centre sportif du Parc, bonjour. Émilie à l'accueil, comment puis-je vous aider ?`,
         rounds: [
             {
-                interviewer: `Centre sportif du Parc, bonjour. Émilie à l'accueil, comment puis-je vous aider ?`,
                 options: [
                     { text: `Vous avez des cours de sport ?`, type: 'mauvaise' },
                     { text: `C'est pour des cours de tennis.`, type: 'mauvaise' },
                     { text: `Bonjour, j'aimerais me renseigner sur vos cours de tennis pour adultes.`, type: 'acceptable' },
-                    { text: `Bonjour Émilie. Je souhaiterais me renseigner sur vos cours de tennis pour adultes débutants. Pourriez-vous me présenter les formules proposées ?`, type: 'ideale' },
+                    { text: `Bonjour Émilie. Je souhaiterais me renseigner sur vos cours de tennis pour adultes débutants. Pourriez-vous me présenter les différentes formules que vous proposez ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Des cours de quoi exactement ?`,
-                    acceptable: `Oui, nous avons des cours pour tous les niveaux. Vous êtes débutant ?`,
-                    ideale: `Bonjour ! Nous avons plusieurs formules pour débutants : cours collectifs et leçons particulières. Qu'est-ce qui vous intéresserait ?`
+                    mauvaise: `Oui, nous avons beaucoup de cours. Qu'est-ce qui vous intéresse exactement ?`,
+                    acceptable: `Oui, nous avons des cours pour tous les niveaux. Vous êtes plutôt débutant, intermédiaire ou avancé ?`,
+                    ideale: `Bonjour ! Nous avons plusieurs formules pour les adultes débutants : des cours collectifs en petits groupes et des leçons particulières. Les cours collectifs sont limités à six personnes pour un bon suivi. Souhaitez-vous connaître les horaires disponibles ?`
                 },
                 feedback: {
-                    mauvaise: `Trop vague. Précisez l'activité et votre niveau.`,
-                    acceptable: `Bonne introduction. Précisez votre niveau et le type de cours souhaité.`,
-                    ideale: `Excellent ! Demande claire et précise.`
+                    mauvaise: `Trop vague. Précisez l'activité et votre niveau pour obtenir des informations pertinentes.`,
+                    acceptable: `Bonne introduction. Préciser votre niveau et demander les formules serait plus efficace.`,
+                    ideale: `Excellent ! Demande claire avec niveau et demande de présentation des options.`
                 }
             },
             {
-                interviewer: `Pour les cours collectifs débutants : mardi soir 19h-20h30 et samedi matin 10h-11h30. Groupes de six personnes maximum.`,
                 options: [
-                    { text: `Ça dure combien de temps ?`, type: 'mauvaise' },
-                    { text: `Les cours, c'est comment ?`, type: 'mauvaise' },
-                    { text: `Combien de cours dans une session et quand commence la prochaine ?`, type: 'acceptable' },
-                    { text: `Pourriez-vous préciser le nombre de cours par session, les dates de début et fin, et les places disponibles ?`, type: 'ideale' },
+                    { text: `C'est quand les cours ?`, type: 'mauvaise' },
+                    { text: `Quels sont les horaires ?`, type: 'mauvaise' },
+                    { text: `Quels créneaux proposez-vous pour les cours collectifs débutants ?`, type: 'acceptable' },
+                    { text: `Oui, j'aimerais connaître les créneaux disponibles pour les cours collectifs. Combien de séances comprend une session et quand commence la prochaine ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Ça dure une heure et demie...`,
-                    acceptable: `Une session comprend dix cours. La prochaine commence début janvier.`,
-                    ideale: `Sessions de dix semaines. Prochaine session du 8 janvier au 15 mars. Il reste des places sur les deux créneaux.`
+                    mauvaise: `On a des cours le soir et le week-end. Ça dépend du niveau.`,
+                    acceptable: `Pour les débutants, nous avons le mardi soir de 19h à 20h30 et le samedi matin de 10h à 11h30. Chaque session comprend dix cours.`,
+                    ideale: `Pour les cours collectifs débutants, nous proposons le mardi soir de 19h à 20h30 ou le samedi matin de 10h à 11h30. Les sessions comprennent dix cours et la prochaine débute le 8 janvier pour se terminer le 15 mars. Il reste des places sur les deux créneaux. Voulez-vous connaître les tarifs ?`
                 },
                 feedback: {
-                    mauvaise: `Ambiguë — chaque cours ou la session ? Soyez précis.`,
-                    acceptable: `Bonne question. Demandez aussi les dates exactes et places disponibles.`,
-                    ideale: `Parfait ! Question complète sur le format et l'organisation.`
+                    mauvaise: `Question trop vague. Précisez le type de cours et demandez la structure des sessions.`,
+                    acceptable: `Bonne question sur les horaires. Demander aussi la durée des sessions serait plus complet.`,
+                    ideale: `Parfait ! Question complète couvrant horaires, durée et dates de session.`
                 }
             },
             {
-                interviewer: `La session de dix cours est à 180 $. Accès aux courts et prêt de raquettes inclus. Cours particuliers à 45 $ la séance.`,
                 options: [
-                    { text: `C'est trop cher.`, type: 'mauvaise' },
-                    { text: `Combien ça coûte ?`, type: 'mauvaise' },
-                    { text: `Y a-t-il des tarifs réduits ou un paiement en plusieurs fois ?`, type: 'acceptable' },
-                    { text: `Proposez-vous des tarifs réduits pour étudiants ou familles ? Et peut-on échelonner le paiement ?`, type: 'ideale' },
+                    { text: `C'est combien ?`, type: 'mauvaise' },
+                    { text: `Et le prix ?`, type: 'mauvaise' },
+                    { text: `Quel est le tarif pour une session de dix cours ?`, type: 'acceptable' },
+                    { text: `Oui, pourriez-vous me préciser le tarif de la session ? Y a-t-il des réductions possibles ou des facilités de paiement ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `C'est le tarif standard...`,
-                    acceptable: `Tarif réduit de 150 $ pour étudiants et aînés. Paiement en trois fois possible.`,
-                    ideale: `150 $ pour étudiants et aînés, tarif famille 320 $ pour deux personnes. Paiement en trois fois sans frais. Premier cours offert pour essayer !`
+                    mauvaise: `La session coûte 180 $. C'est le tarif standard.`,
+                    acceptable: `La session de dix cours collectifs est à 180 $. Cela inclut l'accès aux courts et le prêt de raquettes pour les débutants.`,
+                    ideale: `La session de dix cours est à 180 $, incluant l'accès aux courts et le prêt de raquettes. Nous proposons un tarif réduit de 150 $ pour les étudiants et les aînés, ainsi qu'un tarif famille de 320 $ pour deux personnes. Le paiement peut être échelonné en trois fois sans frais. Avez-vous des questions sur l'équipement nécessaire ?`
                 },
                 feedback: {
-                    mauvaise: `Évitez les commentaires négatifs. Demandez les réductions.`,
-                    acceptable: `Bonne question. Demandez aussi les facilités de paiement.`,
-                    ideale: `Excellent ! Réductions et facilités demandées professionnellement.`
+                    mauvaise: `Question trop directe. Demandez aussi ce qui est inclus et les réductions possibles.`,
+                    acceptable: `Bonne question. Demander les réductions ou facilités de paiement serait stratégique.`,
+                    ideale: `Excellent ! Vous demandez le tarif et anticipez les options de réduction.`
                 }
             },
             {
-                interviewer: `Nous fournissons les balles et prêtons une raquette pour les débutants. Apportez des chaussures de sport propres.`,
                 options: [
-                    { text: `Je mets quoi comme habits ?`, type: 'mauvaise' },
                     { text: `Il faut acheter une raquette ?`, type: 'mauvaise' },
-                    { text: `Quelle tenue recommandez-vous ?`, type: 'acceptable' },
-                    { text: `Pourriez-vous préciser les exigences vestimentaires, notamment pour les chaussures ? Des recommandations pour le choix d'une raquette ?`, type: 'ideale' },
+                    { text: `Je mets quoi comme vêtements ?`, type: 'mauvaise' },
+                    { text: `Quelle tenue recommandez-vous pour les cours ?`, type: 'acceptable' },
+                    { text: `Pourriez-vous me préciser les exigences vestimentaires, notamment pour les chaussures ? Et avez-vous des recommandations pour le choix d'une raquette pour débutant ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Des vêtements de sport...`,
-                    acceptable: `Tenue de sport confortable. Pour les chaussures, évitez les semelles noires.`,
-                    ideale: `Tenue confortable. Chaussures de tennis à semelles claires obligatoires sur nos courts. Notre boutique a des modèles à partir de 60 $. Votre prof vous conseillera pour la raquette après quelques cours.`
+                    mauvaise: `Des vêtements de sport normaux. Et des chaussures propres pour les courts.`,
+                    acceptable: `Une tenue de sport confortable suffit. Pour les chaussures, nous demandons des semelles non marquantes. Nous prêtons les raquettes au début.`,
+                    ideale: `Portez une tenue de sport confortable. Pour les chaussures, les semelles claires sont obligatoires sur nos courts intérieurs — notre boutique propose des modèles à partir de 60 $ si nécessaire. Nous prêtons les raquettes pendant les premiers cours, et votre professeur pourra ensuite vous conseiller sur l'achat d'une raquette adaptée à votre style. Souhaitez-vous connaître la procédure d'inscription ?`
                 },
                 feedback: {
-                    mauvaise: `Question trop basique. Demandez des détails sur les exigences.`,
-                    acceptable: `Bonne question. Demandez des recommandations précises.`,
-                    ideale: `Parfait ! Question pratique montrant votre préparation.`
+                    mauvaise: `Questions trop basiques séparées. Combinez vos demandes de façon structurée.`,
+                    acceptable: `Bonne question. Demander aussi des conseils pour l'équipement serait utile.`,
+                    ideale: `Parfait ! Question complète couvrant tenue, chaussures et équipement.`
                 }
             },
             {
-                interviewer: `Inscription sur notre site internet ou à l'accueil. Pièce d'identité et paiement nécessaires.`,
                 options: [
-                    { text: `OK, je regarde.`, type: 'mauvaise' },
-                    { text: `C'est quoi le site ?`, type: 'mauvaise' },
-                    { text: `L'inscription en ligne est-elle rapide ? Quels documents ?`, type: 'acceptable' },
-                    { text: `Je préférerais m'inscrire en ligne. Pourriez-vous confirmer l'adresse du site et les informations nécessaires ? Y a-t-il une confirmation par courriel ?`, type: 'ideale' },
+                    { text: `Comment on s'inscrit ?`, type: 'mauvaise' },
+                    { text: `Je fais quoi pour m'inscrire ?`, type: 'mauvaise' },
+                    { text: `Quelle est la procédure d'inscription ?`, type: 'acceptable' },
+                    { text: `Oui, pourriez-vous m'expliquer la procédure d'inscription ? Est-il possible de s'inscrire en ligne et quels documents ou informations sont nécessaires ?`, type: 'ideale' },
                 ],
                 responses: {
-                    mauvaise: `Le site c'est centresportifduparc.ca.`,
-                    acceptable: `L'inscription prend cinq minutes. Confirmation par courriel avec tous les détails.`,
-                    ideale: `Créez un compte sur centresportifduparc.ca, choisissez le créneau et payez. Confirmation immédiate avec lieu, prof et matériel recommandé. Accueil ouvert lundi-samedi 9h-20h.`
+                    mauvaise: `Vous pouvez vous inscrire sur notre site ou passer à l'accueil.`,
+                    acceptable: `L'inscription se fait en ligne sur notre site ou directement à l'accueil. Nous avons besoin d'une pièce d'identité et du paiement.`,
+                    ideale: `L'inscription est simple : créez un compte sur centresportifduparc.ca, sélectionnez le créneau souhaité et procédez au paiement. Vous recevrez immédiatement une confirmation par courriel avec le lieu exact, le nom de votre professeur et la liste du matériel recommandé. Si vous préférez vous inscrire sur place, nous sommes ouverts du lundi au samedi de 9h à 20h. Avez-vous d'autres questions ?`
                 },
                 feedback: {
-                    mauvaise: `Réponse vague. Demandez les détails de l'inscription.`,
-                    acceptable: `Bonne question. Demandez aussi les horaires d'accueil.`,
-                    ideale: `Excellent ! Détails pratiques pour faciliter l'inscription.`
+                    mauvaise: `Question trop informelle. Demandez les détails de la procédure et les documents requis.`,
+                    acceptable: `Bonne question. Demander les modalités en ligne et les documents serait plus complet.`,
+                    ideale: `Excellent ! Question complète sur la procédure et les documents nécessaires.`
                 }
             },
             {
-                interviewer: `Notre site est centresportifduparc.ca. D'autres questions ?`,
                 options: [
-                    { text: `Non, merci. Salut.`, type: 'mauvaise' },
-                    { text: `Non, ça va.`, type: 'mauvaise' },
-                    { text: `Non, c'est parfait. Merci, je vais m'inscrire. Bonne journée !`, type: 'acceptable' },
-                    { text: `Non, tout est clair. Session de dix cours le samedi à partir du 8 janvier pour 180 $. Je m'inscris sur centresportifduparc.ca. Merci beaucoup Émilie ! J'ai hâte de commencer !`, type: 'ideale' },
+                    { text: `Non, ça va. Merci, salut.`, type: 'mauvaise' },
+                    { text: `Non, c'est bon. Au revoir.`, type: 'mauvaise' },
+                    { text: `Non, c'est parfait. Merci pour ces informations, je vais m'inscrire. Bonne journée !`, type: 'acceptable' },
+                    { text: `Non, je crois avoir toutes les informations. Je récapitule : session de dix cours le samedi matin à partir du 8 janvier, pour 180 $. Je m'inscris dès aujourd'hui sur centresportifduparc.ca. Merci beaucoup pour ces explications détaillées, Émilie. J'ai hâte de commencer !`, type: 'ideale' },
                 ],
                 responses: {
                     mauvaise: `Au revoir.`,
-                    acceptable: `Très bien, bonne inscription ! À bientôt.`,
-                    ideale: `Parfait ! Nous avons hâte de vous accueillir. Excellente journée et à bientôt sur les courts !`
+                    acceptable: `Très bien, bonne inscription ! À bientôt au centre.`,
+                    ideale: `Parfait, c'est exactement ça ! Nous sommes ravis de vous accueillir bientôt sur les courts. N'hésitez pas à rappeler si vous avez la moindre question. Excellente journée et à très bientôt !`
                 },
                 feedback: {
-                    mauvaise: `Trop bref. Récapitulez et remerciez.`,
-                    acceptable: `Bien. Un récapitulatif montrerait votre attention.`,
-                    ideale: `Parfait ! Récapitulatif complet et enthousiasme approprié.`
+                    mauvaise: `Trop bref et impoli. Récapitulez et remerciez votre interlocuteur.`,
+                    acceptable: `Bonne conclusion. Un récapitulatif montrerait votre sérieux.`,
+                    ideale: `Parfait ! Récapitulatif complet, remerciements personnalisés et enthousiasme approprié.`
                 }
             }
         ]
@@ -1068,21 +1027,18 @@ const SCENARIOS = [
 ];
 
 // ============================================================
-// APPLICATION STATE
+// APPLICATION
 // ============================================================
 const App = {
-    // State
     voiceEnabled: false,
     apiKey: null,
     scenario: null,
     round: 0,
     selected: null,
     lastType: null,
+    lastResponse: null,
     scores: { ideale: 0, acceptable: 0, mauvaise: 0 },
 
-    // --------------------------------------------------------
-    // INITIALIZATION
-    // --------------------------------------------------------
     init() {
         this.renderScenarioList();
         const savedKey = sessionStorage.getItem('xi_key');
@@ -1108,17 +1064,12 @@ const App = {
         `).join('');
     },
 
-    // --------------------------------------------------------
-    // VOICE
-    // --------------------------------------------------------
+    // Voice
     async activateVoice() {
         const key = document.getElementById('apiKey').value.trim();
         if (!key) return alert('Entrez une clé API.');
-
         try {
-            const res = await fetch('https://api.elevenlabs.io/v1/user', {
-                headers: { 'xi-api-key': key }
-            });
+            const res = await fetch('https://api.elevenlabs.io/v1/user', { headers: { 'xi-api-key': key } });
             if (res.ok) {
                 this.apiKey = key;
                 this.voiceEnabled = true;
@@ -1126,17 +1077,9 @@ const App = {
                 document.getElementById('apiStatus').textContent = '🔊 Voix activée';
                 document.getElementById('apiStatus').classList.add('active');
             } else {
-                alert('Clé invalide. Vérifiez et réessayez.');
+                alert('Clé invalide.');
             }
-        } catch (e) {
-            alert('Erreur de connexion.');
-        }
-    },
-
-    async playAudio() {
-        if (!this.voiceEnabled || !this.apiKey) return;
-        const text = this.scenario.rounds[this.round].interviewer;
-        this.speak(text);
+        } catch (e) { alert('Erreur de connexion.'); }
     },
 
     async speak(text) {
@@ -1145,25 +1088,21 @@ const App = {
             const res = await fetch('https://api.elevenlabs.io/v1/text-to-speech/XTyroWkQl32ZSd3rRVZ1', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'xi-api-key': this.apiKey },
-                body: JSON.stringify({
-                    text,
-                    model_id: 'eleven_multilingual_v2',
-                    voice_settings: { stability: 0.5, similarity_boost: 0.75 }
-                })
+                body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
             });
             if (res.ok) {
                 const blob = await res.blob();
-                const audio = new Audio(URL.createObjectURL(blob));
-                audio.play();
+                new Audio(URL.createObjectURL(blob)).play();
             }
-        } catch (e) {
-            console.log('Audio error:', e);
-        }
+        } catch (e) { console.log('Audio error:', e); }
     },
 
-    // --------------------------------------------------------
-    // NAVIGATION
-    // --------------------------------------------------------
+    playCurrentAudio() {
+        const text = this.round === 0 ? this.scenario.opening : this.lastResponse;
+        if (text) this.speak(text);
+    },
+
+    // Navigation
     showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
@@ -1175,11 +1114,11 @@ const App = {
         this.scores = { ideale: 0, acceptable: 0, mauvaise: 0 };
         this.selected = null;
         this.lastType = null;
+        this.lastResponse = null;
 
         document.getElementById('ctxTitle').innerHTML = `${this.scenario.icon} ${this.scenario.title}`;
         document.getElementById('ctxText').textContent = this.scenario.context;
         document.getElementById('ctxObjective').innerHTML = this.scenario.objective;
-
         this.showScreen('screenContext');
     },
 
@@ -1188,57 +1127,49 @@ const App = {
         this.renderRound();
     },
 
-    backToMenu() {
-        this.showScreen('screenSelect');
-    },
+    backToMenu() { this.showScreen('screenSelect'); },
 
     restart() {
         this.round = 0;
         this.scores = { ideale: 0, acceptable: 0, mauvaise: 0 };
         this.selected = null;
         this.lastType = null;
+        this.lastResponse = null;
         this.showScreen('screenDialogue');
         this.renderRound();
     },
 
-    // --------------------------------------------------------
-    // DIALOGUE LOGIC
-    // --------------------------------------------------------
+    // Dialogue
     renderRound() {
-        const r = this.scenario.rounds[this.round];
         this.selected = null;
         this.lastType = null;
 
-        // Progress bar
         const total = this.scenario.rounds.length;
-        document.getElementById('progressBar').innerHTML = 
-            this.scenario.rounds.map((_, i) => 
+        document.getElementById('progressBar').innerHTML =
+            this.scenario.rounds.map((_, i) =>
                 `<div class="progress-step ${i < this.round ? 'done' : ''} ${i === this.round ? 'current' : ''}"></div>`
             ).join('') + `<span class="progress-text">${this.round + 1}/${total}</span>`;
 
-        // Interviewer
-        document.getElementById('interviewerText').textContent = `« ${r.interviewer} »`;
+        // Show either opening (round 0) or last response (rounds 1+)
+        const displayText = this.round === 0 ? this.scenario.opening : this.lastResponse;
+        document.getElementById('interviewerText').textContent = `« ${displayText} »`;
 
-        // Questions (shuffled)
+        // Shuffle options
+        const r = this.scenario.rounds[this.round];
         const shuffled = [...r.options].sort(() => Math.random() - 0.5);
         document.getElementById('questionList').innerHTML = shuffled.map((opt, i) => `
-            <div class="question-item" data-type="${opt.type}" data-index="${i}" onclick="App.selectOption(this)">
+            <div class="question-item" data-type="${opt.type}" onclick="App.selectOption(this)">
                 <div class="question-radio"></div>
                 <div class="question-content">« ${opt.text} »</div>
             </div>
         `).join('');
 
-        // Reset UI
         document.getElementById('btnValidate').disabled = true;
         document.getElementById('feedbackBox').classList.remove('visible', 'mauvaise', 'acceptable', 'ideale');
         document.getElementById('questionsSection').style.display = 'block';
         document.getElementById('validateRow').style.display = 'flex';
 
-        // Auto-play
-        if (this.voiceEnabled) {
-            setTimeout(() => this.playAudio(), 400);
-        }
-
+        if (this.voiceEnabled) setTimeout(() => this.playCurrentAudio(), 400);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     },
 
@@ -1260,19 +1191,14 @@ const App = {
         const response = r.responses[type];
         const feedback = r.feedback[type];
 
-        // Header
+        // Store response for next round
+        this.lastResponse = response;
+
         const icons = { mauvaise: '❌', acceptable: '⚠️', ideale: '✅' };
         const titles = { mauvaise: 'Question inappropriée', acceptable: 'Correct, mais basique', ideale: 'Excellent !' };
         document.getElementById('feedbackHeader').innerHTML = `${icons[type]} ${titles[type]}`;
+        document.getElementById('feedbackContent').innerHTML = `<p>${feedback}</p>`;
 
-        // Content
-        document.getElementById('feedbackContent').innerHTML = `
-            <p><strong>L'interlocuteur répond :</strong></p>
-            <p style="font-style:italic; margin: 0.5rem 0;">« ${response} »</p>
-            <p>${feedback}</p>
-        `;
-
-        // Button text
         const btn = document.getElementById('btnContinue');
         if (type === 'mauvaise') {
             btn.textContent = 'Essayer encore →';
@@ -1282,43 +1208,30 @@ const App = {
             btn.textContent = 'Voir les résultats →';
         }
 
-        // Show feedback
         document.getElementById('feedbackBox').className = `feedback-box visible ${type}`;
-
-        // Hide questions
         document.getElementById('questionsSection').style.display = 'none';
         document.getElementById('validateRow').style.display = 'none';
 
-        // Play response audio
-        if (this.voiceEnabled) {
-            setTimeout(() => this.speak(response), 300);
-        }
+        if (this.voiceEnabled) setTimeout(() => this.speak(response), 300);
     },
 
     continue() {
         if (this.lastType === 'mauvaise') {
-            // Retry same round
-            this.renderRound();
+            this.renderRound(); // Retry same round, keep lastResponse from before
         } else if (this.round < this.scenario.rounds.length - 1) {
-            // Next round
             this.round++;
-            this.renderRound();
+            this.renderRound(); // lastResponse is already set to the interviewer's response
         } else {
-            // Show results
             this.showResults();
         }
     },
 
-    // --------------------------------------------------------
-    // RESULTS
-    // --------------------------------------------------------
     showResults() {
         document.getElementById('resultsTitle').textContent = this.scenario.title;
         document.getElementById('scoreIdeale').textContent = this.scores.ideale;
         document.getElementById('scoreAcceptable').textContent = this.scores.acceptable;
         document.getElementById('scoreMauvaise').textContent = this.scores.mauvaise;
 
-        // NCLC estimate
         const total = this.scores.ideale + this.scores.acceptable;
         const ratio = total > 0 ? this.scores.ideale / total : 0;
         let level = '5-6';
@@ -1327,7 +1240,6 @@ const App = {
         else if (ratio >= 0.4) level = '6-7';
         document.getElementById('nclcLevel').textContent = level;
 
-        // Tips
         const tips = [];
         if (this.scores.mauvaise > 0) tips.push('Évitez les formulations vagues ou trop informelles.');
         if (this.scores.acceptable > this.scores.ideale) tips.push('Anticipez les détails importants dans vos questions.');
@@ -1339,7 +1251,6 @@ const App = {
     }
 };
 
-// Initialize on load
 document.addEventListener('DOMContentLoaded', () => App.init());
 </script>
 </body>
