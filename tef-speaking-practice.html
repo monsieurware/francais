@@ -244,6 +244,28 @@
 
         .audio-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
 
+        .audio-controls { display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
+
+        .interviewer-text.hidden {
+            background: var(--bg-tertiary);
+            color: transparent;
+            user-select: none;
+            position: relative;
+        }
+
+        .interviewer-text.hidden::after {
+            content: '👁️ Cliquez sur "Afficher le texte" pour voir la transcription';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-style: normal;
+            white-space: nowrap;
+        }
+
         /* Questions */
         .questions-section { margin-bottom: 1.5rem; }
         .questions-section h3 { font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem; font-weight: 500; }
@@ -378,7 +400,10 @@
             <div class="interviewer-box">
                 <div class="interviewer-label">🎧 L'interlocuteur :</div>
                 <div class="interviewer-text" id="interviewerText"></div>
-                <button class="audio-btn" onclick="App.playCurrentAudio()">🔊 Écouter</button>
+                <div class="audio-controls">
+                    <button class="audio-btn" onclick="App.playCurrentAudio()">🔊 Écouter</button>
+                    <button class="audio-btn" id="toggleTextBtn" onclick="App.toggleText()">👁️ Masquer le texte</button>
+                </div>
             </div>
 
             <div class="questions-section" id="questionsSection">
@@ -1038,6 +1063,7 @@ const App = {
     lastType: null,
     lastResponse: null,
     scores: { ideale: 0, acceptable: 0, mauvaise: 0 },
+    textHidden: false,
 
     init() {
         this.renderScenarioList();
@@ -1102,6 +1128,20 @@ const App = {
         if (text) this.speak(text);
     },
 
+    toggleText() {
+        this.textHidden = !this.textHidden;
+        const textEl = document.getElementById('interviewerText');
+        const btn = document.getElementById('toggleTextBtn');
+        
+        if (this.textHidden) {
+            textEl.classList.add('hidden');
+            btn.textContent = '👁️ Afficher le texte';
+        } else {
+            textEl.classList.remove('hidden');
+            btn.textContent = '👁️ Masquer le texte';
+        }
+    },
+
     // Navigation
     showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1152,7 +1192,18 @@ const App = {
 
         // Show either opening (round 0) or last response (rounds 1+)
         const displayText = this.round === 0 ? this.scenario.opening : this.lastResponse;
-        document.getElementById('interviewerText').textContent = `« ${displayText} »`;
+        const textEl = document.getElementById('interviewerText');
+        textEl.textContent = `« ${displayText} »`;
+        
+        // Apply text visibility state
+        const toggleBtn = document.getElementById('toggleTextBtn');
+        if (this.textHidden) {
+            textEl.classList.add('hidden');
+            toggleBtn.textContent = '👁️ Afficher le texte';
+        } else {
+            textEl.classList.remove('hidden');
+            toggleBtn.textContent = '👁️ Masquer le texte';
+        }
 
         // Shuffle options
         const r = this.scenario.rounds[this.round];
@@ -1211,8 +1262,6 @@ const App = {
         document.getElementById('feedbackBox').className = `feedback-box visible ${type}`;
         document.getElementById('questionsSection').style.display = 'none';
         document.getElementById('validateRow').style.display = 'none';
-
-        if (this.voiceEnabled) setTimeout(() => this.speak(response), 300);
     },
 
     continue() {
