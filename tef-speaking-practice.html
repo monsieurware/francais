@@ -1498,6 +1498,7 @@
         let selectedOption = null;
         let scores = { ideale: 0, acceptable: 0, mauvaise: 0 };
         let hasPlayedAudio = false;
+        let isTransitioning = false;
 
         // =====================================================
         // TEACHER PANEL
@@ -1568,6 +1569,7 @@
             currentRound = 0;
             selectedOption = null;
             scores = { ideale: 0, acceptable: 0, mauvaise: 0 };
+            isTransitioning = false; // Reset transition lock
 
             // Populate context screen
             document.getElementById('contextIcon').textContent = currentScenario.icon;
@@ -1591,6 +1593,7 @@
             currentRound = 0;
             selectedOption = null;
             scores = { ideale: 0, acceptable: 0, mauvaise: 0 };
+            isTransitioning = false; // Reset transition lock
             showScreen('dialogueScreen');
             loadRound();
         }
@@ -1601,7 +1604,22 @@
         function loadRound() {
             try {
                 console.log('loadRound started for round:', currentRound);
+                
+                // Bounds check
+                if (currentRound >= currentScenario.rounds.length) {
+                    console.log('Round out of bounds, showing results instead');
+                    showResults();
+                    return;
+                }
+                
                 const round = currentScenario.rounds[currentRound];
+                
+                if (!round) {
+                    console.error('Round is undefined for index:', currentRound);
+                    showResults();
+                    return;
+                }
+                
                 hasPlayedAudio = false;
 
                 // Update progress bar
@@ -1765,6 +1783,8 @@
                 actionBtn.textContent = 'Essayer encore →';
                 actionBtn.addEventListener('click', function(e) {
                     e.preventDefault();
+                    if (this.disabled) return;
+                    this.disabled = true;
                     console.log('Essayer encore clicked');
                     retryRound();
                 });
@@ -1773,6 +1793,8 @@
                     actionBtn.textContent = 'Continuer →';
                     actionBtn.addEventListener('click', function(e) {
                         e.preventDefault();
+                        if (this.disabled) return;
+                        this.disabled = true;
                         console.log('Continuer clicked');
                         nextRound();
                     });
@@ -1780,6 +1802,8 @@
                     actionBtn.textContent = 'Voir les résultats →';
                     actionBtn.addEventListener('click', function(e) {
                         e.preventDefault();
+                        if (this.disabled) return;
+                        this.disabled = true;
                         console.log('Voir résultats clicked');
                         showResults();
                     });
@@ -1816,10 +1840,31 @@
         }
 
         function nextRound() {
+            // Prevent double-clicks
+            if (isTransitioning) {
+                console.log('Already transitioning, ignoring click');
+                return;
+            }
+            
             console.log('nextRound called, current round:', currentRound);
+            
+            // Bounds check
+            if (currentRound >= currentScenario.rounds.length - 1) {
+                console.log('Already at last round, showing results');
+                showResults();
+                return;
+            }
+            
+            isTransitioning = true;
             currentRound++;
             console.log('Moving to round:', currentRound);
             loadRound();
+            
+            // Allow clicks again after a short delay
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 500);
+            
             console.log('loadRound completed');
         }
 
