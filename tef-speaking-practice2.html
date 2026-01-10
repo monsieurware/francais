@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEF Canada — Expression orale NCLC 8 (Module 2)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a2332;
+            --bg-tertiary: #243044;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-red: #ef4444;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #334155;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header h1 {
+            font-family: 'Source Serif 4', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .subtitle { color: var(--text-secondary); font-size: 1.1rem; }
+
+        .level-badge {
+            display: inline-block;
+            background: var(--accent-blue);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+        }
+
+        .module-badge {
+            display: inline-block;
+            background: var(--accent-green);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            margin-left: 0.5rem;
+        }
+
+        .api-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .api-panel input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.6rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: monospace;
+        }
+
+        .api-panel input:focus { outline: none; border-color: var(--accent-blue); }
+
+        .api-status {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            background: var(--bg-tertiary);
+        }
+
+        .api-status.active { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: var(--accent-blue); color: white; }
+        .btn-primary:hover:not(:disabled) { background: #2563eb; }
+        .btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-small { padding: 0.5rem 1rem; font-size: 0.85rem; }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        .scenario-grid { display: grid; gap: 1rem; }
+
+        .scenario-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .scenario-card:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
+
+        .scenario-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+        }
+
+        .scenario-info h3 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+        .scenario-info p { font-size: 0.9rem; color: var(--text-secondary); }
+
+        .context-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .context-title { font-family: 'Source Serif 4', serif; font-size: 1.5rem; margin-bottom: 1.5rem; }
+
+        .context-text {
+            text-align: left;
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .context-objective {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid var(--accent-blue);
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+        }
+
+        .progress-step { flex: 1; height: 6px; background: var(--bg-tertiary); border-radius: 3px; }
+        .progress-step.done { background: var(--accent-green); }
+        .progress-step.current { background: var(--accent-blue); }
+        .progress-text { font-size: 0.85rem; color: var(--text-secondary); white-space: nowrap; margin-left: 0.5rem; }
+
+        .user-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .user-text {
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            padding: 1.25rem;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-green);
+            color: var(--text-secondary);
+        }
+
+        .interviewer-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .interviewer-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .interviewer-text {
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.2rem;
+            line-height: 1.7;
+            padding: 1.25rem;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .audio-btn {
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .audio-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+        .audio-controls { display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
+
+        .interviewer-text.hidden {
+            background: var(--bg-tertiary);
+            color: transparent;
+            user-select: none;
+            position: relative;
+        }
+
+        .interviewer-text.hidden::after {
+            content: '👁️ Cliquez sur "Afficher le texte" pour voir la transcription';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-style: normal;
+            white-space: nowrap;
+        }
+
+        .questions-section { margin-bottom: 1.5rem; }
+        .questions-section h3 { font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem; font-weight: 500; }
+
+        .question-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+        .question-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .question-item:hover { border-color: var(--accent-blue); background: var(--bg-tertiary); }
+        .question-item.selected { border-color: var(--accent-blue); background: rgba(59, 130, 246, 0.1); }
+
+        .question-radio {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .question-item.selected .question-radio { border-color: var(--accent-blue); background: var(--accent-blue); }
+        .question-item.selected .question-radio::after { content: ''; width: 8px; height: 8px; background: white; border-radius: 50%; }
+
+        .question-content { font-size: 1rem; line-height: 1.6; }
+
+        .validate-row { display: flex; justify-content: flex-end; margin-bottom: 1.5rem; }
+
+        .feedback-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .feedback-box.visible { display: block; }
+
+        .feedback-box.mauvaise { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--accent-red); }
+        .feedback-box.acceptable { background: rgba(245, 158, 11, 0.1); border: 1px solid var(--accent-yellow); }
+        .feedback-box.ideale { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-green); }
+
+        .feedback-header { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; margin-bottom: 0.75rem; }
+        .feedback-box.mauvaise .feedback-header { color: var(--accent-red); }
+        .feedback-box.acceptable .feedback-header { color: var(--accent-yellow); }
+        .feedback-box.ideale .feedback-header { color: var(--accent-green); }
+
+        .feedback-content { color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem; }
+        .feedback-actions { display: flex; gap: 0.75rem; }
+
+        .results-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .results-box h2 { font-family: 'Source Serif 4', serif; font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .results-subtitle { color: var(--text-secondary); margin-bottom: 1.5rem; }
+
+        .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+
+        .score-card { padding: 1.25rem; background: var(--bg-tertiary); border-radius: 12px; }
+        .score-card .num { font-size: 2rem; font-weight: 700; }
+        .score-card .label { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem; }
+        .score-card.green .num { color: var(--accent-green); }
+        .score-card.yellow .num { color: var(--accent-yellow); }
+        .score-card.red .num { color: var(--accent-red); }
+
+        .nclc-box { background: var(--bg-tertiary); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; }
+        .nclc-box .level { font-size: 2.5rem; font-weight: 700; color: var(--accent-blue); }
+        .nclc-box .label { color: var(--text-secondary); font-size: 0.9rem; }
+
+        .tips-box { text-align: left; background: var(--bg-tertiary); padding: 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; }
+        .tips-box h4 { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .tips-box ul { list-style: none; }
+        .tips-box li { padding: 0.5rem 0; padding-left: 1.5rem; position: relative; color: var(--text-secondary); }
+        .tips-box li::before { content: '→'; position: absolute; left: 0; color: var(--accent-blue); }
+
+        .results-actions { display: flex; gap: 1rem; justify-content: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>TEF Canada — Expression orale</h1>
+            <p class="subtitle">Section A : Obtenir des renseignements</p>
+            <span class="level-badge">Niveau cible : NCLC 8</span>
+            <span class="module-badge">Module 2</span>
+        </header>
+
+        <div class="api-panel">
+            <span>🔑</span>
+            <input type="password" id="apiKey" placeholder="Clé API ElevenLabs">
+            <button class="btn btn-primary btn-small" onclick="App.activateVoice()">Activer</button>
+            <div class="api-status" id="apiStatus">🔇 Voix désactivée</div>
+        </div>
+
+        <div class="screen active" id="screenSelect">
+            <h2 style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1rem;">Choisissez un scénario :</h2>
+            <div class="scenario-grid" id="scenarioList"></div>
+        </div>
+
+        <div class="screen" id="screenContext">
+            <div class="context-box">
+                <div class="context-title" id="ctxTitle"></div>
+                <div class="context-text" id="ctxText"></div>
+                <div class="context-objective" id="ctxObjective"></div>
+                <button class="btn btn-primary" onclick="App.startDialogue()">Commencer l'appel ▶</button>
+            </div>
+        </div>
+
+        <div class="screen" id="screenDialogue">
+            <div class="progress-bar" id="progressBar"></div>
+
+            <div class="user-box" id="userBox" style="display: none;">
+                <div class="user-label">🗣️ Vous :</div>
+                <div class="user-text" id="userText"></div>
+            </div>
+
+            <div class="interviewer-box">
+                <div class="interviewer-label">🎧 L'interlocuteur :</div>
+                <div class="interviewer-text" id="interviewerText"></div>
+                <div class="audio-controls">
+                    <button class="audio-btn" onclick="App.playCurrentAudio()">🔊 Écouter</button>
+                    <button class="audio-btn" id="toggleTextBtn" onclick="App.toggleText()">👁️ Masquer le texte</button>
+                </div>
+            </div>
+
+            <div class="questions-section" id="questionsSection">
+                <h3>Choisissez votre question :</h3>
+                <div class="question-list" id="questionList"></div>
+            </div>
+
+            <div class="validate-row" id="validateRow">
+                <button class="btn btn-primary" id="btnValidate" onclick="App.validate()" disabled>Valider ▶</button>
+            </div>
+
+            <div class="feedback-box" id="feedbackBox">
+                <div class="feedback-header" id="feedbackHeader"></div>
+                <div class="feedback-content" id="feedbackContent"></div>
+                <div class="feedback-actions">
+                    <button class="btn btn-primary" id="btnContinue" onclick="App.continue()">Continuer →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenResults">
+            <div class="results-box">
+                <h2>📊 Résultats</h2>
+                <p class="results-subtitle" id="resultsTitle"></p>
+                <div class="score-grid">
+                    <div class="score-card green"><div class="num" id="scoreIdeale">0</div><div class="label">✅ Idéales</div></div>
+                    <div class="score-card yellow"><div class="num" id="scoreAcceptable">0</div><div class="label">⚠️ Acceptables</div></div>
+                    <div class="score-card red"><div class="num" id="scoreMauvaise">0</div><div class="label">❌ Reprises</div></div>
+                </div>
+                <div class="nclc-box"><div class="label">Estimation NCLC</div><div class="level" id="nclcLevel">7-8</div></div>
+                <div class="tips-box"><h4>💡 Conseils</h4><ul id="tipsList"></ul></div>
+                <div class="results-actions">
+                    <button class="btn btn-secondary" onclick="App.restart()">Recommencer</button>
+                    <button class="btn btn-primary" onclick="App.backToMenu()">Autre scénario</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// ============================================================
+// MODULE 2 SCENARIOS - New voice ID: UJCi4DDncuo0VJDSIegj
+// ============================================================
+const VOICE_ID = 'UJCi4DDncuo0VJDSIegj';
+
+const SCENARIOS = [
+    // ========== SCENARIO 1: OUVRIR UN COMPTE BANCAIRE ==========
+    {
+        icon: '🏦',
+        title: 'Ouvrir un compte bancaire',
+        context: `Vous venez d'arriver au Canada et vous devez ouvrir un compte bancaire pour recevoir votre salaire. Vous appelez la Banque Nationale pour vous renseigner sur les types de comptes disponibles et les documents nécessaires pour l'ouverture.`,
+        objective: `<strong>Votre objectif :</strong> Obtenir des informations sur les comptes bancaires, les frais, et la procédure d'ouverture de compte.`,
+        opening: `Banque Nationale, service aux particuliers. Bonjour, ici Véronique. Comment puis-je vous aider ?`,
+        rounds: [
+            {
+                options: [
+                    { text: `Je veux ouvrir un compte.`, type: 'mauvaise' },
+                    { text: `Bonjour, c'est pour un compte bancaire.`, type: 'mauvaise' },
+                    { text: `Bonjour, je viens d'arriver au Canada et j'aimerais ouvrir un compte bancaire.`, type: 'acceptable' },
+                    { text: `Bonjour Véronique. Je suis nouvellement arrivé au Canada et je souhaiterais ouvrir un compte bancaire pour recevoir mon salaire. Pourriez-vous me présenter les différentes options disponibles ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord... c'est pour quel type de compte exactement ? Vous avez une idée de ce que vous cherchez ?`,
+                    acceptable: `Bienvenue au Canada ! Nous avons plusieurs types de comptes. Vous cherchez un compte pour un usage quotidien ou plutôt pour épargner ?`,
+                    ideale: `Bienvenue au Canada ! Nous avons plusieurs forfaits adaptés aux nouveaux arrivants. Notre compte « Nouveau départ » offre deux ans sans frais mensuels, des virements internationaux gratuits, et une carte de crédit avec garantie. Souhaitez-vous connaître les détails de cette offre ?`
+                },
+                feedback: {
+                    mauvaise: `Trop direct et sans contexte. Expliquez votre situation et ce dont vous avez besoin.`,
+                    acceptable: `Bon début avec le contexte. Préciser vos besoins (salaire, type de compte) serait plus efficace.`,
+                    ideale: `Excellent ! Vous avez expliqué votre situation et vos besoins de façon claire et professionnelle.`
+                }
+            },
+            {
+                options: [
+                    { text: `C'est combien par mois ?`, type: 'mauvaise' },
+                    { text: `Quels sont les frais ?`, type: 'mauvaise' },
+                    { text: `Pourriez-vous me détailler les frais mensuels et ce qui est inclus ?`, type: 'acceptable' },
+                    { text: `Oui, j'aimerais connaître les détails. Quels sont les frais après la période promotionnelle, et qu'est-ce qui est inclus dans le forfait : nombre de transactions, virements, accès aux guichets ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Les frais dépendent du forfait que vous choisissez. Le forfait de base est à 4,95 $ par mois.`,
+                    acceptable: `Après deux ans, le forfait est à 16,95 $ par mois. Cela inclut des transactions illimitées et une carte de débit. Avez-vous des questions sur les documents requis ?`,
+                    ideale: `Après les deux ans promotionnels, le forfait passe à 16,95 $ par mois. Cela comprend des transactions illimitées par débit et en ligne, deux virements internationaux gratuits par mois, l'accès à tous nos guichets sans frais, et une protection contre les découverts. Voulez-vous savoir quels documents sont nécessaires pour l'ouverture ?`
+                },
+                feedback: {
+                    mauvaise: `Question trop vague. Demandez ce qui est inclus, pas seulement le prix.`,
+                    acceptable: `Bonne question sur les frais. Demander les détails du forfait montrerait plus de prévoyance.`,
+                    ideale: `Parfait ! Vous anticipez tous les aspects importants du forfait.`
+                }
+            },
+            {
+                options: [
+                    { text: `Il faut quoi comme papiers ?`, type: 'mauvaise' },
+                    { text: `Quels documents vous demandez ?`, type: 'mauvaise' },
+                    { text: `Quels documents dois-je fournir pour ouvrir le compte ?`, type: 'acceptable' },
+                    { text: `Oui, pourriez-vous me préciser les documents requis ? En tant que nouvel arrivant, j'ai mon passeport, ma confirmation de résidence permanente et une preuve d'adresse. Est-ce suffisant ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Il nous faut une pièce d'identité et une preuve d'adresse. Vous avez ça ?`,
+                    acceptable: `Nous demandons deux pièces d'identité et une preuve d'adresse. Votre passeport et votre carte de résident permanent suffisent. Souhaitez-vous prendre rendez-vous ?`,
+                    ideale: `C'est parfait ! Avec votre passeport, votre confirmation de résidence permanente et une preuve d'adresse, vous avez tout ce qu'il faut. Je peux aussi accepter une lettre d'emploi si vous en avez une, pour faciliter l'obtention de la carte de crédit. Voulez-vous prendre rendez-vous en succursale ?`
+                },
+                feedback: {
+                    mauvaise: `Trop informel. Formulez votre question de manière plus professionnelle.`,
+                    acceptable: `Bonne question. Mentionner les documents que vous avez déjà accélérerait le processus.`,
+                    ideale: `Excellent ! Vous montrez que vous êtes préparé et facilitez le travail du conseiller.`
+                }
+            },
+            {
+                options: [
+                    { text: `Je peux venir quand ?`, type: 'mauvaise' },
+                    { text: `Vous avez des disponibilités quand ?`, type: 'mauvaise' },
+                    { text: `Quelles sont vos disponibilités pour un rendez-vous cette semaine ?`, type: 'acceptable' },
+                    { text: `Oui, j'aimerais prendre rendez-vous. Je suis disponible en fin d'après-midi cette semaine. Quelle succursale me recommanderiez-vous et combien de temps dure le rendez-vous ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `On a des places cette semaine. Vous préférez quel jour ?`,
+                    acceptable: `J'ai des disponibilités jeudi et vendredi après-midi. Le rendez-vous dure environ 45 minutes. Quelle journée vous convient ?`,
+                    ideale: `Je vous propose jeudi à 16h ou vendredi à 15h30 à notre succursale du centre-ville, au 500 rue Sainte-Catherine. Le rendez-vous dure environ 45 minutes. Vous repartirez avec votre carte de débit et vos accès en ligne. Quel créneau préférez-vous ?`
+                },
+                feedback: {
+                    mauvaise: `Trop vague. Proposez vos disponibilités et demandez des précisions.`,
+                    acceptable: `Bonne question sur les disponibilités. Demander la durée et le lieu serait plus complet.`,
+                    ideale: `Parfait ! Question complète qui couvre horaires, lieu et durée.`
+                }
+            },
+            {
+                options: [
+                    { text: `Et pour la carte de crédit ?`, type: 'mauvaise' },
+                    { text: `Je peux avoir une carte de crédit aussi ?`, type: 'mauvaise' },
+                    { text: `Concernant la carte de crédit mentionnée, quelles sont les conditions d'obtention ?`, type: 'acceptable' },
+                    { text: `Avant de confirmer, pourriez-vous m'expliquer les conditions pour la carte de crédit avec garantie ? Quel est le montant de la garantie requis et comment fonctionne le processus pour obtenir une carte sans garantie par la suite ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `La carte de crédit, c'est avec une garantie au début. On en parlera au rendez-vous.`,
+                    acceptable: `Pour la carte de crédit, vous déposez une garantie de 500 $ minimum, qui devient votre limite. Après un an de bon historique, vous pouvez demander une carte régulière.`,
+                    ideale: `La carte avec garantie fonctionne ainsi : vous déposez entre 500 $ et 5 000 $, ce qui devient votre limite de crédit. Après 12 mois de paiements réguliers, nous évaluons votre dossier pour une carte sans garantie et vous récupérez votre dépôt. Cela vous permet de bâtir votre historique de crédit au Canada. Êtes-vous prêt à confirmer le rendez-vous ?`
+                },
+                feedback: {
+                    mauvaise: `Question incomplète. Demandez les conditions spécifiques et le processus.`,
+                    acceptable: `Bonne question. Demander le processus d'évolution vers une carte régulière serait stratégique.`,
+                    ideale: `Excellent ! Vous comprenez l'importance de l'historique de crédit et posez les bonnes questions.`
+                }
+            },
+            {
+                options: [
+                    { text: `OK, jeudi alors.`, type: 'mauvaise' },
+                    { text: `D'accord, je prends jeudi. Merci.`, type: 'mauvaise' },
+                    { text: `Parfait, je confirme pour jeudi à 16h. Merci beaucoup pour ces informations.`, type: 'acceptable' },
+                    { text: `Excellent, je confirme le rendez-vous pour jeudi à 16h à la succursale du 500 rue Sainte-Catherine. J'apporterai mon passeport, ma confirmation de résidence permanente, ma preuve d'adresse et ma lettre d'emploi. Je vous remercie pour toutes ces explications, Véronique. À jeudi !`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord, c'est noté. À jeudi.`,
+                    acceptable: `Parfait, je vous inscris. N'oubliez pas vos documents. À jeudi et bonne journée !`,
+                    ideale: `C'est parfait, tout est noté ! Je vous envoie une confirmation par courriel avec l'adresse et la liste des documents. Bienvenue encore au Canada et à jeudi, ce sera un plaisir de finaliser l'ouverture de votre compte !`
+                },
+                feedback: {
+                    mauvaise: `Trop bref. Confirmez les détails et remerciez votre interlocuteur.`,
+                    acceptable: `Bonne confirmation. Récapituler les documents à apporter montrerait votre préparation.`,
+                    ideale: `Parfait ! Récapitulatif complet avec tous les détails importants.`
+                }
+            }
+        ]
+    },
+
+    // ========== SCENARIO 2: PRENDRE RENDEZ-VOUS CHEZ LE MÉDECIN ==========
+    {
+        icon: '🏥',
+        title: 'Prendre rendez-vous chez le médecin',
+        context: `Vous avez besoin de consulter un médecin de famille pour un examen de routine et renouveler vos ordonnances. Vous appelez la Clinique médicale Saint-Laurent pour prendre rendez-vous et vous renseigner sur les services offerts.`,
+        objective: `<strong>Votre objectif :</strong> Obtenir un rendez-vous avec un médecin et comprendre les modalités de consultation.`,
+        opening: `Clinique médicale Saint-Laurent, bonjour. Ici Nadia à la réception. Comment puis-je vous aider ?`,
+        rounds: [
+            {
+                options: [
+                    { text: `Je veux voir un médecin.`, type: 'mauvaise' },
+                    { text: `Bonjour, c'est pour un rendez-vous.`, type: 'mauvaise' },
+                    { text: `Bonjour, j'aimerais prendre rendez-vous avec un médecin pour un examen de routine.`, type: 'acceptable' },
+                    { text: `Bonjour Nadia. Je souhaiterais prendre rendez-vous avec un médecin de famille pour un examen général et le renouvellement de mes ordonnances. Avez-vous des disponibilités prochainement ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `C'est pour quel motif exactement ? Un problème urgent ou un suivi ?`,
+                    acceptable: `D'accord. Êtes-vous déjà patient de la clinique ou c'est une première visite ?`,
+                    ideale: `Très bien. Êtes-vous déjà inscrit à notre clinique ? Si oui, avez-vous un médecin attitré ? Pour un examen général avec renouvellement d'ordonnances, il nous faut un rendez-vous d'environ 30 minutes.`
+                },
+                feedback: {
+                    mauvaise: `Trop vague. Précisez le motif de votre consultation.`,
+                    acceptable: `Bon début. Mentionner tous vos besoins (examen + ordonnances) serait plus efficace.`,
+                    ideale: `Excellent ! Vous avez clairement expliqué vos besoins pour faciliter la prise de rendez-vous.`
+                }
+            },
+            {
+                options: [
+                    { text: `Oui, je suis déjà patient.`, type: 'mauvaise' },
+                    { text: `Oui, je viens à la clinique depuis deux ans.`, type: 'mauvaise' },
+                    { text: `Oui, je suis patient depuis deux ans. Mon médecin est le Dr Tremblay.`, type: 'acceptable' },
+                    { text: `Oui, je suis suivi par le Dr Tremblay depuis deux ans. Mon numéro de dossier est le 45892. J'ai vu le docteur pour la dernière fois il y a environ six mois.`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord. C'est quoi votre nom de famille ? Je vais chercher votre dossier.`,
+                    acceptable: `Très bien. Le Dr Tremblay a des disponibilités la semaine prochaine. Préférez-vous le matin ou l'après-midi ?`,
+                    ideale: `Parfait, je vois votre dossier. Le Dr Tremblay peut vous recevoir mercredi prochain à 10h ou jeudi à 14h30. Le rendez-vous de 30 minutes vous permettra de faire l'examen et de discuter de vos ordonnances. Quel créneau vous convient ?`
+                },
+                feedback: {
+                    mauvaise: `Réponse incomplète. Donnez le nom de votre médecin pour accélérer la recherche.`,
+                    acceptable: `Bonne réponse. Fournir votre numéro de dossier accélérerait le processus.`,
+                    ideale: `Parfait ! Toutes les informations nécessaires sont fournies pour un traitement rapide.`
+                }
+            },
+            {
+                options: [
+                    { text: `Mercredi, ça va.`, type: 'mauvaise' },
+                    { text: `Je préfère jeudi après-midi.`, type: 'mauvaise' },
+                    { text: `Jeudi à 14h30 me conviendrait mieux. Pouvez-vous confirmer ?`, type: 'acceptable' },
+                    { text: `Je préférerais jeudi à 14h30, s'il vous plaît. Pourriez-vous me rappeler ce que je dois apporter pour le rendez-vous ? J'ai quelques résultats d'analyses récentes que j'aimerais montrer au médecin.`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord, je vous mets jeudi. Autre chose ?`,
+                    acceptable: `C'est noté pour jeudi 14h30. N'oubliez pas votre carte d'assurance maladie. Avez-vous des questions ?`,
+                    ideale: `Parfait pour jeudi 14h30. Apportez votre carte d'assurance maladie, vos ordonnances actuelles et vos résultats d'analyses, le Dr Tremblay sera ravi de les consulter. Arrivez 10 minutes à l'avance pour la mise à jour de votre dossier. Avez-vous besoin d'autres informations ?`
+                },
+                feedback: {
+                    mauvaise: `Réponse trop brève. Confirmez et posez des questions pratiques.`,
+                    acceptable: `Bon choix. Demander ce qu'il faut apporter serait prévoyant.`,
+                    ideale: `Excellent ! Vous confirmez et anticipez les documents à apporter.`
+                }
+            },
+            {
+                options: [
+                    { text: `C'est gratuit avec l'assurance ?`, type: 'mauvaise' },
+                    { text: `Ça coûte combien la visite ?`, type: 'mauvaise' },
+                    { text: `La consultation est-elle couverte par la RAMQ ?`, type: 'acceptable' },
+                    { text: `Pourriez-vous me confirmer que la consultation est couverte par la RAMQ ? Et si le médecin prescrit des analyses supplémentaires, où puis-je les faire effectuer ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Oui, c'est couvert par la RAMQ si vous avez votre carte valide.`,
+                    acceptable: `Oui, avec votre carte d'assurance maladie valide, la consultation est entièrement couverte. Les analyses se font au laboratoire du deuxième étage.`,
+                    ideale: `Oui, la consultation est entièrement couverte par la RAMQ. Si le Dr Tremblay prescrit des analyses, vous pouvez les faire directement au laboratoire du deuxième étage, ouvert de 7h à 15h sans rendez-vous. Les résultats seront envoyés automatiquement au médecin sous 48 heures. Autre chose que je puisse faire pour vous ?`
+                },
+                feedback: {
+                    mauvaise: `Formulation trop familière. Utilisez les termes appropriés (RAMQ).`,
+                    acceptable: `Bonne question. Anticiper les analyses montre votre prévoyance.`,
+                    ideale: `Parfait ! Vous anticipez les étapes suivantes de votre parcours de soins.`
+                }
+            },
+            {
+                options: [
+                    { text: `Et si je dois annuler ?`, type: 'mauvaise' },
+                    { text: `Je fais comment pour annuler ?`, type: 'mauvaise' },
+                    { text: `Quelle est votre politique d'annulation si j'ai un empêchement ?`, type: 'acceptable' },
+                    { text: `Une dernière question : quelle est votre politique d'annulation ? Et en cas d'urgence avant le rendez-vous, est-il possible de consulter sans rendez-vous ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Il faut annuler 24 heures à l'avance, sinon il y a des frais.`,
+                    acceptable: `Nous demandons une annulation 24 heures à l'avance par téléphone ou en ligne via le portail patient. Sinon, des frais de 50 $ s'appliquent.`,
+                    ideale: `Nous demandons une annulation au moins 24 heures à l'avance, par téléphone ou via notre portail patient en ligne. En cas d'urgence médicale, notre clinique sans rendez-vous est ouverte tous les jours de 8h à 20h. Vous pouvez aussi appeler Info-Santé au 811 pour être orienté. Cela répond-il à vos questions ?`
+                },
+                feedback: {
+                    mauvaise: `Formulation trop directe. Demandez la politique de façon professionnelle.`,
+                    acceptable: `Bonne question. Demander aussi les options en cas d'urgence serait complet.`,
+                    ideale: `Excellent ! Vous couvrez tous les scénarios possibles.`
+                }
+            },
+            {
+                options: [
+                    { text: `OK, merci. Au revoir.`, type: 'mauvaise' },
+                    { text: `C'est parfait, merci beaucoup.`, type: 'mauvaise' },
+                    { text: `Oui, tout est clair. Merci beaucoup pour ces informations, Nadia. À jeudi !`, type: 'acceptable' },
+                    { text: `Oui, c'est parfait. Je récapitule : rendez-vous jeudi à 14h30 avec le Dr Tremblay, j'arrive 10 minutes à l'avance avec ma carte RAMQ, mes ordonnances et mes analyses. Je vous remercie pour votre aide, Nadia. Excellente journée !`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Au revoir.`,
+                    acceptable: `De rien ! À jeudi, bonne journée.`,
+                    ideale: `C'est exactement ça ! Je vous envoie un rappel par texto la veille. Merci de votre appel et à jeudi. Prenez soin de vous !`
+                },
+                feedback: {
+                    mauvaise: `Trop bref. Récapitulez les informations importantes.`,
+                    acceptable: `Bonne conclusion. Un récapitulatif complet serait idéal.`,
+                    ideale: `Parfait ! Récapitulatif professionnel qui confirme tous les détails.`
+                }
+            }
+        ]
+    },
+
+    // ========== SCENARIO 3: RÉSERVER UN VÉHICULE DE LOCATION ==========
+    {
+        icon: '🚗',
+        title: 'Réserver un véhicule de location',
+        context: `Vous planifiez un voyage d'une semaine en Gaspésie et vous avez besoin de louer une voiture. Vous appelez l'agence Auto-Location Québec pour vous renseigner sur les véhicules disponibles, les tarifs et les conditions de location.`,
+        objective: `<strong>Votre objectif :</strong> Réserver un véhicule adapté à vos besoins et comprendre toutes les conditions de location.`,
+        opening: `Auto-Location Québec, bonjour. Ici Jean-François. Comment puis-je vous aider aujourd'hui ?`,
+        rounds: [
+            {
+                options: [
+                    { text: `Je veux louer une voiture.`, type: 'mauvaise' },
+                    { text: `Bonjour, c'est pour une location de voiture.`, type: 'mauvaise' },
+                    { text: `Bonjour, j'aimerais louer une voiture pour une semaine. Quels véhicules avez-vous ?`, type: 'acceptable' },
+                    { text: `Bonjour Jean-François. Je prévois un voyage en Gaspésie du 15 au 22 juillet et j'aurais besoin d'un véhicule confortable pour deux personnes avec beaucoup de bagages. Pourriez-vous me présenter les options disponibles ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Pour combien de temps et à quelles dates ? Vous êtes combien de personnes ?`,
+                    acceptable: `D'accord. Pour une semaine, nous avons des compactes, des intermédiaires et des VUS. À quelles dates exactement ?`,
+                    ideale: `Excellent choix, la Gaspésie ! Pour deux personnes avec bagages, je vous recommande soit une intermédiaire comme la Toyota Corolla, soit un petit VUS comme le Hyundai Tucson pour plus de confort sur les routes de montagne. Souhaitez-vous connaître les tarifs pour ces deux options ?`
+                },
+                feedback: {
+                    mauvaise: `Trop vague. Précisez vos dates, destination et besoins.`,
+                    acceptable: `Bon début. Mentionner votre destination et vos besoins permettrait des recommandations personnalisées.`,
+                    ideale: `Excellent ! Vous donnez toutes les informations nécessaires pour des recommandations adaptées.`
+                }
+            },
+            {
+                options: [
+                    { text: `C'est combien le VUS ?`, type: 'mauvaise' },
+                    { text: `Les prix, c'est quoi ?`, type: 'mauvaise' },
+                    { text: `Quels sont les tarifs pour le VUS pour une semaine ?`, type: 'acceptable' },
+                    { text: `Oui, je suis intéressé par le Tucson. Pourriez-vous me donner le tarif pour la semaine complète, et me préciser ce qui est inclus : kilométrage, assurances, équipements ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Le VUS, c'est environ 85 $ par jour. Ça dépend des options.`,
+                    acceptable: `Le Tucson est à 75 $ par jour, soit 450 $ pour sept jours avec le tarif semaine. Le kilométrage illimité est inclus. Voulez-vous ajouter des options ?`,
+                    ideale: `Le Tucson est à 450 $ pour la semaine avec kilométrage illimité. Ce tarif inclut l'assurance responsabilité civile de base. Je vous recommande d'ajouter l'assurance tous risques à 15 $ par jour et le GPS à 10 $ par jour, très utile en Gaspésie où le signal téléphonique est parfois faible. Souhaitez-vous ces options ?`
+                },
+                feedback: {
+                    mauvaise: `Question trop directe. Demandez ce qui est inclus dans le prix.`,
+                    acceptable: `Bonne question sur le tarif. Demander les inclusions évite les surprises.`,
+                    ideale: `Parfait ! Vous demandez le tarif complet avec tous les détails importants.`
+                }
+            },
+            {
+                options: [
+                    { text: `Oui, je prends tout.`, type: 'mauvaise' },
+                    { text: `D'accord pour l'assurance et le GPS.`, type: 'mauvaise' },
+                    { text: `Oui, j'aimerais l'assurance tous risques et le GPS. Quel serait le total ?`, type: 'acceptable' },
+                    { text: `Oui, je souhaiterais ajouter l'assurance tous risques et le GPS. Pourriez-vous me confirmer le montant total et me préciser ce que couvre exactement l'assurance tous risques ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Ça vous fait 625 $ pour la semaine. C'est bon ?`,
+                    acceptable: `Avec ces options, le total est de 625 $ pour la semaine. L'assurance couvre les dommages au véhicule sans franchise. Comment souhaitez-vous récupérer le véhicule ?`,
+                    ideale: `Le total est de 625 $ pour la semaine. L'assurance tous risques couvre tous les dommages au véhicule, y compris le pare-brise, sans aucune franchise. Vous êtes également couvert pour le vol et le vandalisme. Où souhaitez-vous récupérer le véhicule : à notre agence du centre-ville ou à l'aéroport ?`
+                },
+                feedback: {
+                    mauvaise: `Confirmation trop vague. Demandez le total et les détails de couverture.`,
+                    acceptable: `Bonne confirmation. Demander les détails de l'assurance serait prudent.`,
+                    ideale: `Excellent ! Vous vous assurez de comprendre exactement ce que vous payez.`
+                }
+            },
+            {
+                options: [
+                    { text: `Au centre-ville, c'est bien.`, type: 'mauvaise' },
+                    { text: `Je viendrai au centre-ville.`, type: 'mauvaise' },
+                    { text: `Je préférerais récupérer le véhicule au centre-ville. Quels sont les horaires d'ouverture ?`, type: 'acceptable' },
+                    { text: `Je récupérerai le véhicule à l'agence du centre-ville le 15 juillet. Pourriez-vous me préciser vos horaires d'ouverture et les documents que je dois apporter ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord, l'agence est ouverte de 8h à 18h. Vous venez à quelle heure ?`,
+                    acceptable: `Très bien. Notre agence est ouverte de 8h à 18h tous les jours. Apportez votre permis de conduire et une carte de crédit. Vous voulez réserver à quelle heure ?`,
+                    ideale: `Parfait. Notre agence du 250 boulevard René-Lévesque est ouverte de 8h à 18h, sept jours sur sept. Apportez votre permis de conduire valide, une carte de crédit à votre nom pour le dépôt de garantie de 500 $, et une pièce d'identité. À quelle heure souhaitez-vous récupérer le véhicule le 15 juillet ?`
+                },
+                feedback: {
+                    mauvaise: `Réponse incomplète. Confirmez la date et demandez les informations pratiques.`,
+                    acceptable: `Bonne question sur les horaires. Demander les documents évite les mauvaises surprises.`,
+                    ideale: `Parfait ! Vous confirmez la date et demandez toutes les informations pratiques.`
+                }
+            },
+            {
+                options: [
+                    { text: `Le matin, vers 9h.`, type: 'mauvaise' },
+                    { text: `Je viendrai à 9h.`, type: 'mauvaise' },
+                    { text: `Je passerai vers 9h le 15 juillet. Et pour le retour, comment ça se passe ?`, type: 'acceptable' },
+                    { text: `Je passerai à 9h le 15 juillet. Concernant le retour le 22, puis-je ramener le véhicule après 18h si mon retour de voyage est tardif ? Y a-t-il des frais supplémentaires pour un retour en dehors des heures d'ouverture ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord, 9h le 15 juillet. Le retour c'est le 22 avant 18h.`,
+                    acceptable: `Parfait pour 9h. Le retour doit se faire avant 18h le 22 juillet, sinon une journée supplémentaire sera facturée. Des questions ?`,
+                    ideale: `9h le 15 juillet, c'est noté. Pour le retour, si vous revenez après 18h, vous pouvez utiliser notre boîte de dépôt des clés située à l'entrée de l'agence, sans frais supplémentaires tant que vous respectez la date du 22. Si vous avez plus d'une heure de retard, appelez-nous pour éviter la facturation d'une journée supplémentaire. Avez-vous d'autres questions ?`
+                },
+                feedback: {
+                    mauvaise: `Réponse incomplète. Renseignez-vous sur les conditions de retour.`,
+                    acceptable: `Bonne question sur le retour. Anticiper un retour tardif est prévoyant.`,
+                    ideale: `Excellent ! Vous anticipez les situations possibles et évitez les frais imprévus.`
+                }
+            },
+            {
+                options: [
+                    { text: `Non, c'est bon. Merci.`, type: 'mauvaise' },
+                    { text: `Non merci, c'est parfait.`, type: 'mauvaise' },
+                    { text: `Non, tout est clair. Je confirme la réservation. Merci beaucoup pour votre aide !`, type: 'acceptable' },
+                    { text: `Non, tout est parfait. Je récapitule : Hyundai Tucson du 15 au 22 juillet, départ à 9h au 250 René-Lévesque, retour avec dépôt des clés si après 18h, total de 625 $ avec assurance tous risques et GPS. J'apporterai mon permis, une carte de crédit et une pièce d'identité. Merci beaucoup, Jean-François !`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord, c'est réservé. À bientôt.`,
+                    acceptable: `Parfait, votre réservation est confirmée ! Vous recevrez un courriel de confirmation. Bon voyage en Gaspésie !`,
+                    ideale: `C'est exactement ça ! Je vous envoie la confirmation par courriel avec tous les détails. Vous allez adorer la Gaspésie, le Tucson sera parfait pour les routes panoramiques ! Bon voyage et à bientôt chez Auto-Location Québec !`
+                },
+                feedback: {
+                    mauvaise: `Trop bref. Récapitulez la réservation pour éviter toute erreur.`,
+                    acceptable: `Bonne confirmation. Un récapitulatif complet serait plus professionnel.`,
+                    ideale: `Parfait ! Récapitulatif exemplaire qui confirme tous les détails de la réservation.`
+                }
+            }
+        ]
+    },
+
+    // ========== SCENARIO 4: S'INFORMER SUR UNE ASSURANCE ==========
+    {
+        icon: '🛡️',
+        title: "S'informer sur une assurance habitation",
+        context: `Vous venez d'emménager dans un nouvel appartement et votre propriétaire exige une preuve d'assurance locataire. Vous appelez Assurance Desjardins pour vous renseigner sur les couvertures disponibles et obtenir une soumission.`,
+        objective: `<strong>Votre objectif :</strong> Comprendre les options d'assurance locataire et obtenir une soumission adaptée à vos besoins.`,
+        opening: `Assurance Desjardins, bonjour. Ici Caroline, conseillère en assurance de dommages. Comment puis-je vous aider ?`,
+        rounds: [
+            {
+                options: [
+                    { text: `J'ai besoin d'une assurance.`, type: 'mauvaise' },
+                    { text: `Bonjour, c'est pour une assurance appartement.`, type: 'mauvaise' },
+                    { text: `Bonjour, j'aimerais obtenir une soumission pour une assurance locataire.`, type: 'acceptable' },
+                    { text: `Bonjour Caroline. Je viens d'emménager dans un nouvel appartement et j'ai besoin d'une assurance locataire. Mon propriétaire exige une preuve d'assurance. Pourriez-vous me présenter vos options de couverture ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord, c'est pour un appartement ou une maison ? Vous êtes locataire ou propriétaire ?`,
+                    acceptable: `Très bien. Pouvez-vous me donner quelques informations sur votre logement : la superficie et l'adresse ?`,
+                    ideale: `Bienvenue dans votre nouveau chez-vous ! L'assurance locataire est effectivement obligatoire dans la plupart des baux. Notre formule de base couvre vos biens personnels, votre responsabilité civile et les frais de subsistance en cas de sinistre. Pourriez-vous me donner l'adresse de l'appartement pour commencer la soumission ?`
+                },
+                feedback: {
+                    mauvaise: `Trop vague. Précisez votre situation et vos besoins.`,
+                    acceptable: `Bon début. Expliquer votre situation (nouvel emménagement, exigence du propriétaire) contextualise votre demande.`,
+                    ideale: `Excellent ! Vous expliquez clairement votre situation et vos besoins.`
+                }
+            },
+            {
+                options: [
+                    { text: `C'est au 450 rue Laurier.`, type: 'mauvaise' },
+                    { text: `Mon appartement est au 450 rue Laurier à Montréal.`, type: 'mauvaise' },
+                    { text: `L'appartement est situé au 450 rue Laurier à Montréal. C'est un 4 et demi d'environ 70 mètres carrés.`, type: 'acceptable' },
+                    { text: `L'appartement est au 450 rue Laurier à Montréal, appartement 302. C'est un 4 et demi d'environ 70 mètres carrés, au troisième étage d'un immeuble de 1985 avec détecteurs de fumée. J'estime la valeur de mes biens à environ 25 000 $.`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord. C'est quel type de logement ? Un studio, un 3 et demi... ?`,
+                    acceptable: `Très bien, c'est noté. À combien estimez-vous la valeur de vos biens personnels : meubles, électroniques, vêtements ?`,
+                    ideale: `Parfait, j'ai toutes les informations de base. Pour 25 000 $ de biens, je vous recommande notre formule Confort qui inclut le remplacement à neuf pour vos appareils électroniques. Souhaitez-vous connaître les différentes options de couverture et leurs tarifs ?`
+                },
+                feedback: {
+                    mauvaise: `Information incomplète. Donnez plus de détails sur le logement.`,
+                    acceptable: `Bonnes informations. Estimer la valeur de vos biens accélérerait la soumission.`,
+                    ideale: `Parfait ! Vous fournissez toutes les informations nécessaires en une seule fois.`
+                }
+            },
+            {
+                options: [
+                    { text: `Oui, c'est combien ?`, type: 'mauvaise' },
+                    { text: `Quels sont les prix ?`, type: 'mauvaise' },
+                    { text: `Oui, pourriez-vous me présenter les différentes formules et leurs tarifs ?`, type: 'acceptable' },
+                    { text: `Oui, j'aimerais comprendre les différences entre vos formules. Qu'est-ce qui distingue la formule de base de la formule Confort, et quelle est la couverture en responsabilité civile incluse ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `La formule de base est à environ 25 $ par mois. Ça dépend des options.`,
+                    acceptable: `Notre formule Base est à 22 $ par mois, la formule Confort à 32 $. La Confort inclut le remplacement à neuf et une franchise réduite. Quelle formule vous intéresse ?`,
+                    ideale: `La formule Base à 22 $ par mois couvre vos biens à leur valeur dépréciée avec une franchise de 500 $. La formule Confort à 32 $ offre le remplacement à neuf, une franchise de 250 $, et couvre aussi les dégâts d'eau. Les deux incluent 2 millions en responsabilité civile. Pour votre situation, je recommande la Confort. Avez-vous des questions sur les protections spécifiques ?`
+                },
+                feedback: {
+                    mauvaise: `Question trop directe. Demandez les détails des couvertures.`,
+                    acceptable: `Bonne question. Demander les différences précises aide à faire un choix éclairé.`,
+                    ideale: `Excellent ! Vous posez les bonnes questions pour comprendre ce que vous achetez.`
+                }
+            },
+            {
+                options: [
+                    { text: `C'est quoi les dégâts d'eau exactement ?`, type: 'mauvaise' },
+                    { text: `Les dégâts d'eau, ça couvre quoi ?`, type: 'mauvaise' },
+                    { text: `Pourriez-vous préciser ce que couvre la protection contre les dégâts d'eau ?`, type: 'acceptable' },
+                    { text: `La protection contre les dégâts d'eau m'intéresse particulièrement. Pourriez-vous préciser les types de sinistres couverts ? Et y a-t-il des exclusions dont je devrais être conscient ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Les dégâts d'eau, c'est si vous avez une fuite ou un dégât du voisin du dessus.`,
+                    acceptable: `La protection couvre les fuites de plomberie, les refoulements d'égouts et les infiltrations par le toit. Les inondations par crue sont exclues.`,
+                    ideale: `Excellente question ! La protection couvre les fuites de plomberie, les refoulements d'égouts, les infiltrations par le toit et même les dégâts causés par un voisin. Les exclusions sont les inondations par crue de cours d'eau et les dommages graduels comme la moisissure due à un problème non signalé. Pour un troisième étage, vous êtes bien protégé. Souhaitez-vous que je finalise la soumission avec la formule Confort ?`
+                },
+                feedback: {
+                    mauvaise: `Formulation trop familière. Utilisez un registre plus soutenu.`,
+                    acceptable: `Bonne question de clarification. Demander les exclusions serait prudent.`,
+                    ideale: `Parfait ! Vous demandez les détails et les exclusions pour éviter les mauvaises surprises.`
+                }
+            },
+            {
+                options: [
+                    { text: `Oui, ça me va.`, type: 'mauvaise' },
+                    { text: `D'accord, je prends la Confort.`, type: 'mauvaise' },
+                    { text: `Oui, la formule Confort me convient. Comment puis-je obtenir ma preuve d'assurance pour le propriétaire ?`, type: 'acceptable' },
+                    { text: `Oui, je souhaiterais la formule Confort à 32 $ par mois. Pourriez-vous m'expliquer les modalités de paiement et me confirmer que je recevrai une attestation d'assurance pour mon propriétaire rapidement ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Très bien. Je vais avoir besoin de vos coordonnées pour finaliser.`,
+                    acceptable: `Parfait ! Je peux vous envoyer l'attestation par courriel dès que le paiement est effectué. Vous payez mensuellement ou annuellement ?`,
+                    ideale: `Excellent choix ! Pour le paiement, vous pouvez choisir mensuel à 32 $ ou annuel à 370 $, soit un mois gratuit. L'attestation d'assurance sera envoyée par courriel dans l'heure suivant votre paiement, que vous pourrez transmettre directement à votre propriétaire. Quelle option de paiement préférez-vous ?`
+                },
+                feedback: {
+                    mauvaise: `Réponse trop brève. Demandez les détails sur les prochaines étapes.`,
+                    acceptable: `Bonne question sur l'attestation. Demander les options de paiement serait complet.`,
+                    ideale: `Excellent ! Vous confirmez votre choix et demandez toutes les informations pratiques.`
+                }
+            },
+            {
+                options: [
+                    { text: `Annuel, c'est mieux.`, type: 'mauvaise' },
+                    { text: `Je vais payer à l'année alors.`, type: 'mauvaise' },
+                    { text: `Le paiement annuel me convient pour bénéficier de la réduction. Merci pour ces explications, Caroline.`, type: 'acceptable' },
+                    { text: `Je choisis le paiement annuel à 370 $ pour bénéficier du mois gratuit. Je récapitule : formule Confort avec 25 000 $ de couverture, responsabilité civile de 2 millions, franchise de 250 $, et attestation envoyée sous une heure. Je vous remercie pour ces explications détaillées, Caroline !`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord. Je vais prendre vos informations de paiement.`,
+                    acceptable: `Excellent, c'est une bonne décision ! Je prépare les documents. Bienvenue chez Desjardins !`,
+                    ideale: `C'est exactement ça, vous avez tout compris ! Je prépare la police et vous recevrez l'attestation sous une heure. Votre couverture débute dès le paiement. Bienvenue chez Desjardins et bon emménagement dans votre nouvel appartement !`
+                },
+                feedback: {
+                    mauvaise: `Réponse trop brève. Confirmez les détails de votre police.`,
+                    acceptable: `Bonne décision. Un récapitulatif montrerait votre compréhension.`,
+                    ideale: `Parfait ! Récapitulatif complet qui confirme votre compréhension de la police.`
+                }
+            }
+        ]
+    },
+
+    // ========== SCENARIO 5: RÉSERVER UNE TABLE AU RESTAURANT ==========
+    {
+        icon: '🍽️',
+        title: 'Réserver une table au restaurant',
+        context: `Vous organisez un dîner d'anniversaire pour votre conjoint dans un restaurant réputé du Vieux-Montréal. Vous appelez le restaurant « Le Saint-Urbain » pour réserver une table et vous renseigner sur leurs menus et services spéciaux.`,
+        objective: `<strong>Votre objectif :</strong> Réserver une table pour une occasion spéciale et organiser les détails de la soirée.`,
+        opening: `Restaurant Le Saint-Urbain, bonsoir. Ici Mathieu, comment puis-je vous aider ?`,
+        rounds: [
+            {
+                options: [
+                    { text: `Je veux réserver une table.`, type: 'mauvaise' },
+                    { text: `Bonsoir, c'est pour une réservation.`, type: 'mauvaise' },
+                    { text: `Bonsoir, j'aimerais réserver une table pour samedi soir. Avez-vous des disponibilités ?`, type: 'acceptable' },
+                    { text: `Bonsoir Mathieu. Je souhaiterais réserver une table pour samedi soir prochain afin de célébrer l'anniversaire de mon conjoint. Nous serions quatre personnes. Avez-vous des disponibilités et peut-être une table dans un coin tranquille ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Pour combien de personnes et quel soir ?`,
+                    acceptable: `Samedi soir, oui, nous avons de la place. Pour combien de personnes et à quelle heure ?`,
+                    ideale: `Quel beau projet ! Pour un anniversaire avec quatre personnes samedi soir, je peux vous proposer notre table près de la cheminée, très intime, ou celle avec vue sur la terrasse intérieure. Nous avons des disponibilités à 18h30 ou 20h30. Quelle option vous conviendrait ?`
+                },
+                feedback: {
+                    mauvaise: `Trop direct. Précisez la date, le nombre de convives et l'occasion.`,
+                    acceptable: `Bon début. Mentionner l'occasion spéciale permet au restaurant de mieux vous servir.`,
+                    ideale: `Excellent ! Vous donnez tous les détails importants pour une réservation personnalisée.`
+                }
+            },
+            {
+                options: [
+                    { text: `20h30, c'est bien.`, type: 'mauvaise' },
+                    { text: `Je préfère 20h30.`, type: 'mauvaise' },
+                    { text: `La table près de la cheminée à 20h30 serait parfaite. Combien de temps avons-nous pour le repas ?`, type: 'acceptable' },
+                    { text: `La table près de la cheminée à 20h30 serait idéale pour créer une ambiance intime. Pourriez-vous me préciser la durée que nous pouvons prévoir pour le repas et me parler de vos menus ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord pour 20h30. Vous voulez réserver au nom de qui ?`,
+                    acceptable: `Parfait. Pour un dîner de quatre services, comptez environ deux heures et demie. Nous ne vous presserons pas, surtout pour une occasion spéciale. Connaissez-vous notre menu ?`,
+                    ideale: `Excellent choix ! La table près de la cheminée est réservée pour vous à 20h30. Pour un anniversaire, je vous recommande notre menu découverte à sept services avec accords mets et vins, prévoir trois heures pour une expérience complète. Nous avons aussi un menu à la carte si vous préférez. Avez-vous des préférences ou des restrictions alimentaires à signaler ?`
+                },
+                feedback: {
+                    mauvaise: `Réponse trop brève. Renseignez-vous sur l'expérience proposée.`,
+                    acceptable: `Bonne question sur la durée. Demander les menus montrerait votre intérêt.`,
+                    ideale: `Parfait ! Vous posez des questions pertinentes pour planifier la soirée.`
+                }
+            },
+            {
+                options: [
+                    { text: `Non, pas d'allergies.`, type: 'mauvaise' },
+                    { text: `Mon conjoint n'aime pas le poisson.`, type: 'mauvaise' },
+                    { text: `Mon conjoint a une allergie aux fruits de mer. Pourriez-vous adapter le menu en conséquence ?`, type: 'acceptable' },
+                    { text: `Oui, mon conjoint a une allergie aux fruits de mer qu'il faudra prendre en compte. Par ailleurs, nous aimerions le menu découverte. Serait-il possible d'adapter les plats concernés et pourriez-vous me donner une idée du prix par personne avec les accords vins ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `D'accord. Et vous voulez le menu à la carte ou le menu découverte ?`,
+                    acceptable: `Bien noté pour l'allergie aux fruits de mer, notre chef adaptera les plats. Le menu découverte est à 125 $ par personne. Voulez-vous les accords vins ?`,
+                    ideale: `Absolument, c'est noté avec la plus grande attention. Notre chef remplacera les plats à base de fruits de mer par des alternatives de même qualité. Le menu découverte est à 125 $ par personne, et avec les accords vins sélectionnés par notre sommelier, comptez 185 $ par personne. Souhaitez-vous que nous préparions quelque chose de spécial pour l'anniversaire ?`
+                },
+                feedback: {
+                    mauvaise: `Information incomplète. Mentionnez clairement les allergies pour la sécurité.`,
+                    acceptable: `Bonne précision sur l'allergie. Demander les tarifs évite les surprises.`,
+                    ideale: `Excellent ! Vous communiquez l'allergie clairement et demandez tous les détails financiers.`
+                }
+            },
+            {
+                options: [
+                    { text: `Oui, un gâteau ce serait bien.`, type: 'mauvaise' },
+                    { text: `Vous pouvez faire quelque chose pour l'anniversaire ?`, type: 'mauvaise' },
+                    { text: `Oui, pourriez-vous prévoir un dessert d'anniversaire avec une bougie ?`, type: 'acceptable' },
+                    { text: `Ce serait merveilleux ! Pourriez-vous prévoir un dessert d'anniversaire personnalisé avec le prénom de mon conjoint ? Je voudrais aussi savoir s'il est possible d'apporter une bouteille de champagne spéciale que j'ai achetée pour l'occasion.`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Oui, on peut faire un dessert spécial. Pas de problème.`,
+                    acceptable: `Avec plaisir ! Notre pâtissier préparera un dessert avec une bougie et le prénom de votre conjoint. Comment s'appelle la personne ?`,
+                    ideale: `Bien sûr ! Notre pâtissier préparera un dessert personnalisé au prénom de votre conjoint, servi avec une bougie et nos vœux. Pour le champagne, vous pouvez tout à fait apporter votre bouteille, nous facturons 35 $ de frais de service qui incluent les coupes en cristal et le service. Quel est le prénom pour le dessert ?`
+                },
+                feedback: {
+                    mauvaise: `Formulation vague. Soyez précis dans votre demande.`,
+                    acceptable: `Bonne idée pour le dessert. Un élément surprise supplémentaire marquerait l'occasion.`,
+                    ideale: `Parfait ! Vous personnalisez l'expérience et demandez les informations pratiques.`
+                }
+            },
+            {
+                options: [
+                    { text: `C'est Marie.`, type: 'mauvaise' },
+                    { text: `Le prénom, c'est Marie.`, type: 'mauvaise' },
+                    { text: `Le prénom est Marie. Pourriez-vous garder le dessert secret jusqu'au moment de le servir ?`, type: 'acceptable' },
+                    { text: `Le prénom est Marie. Je vous fais confiance pour garder la surprise ! Pourriez-vous servir le dessert avec une coupe de mon champagne plutôt qu'après, et peut-être tamiser légèrement les lumières à ce moment-là ?`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Marie, c'est noté. La réservation est au nom de qui ?`,
+                    acceptable: `Marie, c'est noté. Nous serons très discrets et nous vous ferons un petit signe avant d'apporter le dessert. Puis-je avoir votre nom pour la réservation ?`,
+                    ideale: `Marie, c'est noté avec tous les détails ! Nous servirons le champagne avec le dessert, et notre équipe tamisera subtilement l'éclairage pour créer un moment magique. Je note votre numéro pour vous prévenir discrètement quand nous serons prêts. À quel nom puis-je faire la réservation ?`
+                },
+                feedback: {
+                    mauvaise: `Réponse trop brève. Ajoutez des demandes pour personnaliser le moment.`,
+                    acceptable: `Bonne idée de garder la surprise. Demander une mise en scène rendrait le moment encore plus spécial.`,
+                    ideale: `Excellent ! Vous orchestrez tous les détails pour créer un moment mémorable.`
+                }
+            },
+            {
+                options: [
+                    { text: `Dupont. Merci, au revoir.`, type: 'mauvaise' },
+                    { text: `La réservation est au nom de Dupont.`, type: 'mauvaise' },
+                    { text: `La réservation est au nom de Dupont. Merci beaucoup pour votre aide, Mathieu. À samedi !`, type: 'acceptable' },
+                    { text: `La réservation est au nom de Dupont, et mon numéro est le 514-555-0123. Je récapitule : samedi à 20h30, table près de la cheminée pour quatre personnes, menu découverte avec accords vins, adaptation pour l'allergie aux fruits de mer de Marie, dessert surprise avec champagne et lumières tamisées. Je vous remercie infiniment pour votre aide, Mathieu. Ce sera une soirée inoubliable !`, type: 'ideale' },
+                ],
+                responses: {
+                    mauvaise: `Dupont, c'est noté. À samedi.`,
+                    acceptable: `Parfait, Monsieur Dupont ! Tout est en place pour une belle soirée. À samedi et joyeux anniversaire à Marie !`,
+                    ideale: `Tout est parfait, Monsieur Dupont ! Je vous envoie une confirmation par courriel avec tous les détails. Notre équipe a hâte de vous accueillir samedi pour créer une soirée magique pour Marie. À très bientôt et joyeux anniversaire à elle !`
+                },
+                feedback: {
+                    mauvaise: `Conclusion trop abrupte pour une occasion spéciale.`,
+                    acceptable: `Bonne conclusion. Un récapitulatif garantirait que tout est en ordre.`,
+                    ideale: `Parfait ! Récapitulatif complet qui assure le succès de la soirée.`
+                }
+            }
+        ]
+    }
+];
+
+// ============================================================
+// APPLICATION
+// ============================================================
+const App = {
+    voiceEnabled: false,
+    apiKey: null,
+    scenario: null,
+    round: 0,
+    selected: null,
+    selectedText: null,
+    lastType: null,
+    lastResponse: null,
+    lastQuestion: null,
+    scores: { ideale: 0, acceptable: 0, mauvaise: 0 },
+    textHidden: false,
+
+    init() {
+        this.renderScenarioList();
+        const savedKey = sessionStorage.getItem('xi_key');
+        if (savedKey) {
+            document.getElementById('apiKey').value = savedKey;
+            this.apiKey = savedKey;
+            this.voiceEnabled = true;
+            document.getElementById('apiStatus').textContent = '🔊 Voix activée';
+            document.getElementById('apiStatus').classList.add('active');
+        }
+    },
+
+    renderScenarioList() {
+        const container = document.getElementById('scenarioList');
+        container.innerHTML = SCENARIOS.map((s, i) => `
+            <div class="scenario-card" onclick="App.selectScenario(${i})">
+                <div class="scenario-icon">${s.icon}</div>
+                <div class="scenario-info">
+                    <h3>${s.title}</h3>
+                    <p>${s.context.substring(0, 100)}...</p>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    async activateVoice() {
+        const key = document.getElementById('apiKey').value.trim();
+        if (!key) return alert('Entrez une clé API.');
+        try {
+            const res = await fetch('https://api.elevenlabs.io/v1/user', { headers: { 'xi-api-key': key } });
+            if (res.ok) {
+                this.apiKey = key;
+                this.voiceEnabled = true;
+                sessionStorage.setItem('xi_key', key);
+                document.getElementById('apiStatus').textContent = '🔊 Voix activée';
+                document.getElementById('apiStatus').classList.add('active');
+            } else {
+                alert('Clé invalide.');
+            }
+        } catch (e) { alert('Erreur de connexion.'); }
+    },
+
+    async speak(text) {
+        if (!this.voiceEnabled || !this.apiKey) return;
+        try {
+            const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'xi-api-key': this.apiKey },
+                body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+            });
+            if (res.ok) {
+                const blob = await res.blob();
+                new Audio(URL.createObjectURL(blob)).play();
+            }
+        } catch (e) { console.log('Audio error:', e); }
+    },
+
+    playCurrentAudio() {
+        const text = this.round === 0 ? this.scenario.opening : this.lastResponse;
+        if (text) this.speak(text);
+    },
+
+    toggleText() {
+        this.textHidden = !this.textHidden;
+        const textEl = document.getElementById('interviewerText');
+        const btn = document.getElementById('toggleTextBtn');
+        
+        if (this.textHidden) {
+            textEl.classList.add('hidden');
+            btn.textContent = '👁️ Afficher le texte';
+        } else {
+            textEl.classList.remove('hidden');
+            btn.textContent = '👁️ Masquer le texte';
+        }
+    },
+
+    showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    },
+
+    selectScenario(index) {
+        this.scenario = SCENARIOS[index];
+        this.round = 0;
+        this.scores = { ideale: 0, acceptable: 0, mauvaise: 0 };
+        this.selected = null;
+        this.selectedText = null;
+        this.lastType = null;
+        this.lastResponse = null;
+        this.lastQuestion = null;
+
+        document.getElementById('ctxTitle').innerHTML = `${this.scenario.icon} ${this.scenario.title}`;
+        document.getElementById('ctxText').textContent = this.scenario.context;
+        document.getElementById('ctxObjective').innerHTML = this.scenario.objective;
+        this.showScreen('screenContext');
+    },
+
+    startDialogue() {
+        this.showScreen('screenDialogue');
+        this.renderRound();
+    },
+
+    backToMenu() { this.showScreen('screenSelect'); },
+
+    restart() {
+        this.round = 0;
+        this.scores = { ideale: 0, acceptable: 0, mauvaise: 0 };
+        this.selected = null;
+        this.selectedText = null;
+        this.lastType = null;
+        this.lastResponse = null;
+        this.lastQuestion = null;
+        this.showScreen('screenDialogue');
+        this.renderRound();
+    },
+
+    renderRound() {
+        this.selected = null;
+        this.lastType = null;
+
+        const total = this.scenario.rounds.length;
+        document.getElementById('progressBar').innerHTML =
+            this.scenario.rounds.map((_, i) =>
+                `<div class="progress-step ${i < this.round ? 'done' : ''} ${i === this.round ? 'current' : ''}"></div>`
+            ).join('') + `<span class="progress-text">${this.round + 1}/${total}</span>`;
+
+        // Show user's previous question (rounds 1+)
+        const userBox = document.getElementById('userBox');
+        if (this.round > 0 && this.lastQuestion) {
+            document.getElementById('userText').textContent = `« ${this.lastQuestion} »`;
+            userBox.style.display = 'block';
+        } else {
+            userBox.style.display = 'none';
+        }
+
+        // Show either opening (round 0) or last response (rounds 1+)
+        const displayText = this.round === 0 ? this.scenario.opening : this.lastResponse;
+        const textEl = document.getElementById('interviewerText');
+        textEl.textContent = `« ${displayText} »`;
+        
+        // Apply text visibility state
+        const toggleBtn = document.getElementById('toggleTextBtn');
+        if (this.textHidden) {
+            textEl.classList.add('hidden');
+            toggleBtn.textContent = '👁️ Afficher le texte';
+        } else {
+            textEl.classList.remove('hidden');
+            toggleBtn.textContent = '👁️ Masquer le texte';
+        }
+
+        // Shuffle options
+        const r = this.scenario.rounds[this.round];
+        const shuffled = [...r.options].sort(() => Math.random() - 0.5);
+        document.getElementById('questionList').innerHTML = shuffled.map((opt, i) => `
+            <div class="question-item" data-type="${opt.type}" onclick="App.selectOption(this)">
+                <div class="question-radio"></div>
+                <div class="question-content">« ${opt.text} »</div>
+            </div>
+        `).join('');
+
+        document.getElementById('btnValidate').disabled = true;
+        document.getElementById('feedbackBox').classList.remove('visible', 'mauvaise', 'acceptable', 'ideale');
+        document.getElementById('questionsSection').style.display = 'block';
+        document.getElementById('validateRow').style.display = 'flex';
+
+        if (this.voiceEnabled) setTimeout(() => this.playCurrentAudio(), 400);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+
+    selectOption(el) {
+        document.querySelectorAll('.question-item').forEach(q => q.classList.remove('selected'));
+        el.classList.add('selected');
+        this.selected = el.dataset.type;
+        this.selectedText = el.querySelector('.question-content').textContent.replace(/[«»]/g, '').trim();
+        document.getElementById('btnValidate').disabled = false;
+    },
+
+    validate() {
+        if (!this.selected) return;
+
+        const type = this.selected;
+        this.lastType = type;
+        this.scores[type]++;
+
+        const r = this.scenario.rounds[this.round];
+        const response = r.responses[type];
+        const feedback = r.feedback[type];
+
+        // Store question and response for next round (only if not mauvaise)
+        if (type !== 'mauvaise') {
+            this.lastQuestion = this.selectedText;
+            this.lastResponse = response;
+        }
+
+        const icons = { mauvaise: '❌', acceptable: '⚠️', ideale: '✅' };
+        const titles = { mauvaise: 'Question inappropriée', acceptable: 'Correct, mais basique', ideale: 'Excellent !' };
+        document.getElementById('feedbackHeader').innerHTML = `${icons[type]} ${titles[type]}`;
+        
+        // For mauvaise, show the awkward response so user understands the consequence
+        if (type === 'mauvaise') {
+            document.getElementById('feedbackContent').innerHTML = `
+                <p style="margin-bottom: 1rem;"><strong>L'interlocuteur répond :</strong></p>
+                <p style="font-style: italic; margin-bottom: 1rem;">« ${response} »</p>
+                <p>${feedback}</p>
+            `;
+        } else {
+            document.getElementById('feedbackContent').innerHTML = `<p>${feedback}</p>`;
+        }
+
+        const btn = document.getElementById('btnContinue');
+        if (type === 'mauvaise') {
+            btn.textContent = 'Essayer encore →';
+        } else if (this.round < this.scenario.rounds.length - 1) {
+            btn.textContent = 'Continuer →';
+        } else {
+            btn.textContent = 'Voir les résultats →';
+        }
+
+        document.getElementById('feedbackBox').className = `feedback-box visible ${type}`;
+        document.getElementById('questionsSection').style.display = 'none';
+        document.getElementById('validateRow').style.display = 'none';
+    },
+
+    continue() {
+        if (this.lastType === 'mauvaise') {
+            this.renderRound();
+        } else if (this.round < this.scenario.rounds.length - 1) {
+            this.round++;
+            this.renderRound();
+        } else {
+            this.showResults();
+        }
+    },
+
+    showResults() {
+        document.getElementById('resultsTitle').textContent = this.scenario.title;
+        document.getElementById('scoreIdeale').textContent = this.scores.ideale;
+        document.getElementById('scoreAcceptable').textContent = this.scores.acceptable;
+        document.getElementById('scoreMauvaise').textContent = this.scores.mauvaise;
+
+        const total = this.scores.ideale + this.scores.acceptable;
+        const ratio = total > 0 ? this.scores.ideale / total : 0;
+        let level = '5-6';
+        if (ratio >= 0.8 && this.scores.mauvaise === 0) level = '8-9';
+        else if (ratio >= 0.6) level = '7-8';
+        else if (ratio >= 0.4) level = '6-7';
+        document.getElementById('nclcLevel').textContent = level;
+
+        const tips = [];
+        if (this.scores.mauvaise > 0) tips.push('Évitez les formulations vagues ou trop informelles.');
+        if (this.scores.acceptable > this.scores.ideale) tips.push('Anticipez les détails importants dans vos questions.');
+        if (this.scores.ideale >= 3) tips.push('Excellent travail sur la précision et le registre formel !');
+        tips.push('Continuez à pratiquer pour automatiser les formulations NCLC 8.');
+        document.getElementById('tipsList').innerHTML = tips.map(t => `<li>${t}</li>`).join('');
+
+        this.showScreen('screenResults');
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => App.init());
+</script>
+</body>
+</html>
