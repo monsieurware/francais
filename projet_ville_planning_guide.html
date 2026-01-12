@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet Ville Francophone — Guide de planification</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-500: #64748b;
+            --slate-400: #94a3b8;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+            --accent: #2563eb;
+            --accent-light: #3b82f6;
+            --success: #059669;
+            --success-light: #d1fae5;
+            --error: #dc2626;
+            --error-light: #fee2e2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--slate-100);
+            color: var(--slate-800);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--slate-300);
+        }
+
+        h1 {
+            font-family: 'Source Serif 4', serif;
+            font-size: 2.25rem;
+            font-weight: 600;
+            color: var(--slate-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--slate-500);
+            font-size: 1rem;
+        }
+
+        .save-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--slate-200);
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            color: var(--slate-600);
+        }
+
+        .save-status.saved {
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .save-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--slate-400);
+        }
+
+        .save-status.saved .save-dot {
+            background: var(--success);
+        }
+
+        .name-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .name-section label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--slate-700);
+        }
+
+        .name-section input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--slate-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .name-section input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.25rem 1.5rem;
+            background: var(--slate-800);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: var(--slate-700);
+        }
+
+        .section-header h2 {
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+
+        .section-toggle {
+            font-size: 1.5rem;
+            line-height: 1;
+            transition: transform 0.3s;
+        }
+
+        .section.collapsed .section-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .section.collapsed .section-content {
+            display: none;
+        }
+
+        .section-content {
+            padding: 1.5rem;
+        }
+
+        .subsection {
+            margin-bottom: 2rem;
+        }
+
+        .subsection:last-child {
+            margin-bottom: 0;
+        }
+
+        .subsection-title {
+            font-weight: 600;
+            color: var(--slate-700);
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .instructions {
+            background: var(--slate-50);
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            color: var(--slate-600);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 1px solid var(--slate-300);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .reference-bank {
+            background: var(--slate-50);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .reference-bank-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--slate-600);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reference-bank-title::before {
+            content: "📚";
+        }
+
+        .chunk-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .chunk {
+            background: white;
+            border: 1px solid var(--slate-200);
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--slate-700);
+            cursor: default;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .chunk:hover {
+            background: var(--slate-100);
+            border-color: var(--slate-300);
+        }
+
+        .grammar-note {
+            background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .grammar-note-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--slate-700);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grammar-note-title::before {
+            content: "💡";
+        }
+
+        .grammar-note p {
+            font-size: 0.9rem;
+            color: var(--slate-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .grammar-note code {
+            background: white;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-family: inherit;
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .exercise-container {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .exercise-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--slate-700);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .exercise-title::before {
+            content: "✏️";
+        }
+
+        .intruder-exercise {
+            margin-bottom: 1rem;
+        }
+
+        .intruder-prompt {
+            font-size: 0.9rem;
+            color: var(--slate-600);
+            margin-bottom: 0.75rem;
+        }
+
+        .intruder-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .intruder-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--slate-300);
+            background: white;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .intruder-btn:hover:not(:disabled) {
+            border-color: var(--slate-400);
+            background: var(--slate-50);
+        }
+
+        .intruder-btn.correct {
+            border-color: var(--success);
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .intruder-btn.incorrect {
+            border-color: var(--error);
+            background: var(--error-light);
+            color: var(--error);
+        }
+
+        .intruder-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .exercise-feedback {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .exercise-feedback.show {
+            display: block;
+        }
+
+        .exercise-feedback.correct {
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .exercise-feedback.incorrect {
+            background: var(--error-light);
+            color: var(--error);
+        }
+
+        .reset-btn {
+            padding: 0.4rem 0.75rem;
+            border: 1px solid var(--slate-300);
+            background: white;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--slate-600);
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .reset-btn:hover {
+            background: var(--slate-50);
+            border-color: var(--slate-400);
+        }
+
+        .fill-blank-exercise {
+            margin-bottom: 1rem;
+        }
+
+        .fill-blank-sentence {
+            font-size: 0.95rem;
+            color: var(--slate-700);
+            margin-bottom: 0.75rem;
+            line-height: 1.8;
+        }
+
+        .fill-blank-input {
+            display: inline-block;
+            width: 120px;
+            padding: 0.3rem 0.5rem;
+            border: none;
+            border-bottom: 2px solid var(--slate-400);
+            background: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            text-align: center;
+            transition: border-color 0.2s;
+        }
+
+        .fill-blank-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .fill-blank-input.correct {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .fill-blank-input.incorrect {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .check-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: var(--accent);
+            color: white;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 0.5rem;
+        }
+
+        .check-btn:hover {
+            background: var(--accent-light);
+        }
+
+        .checklist {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--slate-600);
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .reflection-section {
+            background: linear-gradient(135deg, var(--slate-800) 0%, var(--slate-900) 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .reflection-section h2 {
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.35rem;
+            margin-bottom: 1rem;
+        }
+
+        .reflection-section .instructions {
+            background: rgba(255,255,255,0.1);
+            border-left-color: var(--accent-light);
+            color: var(--slate-300);
+        }
+
+        .reflection-section textarea {
+            background: rgba(255,255,255,0.95);
+            border-color: transparent;
+        }
+
+        .reflection-starters {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .reflection-starters-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--slate-300);
+            margin-bottom: 0.75rem;
+        }
+
+        .reflection-starters ul {
+            list-style: none;
+            color: var(--slate-300);
+            font-size: 0.9rem;
+        }
+
+        .reflection-starters li {
+            padding: 0.3rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .reflection-starters li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent-light);
+        }
+
+        .export-section {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--slate-300);
+        }
+
+        .export-btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            background: var(--accent);
+            color: white;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .export-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        .export-note {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--slate-500);
+        }
+
+        .annotation-reminder {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .annotation-reminder-icon {
+            font-size: 1.5rem;
+        }
+
+        .annotation-reminder-content {
+            flex: 1;
+        }
+
+        .annotation-reminder-title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.25rem;
+        }
+
+        .annotation-reminder-text {
+            font-size: 0.9rem;
+            color: #a16207;
+        }
+
+        @media print {
+            body { background: white; }
+            .section-header {
+                background: var(--slate-800) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .section.collapsed .section-content { display: block !important; }
+            .exercise-container, .reference-bank, .grammar-note { break-inside: avoid; }
+            .export-section, .annotation-reminder { display: none; }
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 1.75rem; }
+            .section-content { padding: 1rem; }
+            .intruder-options { flex-direction: column; }
+            .intruder-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Projet Ville Francophone</h1>
+            <p class="subtitle">Guide de planification interactif</p>
+            <div class="save-status" id="saveStatus">
+                <span class="save-dot"></span>
+                <span id="saveText">Sauvegarde automatique activée</span>
+            </div>
+        </header>
+
+        <div class="annotation-reminder">
+            <span class="annotation-reminder-icon">📝</span>
+            <div class="annotation-reminder-content">
+                <div class="annotation-reminder-title">Rappel : Article Génération voyage</div>
+                <div class="annotation-reminder-text">Avant de remplir ce guide, assurez-vous d'avoir complété vos annotations. Vous devez <strong>recycler au moins 10 structures modèles</strong> de votre article dans votre présentation. <strong>Pas de notes le jour de la présentation !</strong></div>
+            </div>
+        </div>
+
+        <div class="name-section">
+            <label for="studentName">Votre nom complet</label>
+            <input type="text" id="studentName" placeholder="Prénom Nom" data-save="studentName">
+        </div>
+
+        <!-- Section 1 -->
+        <div class="section" id="section1">
+            <div class="section-header" onclick="toggleSection('section1')">
+                <h2>1. Pourquoi vous voulez visiter cette ville</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Expliquez pourquoi votre groupe a choisi cette ville. Utilisez un français <strong>descriptif</strong> avec des détails sensoriels (couleurs, sons, odeurs, textures). Évitez les phrases vagues comme « c'est beau » sans exemples concrets.
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Expressions utiles — Exprimer l'attraction</div>
+                    <div class="chunk-list">
+                        <span class="chunk">Ce qui m'attire, c'est...</span>
+                        <span class="chunk">J'ai toujours rêvé de...</span>
+                        <span class="chunk">Cette ville me fascine parce que...</span>
+                        <span class="chunk">On dit que... et je veux le voir</span>
+                        <span class="chunk">L'ambiance de... semble unique</span>
+                        <span class="chunk">Je suis curieux/curieuse de découvrir...</span>
+                    </div>
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Vocabulaire sensoriel</div>
+                    <div class="chunk-list">
+                        <span class="chunk">les ruelles étroites</span>
+                        <span class="chunk">l'odeur de... flotte dans l'air</span>
+                        <span class="chunk">les murs colorés / ocre / blancs</span>
+                        <span class="chunk">le bruit des...</span>
+                        <span class="chunk">l'atmosphère animée / paisible</span>
+                        <span class="chunk">la lumière dorée du soleil couchant</span>
+                        <span class="chunk">le goût de... sur la langue</span>
+                        <span class="chunk">la chaleur / la fraîcheur de...</span>
+                    </div>
+                </div>
+
+                <div class="grammar-note">
+                    <div class="grammar-note-title">Structure : Infinitif après préposition</div>
+                    <p>Utilisez <code>pour + infinitif</code> pour exprimer le but :</p>
+                    <p><em>Je veux visiter Marrakech <strong>pour découvrir</strong> les souks et <strong>pour goûter</strong> à la cuisine locale.</em></p>
+                </div>
+
+                <div class="exercise-container">
+                    <div class="exercise-title">Exercice — Trouvez l'intrus</div>
+                    <div class="intruder-exercise" data-exercise="intruder1">
+                        <p class="intruder-prompt">Quel mot n'exprime PAS une sensation ou une ambiance ?</p>
+                        <div class="intruder-options">
+                            <button class="intruder-btn" data-correct="false">animée</button>
+                            <button class="intruder-btn" data-correct="false">paisible</button>
+                            <button class="intruder-btn" data-correct="true">grande</button>
+                            <button class="intruder-btn" data-correct="false">chaleureuse</button>
+                        </div>
+                        <div class="exercise-feedback"></div>
+                        <button class="reset-btn" onclick="resetIntruder(this)">Réessayer</button>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">Votre réponse</div>
+                    <textarea placeholder="Écrivez pourquoi vous voulez visiter cette ville... Incluez au moins 3 détails sensoriels." data-save="section1_response"></textarea>
+                </div>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check1_1"> J'ai expliqué pourquoi cette ville m'attire</li>
+                    <li><input type="checkbox" data-save="check1_2"> J'ai utilisé au moins 3 détails sensoriels</li>
+                    <li><input type="checkbox" data-save="check1_3"> J'ai évité les descriptions vagues sans exemples</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="section" id="section2">
+            <div class="section-header" onclick="toggleSection('section2')">
+                <h2>2. Ce que vous feriez sur place (activités)</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Chaque membre présente <strong>au moins 3 activités</strong>. Pour chaque activité, dites : <strong>où</strong> (lieu précis), <strong>quoi</strong> (action claire), <strong>pourquoi</strong> (ce que ça montre sur la ville).
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Verbes d'activités touristiques</div>
+                    <div class="chunk-list">
+                        <span class="chunk">visiter</span>
+                        <span class="chunk">explorer</span>
+                        <span class="chunk">découvrir</span>
+                        <span class="chunk">se promener dans</span>
+                        <span class="chunk">flâner</span>
+                        <span class="chunk">admirer</span>
+                        <span class="chunk">goûter à</span>
+                        <span class="chunk">assister à</span>
+                        <span class="chunk">participer à</span>
+                        <span class="chunk">profiter de</span>
+                    </div>
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Locutions pour expliquer « pourquoi »</div>
+                    <div class="chunk-list">
+                        <span class="chunk">...ce qui permet de comprendre...</span>
+                        <span class="chunk">...parce que ça montre...</span>
+                        <span class="chunk">...pour mieux apprécier...</span>
+                        <span class="chunk">...qui reflète la culture locale</span>
+                        <span class="chunk">...car c'est typique de...</span>
+                        <span class="chunk">...ce qui donne un aperçu de...</span>
+                    </div>
+                </div>
+
+                <div class="grammar-note">
+                    <div class="grammar-note-title">Structure : Le conditionnel pour les projets</div>
+                    <p>Utilisez le <strong>conditionnel</strong> pour parler de ce que vous feriez :</p>
+                    <p><em>Je <strong>visiterais</strong> le musée, je <strong>goûterais</strong> aux spécialités, je <strong>me promènerais</strong> dans le quartier historique.</em></p>
+                </div>
+
+                <div class="exercise-container">
+                    <div class="exercise-title">Exercice — Complétez avec le conditionnel</div>
+                    <div class="fill-blank-exercise" data-exercise="fillblank1">
+                        <p class="fill-blank-sentence">
+                            Si je visitais cette ville, je <input type="text" class="fill-blank-input" data-answer="découvrirais" placeholder="(découvrir)"> les monuments historiques et je <input type="text" class="fill-blank-input" data-answer="goûterais" placeholder="(goûter)"> à la cuisine locale.
+                        </p>
+                        <button class="check-btn" onclick="checkFillBlank(this)">Vérifier</button>
+                        <button class="reset-btn" onclick="resetFillBlank(this)">Réessayer</button>
+                        <div class="exercise-feedback"></div>
+                    </div>
+                </div>
+
+                <div class="exercise-container">
+                    <div class="exercise-title">Exercice — Trouvez l'intrus</div>
+                    <div class="intruder-exercise" data-exercise="intruder2">
+                        <p class="intruder-prompt">Quel verbe n'est PAS typiquement utilisé pour décrire des activités touristiques ?</p>
+                        <div class="intruder-options">
+                            <button class="intruder-btn" data-correct="false">explorer</button>
+                            <button class="intruder-btn" data-correct="false">découvrir</button>
+                            <button class="intruder-btn" data-correct="true">travailler</button>
+                            <button class="intruder-btn" data-correct="false">flâner</button>
+                        </div>
+                        <div class="exercise-feedback"></div>
+                        <button class="reset-btn" onclick="resetIntruder(this)">Réessayer</button>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">Vos activités (minimum 3 par personne)</div>
+                    <textarea placeholder="Activité 1 : Où ? Quoi ? Pourquoi ?&#10;&#10;Activité 2 : Où ? Quoi ? Pourquoi ?&#10;&#10;Activité 3 : Où ? Quoi ? Pourquoi ?" data-save="section2_response" style="min-height: 200px;"></textarea>
+                </div>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check2_1"> J'ai présenté au moins 3 activités</li>
+                    <li><input type="checkbox" data-save="check2_2"> Chaque activité inclut : où, quoi, pourquoi</li>
+                    <li><input type="checkbox" data-save="check2_3"> Mes activités montrent une vraie compréhension de la ville</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="section" id="section3">
+            <div class="section-header" onclick="toggleSection('section3')">
+                <h2>3. Ce que les touristes doivent éviter</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Chaque membre présente <strong>au moins 1 chose à éviter</strong> : un comportement, un endroit, ou une mauvaise idée. Expliquez <strong>pourquoi</strong> (sécurité, respect, environnement, etc.).
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Expressions pour conseiller d'éviter</div>
+                    <div class="chunk-list">
+                        <span class="chunk">Il vaut mieux éviter de...</span>
+                        <span class="chunk">Je vous déconseille de...</span>
+                        <span class="chunk">Il est préférable de ne pas...</span>
+                        <span class="chunk">Évitez de... à tout prix</span>
+                        <span class="chunk">Ne... jamais sans...</span>
+                        <span class="chunk">Méfiez-vous de...</span>
+                        <span class="chunk">Ce n'est pas une bonne idée de...</span>
+                    </div>
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Raisons (pourquoi éviter)</div>
+                    <div class="chunk-list">
+                        <span class="chunk">pour des raisons de sécurité</span>
+                        <span class="chunk">par respect pour les habitants</span>
+                        <span class="chunk">pour protéger l'environnement</span>
+                        <span class="chunk">c'est un piège à touristes</span>
+                        <span class="chunk">les prix sont gonflés</span>
+                        <span class="chunk">ça peut être mal vu</span>
+                        <span class="chunk">pour vivre une expérience authentique</span>
+                    </div>
+                </div>
+
+                <div class="grammar-note">
+                    <div class="grammar-note-title">Structure : L'impératif négatif</div>
+                    <p>Pour donner des conseils directs, utilisez l'impératif négatif :</p>
+                    <p><em><strong>Ne prenez pas</strong> de photos sans permission. <strong>N'allez pas</strong> dans ce quartier la nuit.</em></p>
+                </div>
+
+                <div class="exercise-container">
+                    <div class="exercise-title">Exercice — Trouvez l'intrus</div>
+                    <div class="intruder-exercise" data-exercise="intruder3">
+                        <p class="intruder-prompt">Quelle expression n'est PAS utilisée pour conseiller d'éviter quelque chose ?</p>
+                        <div class="intruder-options">
+                            <button class="intruder-btn" data-correct="false">Il vaut mieux éviter de...</button>
+                            <button class="intruder-btn" data-correct="true">Je vous recommande de...</button>
+                            <button class="intruder-btn" data-correct="false">Méfiez-vous de...</button>
+                            <button class="intruder-btn" data-correct="false">Ce n'est pas une bonne idée de...</button>
+                        </div>
+                        <div class="exercise-feedback"></div>
+                        <button class="reset-btn" onclick="resetIntruder(this)">Réessayer</button>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">Choses à éviter</div>
+                    <textarea placeholder="Chose à éviter : Quoi ? Pourquoi ?" data-save="section3_response"></textarea>
+                </div>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check3_1"> J'ai présenté au moins 1 chose à éviter</li>
+                    <li><input type="checkbox" data-save="check3_2"> J'ai expliqué pourquoi</li>
+                    <li><input type="checkbox" data-save="check3_3"> Mes conseils sont basés sur de vraies recherches</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="section" id="section4">
+            <div class="section-header" onclick="toggleSection('section4')">
+                <h2>4. Itinéraire avec directions (Google Street View)</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Guidez la classe depuis un point de départ (à au moins 500m) jusqu'à une destination touristique. Utilisez des expressions de direction et ajoutez des repères visuels. Préparez des captures d'écran Street View.
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Expressions de direction — ESSENTIELLES</div>
+                    <div class="chunk-list">
+                        <span class="chunk">tournez à gauche</span>
+                        <span class="chunk">tournez à droite</span>
+                        <span class="chunk">continuez tout droit</span>
+                        <span class="chunk">traversez la rue / le pont</span>
+                        <span class="chunk">au bout de la rue</span>
+                        <span class="chunk">prenez la première rue à droite</span>
+                        <span class="chunk">prenez la deuxième rue à gauche</span>
+                        <span class="chunk">au carrefour</span>
+                        <span class="chunk">au feu (rouge)</span>
+                        <span class="chunk">au rond-point</span>
+                    </div>
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Repères et localisation</div>
+                    <div class="chunk-list">
+                        <span class="chunk">en face de</span>
+                        <span class="chunk">à côté de</span>
+                        <span class="chunk">entre... et...</span>
+                        <span class="chunk">au coin de</span>
+                        <span class="chunk">derrière</span>
+                        <span class="chunk">vous verrez... sur votre droite/gauche</span>
+                        <span class="chunk">le passage piéton</span>
+                        <span class="chunk">le panneau</span>
+                        <span class="chunk">la fontaine / la statue</span>
+                    </div>
+                </div>
+
+                <div class="grammar-note">
+                    <div class="grammar-note-title">Structure : L'impératif pour les directions</div>
+                    <p>Utilisez l'impératif (vous) pour guider :</p>
+                    <p><em><strong>Tournez</strong> à gauche, <strong>continuez</strong> pendant 100 mètres, puis <strong>traversez</strong> la place.</em></p>
+                </div>
+
+                <div class="exercise-container">
+                    <div class="exercise-title">Exercice — Complétez les directions</div>
+                    <div class="fill-blank-exercise" data-exercise="fillblank2">
+                        <p class="fill-blank-sentence">
+                            <input type="text" class="fill-blank-input" data-answer="Tournez" placeholder="(Tourner)"> à droite au carrefour, puis <input type="text" class="fill-blank-input" data-answer="continuez" placeholder="(continuer)"> tout droit jusqu'à la place.
+                        </p>
+                        <button class="check-btn" onclick="checkFillBlank(this)">Vérifier</button>
+                        <button class="reset-btn" onclick="resetFillBlank(this)">Réessayer</button>
+                        <div class="exercise-feedback"></div>
+                    </div>
+                </div>
+
+                <div class="exercise-container">
+                    <div class="exercise-title">Exercice — Trouvez l'intrus</div>
+                    <div class="intruder-exercise" data-exercise="intruder4">
+                        <p class="intruder-prompt">Quelle expression n'est PAS une expression de localisation ?</p>
+                        <div class="intruder-options">
+                            <button class="intruder-btn" data-correct="false">en face de</button>
+                            <button class="intruder-btn" data-correct="false">à côté de</button>
+                            <button class="intruder-btn" data-correct="true">parce que</button>
+                            <button class="intruder-btn" data-correct="false">au coin de</button>
+                        </div>
+                        <div class="exercise-feedback"></div>
+                        <button class="reset-btn" onclick="resetIntruder(this)">Réessayer</button>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">Votre itinéraire</div>
+                    <textarea placeholder="Point de départ :&#10;&#10;Destination :&#10;&#10;Directions étape par étape :&#10;1. ...&#10;2. ...&#10;3. ..." data-save="section4_response" style="min-height: 180px;"></textarea>
+                </div>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check4_1"> Mon trajet fait au moins 500 mètres</li>
+                    <li><input type="checkbox" data-save="check4_2"> J'ai utilisé au moins 6 expressions de direction différentes</li>
+                    <li><input type="checkbox" data-save="check4_3"> J'ai inclus au moins 3 repères visuels</li>
+                    <li><input type="checkbox" data-save="check4_4"> J'ai préparé des captures d'écran pour les moments clés</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 5 -->
+        <div class="section" id="section5">
+            <div class="section-header" onclick="toggleSection('section5')">
+                <h2>5. Informations historiques et démographiques</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Donnez des informations sur la ville de façon <strong>naturelle</strong> — pas une liste de chiffres ! Répondez à : taille, évolution, fondation, événements importants.
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Expressions temporelles pour l'histoire</div>
+                    <div class="chunk-list">
+                        <span class="chunk">au XIe siècle</span>
+                        <span class="chunk">fondée en...</span>
+                        <span class="chunk">depuis des siècles</span>
+                        <span class="chunk">à l'époque de...</span>
+                        <span class="chunk">au cours du XXe siècle</span>
+                        <span class="chunk">il y a [nombre] ans</span>
+                        <span class="chunk">pendant la période coloniale</span>
+                        <span class="chunk">après l'indépendance</span>
+                    </div>
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Parler de l'évolution</div>
+                    <div class="chunk-list">
+                        <span class="chunk">la ville a connu une croissance...</span>
+                        <span class="chunk">le nombre de touristes augmente</span>
+                        <span class="chunk">la population a doublé</span>
+                        <span class="chunk">la ville s'est modernisée</span>
+                        <span class="chunk">tout en préservant son caractère</span>
+                        <span class="chunk">est devenue un centre de...</span>
+                    </div>
+                </div>
+
+                <div class="grammar-note">
+                    <div class="grammar-note-title">Structure : Le passif pour l'histoire</div>
+                    <p>Utilisez la voix passive pour parler des événements historiques :</p>
+                    <p><em>La ville <strong>a été fondée</strong> en 1062. Le palais <strong>a été construit</strong> par le sultan.</em></p>
+                </div>
+
+                <div class="exercise-container">
+                    <div class="exercise-title">Exercice — Complétez au passé composé passif</div>
+                    <div class="fill-blank-exercise" data-exercise="fillblank3">
+                        <p class="fill-blank-sentence">
+                            La médina <input type="text" class="fill-blank-input" data-answer="a été classée" placeholder="(classer)" style="width: 140px;"> au patrimoine mondial de l'UNESCO en 1985.
+                        </p>
+                        <button class="check-btn" onclick="checkFillBlank(this)">Vérifier</button>
+                        <button class="reset-btn" onclick="resetFillBlank(this)">Réessayer</button>
+                        <div class="exercise-feedback"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">Informations sur votre ville</div>
+                    <textarea placeholder="Taille et population :&#10;&#10;Évolution récente :&#10;&#10;Date de fondation :&#10;&#10;Événements historiques importants :" data-save="section5_response" style="min-height: 160px;"></textarea>
+                </div>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check5_1"> J'ai donné une idée de la taille de la ville</li>
+                    <li><input type="checkbox" data-save="check5_2"> J'ai mentionné comment la ville évolue</li>
+                    <li><input type="checkbox" data-save="check5_3"> J'ai inclus la date de fondation</li>
+                    <li><input type="checkbox" data-save="check5_4"> J'ai mentionné au moins 1 événement historique</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 6 -->
+        <div class="section" id="section6">
+            <div class="section-header" onclick="toggleSection('section6')">
+                <h2>6. Monuments et importance</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Présentez <strong>au moins 2 monuments</strong>. Pour chaque monument : à quoi il sert (fonction), ce qu'il symbolise, pourquoi il est important.
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Parler de la fonction</div>
+                    <div class="chunk-list">
+                        <span class="chunk">sert de... / servait de...</span>
+                        <span class="chunk">a été construit pour...</span>
+                        <span class="chunk">est utilisé comme...</span>
+                        <span class="chunk">accueille des... chaque année</span>
+                        <span class="chunk">abrite...</span>
+                        <span class="chunk">permet de...</span>
+                    </div>
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Parler du symbolisme</div>
+                    <div class="chunk-list">
+                        <span class="chunk">symbolise...</span>
+                        <span class="chunk">représente...</span>
+                        <span class="chunk">témoigne de...</span>
+                        <span class="chunk">incarne...</span>
+                        <span class="chunk">rappelle...</span>
+                        <span class="chunk">est un symbole de...</span>
+                    </div>
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Parler de l'importance</div>
+                    <div class="chunk-list">
+                        <span class="chunk">est considéré comme...</span>
+                        <span class="chunk">attire des milliers de visiteurs</span>
+                        <span class="chunk">fait partie du patrimoine...</span>
+                        <span class="chunk">est classé au patrimoine mondial</span>
+                        <span class="chunk">est incontournable</span>
+                        <span class="chunk">joue un rôle essentiel dans...</span>
+                    </div>
+                </div>
+
+                <div class="grammar-note">
+                    <div class="grammar-note-title">Structure : Propositions relatives</div>
+                    <p>Utilisez <code>qui</code>, <code>que</code>, <code>où</code> pour enrichir vos descriptions :</p>
+                    <p><em>C'est un monument <strong>qui</strong> date du XIIe siècle, <strong>que</strong> les touristes adorent, et <strong>où</strong> on peut admirer une vue panoramique.</em></p>
+                </div>
+
+                <div class="exercise-container">
+                    <div class="exercise-title">Exercice — Trouvez l'intrus</div>
+                    <div class="intruder-exercise" data-exercise="intruder5">
+                        <p class="intruder-prompt">Quel verbe n'est PAS utilisé pour parler de symbolisme ?</p>
+                        <div class="intruder-options">
+                            <button class="intruder-btn" data-correct="false">symbolise</button>
+                            <button class="intruder-btn" data-correct="false">représente</button>
+                            <button class="intruder-btn" data-correct="false">incarne</button>
+                            <button class="intruder-btn" data-correct="true">construit</button>
+                        </div>
+                        <div class="exercise-feedback"></div>
+                        <button class="reset-btn" onclick="resetIntruder(this)">Réessayer</button>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">Vos monuments</div>
+                    <textarea placeholder="Monument 1 :&#10;- Nom :&#10;- Fonction :&#10;- Symbolisme :&#10;- Importance :&#10;&#10;Monument 2 :&#10;- Nom :&#10;- Fonction :&#10;- Symbolisme :&#10;- Importance :" data-save="section6_response" style="min-height: 220px;"></textarea>
+                </div>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check6_1"> J'ai présenté au moins 2 monuments</li>
+                    <li><input type="checkbox" data-save="check6_2"> Chaque monument inclut fonction, symbolisme, importance</li>
+                    <li><input type="checkbox" data-save="check6_3"> Mes explications montrent une vraie compréhension</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 7 -->
+        <div class="section" id="section7">
+            <div class="section-header" onclick="toggleSection('section7')">
+                <h2>7. Questions TOK (réflexion critique)</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Répondez <strong>ensemble</strong> à au moins 4 questions avec des exemples concrets de votre ville. Montrez une réflexion critique !
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Expressions pour la réflexion critique</div>
+                    <div class="chunk-list">
+                        <span class="chunk">D'un côté... de l'autre...</span>
+                        <span class="chunk">On pourrait se demander si...</span>
+                        <span class="chunk">Cela dépend de...</span>
+                        <span class="chunk">Par exemple, dans notre ville...</span>
+                        <span class="chunk">Ce qui est intéressant, c'est que...</span>
+                        <span class="chunk">Il faut considérer que...</span>
+                        <span class="chunk">Cela soulève la question de...</span>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">Les questions</div>
+                    <div style="background: var(--slate-50); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; color: var(--slate-600);">
+                        <ol style="padding-left: 1.25rem; line-height: 1.8;">
+                            <li>Quelle image de la ville montrons-nous ? Qu'est-ce qu'on ne montre pas ?</li>
+                            <li>Est-ce qu'une photo Street View montre la réalité ? Qu'est-ce qu'on ne peut pas voir ?</li>
+                            <li>Quand on dit « une ville authentique », qu'est-ce que ça veut dire ? Qui décide ?</li>
+                            <li>Est-ce que le tourisme aide la ville ou la change ? Donnez un exemple.</li>
+                            <li>Les mots influencent les idées : quels adjectifs peuvent changer l'opinion du public ?</li>
+                            <li>Un monument raconte une histoire. Est-ce qu'il raconte toute l'histoire ? Quelles voix manquent ?</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">Vos réponses (minimum 4 questions)</div>
+                    <textarea placeholder="Question 1 :&#10;Notre réponse :&#10;&#10;Question 2 :&#10;Notre réponse :&#10;&#10;..." data-save="section7_response" style="min-height: 200px;"></textarea>
+                </div>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check7_1"> Nous avons répondu à au moins 4 questions</li>
+                    <li><input type="checkbox" data-save="check7_2"> Nous avons donné des exemples concrets</li>
+                    <li><input type="checkbox" data-save="check7_3"> Nous avons montré une réflexion critique</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 8 -->
+        <div class="section" id="section8">
+            <div class="section-header" onclick="toggleSection('section8')">
+                <h2>8. Préparation de la carte postale</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    <strong>Avant les présentations :</strong> Créez une carte postale vierge avec une image Street View de votre ville.<br>
+                    <strong>Après les présentations :</strong> Vous recevrez la carte d'une autre ville et écrirez comme si vous l'aviez visitée.
+                </div>
+
+                <div class="reference-bank">
+                    <div class="reference-bank-title">Structures pour la carte postale (passé composé)</div>
+                    <div class="chunk-list">
+                        <span class="chunk">Je suis arrivé(e) à... il y a...</span>
+                        <span class="chunk">Hier, j'ai visité...</span>
+                        <span class="chunk">J'ai eu la chance de...</span>
+                        <span class="chunk">J'ai goûté à... et c'était délicieux</span>
+                        <span class="chunk">J'ai évité de... parce que...</span>
+                        <span class="chunk">Ce qui m'a surpris(e), c'est...</span>
+                        <span class="chunk">Je me suis promené(e) dans...</span>
+                        <span class="chunk">J'ai pris beaucoup de photos de...</span>
+                    </div>
+                </div>
+
+                <div class="grammar-note">
+                    <div class="grammar-note-title">Rappel : Le passé composé</div>
+                    <p>Avec <strong>avoir</strong> : <em>J'<strong>ai visité</strong>, j'<strong>ai mangé</strong>, j'<strong>ai vu</strong></em></p>
+                    <p>Avec <strong>être</strong> (mouvement/état) : <em>Je <strong>suis allé(e)</strong>, je <strong>suis arrivé(e)</strong>, je <strong>me suis promené(e)</strong></em></p>
+                </div>
+
+                <div class="exercise-container">
+                    <div class="exercise-title">Exercice — Trouvez l'intrus</div>
+                    <div class="intruder-exercise" data-exercise="intruder6">
+                        <p class="intruder-prompt">Quel verbe utilise « avoir » au passé composé (pas « être ») ?</p>
+                        <div class="intruder-options">
+                            <button class="intruder-btn" data-correct="false">aller</button>
+                            <button class="intruder-btn" data-correct="false">arriver</button>
+                            <button class="intruder-btn" data-correct="true">visiter</button>
+                            <button class="intruder-btn" data-correct="false">partir</button>
+                        </div>
+                        <div class="exercise-feedback"></div>
+                        <button class="reset-btn" onclick="resetIntruder(this)">Réessayer</button>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">Notes pour ma carte postale vierge</div>
+                    <textarea placeholder="Image Street View choisie (description) :&#10;&#10;Éléments visuels importants de ma ville à inclure :" data-save="section8_response"></textarea>
+                </div>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check8_1"> J'ai choisi une image Street View représentative</li>
+                    <li><input type="checkbox" data-save="check8_2"> Ma carte postale est prête à être soumise</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Reflection -->
+        <div class="reflection-section">
+            <h2>Réflexion — Êtes-vous prêt(e) ?</h2>
+            <div class="instructions">
+                Avant d'exporter votre plan, écrivez une courte réflexion <strong>en français</strong> sur votre préparation. Rappelez-vous : <strong>pas de notes le jour de la présentation !</strong>
+            </div>
+
+            <div class="reflection-starters">
+                <div class="reflection-starters-title">Amorces utiles</div>
+                <ul>
+                    <li>Je me sens prêt(e) à présenter parce que...</li>
+                    <li>La partie la plus difficile pour moi sera...</li>
+                    <li>J'ai recyclé ces structures de mon article annoté : ...</li>
+                    <li>Pour me préparer davantage, je vais...</li>
+                    <li>Ce que j'ai appris sur cette ville, c'est que...</li>
+                    <li>Si je devais améliorer une chose, ce serait...</li>
+                </ul>
+            </div>
+
+            <textarea id="reflectionText" placeholder="Écrivez votre réflexion ici (minimum 5 phrases)..." data-save="reflection" style="min-height: 150px;"></textarea>
+        </div>
+
+        <!-- Export -->
+        <div class="export-section">
+            <button class="export-btn" onclick="exportPDF()">📄 Exporter en PDF</button>
+            <p class="export-note">Votre plan sera sauvegardé avec votre nom et votre réflexion.</p>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'projet_ville_planning';
+        let saveTimeout;
+
+        function saveData() {
+            const data = {};
+            document.querySelectorAll('[data-save]').forEach(el => {
+                const key = el.dataset.save;
+                if (el.type === 'checkbox') {
+                    data[key] = el.checked;
+                } else {
+                    data[key] = el.value;
+                }
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            showSaveStatus();
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.querySelectorAll('[data-save]').forEach(el => {
+                    const key = el.dataset.save;
+                    if (data[key] !== undefined) {
+                        if (el.type === 'checkbox') {
+                            el.checked = data[key];
+                        } else {
+                            el.value = data[key];
+                        }
+                    }
+                });
+            }
+        }
+
+        function showSaveStatus() {
+            const status = document.getElementById('saveStatus');
+            const text = document.getElementById('saveText');
+            status.classList.add('saved');
+            text.textContent = 'Sauvegardé ✓';
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                status.classList.remove('saved');
+                text.textContent = 'Sauvegarde automatique activée';
+            }, 2000);
+        }
+
+        document.querySelectorAll('[data-save]').forEach(el => {
+            el.addEventListener('input', () => {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(saveData, 500);
+            });
+            el.addEventListener('change', saveData);
+        });
+
+        document.addEventListener('DOMContentLoaded', loadData);
+
+        function toggleSection(sectionId) {
+            document.getElementById(sectionId).classList.toggle('collapsed');
+        }
+
+        document.querySelectorAll('.intruder-exercise').forEach(exercise => {
+            const buttons = exercise.querySelectorAll('.intruder-btn');
+            const feedback = exercise.querySelector('.exercise-feedback');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.disabled) return;
+                    const isCorrect = this.dataset.correct === 'true';
+                    buttons.forEach(b => b.disabled = true);
+                    if (isCorrect) {
+                        this.classList.add('correct');
+                        feedback.textContent = '✓ Correct ! C\'est bien l\'intrus.';
+                        feedback.className = 'exercise-feedback show correct';
+                    } else {
+                        this.classList.add('incorrect');
+                        feedback.textContent = '✗ Pas tout à fait. Essayez encore.';
+                        feedback.className = 'exercise-feedback show incorrect';
+                        setTimeout(() => {
+                            buttons.forEach(b => { b.disabled = false; b.classList.remove('incorrect'); });
+                            feedback.classList.remove('show');
+                        }, 1500);
+                    }
+                });
+            });
+        });
+
+        function resetIntruder(btn) {
+            const exercise = btn.closest('.intruder-exercise');
+            exercise.querySelectorAll('.intruder-btn').forEach(b => {
+                b.disabled = false;
+                b.classList.remove('correct', 'incorrect');
+            });
+            exercise.querySelector('.exercise-feedback').classList.remove('show');
+        }
+
+        function checkFillBlank(btn) {
+            const exercise = btn.closest('.fill-blank-exercise');
+            const inputs = exercise.querySelectorAll('.fill-blank-input');
+            const feedback = exercise.querySelector('.exercise-feedback');
+            let allCorrect = true;
+            inputs.forEach(input => {
+                const answer = input.dataset.answer.toLowerCase();
+                const userAnswer = input.value.trim().toLowerCase();
+                const acceptable = [answer, answer.normalize("NFD").replace(/[\u0300-\u036f]/g, "")];
+                if (answer === 'découvrirais') acceptable.push('decouvrirais');
+                if (answer === 'goûterais') acceptable.push('gouterais');
+                if (answer === 'a été classée') acceptable.push('a ete classee', 'a été classé', 'a ete classe');
+                if (acceptable.includes(userAnswer) || acceptable.includes(userAnswer.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) {
+                    input.classList.add('correct');
+                    input.classList.remove('incorrect');
+                } else {
+                    input.classList.add('incorrect');
+                    input.classList.remove('correct');
+                    allCorrect = false;
+                }
+            });
+            feedback.textContent = allCorrect ? '✓ Excellent ! Toutes les réponses sont correctes.' : '✗ Vérifiez les réponses en rouge.';
+            feedback.className = 'exercise-feedback show ' + (allCorrect ? 'correct' : 'incorrect');
+        }
+
+        function resetFillBlank(btn) {
+            const exercise = btn.closest('.fill-blank-exercise');
+            exercise.querySelectorAll('.fill-blank-input').forEach(input => {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect');
+            });
+            exercise.querySelector('.exercise-feedback').classList.remove('show');
+        }
+
+        function exportPDF() {
+            const studentName = document.getElementById('studentName').value || 'Étudiant';
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('collapsed'));
+            const hide = document.querySelectorAll('.exercise-container, .reference-bank, .grammar-note, .export-section, .reset-btn, .check-btn, .annotation-reminder');
+            hide.forEach(el => el.style.display = 'none');
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `Plan_Ville_${studentName.replace(/\s+/g, '_')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            html2pdf().set(opt).from(document.querySelector('.container')).save().then(() => {
+                hide.forEach(el => el.style.display = '');
+            });
+        }
+    </script>
+</body>
+</html>
