@@ -1,0 +1,2191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visiter Paris : 10 incontournables</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paris-blue: #1a365d;
+            --paris-gold: #c9a227;
+            --paris-cream: #faf8f5;
+            --paris-stone: #e8e4df;
+            --paris-dark: #2d2d2d;
+            --paris-accent: #8b0000;
+            --success: #2d6a4f;
+            --error: #9d0208;
+            --warning: #e9c46a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', Georgia, serif;
+            background: var(--paris-cream);
+            color: var(--paris-dark);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .hero {
+            background: linear-gradient(135deg, var(--paris-blue) 0%, #2a4a7f 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        .eiffel-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            background: var(--paris-stone);
+            border-bottom: 3px solid var(--paris-gold);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-tab {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid var(--paris-blue);
+            background: white;
+            color: var(--paris-blue);
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background: var(--paris-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: var(--paris-gold);
+            border-color: var(--paris-gold);
+            color: var(--paris-dark);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Section Styling */
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Reading Cards */
+        .site-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid var(--paris-stone);
+        }
+
+        .site-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .site-card-content {
+            padding: 2rem;
+        }
+
+        .site-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--paris-blue);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--paris-gold);
+            padding-bottom: 0.5rem;
+        }
+
+        .site-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--paris-accent);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        .site-card p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .info-box {
+            background: var(--paris-stone);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--paris-gold);
+        }
+
+        .info-box p {
+            margin: 0.3rem 0;
+            font-size: 0.95rem;
+        }
+
+        /* Grammar Dropdowns */
+        .grammar-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .grammar-section > h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--paris-blue);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .grammar-dropdown {
+            border: 2px solid var(--paris-stone);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .grammar-dropdown:hover {
+            border-color: var(--paris-gold);
+        }
+
+        .grammar-header {
+            background: linear-gradient(135deg, var(--paris-blue) 0%, #2a4a7f 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .grammar-header:hover {
+            background: linear-gradient(135deg, #2a4a7f 0%, var(--paris-blue) 100%);
+        }
+
+        .dropdown-arrow {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .grammar-dropdown.open .dropdown-arrow {
+            transform: rotate(180deg);
+            animation: none;
+        }
+
+        .grammar-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: var(--paris-cream);
+        }
+
+        .grammar-dropdown.open .grammar-content {
+            max-height: 1000px;
+        }
+
+        .grammar-inner {
+            padding: 1.5rem;
+        }
+
+        .grammar-rule {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--paris-gold);
+        }
+
+        .grammar-rule h4 {
+            color: var(--paris-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .example-box {
+            background: var(--paris-stone);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 0.75rem;
+            font-style: italic;
+        }
+
+        .example-box strong {
+            color: var(--paris-blue);
+            font-style: normal;
+        }
+
+        .click-hint {
+            text-align: center;
+            color: var(--paris-gold);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Activity Sections */
+        .activity-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .activity-card h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--paris-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-instructions {
+            background: var(--paris-stone);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--paris-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2a4a7f;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--paris-gold);
+            color: var(--paris-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #d4ac2b;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-retry {
+            background: var(--paris-accent);
+            color: white;
+            margin-left: 0.5rem;
+        }
+
+        /* Matching Activity */
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .matching-column h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--paris-accent);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .matching-item {
+            background: var(--paris-stone);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .matching-item:hover {
+            border-color: var(--paris-gold);
+            transform: translateX(5px);
+        }
+
+        .matching-item.selected {
+            border-color: var(--paris-blue);
+            background: white;
+        }
+
+        .matching-item.correct {
+            border-color: var(--success);
+            background: #d8f3dc;
+        }
+
+        .matching-item.incorrect {
+            border-color: var(--error);
+            background: #ffd6d6;
+        }
+
+        /* True/False */
+        .tf-question {
+            background: var(--paris-stone);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .tf-statement {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tf-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tf-option {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--paris-blue);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tf-option:hover {
+            background: var(--paris-blue);
+            color: white;
+        }
+
+        .tf-option.selected {
+            background: var(--paris-gold);
+            border-color: var(--paris-gold);
+        }
+
+        .tf-option.correct {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .tf-option.incorrect {
+            background: var(--error);
+            border-color: var(--error);
+            color: white;
+        }
+
+        .evidence-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--paris-stone);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .evidence-input:focus {
+            outline: none;
+            border-color: var(--paris-gold);
+        }
+
+        /* Cloze/Fill-in-blank */
+        .cloze-text {
+            font-size: 1.1rem;
+            line-height: 2;
+            background: var(--paris-stone);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .cloze-input {
+            width: 150px;
+            padding: 0.3rem 0.5rem;
+            border: 2px solid var(--paris-blue);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+            text-align: center;
+            margin: 0 0.25rem;
+        }
+
+        .cloze-input.correct {
+            border-color: var(--success);
+            background: #d8f3dc;
+        }
+
+        .cloze-input.incorrect {
+            border-color: var(--error);
+            background: #ffd6d6;
+        }
+
+        /* Drag and Drop */
+        .drag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding: 1.5rem;
+            background: var(--paris-stone);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            min-height: 60px;
+        }
+
+        .drag-item {
+            background: white;
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            border: 2px solid var(--paris-blue);
+            cursor: grab;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .drag-item:active {
+            cursor: grabbing;
+        }
+
+        .drag-item:hover {
+            background: var(--paris-blue);
+            color: white;
+        }
+
+        .drag-item.correct {
+            border-color: var(--success);
+            background: #d8f3dc;
+        }
+
+        .drag-item.incorrect {
+            border-color: var(--error);
+            background: #ffd6d6;
+        }
+
+        .drop-zones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .drop-zone {
+            background: white;
+            border: 3px dashed var(--paris-blue);
+            border-radius: 12px;
+            padding: 1rem;
+            min-height: 150px;
+        }
+
+        .drop-zone h4 {
+            font-family: 'Playfair Display', serif;
+            color: var(--paris-blue);
+            margin-bottom: 1rem;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--paris-gold);
+        }
+
+        .drop-zone-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .drop-zone.drag-over {
+            background: var(--paris-stone);
+            border-style: solid;
+        }
+
+        /* Short Answer */
+        .short-answer-q {
+            background: var(--paris-stone);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .short-answer-q label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .short-answer-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--paris-stone);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 80px;
+            background: white;
+        }
+
+        .short-answer-input:focus {
+            outline: none;
+            border-color: var(--paris-gold);
+        }
+
+        /* Glossary */
+        .glossary-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .glossary-item {
+            background: var(--paris-stone);
+            padding: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .glossary-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .glossary-word {
+            font-weight: 700;
+            color: var(--paris-blue);
+            font-size: 1.1rem;
+        }
+
+        .glossary-def {
+            font-size: 0.95rem;
+            color: var(--paris-dark);
+            margin-top: 0.3rem;
+        }
+
+        /* Production Section */
+        .itinerary-builder {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .itinerary-builder h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--paris-blue);
+            margin-bottom: 1rem;
+        }
+
+        .sentence-starters {
+            background: var(--paris-stone);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .sentence-starters h3 {
+            color: var(--paris-accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .starter-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .starter-item {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-style: italic;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .starter-item:hover {
+            background: var(--paris-gold);
+        }
+
+        .itinerary-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1.5rem;
+            border: 2px solid var(--paris-stone);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            resize: vertical;
+        }
+
+        .itinerary-textarea:focus {
+            outline: none;
+            border-color: var(--paris-gold);
+        }
+
+        .char-counter {
+            text-align: right;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--paris-dark);
+        }
+
+        .char-counter.warning {
+            color: var(--error);
+        }
+
+        .char-counter.success {
+            color: var(--success);
+        }
+
+        .requirements-checklist {
+            background: var(--paris-stone);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .requirement-icon {
+            font-size: 1.2rem;
+        }
+
+        .requirement.met .requirement-icon {
+            color: var(--success);
+        }
+
+        .requirement.unmet .requirement-icon {
+            color: var(--error);
+        }
+
+        /* Feedback */
+        .feedback {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.success {
+            background: #d8f3dc;
+            border: 2px solid var(--success);
+            color: var(--success);
+        }
+
+        .feedback.error {
+            background: #ffd6d6;
+            border: 2px solid var(--error);
+            color: var(--error);
+        }
+
+        .feedback.info {
+            background: #e7f5ff;
+            border: 2px solid var(--paris-blue);
+            color: var(--paris-blue);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: var(--paris-stone);
+            padding: 1rem 2rem;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+            border-top: 2px solid var(--paris-gold);
+        }
+
+        .progress-bar {
+            background: white;
+            border-radius: 20px;
+            height: 24px;
+            overflow: hidden;
+            border: 2px solid var(--paris-blue);
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--paris-blue), var(--paris-gold));
+            height: 100%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Export Buttons */
+        .export-section {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--paris-stone);
+        }
+
+        /* Autosave indicator */
+        .autosave-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--success);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .autosave-indicator.show {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .nav-tabs {
+                padding: 1rem;
+            }
+
+            .nav-tab {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .matching-container {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .site-card img {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Autosave Indicator -->
+    <div class="autosave-indicator" id="autosaveIndicator">✓ Sauvegardé</div>
+
+    <!-- Hero Header -->
+    <header class="hero">
+        <span class="eiffel-icon">🗼</span>
+        <h1>Visiter Paris : 10 incontournables</h1>
+        <p>Découvrez les sites les plus célèbres de la Ville Lumière</p>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav-tabs">
+        <button class="nav-tab active" data-section="lecture">📖 Lecture</button>
+        <button class="nav-tab" data-section="grammaire">📚 Grammaire</button>
+        <button class="nav-tab" data-section="association">🔗 Association</button>
+        <button class="nav-tab" data-section="vrai-faux">✓✗ Vrai ou Faux</button>
+        <button class="nav-tab" data-section="cloze">📝 Texte à trous</button>
+        <button class="nav-tab" data-section="categoriser">🏷️ Catégoriser</button>
+        <button class="nav-tab" data-section="questions">❓ Questions</button>
+        <button class="nav-tab" data-section="vocabulaire">📖 Vocabulaire</button>
+        <button class="nav-tab" data-section="itineraire">✍️ Mon itinéraire</button>
+    </nav>
+
+    <main class="container">
+        <!-- LECTURE SECTION -->
+        <section class="section active" id="lecture">
+            <!-- 1. Tour Eiffel -->
+            <article class="site-card">
+                <img src="https://cdn.generationvoyage.fr/2025/06/La-tour-Eiffel-Paris-1000x667.jpeg" alt="La tour Eiffel, Paris">
+                <div class="site-card-content">
+                    <h2>1. La tour Eiffel</h2>
+                    <h3>Pourquoi visiter ?</h3>
+                    <p>La tour Eiffel est le symbole de Paris. Cette grande construction en fer offre une vue panoramique sur toute la ville depuis son sommet.</p>
+                    
+                    <h3>Pour en savoir plus</h3>
+                    <p>La tour Eiffel a été construite par Gustave Eiffel pour l'Exposition Universelle de 1889. Elle mesure environ 324 mètres de haut et a trois étages ouverts au public. On peut prendre les escaliers ou l'ascenseur pour monter.</p>
+                    <p>Il est recommandé de réserver votre billet à l'avance pour éviter les files d'attente. On peut manger au restaurant au premier étage, à 58 mètres de hauteur. Le soir, les illuminations de la tour sont magnifiques !</p>
+                    
+                    <div class="info-box">
+                        <p>📍 <strong>Adresse :</strong> Avenue Gustave Eiffel, 75007 Paris</p>
+                        <p>🕐 <strong>Horaires :</strong> Ouverte tous les jours, généralement de 9h à minuit</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 2. Notre-Dame -->
+            <article class="site-card">
+                <img src="https://cdn.generationvoyage.fr/2025/06/La-cathedrale-Notre-Dame-de-Paris-1000x563.jpeg" alt="La cathédrale Notre-Dame de Paris">
+                <div class="site-card-content">
+                    <h2>2. La cathédrale Notre-Dame de Paris</h2>
+                    <h3>Pourquoi visiter ?</h3>
+                    <p>Notre-Dame est un chef-d'œuvre de l'architecture gothique. Après un grand incendie en 2019, on peut maintenant découvrir sa renaissance.</p>
+                    
+                    <h3>Pour en savoir plus</h3>
+                    <p>La construction de Notre-Dame a commencé en 1163 et s'est terminée en 1345. En avril 2019, un incendie a détruit une partie de la cathédrale. Après cinq années de travaux, on peut maintenant visiter ce monument emblématique.</p>
+                    <p>On peut aussi explorer les environs : le quartier de l'Île de la Cité, la Crypte archéologique et la Sainte-Chapelle sont tous accessibles à pied.</p>
+                    
+                    <div class="info-box">
+                        <p>📍 <strong>Adresse :</strong> 6 Parvis Notre-Dame, 75004 Paris</p>
+                        <p>🕐 <strong>Horaires :</strong> Ouverte tous les jours (horaires variables)</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 3. Sacré-Cœur -->
+            <article class="site-card">
+                <img src="https://cdn.generationvoyage.fr/2025/06/La-basilique-du-Sacre-Coeur-Paris-1000x668.jpeg" alt="La basilique du Sacré-Cœur">
+                <div class="site-card-content">
+                    <h2>3. La basilique du Sacré-Cœur</h2>
+                    <h3>Pourquoi visiter ?</h3>
+                    <p>Ce monument offre l'une des plus belles vues sur Paris depuis son parvis, situé sur la butte Montmartre.</p>
+                    
+                    <h3>Pour en savoir plus</h3>
+                    <p>La basilique du Sacré-Cœur a été inaugurée en 1914. Elle se trouve dans le 18e arrondissement et son style romano-byzantin attire beaucoup de visiteurs. On peut aussi se promener dans le charmant quartier de Montmartre.</p>
+                    <p>L'entrée de la basilique est gratuite, mais on peut payer pour monter au dôme et avoir une vue panoramique à 360° sur la capitale. On peut prendre le funiculaire de Montmartre pour éviter de monter toutes les marches.</p>
+                    
+                    <div class="info-box">
+                        <p>📍 <strong>Adresse :</strong> 35 Rue du Chevalier de la Barre, 75018 Paris</p>
+                        <p>🕐 <strong>Horaires :</strong> Ouverte tous les jours, généralement de 6h à 22h30</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 4. Arc de Triomphe -->
+            <article class="site-card">
+                <img src="https://cdn.generationvoyage.fr/2025/06/LArc-de-Triomphe-Paris-1000x666.jpeg" alt="L'Arc de Triomphe">
+                <div class="site-card-content">
+                    <h2>4. L'Arc de Triomphe</h2>
+                    <h3>Pourquoi visiter ?</h3>
+                    <p>L'Arc de Triomphe offre l'une des plus belles vues sur Paris depuis sa terrasse, au sommet de l'avenue des Champs-Élysées.</p>
+                    
+                    <h3>Pour en savoir plus</h3>
+                    <p>Ce monument a été commandé par Napoléon Ier en 1806 et terminé en 1836. Il mesure environ 50 mètres de haut et se trouve au centre de la place Charles-de-Gaulle, où arrivent douze avenues.</p>
+                    <p>Sous l'Arc, on trouve la tombe du Soldat inconnu de la Première Guerre mondiale. On peut monter ses 284 marches pour profiter d'une vue spectaculaire sur Paris. L'accès est payant.</p>
+                    
+                    <div class="info-box">
+                        <p>📍 <strong>Adresse :</strong> Place Charles de Gaulle, 75008 Paris</p>
+                        <p>🕐 <strong>Horaires :</strong> Ouvert tous les jours, de 10h à 22h30</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 5. Les quartiers -->
+            <article class="site-card">
+                <img src="https://cdn.generationvoyage.fr/2025/06/Le-quartier-du-Marais-Paris-1000x667.jpeg" alt="Le quartier du Marais">
+                <div class="site-card-content">
+                    <h2>5. Les quartiers de Paris</h2>
+                    <p>Les quartiers de Paris sont très variés. Chacun a son atmosphère unique et ses expériences différentes. Prenez le temps de vous promener à pied ou en transports en commun.</p>
+                    
+                    <h3>Le Marais</h3>
+                    <p>Le Marais est un quartier branché dans les 3e et 4e arrondissements. On y trouve la Place des Vosges, la plus ancienne place de la capitale. On peut explorer ses rues étroites avec des boutiques, des galeries d'art et des cafés.</p>
+                    
+                    <h3>Saint-Germain-des-Prés</h3>
+                    <p>Ce quartier est connu pour son ambiance bohème et ses cafés célèbres comme le Café de Flore et Les Deux Magots. Des écrivains célèbres comme Jean-Paul Sartre et Simone de Beauvoir aimaient y passer du temps.</p>
+                    
+                    <h3>Le Quartier Latin</h3>
+                    <p>Situé dans le 5e arrondissement, ce quartier est célèbre pour son ambiance étudiante et la Sorbonne, fondée au XIIIe siècle. On peut aussi visiter le Panthéon et se promener dans le Jardin du Luxembourg.</p>
+                    
+                    <h3>Montmartre</h3>
+                    <p>Montmartre est un quartier artistique avec des cafés historiques et des artistes de rue à la place du Tertre. C'est l'un des points les plus hauts de Paris, à plus de 130 mètres d'altitude. Des peintres célèbres comme Picasso et Van Gogh ont habité ici.</p>
+                    
+                    <h3>Pigalle</h3>
+                    <p>Ce quartier est réputé pour sa vie nocturne et ses cabarets, notamment le Moulin Rouge, fondé en 1889. Il se situe entre les 9e et 18e arrondissements, près de Montmartre.</p>
+                </div>
+            </article>
+
+            <!-- 6. Les musées -->
+            <article class="site-card">
+                <img src="https://cdn.generationvoyage.fr/2021/11/louvre.jpg" alt="Musée du Louvre">
+                <div class="site-card-content">
+                    <h2>6. Les musées de Paris</h2>
+                    <p>Les musées de Paris sont des trésors d'art et de culture. On peut acheter un Paris Museum Pass pour visiter plusieurs musées plus facilement.</p>
+                    
+                    <h3>Le musée du Louvre</h3>
+                    <p>Le Louvre est le plus grand musée d'art du monde. Il était autrefois un palais royal et est devenu un musée en 1793. Il expose plus de 38 000 œuvres, dont la célèbre Mona Lisa et la Vénus de Milo. La Pyramide de verre a été créée par l'architecte Ieoh Ming Pei en 1989.</p>
+                    
+                    <h3>Le musée d'Orsay</h3>
+                    <p>Installé dans une ancienne gare construite pour l'Exposition universelle de 1900, ce musée contient la plus grande collection d'art impressionniste du monde. On peut admirer des œuvres de Monet, Renoir, Manet et Degas.</p>
+                    
+                    <h3>Le Centre Pompidou</h3>
+                    <p>Ce musée d'art moderne a ouvert en 1977. Son architecture est très originale : les escaliers et les canalisations colorées sont à l'extérieur du bâtiment. Il y a une belle vue sur Paris depuis la terrasse panoramique.</p>
+                    
+                    <h3>Autres musées importants</h3>
+                    <p>On peut aussi visiter le musée de l'Orangerie avec les Nymphéas de Monet, le musée Rodin avec "Le Penseur", le musée Picasso dans le Marais, et la Fondation Louis Vuitton pour l'art contemporain.</p>
+                    
+                    <div class="info-box">
+                        <p>💡 <strong>Conseil :</strong> Beaucoup de musées sont fermés le lundi ou le mardi. Vérifiez les horaires avant votre visite !</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 7. Autres monuments -->
+            <article class="site-card">
+                <img src="https://cdn.generationvoyage.fr/2025/06/Le-Pantheon-Paris-1000x634.jpeg" alt="Le Panthéon">
+                <div class="site-card-content">
+                    <h2>7. Les autres monuments de Paris</h2>
+                    
+                    <h3>Le Panthéon</h3>
+                    <p>C'est le lieu où reposent les grandes figures de l'histoire de France, comme Voltaire, Victor Hugo et Marie Curie. Construit entre 1758 et 1790, on peut y voir le pendule de Foucault qui montre la rotation de la Terre.</p>
+                    
+                    <h3>L'Opéra Garnier</h3>
+                    <p>Ce chef-d'œuvre architectural du XIXe siècle a été inauguré en 1875. Son grand escalier en marbre et ses décorations somptueuses rappellent l'époque du Second Empire. On peut assister à un ballet ou une visite guidée.</p>
+                    
+                    <h3>Les Catacombes</h3>
+                    <p>Pour une expérience différente, on peut visiter les Catacombes. C'est un labyrinthe souterrain de 1,5 kilomètre bordé d'ossements de six millions de personnes. Le parcours est à 20 mètres sous terre.</p>
+                    
+                    <h3>La Sainte-Chapelle</h3>
+                    <p>Cette chapelle du XIIIe siècle est célèbre pour ses magnifiques vitraux. Construite par le roi Louis IX, c'est un joyau de l'architecture gothique sur l'Île de la Cité.</p>
+                    
+                    <h3>Le cimetière du Père-Lachaise</h3>
+                    <p>C'est le plus grand cimetière de Paris avec plus de 70 000 tombes. On peut y voir les tombes de personnes célèbres comme Jim Morrison, Oscar Wilde et Édith Piaf. L'entrée est gratuite.</p>
+                </div>
+            </article>
+
+            <!-- 8. Croisière Seine -->
+            <article class="site-card">
+                <img src="https://cdn.generationvoyage.fr/2025/06/Le-Trocadero-Paris-1000x667.jpeg" alt="Vue de Paris depuis la Seine">
+                <div class="site-card-content">
+                    <h2>8. Une croisière sur la Seine</h2>
+                    <h3>Pourquoi faire une croisière ?</h3>
+                    <p>Une croisière sur la Seine permet de voir Paris d'une manière différente. On peut admirer les monuments depuis l'eau : la tour Eiffel, Notre-Dame, le Louvre et les ponts historiques.</p>
+                    
+                    <h3>Pour en savoir plus</h3>
+                    <p>Plusieurs compagnies proposent des croisières. On peut choisir une promenade d'une heure ou un dîner-croisière le soir. Les bateaux partent souvent de la tour Eiffel ou de Notre-Dame.</p>
+                    <p>C'est une activité idéale pour se reposer après une journée de marche et voir la ville illuminée le soir.</p>
+                    
+                    <div class="info-box">
+                        <p>💰 <strong>Prix :</strong> À partir de 17 € pour une croisière d'une heure</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 9. Moulin Rouge -->
+            <article class="site-card">
+                <img src="https://cdn.generationvoyage.fr/2025/06/Le-quartier-de-Pigalle-Paris-1000x667.jpeg" alt="Le Moulin Rouge">
+                <div class="site-card-content">
+                    <h2>9. Le Moulin Rouge</h2>
+                    <h3>Pourquoi visiter ?</h3>
+                    <p>Le Moulin Rouge est le cabaret le plus célèbre du monde. C'est un endroit emblématique de la vie nocturne parisienne depuis plus de 130 ans.</p>
+                    
+                    <h3>Pour en savoir plus</h3>
+                    <p>Le Moulin Rouge a été fondé en 1889 dans le quartier de Pigalle. On peut y voir un spectacle de cabaret avec des costumes magnifiques, de la musique et la danse du French Cancan.</p>
+                    <p>Il est recommandé de réserver ses billets à l'avance car les spectacles sont très populaires. On peut dîner sur place pendant le spectacle.</p>
+                    
+                    <div class="info-box">
+                        <p>📍 <strong>Adresse :</strong> 82 Boulevard de Clichy, 75018 Paris</p>
+                        <p>🚇 <strong>Métro :</strong> Ligne 2, station Blanche</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 10. Versailles -->
+            <article class="site-card">
+                <img src="https://cdn.generationvoyage.fr/2025/06/La-Fondation-Louis-Vuitton-Paris-1000x668.jpeg" alt="Jardins de Versailles">
+                <div class="site-card-content">
+                    <h2>10. Le château de Versailles</h2>
+                    <h3>Pourquoi visiter ?</h3>
+                    <p>Le château de Versailles est l'un des plus beaux palais du monde. C'était la résidence des rois de France, notamment Louis XIV, le "Roi Soleil".</p>
+                    
+                    <h3>Pour en savoir plus</h3>
+                    <p>Le château se trouve à environ 20 kilomètres de Paris. On peut y aller en train (RER C) en 40 minutes. Le domaine comprend le château, les jardins magnifiques, le Grand Trianon et le Petit Trianon.</p>
+                    <p>On peut visiter la célèbre Galerie des Glaces avec ses 357 miroirs. Les jardins sont immenses, avec des fontaines et des sculptures. Au printemps et en été, on peut voir les Grandes Eaux Musicales.</p>
+                    
+                    <div class="info-box">
+                        <p>📍 <strong>Adresse :</strong> Place d'Armes, 78000 Versailles</p>
+                        <p>🕐 <strong>Horaires :</strong> Ouvert du mardi au dimanche, de 9h à 18h30</p>
+                        <p>💡 <strong>Conseil :</strong> Prévoyez une journée entière pour bien explorer le domaine !</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <!-- GRAMMAIRE SECTION -->
+        <section class="section" id="grammaire">
+            <div class="grammar-section">
+                <h2>📚 Points de grammaire</h2>
+                <p class="click-hint">👆 Cliquez sur chaque section pour voir les explications et exemples</p>
+
+                <!-- Passé Composé -->
+                <div class="grammar-dropdown">
+                    <div class="grammar-header" onclick="toggleGrammar(this)">
+                        <span>Le passé composé (pour les faits historiques)</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </div>
+                    <div class="grammar-content">
+                        <div class="grammar-inner">
+                            <div class="grammar-rule">
+                                <h4>Formation</h4>
+                                <p><strong>Sujet + avoir/être (au présent) + participe passé</strong></p>
+                                <p>La plupart des verbes utilisent <em>avoir</em>. Les verbes de mouvement et les verbes pronominaux utilisent <em>être</em>.</p>
+                            </div>
+                            <div class="grammar-rule">
+                                <h4>Exemples du texte</h4>
+                                <div class="example-box">
+                                    <p>• La tour Eiffel <strong>a été construite</strong> en 1889.</p>
+                                    <p>• La construction de Notre-Dame <strong>a commencé</strong> en 1163.</p>
+                                    <p>• Des peintres célèbres <strong>ont habité</strong> à Montmartre.</p>
+                                    <p>• Le musée <strong>est devenu</strong> public en 1793.</p>
+                                </div>
+                            </div>
+                            <div class="grammar-rule">
+                                <h4>À retenir</h4>
+                                <p>On utilise le passé composé pour parler d'événements terminés dans le passé, comme les dates de construction ou les événements historiques.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Superlatives -->
+                <div class="grammar-dropdown">
+                    <div class="grammar-header" onclick="toggleGrammar(this)">
+                        <span>Les superlatifs (le plus, le moins)</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </div>
+                    <div class="grammar-content">
+                        <div class="grammar-inner">
+                            <div class="grammar-rule">
+                                <h4>Formation</h4>
+                                <p><strong>le/la/les + plus/moins + adjectif + (de + groupe)</strong></p>
+                                <p>L'adjectif s'accorde en genre et en nombre avec le nom.</p>
+                            </div>
+                            <div class="grammar-rule">
+                                <h4>Exemples du texte</h4>
+                                <div class="example-box">
+                                    <p>• Le Louvre est <strong>le plus grand</strong> musée d'art du monde.</p>
+                                    <p>• C'est <strong>la plus ancienne</strong> place de la capitale.</p>
+                                    <p>• C'est <strong>le plus grand</strong> cimetière de Paris.</p>
+                                    <p>• C'est l'un <strong>des plus beaux</strong> palais du monde.</p>
+                                </div>
+                            </div>
+                            <div class="grammar-rule">
+                                <h4>Superlatifs irréguliers</h4>
+                                <div class="example-box">
+                                    <p>• bon → <strong>le meilleur / la meilleure</strong></p>
+                                    <p>• mauvais → <strong>le pire / la pire</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- On peut + infinitif -->
+                <div class="grammar-dropdown">
+                    <div class="grammar-header" onclick="toggleGrammar(this)">
+                        <span>« On peut + infinitif » (pour les recommandations)</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </div>
+                    <div class="grammar-content">
+                        <div class="grammar-inner">
+                            <div class="grammar-rule">
+                                <h4>Utilisation</h4>
+                                <p><strong>On peut + verbe à l'infinitif</strong></p>
+                                <p>Cette structure est très utile pour donner des conseils ou parler de ce qui est possible de faire.</p>
+                            </div>
+                            <div class="grammar-rule">
+                                <h4>Exemples du texte</h4>
+                                <div class="example-box">
+                                    <p>• <strong>On peut prendre</strong> les escaliers ou l'ascenseur.</p>
+                                    <p>• <strong>On peut explorer</strong> ses rues étroites.</p>
+                                    <p>• <strong>On peut visiter</strong> le musée Picasso.</p>
+                                    <p>• <strong>On peut y aller</strong> en train.</p>
+                                    <p>• <strong>On peut aussi</strong> se promener dans le jardin.</p>
+                                </div>
+                            </div>
+                            <div class="grammar-rule">
+                                <h4>Structures similaires</h4>
+                                <div class="example-box">
+                                    <p>• Il est possible de + infinitif</p>
+                                    <p>• Il est recommandé de + infinitif</p>
+                                    <p>• On a la possibilité de + infinitif</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prepositions -->
+                <div class="grammar-dropdown">
+                    <div class="grammar-header" onclick="toggleGrammar(this)">
+                        <span>Les prépositions de lieu (à, en, au, dans)</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </div>
+                    <div class="grammar-content">
+                        <div class="grammar-inner">
+                            <div class="grammar-rule">
+                                <h4>Règles générales</h4>
+                                <p><strong>à</strong> = devant une ville : <em>à Paris, à Versailles</em></p>
+                                <p><strong>en</strong> = devant un pays féminin : <em>en France</em></p>
+                                <p><strong>au</strong> = devant un pays masculin (à + le) : <em>au Japon</em></p>
+                                <p><strong>dans</strong> = à l'intérieur de : <em>dans le musée, dans le quartier</em></p>
+                            </div>
+                            <div class="grammar-rule">
+                                <h4>Exemples du texte</h4>
+                                <div class="example-box">
+                                    <p>• Elle se trouve <strong>dans le</strong> 18e arrondissement.</p>
+                                    <p>• Le musée est situé <strong>au</strong> cœur du Marais.</p>
+                                    <p>• Il est <strong>à</strong> deux pas de la tour Eiffel.</p>
+                                    <p>• Le château se trouve <strong>à</strong> 20 kilomètres de Paris.</p>
+                                    <p>• <strong>Sur</strong> l'Île de la Cité / <strong>au</strong> centre de la place</p>
+                                </div>
+                            </div>
+                            <div class="grammar-rule">
+                                <h4>Expressions utiles</h4>
+                                <div class="example-box">
+                                    <p>• à côté de = next to</p>
+                                    <p>• près de = near</p>
+                                    <p>• au sommet de = at the top of</p>
+                                    <p>• au centre de = in the center of</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ASSOCIATION (Matching) -->
+        <section class="section" id="association">
+            <div class="activity-card">
+                <h2>🔗 Activité : Association</h2>
+                <p class="activity-instructions">Cliquez sur un élément à gauche, puis sur sa description correspondante à droite.</p>
+                
+                <div class="matching-container">
+                    <div class="matching-column">
+                        <h3>Monuments</h3>
+                        <div class="matching-item" data-match="eiffel">La tour Eiffel</div>
+                        <div class="matching-item" data-match="louvre">Le musée du Louvre</div>
+                        <div class="matching-item" data-match="sacre">Le Sacré-Cœur</div>
+                        <div class="matching-item" data-match="notre">Notre-Dame</div>
+                        <div class="matching-item" data-match="arc">L'Arc de Triomphe</div>
+                        <div class="matching-item" data-match="versailles">Le château de Versailles</div>
+                    </div>
+                    <div class="matching-column">
+                        <h3>Descriptions</h3>
+                        <div class="matching-item" data-match="louvre">Le plus grand musée d'art du monde</div>
+                        <div class="matching-item" data-match="arc">Monument avec la tombe du Soldat inconnu</div>
+                        <div class="matching-item" data-match="eiffel">Construction en fer de 324 mètres</div>
+                        <div class="matching-item" data-match="versailles">Résidence du Roi Soleil</div>
+                        <div class="matching-item" data-match="sacre">Basilique sur la butte Montmartre</div>
+                        <div class="matching-item" data-match="notre">Cathédrale gothique reconstruite après un incendie</div>
+                    </div>
+                </div>
+                
+                <div class="feedback" id="matching-feedback"></div>
+                
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button class="btn btn-primary" onclick="checkMatching()">Vérifier</button>
+                    <button class="btn btn-retry" onclick="resetMatching()">Réessayer</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VRAI OU FAUX -->
+        <section class="section" id="vrai-faux">
+            <div class="activity-card">
+                <h2>✓✗ Activité : Vrai ou Faux</h2>
+                <p class="activity-instructions">Lisez chaque phrase et décidez si elle est vraie ou fausse. Ensuite, écrivez la preuve du texte pour justifier votre réponse.</p>
+
+                <div class="tf-question" data-answer="vrai">
+                    <p class="tf-statement">1. La tour Eiffel a été construite pour l'Exposition Universelle de 1889.</p>
+                    <div class="tf-options">
+                        <div class="tf-option" data-value="vrai">Vrai</div>
+                        <div class="tf-option" data-value="faux">Faux</div>
+                    </div>
+                    <textarea class="evidence-input" placeholder="Écrivez la preuve du texte ici..."></textarea>
+                </div>
+
+                <div class="tf-question" data-answer="faux">
+                    <p class="tf-statement">2. L'entrée de la basilique du Sacré-Cœur est payante.</p>
+                    <div class="tf-options">
+                        <div class="tf-option" data-value="vrai">Vrai</div>
+                        <div class="tf-option" data-value="faux">Faux</div>
+                    </div>
+                    <textarea class="evidence-input" placeholder="Écrivez la preuve du texte ici..."></textarea>
+                </div>
+
+                <div class="tf-question" data-answer="vrai">
+                    <p class="tf-statement">3. Le musée d'Orsay était autrefois une gare.</p>
+                    <div class="tf-options">
+                        <div class="tf-option" data-value="vrai">Vrai</div>
+                        <div class="tf-option" data-value="faux">Faux</div>
+                    </div>
+                    <textarea class="evidence-input" placeholder="Écrivez la preuve du texte ici..."></textarea>
+                </div>
+
+                <div class="tf-question" data-answer="faux">
+                    <p class="tf-statement">4. Le château de Versailles est dans Paris.</p>
+                    <div class="tf-options">
+                        <div class="tf-option" data-value="vrai">Vrai</div>
+                        <div class="tf-option" data-value="faux">Faux</div>
+                    </div>
+                    <textarea class="evidence-input" placeholder="Écrivez la preuve du texte ici..."></textarea>
+                </div>
+
+                <div class="tf-question" data-answer="vrai">
+                    <p class="tf-statement">5. Le Moulin Rouge a été fondé en 1889.</p>
+                    <div class="tf-options">
+                        <div class="tf-option" data-value="vrai">Vrai</div>
+                        <div class="tf-option" data-value="faux">Faux</div>
+                    </div>
+                    <textarea class="evidence-input" placeholder="Écrivez la preuve du texte ici..."></textarea>
+                </div>
+
+                <div class="tf-question" data-answer="vrai">
+                    <p class="tf-statement">6. L'entrée du cimetière du Père-Lachaise est gratuite.</p>
+                    <div class="tf-options">
+                        <div class="tf-option" data-value="vrai">Vrai</div>
+                        <div class="tf-option" data-value="faux">Faux</div>
+                    </div>
+                    <textarea class="evidence-input" placeholder="Écrivez la preuve du texte ici..."></textarea>
+                </div>
+
+                <div class="feedback" id="tf-feedback"></div>
+                
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button class="btn btn-primary" onclick="checkTrueFalse()">Vérifier</button>
+                    <button class="btn btn-retry" onclick="resetTrueFalse()">Réessayer</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CLOZE (Fill in the blank) -->
+        <section class="section" id="cloze">
+            <div class="activity-card">
+                <h2>📝 Activité : Texte à trous</h2>
+                <p class="activity-instructions">Complétez le texte avec les mots corrects. Utilisez le vocabulaire de la leçon.</p>
+
+                <div class="cloze-text">
+                    <p>Paris est la <input type="text" class="cloze-input" data-answer="capitale"> de la France. La ville a beaucoup de <input type="text" class="cloze-input" data-answer="monuments"> célèbres à visiter.</p>
+                    
+                    <p>La tour Eiffel a été <input type="text" class="cloze-input" data-answer="construite"> en 1889. Elle <input type="text" class="cloze-input" data-answer="mesure"> 324 mètres de haut. On peut <input type="text" class="cloze-input" data-answer="monter"> au sommet pour voir la vue.</p>
+                    
+                    <p>Le Louvre est le plus <input type="text" class="cloze-input" data-answer="grand"> musée d'art du monde. Il <input type="text" class="cloze-input" data-answer="expose"> plus de 38 000 œuvres.</p>
+                    
+                    <p>Le Sacré-Cœur se <input type="text" class="cloze-input" data-answer="trouve"> dans le 18e arrondissement. L'entrée est <input type="text" class="cloze-input" data-answer="gratuite">, mais on peut payer pour monter au <input type="text" class="cloze-input" data-answer="dôme">.</p>
+                    
+                    <p>Le château de Versailles était la <input type="text" class="cloze-input" data-answer="résidence"> des rois de France. On peut y aller en <input type="text" class="cloze-input" data-answer="train"> depuis Paris.</p>
+                </div>
+
+                <div class="feedback" id="cloze-feedback"></div>
+                
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button class="btn btn-primary" onclick="checkCloze()">Vérifier</button>
+                    <button class="btn btn-retry" onclick="resetCloze()">Réessayer</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CATEGORISER (Drag and Drop) -->
+        <section class="section" id="categoriser">
+            <div class="activity-card">
+                <h2>🏷️ Activité : Catégoriser</h2>
+                <p class="activity-instructions">Glissez et déposez chaque élément dans la bonne catégorie.</p>
+
+                <div class="drag-container" id="drag-source">
+                    <div class="drag-item" draggable="true" data-category="musee">Le Louvre</div>
+                    <div class="drag-item" draggable="true" data-category="religieux">Notre-Dame</div>
+                    <div class="drag-item" draggable="true" data-category="quartier">Le Marais</div>
+                    <div class="drag-item" draggable="true" data-category="musee">Le musée d'Orsay</div>
+                    <div class="drag-item" draggable="true" data-category="religieux">Le Sacré-Cœur</div>
+                    <div class="drag-item" draggable="true" data-category="quartier">Montmartre</div>
+                    <div class="drag-item" draggable="true" data-category="monument">L'Arc de Triomphe</div>
+                    <div class="drag-item" draggable="true" data-category="monument">Le Panthéon</div>
+                    <div class="drag-item" draggable="true" data-category="quartier">Saint-Germain-des-Prés</div>
+                    <div class="drag-item" draggable="true" data-category="musee">Le Centre Pompidou</div>
+                    <div class="drag-item" draggable="true" data-category="religieux">La Sainte-Chapelle</div>
+                    <div class="drag-item" draggable="true" data-category="monument">La tour Eiffel</div>
+                </div>
+
+                <div class="drop-zones">
+                    <div class="drop-zone" data-category="musee">
+                        <h4>🖼️ Musées</h4>
+                        <div class="drop-zone-items"></div>
+                    </div>
+                    <div class="drop-zone" data-category="religieux">
+                        <h4>⛪ Sites religieux</h4>
+                        <div class="drop-zone-items"></div>
+                    </div>
+                    <div class="drop-zone" data-category="quartier">
+                        <h4>🏘️ Quartiers</h4>
+                        <div class="drop-zone-items"></div>
+                    </div>
+                    <div class="drop-zone" data-category="monument">
+                        <h4>🏛️ Monuments</h4>
+                        <div class="drop-zone-items"></div>
+                    </div>
+                </div>
+
+                <div class="feedback" id="drag-feedback"></div>
+                
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button class="btn btn-primary" onclick="checkDragDrop()">Vérifier</button>
+                    <button class="btn btn-retry" onclick="resetDragDrop()">Réessayer</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUESTIONS (Short Answer) -->
+        <section class="section" id="questions">
+            <div class="activity-card">
+                <h2>❓ Activité : Questions de compréhension</h2>
+                <p class="activity-instructions">Répondez aux questions en français avec 2-3 phrases complètes.</p>
+
+                <div class="short-answer-q">
+                    <label>1. Pourquoi est-il recommandé de réserver les billets à l'avance pour visiter la tour Eiffel ?</label>
+                    <textarea class="short-answer-input" id="q1"></textarea>
+                </div>
+
+                <div class="short-answer-q">
+                    <label>2. Qu'est-ce qui s'est passé à Notre-Dame en 2019 ? Qu'est-ce qu'on peut faire maintenant ?</label>
+                    <textarea class="short-answer-input" id="q2"></textarea>
+                </div>
+
+                <div class="short-answer-q">
+                    <label>3. Pourquoi Montmartre est-il un quartier intéressant pour les touristes ?</label>
+                    <textarea class="short-answer-input" id="q3"></textarea>
+                </div>
+
+                <div class="short-answer-q">
+                    <label>4. Quelle est la différence entre le musée du Louvre et le musée d'Orsay ?</label>
+                    <textarea class="short-answer-input" id="q4"></textarea>
+                </div>
+
+                <div class="short-answer-q">
+                    <label>5. Comment peut-on aller au château de Versailles depuis Paris ? Combien de temps faut-il ?</label>
+                    <textarea class="short-answer-input" id="q5"></textarea>
+                </div>
+
+                <div class="feedback info show" id="questions-feedback">
+                    💡 Vos réponses sont sauvegardées automatiquement. Vous pouvez les exporter à la fin.
+                </div>
+            </div>
+        </section>
+
+        <!-- VOCABULAIRE (Glossary) -->
+        <section class="section" id="vocabulaire">
+            <div class="activity-card">
+                <h2>📖 Vocabulaire essentiel</h2>
+                <p class="activity-instructions">Voici le vocabulaire important de cette leçon. Étudiez ces mots pour mieux comprendre le texte.</p>
+
+                <div class="glossary-container">
+                    <div class="glossary-item">
+                        <div class="glossary-word">un monument</div>
+                        <div class="glossary-def">a monument, landmark</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">un musée</div>
+                        <div class="glossary-def">a museum</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">un quartier</div>
+                        <div class="glossary-def">a neighborhood, district</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">une cathédrale</div>
+                        <div class="glossary-def">a cathedral</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">une basilique</div>
+                        <div class="glossary-def">a basilica</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">un château</div>
+                        <div class="glossary-def">a castle, palace</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">une vue</div>
+                        <div class="glossary-def">a view</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">un billet</div>
+                        <div class="glossary-def">a ticket</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">l'entrée (f.)</div>
+                        <div class="glossary-def">the entrance, admission</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">gratuit(e)</div>
+                        <div class="glossary-def">free (no cost)</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">payant(e)</div>
+                        <div class="glossary-def">paid, requiring payment</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">visiter</div>
+                        <div class="glossary-def">to visit (a place)</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">se promener</div>
+                        <div class="glossary-def">to walk, stroll</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">monter</div>
+                        <div class="glossary-def">to go up, climb</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">admirer</div>
+                        <div class="glossary-def">to admire</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">réserver</div>
+                        <div class="glossary-def">to reserve, book</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">un arrondissement</div>
+                        <div class="glossary-def">a district (Paris has 20)</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">les horaires (m.)</div>
+                        <div class="glossary-def">the hours, schedule</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">se trouver</div>
+                        <div class="glossary-def">to be located</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">célèbre</div>
+                        <div class="glossary-def">famous</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">ancien(ne)</div>
+                        <div class="glossary-def">old, former</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">une œuvre</div>
+                        <div class="glossary-def">a work (of art)</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">une croisière</div>
+                        <div class="glossary-def">a cruise</div>
+                    </div>
+                    <div class="glossary-item">
+                        <div class="glossary-word">un spectacle</div>
+                        <div class="glossary-def">a show, performance</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ITINERAIRE (Production) -->
+        <section class="section" id="itineraire">
+            <div class="itinerary-builder">
+                <h2>✍️ Mon itinéraire parisien</h2>
+                <p>Imaginez que vous allez passer trois jours à Paris. Écrivez votre itinéraire en décrivant les sites que vous voulez visiter et pourquoi. Vous devez inclure une variété d'attractions (monuments, musées, quartiers, etc.).</p>
+
+                <div class="sentence-starters">
+                    <h3>💡 Phrases utiles (cliquez pour copier)</h3>
+                    <div class="starter-list">
+                        <div class="starter-item" onclick="copyStarter(this)">Je voudrais visiter... parce que...</div>
+                        <div class="starter-item" onclick="copyStarter(this)">Le premier jour, je vais...</div>
+                        <div class="starter-item" onclick="copyStarter(this)">Ensuite, on peut...</div>
+                        <div class="starter-item" onclick="copyStarter(this)">Je suis intéressé(e) par...</div>
+                        <div class="starter-item" onclick="copyStarter(this)">C'est important de voir... parce que...</div>
+                        <div class="starter-item" onclick="copyStarter(this)">Après cela, je voudrais explorer...</div>
+                        <div class="starter-item" onclick="copyStarter(this)">Pour finir la journée,...</div>
+                        <div class="starter-item" onclick="copyStarter(this)">Le soir, on peut...</div>
+                        <div class="starter-item" onclick="copyStarter(this)">Je recommande... parce que...</div>
+                        <div class="starter-item" onclick="copyStarter(this)">À mon avis, ... est le plus intéressant.</div>
+                    </div>
+                </div>
+
+                <div class="requirements-checklist" id="requirements">
+                    <h4>📋 Exigences :</h4>
+                    <div class="requirement unmet" id="req-length">
+                        <span class="requirement-icon">○</span>
+                        <span>Minimum 150 caractères</span>
+                    </div>
+                    <div class="requirement unmet" id="req-monument">
+                        <span class="requirement-icon">○</span>
+                        <span>Mentionner au moins un monument</span>
+                    </div>
+                    <div class="requirement unmet" id="req-musee">
+                        <span class="requirement-icon">○</span>
+                        <span>Mentionner au moins un musée</span>
+                    </div>
+                    <div class="requirement unmet" id="req-quartier">
+                        <span class="requirement-icon">○</span>
+                        <span>Mentionner au moins un quartier</span>
+                    </div>
+                </div>
+
+                <textarea class="itinerary-textarea" id="itinerary-text" placeholder="Écrivez votre itinéraire ici..." oninput="updateItinerary()"></textarea>
+                
+                <div class="char-counter" id="char-counter">0 / 150 caractères minimum</div>
+
+                <div class="export-section">
+                    <button class="btn btn-primary" onclick="exportToPDF()">📄 Exporter en PDF</button>
+                    <button class="btn btn-secondary" onclick="copyToClipboard()">📋 Copier le texte</button>
+                    <button class="btn btn-success" onclick="exportAllWork()">💾 Exporter tout le travail</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%">0%</div>
+        </div>
+        <p class="progress-text">Progression : <span id="progress-text">0</span>/9 sections complétées</p>
+    </div>
+
+    <script>
+        // ============ NAVIGATION ============
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.section).classList.add('active');
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // ============ GRAMMAR DROPDOWNS ============
+        function toggleGrammar(header) {
+            const dropdown = header.parentElement;
+            dropdown.classList.toggle('open');
+        }
+
+        // ============ MATCHING ACTIVITY ============
+        let selectedMatch = null;
+        let matches = {};
+
+        document.querySelectorAll('.matching-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('correct')) return;
+                
+                if (selectedMatch === null) {
+                    selectedMatch = item;
+                    item.classList.add('selected');
+                } else if (selectedMatch === item) {
+                    selectedMatch.classList.remove('selected');
+                    selectedMatch = null;
+                } else {
+                    const match1 = selectedMatch.dataset.match;
+                    const match2 = item.dataset.match;
+                    
+                    if (match1 === match2) {
+                        selectedMatch.classList.remove('selected');
+                        selectedMatch.classList.add('correct');
+                        item.classList.add('correct');
+                        matches[match1] = true;
+                    } else {
+                        selectedMatch.classList.add('incorrect');
+                        item.classList.add('incorrect');
+                        setTimeout(() => {
+                            selectedMatch.classList.remove('selected', 'incorrect');
+                            item.classList.remove('incorrect');
+                            selectedMatch = null;
+                        }, 800);
+                        return;
+                    }
+                    selectedMatch = null;
+                }
+                saveProgress();
+            });
+        });
+
+        function checkMatching() {
+            const total = 6;
+            const correct = Object.keys(matches).length;
+            const feedback = document.getElementById('matching-feedback');
+            
+            if (correct === total) {
+                feedback.className = 'feedback success show';
+                feedback.textContent = `🎉 Excellent ! Vous avez trouvé toutes les ${total} associations correctes !`;
+            } else {
+                feedback.className = 'feedback info show';
+                feedback.textContent = `Vous avez ${correct}/${total} associations correctes. Continuez à chercher !`;
+            }
+            updateProgress();
+        }
+
+        function resetMatching() {
+            matches = {};
+            selectedMatch = null;
+            document.querySelectorAll('.matching-item').forEach(item => {
+                item.classList.remove('selected', 'correct', 'incorrect');
+            });
+            document.getElementById('matching-feedback').classList.remove('show');
+            saveProgress();
+        }
+
+        // ============ TRUE/FALSE ACTIVITY ============
+        document.querySelectorAll('.tf-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const question = option.closest('.tf-question');
+                question.querySelectorAll('.tf-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+                saveProgress();
+            });
+        });
+
+        function checkTrueFalse() {
+            let correct = 0;
+            const questions = document.querySelectorAll('.tf-question');
+            
+            questions.forEach(q => {
+                const answer = q.dataset.answer;
+                const selected = q.querySelector('.tf-option.selected');
+                
+                if (selected) {
+                    q.querySelectorAll('.tf-option').forEach(o => {
+                        o.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    if (selected.dataset.value === answer) {
+                        selected.classList.add('correct');
+                        correct++;
+                    } else {
+                        selected.classList.add('incorrect');
+                        q.querySelector(`.tf-option[data-value="${answer}"]`).classList.add('correct');
+                    }
+                }
+            });
+
+            const feedback = document.getElementById('tf-feedback');
+            if (correct === questions.length) {
+                feedback.className = 'feedback success show';
+                feedback.textContent = `🎉 Parfait ! ${correct}/${questions.length} réponses correctes !`;
+            } else {
+                feedback.className = 'feedback error show';
+                feedback.textContent = `${correct}/${questions.length} réponses correctes. Regardez les corrections en vert.`;
+            }
+            updateProgress();
+        }
+
+        function resetTrueFalse() {
+            document.querySelectorAll('.tf-question').forEach(q => {
+                q.querySelectorAll('.tf-option').forEach(o => {
+                    o.classList.remove('selected', 'correct', 'incorrect');
+                });
+            });
+            document.getElementById('tf-feedback').classList.remove('show');
+            saveProgress();
+        }
+
+        // ============ CLOZE ACTIVITY ============
+        function checkCloze() {
+            let correct = 0;
+            const inputs = document.querySelectorAll('.cloze-input');
+            
+            inputs.forEach(input => {
+                const answer = input.dataset.answer.toLowerCase();
+                const userAnswer = input.value.trim().toLowerCase();
+                
+                input.classList.remove('correct', 'incorrect');
+                
+                if (userAnswer === answer) {
+                    input.classList.add('correct');
+                    correct++;
+                } else if (userAnswer !== '') {
+                    input.classList.add('incorrect');
+                }
+            });
+
+            const feedback = document.getElementById('cloze-feedback');
+            if (correct === inputs.length) {
+                feedback.className = 'feedback success show';
+                feedback.textContent = `🎉 Excellent ! Tous les ${inputs.length} mots sont corrects !`;
+            } else {
+                feedback.className = 'feedback error show';
+                feedback.textContent = `${correct}/${inputs.length} mots corrects. Les réponses incorrectes sont en rouge.`;
+            }
+            updateProgress();
+        }
+
+        function resetCloze() {
+            document.querySelectorAll('.cloze-input').forEach(input => {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect');
+            });
+            document.getElementById('cloze-feedback').classList.remove('show');
+            saveProgress();
+        }
+
+        // ============ DRAG AND DROP ============
+        let draggedItem = null;
+
+        document.querySelectorAll('.drag-item').forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedItem = item;
+                item.style.opacity = '0.5';
+            });
+            
+            item.addEventListener('dragend', () => {
+                item.style.opacity = '1';
+                draggedItem = null;
+            });
+        });
+
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('drag-over');
+            });
+            
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('drag-over');
+            });
+            
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                
+                if (draggedItem) {
+                    const itemsContainer = zone.querySelector('.drop-zone-items');
+                    itemsContainer.appendChild(draggedItem);
+                    saveProgress();
+                }
+            });
+        });
+
+        // Allow dropping back to source
+        document.getElementById('drag-source').addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        document.getElementById('drag-source').addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (draggedItem) {
+                document.getElementById('drag-source').appendChild(draggedItem);
+                draggedItem.classList.remove('correct', 'incorrect');
+                saveProgress();
+            }
+        });
+
+        function checkDragDrop() {
+            let correct = 0;
+            let total = 0;
+
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                const category = zone.dataset.category;
+                zone.querySelectorAll('.drag-item').forEach(item => {
+                    total++;
+                    item.classList.remove('correct', 'incorrect');
+                    
+                    if (item.dataset.category === category) {
+                        item.classList.add('correct');
+                        correct++;
+                    } else {
+                        item.classList.add('incorrect');
+                    }
+                });
+            });
+
+            const feedback = document.getElementById('drag-feedback');
+            if (correct === 12 && total === 12) {
+                feedback.className = 'feedback success show';
+                feedback.textContent = `🎉 Parfait ! Toutes les 12 catégorisations sont correctes !`;
+            } else if (total === 0) {
+                feedback.className = 'feedback info show';
+                feedback.textContent = `Glissez les éléments dans les catégories avant de vérifier.`;
+            } else {
+                feedback.className = 'feedback error show';
+                feedback.textContent = `${correct}/${total} éléments bien placés. Les erreurs sont en rouge.`;
+            }
+            updateProgress();
+        }
+
+        function resetDragDrop() {
+            const source = document.getElementById('drag-source');
+            document.querySelectorAll('.drop-zone-items .drag-item').forEach(item => {
+                item.classList.remove('correct', 'incorrect');
+                source.appendChild(item);
+            });
+            document.getElementById('drag-feedback').classList.remove('show');
+            saveProgress();
+        }
+
+        // ============ ITINERARY ============
+        const monuments = ['tour eiffel', 'arc de triomphe', 'panthéon', 'pantheon', 'opéra', 'opera', 'catacombes', 'sainte-chapelle', 'invalides'];
+        const musees = ['louvre', 'orsay', 'pompidou', 'orangerie', 'rodin', 'picasso', 'musée', 'musee'];
+        const quartiers = ['marais', 'montmartre', 'quartier latin', 'saint-germain', 'pigalle'];
+
+        function updateItinerary() {
+            const text = document.getElementById('itinerary-text').value;
+            const charCount = text.length;
+            const counter = document.getElementById('char-counter');
+            
+            counter.textContent = `${charCount} / 150 caractères minimum`;
+            counter.classList.remove('warning', 'success');
+            
+            if (charCount >= 150) {
+                counter.classList.add('success');
+            } else if (charCount > 0) {
+                counter.classList.add('warning');
+            }
+
+            // Check requirements
+            const textLower = text.toLowerCase();
+            
+            updateRequirement('req-length', charCount >= 150);
+            updateRequirement('req-monument', monuments.some(m => textLower.includes(m)));
+            updateRequirement('req-musee', musees.some(m => textLower.includes(m)));
+            updateRequirement('req-quartier', quartiers.some(q => textLower.includes(q)));
+            
+            saveProgress();
+            updateProgress();
+        }
+
+        function updateRequirement(id, met) {
+            const req = document.getElementById(id);
+            req.classList.toggle('met', met);
+            req.classList.toggle('unmet', !met);
+            req.querySelector('.requirement-icon').textContent = met ? '✓' : '○';
+        }
+
+        function copyStarter(element) {
+            const textarea = document.getElementById('itinerary-text');
+            const starter = element.textContent;
+            
+            if (textarea.value && !textarea.value.endsWith(' ') && !textarea.value.endsWith('\n')) {
+                textarea.value += ' ';
+            }
+            textarea.value += starter + ' ';
+            textarea.focus();
+            updateItinerary();
+        }
+
+        // ============ EXPORT FUNCTIONS ============
+        function copyToClipboard() {
+            const text = document.getElementById('itinerary-text').value;
+            navigator.clipboard.writeText(text).then(() => {
+                showAutosave('Texte copié !');
+            });
+        }
+
+        function exportToPDF() {
+            const text = document.getElementById('itinerary-text').value;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Mon itinéraire parisien</title>
+                    <style>
+                        body { font-family: Georgia, serif; padding: 40px; line-height: 1.8; }
+                        h1 { color: #1a365d; border-bottom: 2px solid #c9a227; padding-bottom: 10px; }
+                        p { white-space: pre-wrap; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Mon itinéraire parisien</h1>
+                    <p>${text}</p>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function exportAllWork() {
+            const work = {
+                date: new Date().toLocaleDateString('fr-FR'),
+                trueFalseEvidence: [],
+                shortAnswers: {},
+                itinerary: document.getElementById('itinerary-text').value
+            };
+
+            // Collect T/F evidence
+            document.querySelectorAll('.tf-question').forEach((q, i) => {
+                const evidence = q.querySelector('.evidence-input').value;
+                const selected = q.querySelector('.tf-option.selected');
+                work.trueFalseEvidence.push({
+                    question: i + 1,
+                    answer: selected ? selected.dataset.value : 'non répondu',
+                    evidence: evidence
+                });
+            });
+
+            // Collect short answers
+            for (let i = 1; i <= 5; i++) {
+                work.shortAnswers[`question${i}`] = document.getElementById(`q${i}`).value;
+            }
+
+            const blob = new Blob([JSON.stringify(work, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `paris-module-travail-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showAutosave('Travail exporté !');
+        }
+
+        // ============ AUTOSAVE ============
+        function saveProgress() {
+            const data = {
+                trueFalse: {},
+                trueFalseEvidence: {},
+                cloze: {},
+                shortAnswers: {},
+                itinerary: document.getElementById('itinerary-text').value,
+                timestamp: Date.now()
+            };
+
+            // Save T/F selections and evidence
+            document.querySelectorAll('.tf-question').forEach((q, i) => {
+                const selected = q.querySelector('.tf-option.selected');
+                data.trueFalse[i] = selected ? selected.dataset.value : null;
+                data.trueFalseEvidence[i] = q.querySelector('.evidence-input').value;
+            });
+
+            // Save cloze answers
+            document.querySelectorAll('.cloze-input').forEach((input, i) => {
+                data.cloze[i] = input.value;
+            });
+
+            // Save short answers
+            for (let i = 1; i <= 5; i++) {
+                data.shortAnswers[i] = document.getElementById(`q${i}`).value;
+            }
+
+            localStorage.setItem('parisModuleProgress', JSON.stringify(data));
+            showAutosave();
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('parisModuleProgress');
+            if (!saved) return;
+
+            const data = JSON.parse(saved);
+
+            // Load T/F selections and evidence
+            document.querySelectorAll('.tf-question').forEach((q, i) => {
+                if (data.trueFalse && data.trueFalse[i]) {
+                    q.querySelector(`.tf-option[data-value="${data.trueFalse[i]}"]`).classList.add('selected');
+                }
+                if (data.trueFalseEvidence && data.trueFalseEvidence[i]) {
+                    q.querySelector('.evidence-input').value = data.trueFalseEvidence[i];
+                }
+            });
+
+            // Load cloze answers
+            document.querySelectorAll('.cloze-input').forEach((input, i) => {
+                if (data.cloze && data.cloze[i]) {
+                    input.value = data.cloze[i];
+                }
+            });
+
+            // Load short answers
+            for (let i = 1; i <= 5; i++) {
+                if (data.shortAnswers && data.shortAnswers[i]) {
+                    document.getElementById(`q${i}`).value = data.shortAnswers[i];
+                }
+            }
+
+            // Load itinerary
+            if (data.itinerary) {
+                document.getElementById('itinerary-text').value = data.itinerary;
+                updateItinerary();
+            }
+
+            updateProgress();
+        }
+
+        function showAutosave(message = '✓ Sauvegardé') {
+            const indicator = document.getElementById('autosaveIndicator');
+            indicator.textContent = message;
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
+        // ============ PROGRESS TRACKING ============
+        function updateProgress() {
+            let completed = 0;
+            const total = 9;
+
+            // Check lecture (always count as viewed after some time)
+            if (localStorage.getItem('parisLectureViewed')) completed++;
+
+            // Check grammar (viewed)
+            if (localStorage.getItem('parisGrammarViewed')) completed++;
+
+            // Check matching
+            if (Object.keys(matches).length === 6) completed++;
+
+            // Check T/F
+            const tfAnswered = document.querySelectorAll('.tf-option.selected').length;
+            if (tfAnswered >= 6) completed++;
+
+            // Check cloze
+            const clozeCorrect = document.querySelectorAll('.cloze-input.correct').length;
+            if (clozeCorrect >= 10) completed++;
+
+            // Check drag/drop
+            const dragCorrect = document.querySelectorAll('.drop-zone-items .drag-item.correct').length;
+            if (dragCorrect >= 12) completed++;
+
+            // Check questions
+            let questionsAnswered = 0;
+            for (let i = 1; i <= 5; i++) {
+                if (document.getElementById(`q${i}`).value.length > 20) questionsAnswered++;
+            }
+            if (questionsAnswered >= 4) completed++;
+
+            // Check vocab (viewed)
+            if (localStorage.getItem('parisVocabViewed')) completed++;
+
+            // Check itinerary
+            const itineraryReqs = document.querySelectorAll('.requirement.met').length;
+            if (itineraryReqs === 4) completed++;
+
+            const percent = Math.round((completed / total) * 100);
+            document.getElementById('progress-fill').style.width = `${percent}%`;
+            document.getElementById('progress-fill').textContent = `${percent}%`;
+            document.getElementById('progress-text').textContent = completed;
+        }
+
+        // Track section views
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const section = tab.dataset.section;
+                if (section === 'lecture') localStorage.setItem('parisLectureViewed', 'true');
+                if (section === 'grammaire') localStorage.setItem('parisGrammarViewed', 'true');
+                if (section === 'vocabulaire') localStorage.setItem('parisVocabViewed', 'true');
+                updateProgress();
+            });
+        });
+
+        // Auto-save on input
+        document.querySelectorAll('input, textarea').forEach(el => {
+            el.addEventListener('input', () => {
+                saveProgress();
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+            localStorage.setItem('parisLectureViewed', 'true');
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
