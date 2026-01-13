@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IB French B | Pendant 24h - Grand Corps Malade & Suzane</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --paper: #fafaf9;
+            --accent: #6366f1;
+            --accent-light: #e0e7ff;
+            --muted: #6b7280;
+            --border: #e5e5e5;
+            --success: #10b981;
+            --error: #ef4444;
+            --warm: #f59e0b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+        
+        /* Header */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+        .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+        .subtitle { color: var(--muted); font-size: 1.1rem; }
+        
+        /* Save indicator */
+        .save-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: var(--muted);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+        .save-dot {
+            width: 6px; height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+        
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: var(--paper);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            z-index: 50;
+        }
+        .nav-scroll {
+            display: flex;
+            gap: 0.25rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        .nav-btn {
+            background: transparent;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--muted);
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover { background: var(--accent-light); color: var(--accent); }
+        .nav-btn.active { background: var(--accent); color: white; }
+        
+        /* Sections */
+        section { display: none; }
+        section.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--ink);
+        }
+        h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--ink);
+        }
+        h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Video */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            margin-bottom: 2rem;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+        .video-fallback {
+            text-align: center;
+            padding: 1rem;
+            background: var(--accent-light);
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+        }
+        .video-fallback a { color: var(--accent); font-weight: 500; }
+        
+        /* Info boxes */
+        .info-box {
+            background: #f8f8f7;
+            border-left: 3px solid var(--accent);
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .info-box p { margin-bottom: 0.75rem; }
+        .info-box p:last-child { margin-bottom: 0; }
+        
+        .theme-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .theme-tag {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+        
+        /* Lyrics */
+        .lyrics-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        @media (min-width: 768px) {
+            .lyrics-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .lyrics-panel {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        .lyrics-section { margin-bottom: 1.5rem; }
+        .lyrics-section:last-child { margin-bottom: 0; }
+        .section-label {
+            display: inline-block;
+            background: var(--ink);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+        .lyric-line {
+            margin-bottom: 0.4rem;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+        .vocab-word {
+            color: var(--accent);
+            cursor: help;
+            border-bottom: 1px dotted var(--accent);
+            position: relative;
+        }
+        .vocab-word .tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ink);
+            color: white;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            max-width: 240px;
+            white-space: normal;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            line-height: 1.4;
+        }
+        .vocab-word .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--ink);
+        }
+        .vocab-word:hover .tooltip { opacity: 1; visibility: visible; }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .card-number {
+            background: var(--accent);
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .card-type {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Questions */
+        .question { margin-bottom: 1.5rem; }
+        .question-text { font-weight: 500; margin-bottom: 1rem; }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: #f8f8f7;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option:hover { border-color: var(--accent); }
+        .option.selected { border-color: var(--accent); background: var(--accent-light); }
+        .option.correct { border-color: var(--success); background: #d1fae5; }
+        .option.incorrect { border-color: var(--error); background: #fee2e2; }
+        .option input { display: none; }
+        .option-letter {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+        .feedback {
+            margin-top: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .feedback.show { display: block; }
+        .feedback.success { background: #d1fae5; color: #065f46; }
+        .feedback.error { background: #fee2e2; color: #991b1b; }
+        
+        /* Textarea & Writing scaffolds */
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+        textarea:focus { outline: none; border-color: var(--accent); }
+        textarea::placeholder { color: #9ca3af; }
+        
+        .writing-scaffold {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .scaffold-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+        .scaffold-prompts {
+            font-size: 0.9rem;
+            color: #78350f;
+        }
+        .scaffold-prompts li {
+            margin-bottom: 0.25rem;
+            margin-left: 1.25rem;
+        }
+        
+        .word-count {
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.5rem;
+        }
+        
+        /* Matching */
+        .matching-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        @media (max-width: 640px) {
+            .matching-grid { grid-template-columns: 1fr; }
+        }
+        .match-column h4 { margin-bottom: 0.75rem; }
+        .match-item {
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .match-item:hover { border-color: var(--accent); }
+        .match-item.selected { border-color: var(--warm); background: #fef3c7; }
+        .match-item.matched { border-color: var(--success); background: #d1fae5; cursor: default; }
+        .match-item.wrong { border-color: var(--error); animation: shake 0.4s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .match-num {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .match-letter {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: var(--warm);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        /* Theme Analysis */
+        .theme-analysis-grid {
+            display: grid;
+            gap: 1rem;
+        }
+        .theme-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+        .theme-card h4 {
+            color: var(--ink);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        .theme-examples {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+        .theme-question {
+            background: #f8f8f7;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        /* TOK */
+        .tok-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .tok-badge {
+            display: inline-block;
+            background: #92400e;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        .tok-card h3 { color: #78350f; margin-top: 0; }
+        
+        /* Progress */
+        .progress-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #4f46e5; }
+        .btn-secondary { background: white; color: var(--ink); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: #f8f8f7; }
+        .btn-export { background: var(--success); color: white; }
+        .btn-export:hover { background: #059669; }
+        
+        .btn-group { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+        
+        /* Glossary */
+        .glossary-search {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .glossary-search input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        .glossary-search input:focus { outline: none; border-color: var(--accent); }
+        .glossary-search::before {
+            content: '🔍';
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+        }
+        .glossary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .glossary-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+        .glossary-term { font-weight: 600; color: var(--accent); margin-bottom: 0.25rem; }
+        .glossary-type { font-size: 0.75rem; color: var(--muted); font-style: italic; margin-bottom: 0.5rem; }
+        .glossary-def { font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .glossary-ex { font-size: 0.85rem; color: var(--muted); font-style: italic; padding-top: 0.5rem; border-top: 1px solid var(--border); }
+        
+        /* Export Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal h3 { margin-bottom: 1rem; }
+        .modal pre {
+            background: #f8f8f7;
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 640px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 1.75rem; }
+            h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="save-indicator"><div class="save-dot"></div><span id="saveStatus">Sauvegardé</span></div>
+
+<div class="container">
+    <header>
+        <span class="badge">IB French B — HL/SL</span>
+        <h1>Pendant 24h</h1>
+        <p class="subtitle">Grand Corps Malade & Suzane — Les expériences genrées</p>
+    </header>
+
+    <nav>
+        <div class="nav-scroll">
+            <button class="nav-btn active" data-section="video">Vidéo</button>
+            <button class="nav-btn" data-section="context">Contexte</button>
+            <button class="nav-btn" data-section="lyrics">Paroles</button>
+            <button class="nav-btn" data-section="comprehension">Compréhension</button>
+            <button class="nav-btn" data-section="matching">Association</button>
+            <button class="nav-btn" data-section="themes">Thèmes IB</button>
+            <button class="nav-btn" data-section="tok">TOK</button>
+            <button class="nav-btn" data-section="production">Production</button>
+            <button class="nav-btn" data-section="glossary">Glossaire</button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- VIDEO -->
+        <section id="video" class="active">
+            <h2>Écoute</h2>
+            <div class="video-fallback">
+                📺 <a href="https://www.youtube.com/watch?v=YNSiEB8qFyk" target="_blank">Ouvrir la vidéo sur YouTube</a> (si l'embed ne fonctionne pas)
+            </div>
+            <div class="video-container">
+                <iframe src="https://www.youtube-nocookie.com/embed/YNSiEB8qFyk?rel=0" title="Pendant 24h" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <div class="info-box">
+                <h3>Objectifs</h3>
+                <p>• Analyser le vocabulaire lié aux questions de genre<br>
+                • Identifier les stéréotypes dans la société française<br>
+                • Relier le contenu aux thèmes IB : Identités, Expériences, Organisation sociale</p>
+            </div>
+            <div class="card">
+                <h3>Première écoute</h3>
+                <p style="margin-bottom:1rem;color:var(--muted)">Notez vos impressions après la première écoute.</p>
+                <textarea id="firstImpressions" placeholder="Quel est le ton ? Quelles émotions ressentez-vous ? Quel semble être le thème principal ?"></textarea>
+            </div>
+        </section>
+
+        <!-- CONTEXT -->
+        <section id="context">
+            <h2>Contexte Culturel</h2>
+            <div class="info-box">
+                <h3>Les Artistes</h3>
+                <p><strong>Grand Corps Malade</strong> (Fabien Marsaud, né en 1977) — Slameur français connu pour ses textes engagés sur les questions sociales.</p>
+                <p><strong>Suzane</strong> (née en 1990) — Auteure-compositrice d'électro-pop engagée, souvent sur des thèmes féministes.</p>
+            </div>
+            <div class="info-box">
+                <h3>#BalanceTonPorc</h3>
+                <p>Cette chanson (2020) s'inscrit dans le mouvement français équivalent à #MeToo. Elle explore avec humour et ironie les différences d'expériences quotidiennes entre hommes et femmes.</p>
+                <div class="theme-tags">
+                    <span class="theme-tag">Égalité des genres</span>
+                    <span class="theme-tag">Charge mentale</span>
+                    <span class="theme-tag">Harcèlement</span>
+                    <span class="theme-tag">Inégalités salariales</span>
+                    <span class="theme-tag">Stéréotypes</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Réflexion préliminaire</h3>
+                <p style="margin-bottom:1rem;color:var(--muted)">Si vous pouviez vivre 24 heures dans la peau d'une personne d'un autre genre, que voudriez-vous comprendre ou découvrir ?</p>
+                <textarea id="preliminaryReflection" placeholder="Écrivez votre réflexion..."></textarea>
+            </div>
+        </section>
+
+        <!-- LYRICS -->
+        <section id="lyrics">
+            <h2>Paroles Annotées</h2>
+            <p style="margin-bottom:1.5rem;color:var(--muted)">Survolez les <span style="color:var(--accent)">mots en bleu</span> pour voir leur définition.</p>
+            <div class="lyrics-grid">
+                <div class="lyrics-panel">
+                    <div class="lyrics-section">
+                        <span class="section-label">Refrain</span>
+                        <p class="lyric-line">L'<span class="vocab-word">ultime<span class="tooltip">Dernier, final, le plus important</span></span> nuance</p>
+                        <p class="lyric-line">Vue de l'intérieur</p>
+                        <p class="lyric-line">Vivre cette chance</p>
+                        <p class="lyric-line">Pendant vingt-quatre heures</p>
+                    </div>
+                    <div class="lyrics-section">
+                        <span class="section-label">Couplet 1 — GCM imagine être une femme</span>
+                        <p class="lyric-line">J'enverrai un mail au <span class="vocab-word">taf<span class="tooltip">Argot : le travail</span></span> en <span class="vocab-word">f'sant<span class="tooltip">Contraction orale de « faisant »</span></span> les courses à Carrefour</p>
+                        <p class="lyric-line">J'aiderai les enfants aux devoirs en sortant la quiche du four</p>
+                        <p class="lyric-line">Avec eux je serai joyeuse, avec mon mec, <span class="vocab-word">femme fatale<span class="tooltip">Femme séduisante et mystérieuse</span></span></p>
+                        <p class="lyric-line">Vingt-quatre heures dans la peau d'une femme, je comprendrai la <span class="vocab-word">charge mentale<span class="tooltip">Poids psychologique de gérer toutes les responsabilités domestiques</span></span></p>
+                        <p class="lyric-line">À seize heures trente-cinq pile, j'arrêterai d'travailler</p>
+                        <p class="lyric-line">Vu qu'après quand t'es une femme, et ben t'es plus payée</p>
+                        <p class="lyric-line">Je sortirai en jupe quelques instants dans les transports</p>
+                        <p class="lyric-line">Pour comprendre l'essence même du hashtag « <span class="vocab-word">Balance ton porc<span class="tooltip">Mouvement #MeToo français pour dénoncer le harcèlement</span></span> »</p>
+                        <p class="lyric-line">J'boirai du whisky pour me mettre à l'aise</p>
+                        <p class="lyric-line">Sans coca, sans glaçon, comme les <span class="vocab-word">mecs balaises<span class="tooltip">Argot : hommes costauds</span></span></p>
+                        <p class="lyric-line">J'irai <span class="vocab-word">draguer<span class="tooltip">Flirter, essayer de séduire</span></span> une fille mais y'aura pas d'malaise</p>
+                        <p class="lyric-line">J'enverrai pas d'texto qui dit « C'est quand qu'on baise ? »</p>
+                        <p class="lyric-line">Je serai romantique avec les <span class="vocab-word">meufs<span class="tooltip">Argot/verlan : les femmes</span></span> sur Tinder</p>
+                        <p class="lyric-line">Pas de <span class="vocab-word">dick pics<span class="tooltip">Photos intimes non sollicitées</span></span>, des cœurs de toutes les couleurs</p>
+                        <p class="lyric-line">J'irai marcher la nuit, je prendrai pas de Uber</p>
+                        <p class="lyric-line">Si je croise un autre mec, plus besoin d'avoir peur</p>
+                    </div>
+                    <div class="lyrics-section">
+                        <span class="section-label">Suite — Stéréotypes (avec ironie)</span>
+                        <p class="lyric-line">Mais j'veux aussi <span class="vocab-word">kiffer<span class="tooltip">Argot : adorer, prendre du plaisir</span></span>, connaître enfin leur vrai pouvoir</p>
+                        <p class="lyric-line">Critiquer les gens avec mes copines du matin au soir</p>
+                        <p class="lyric-line">Et dès qu'elles sont parties, les critiquer elles aussi : « Fanny est vraiment <span class="vocab-word">chiante<span class="tooltip">Argot : ennuyeuse</span></span>, Solène elle a grossi »</p>
+                        <p class="lyric-line">Je veux découvrir enfin le singulier bonheur</p>
+                        <p class="lyric-line">De réussir à faire un <span class="vocab-word">créneau<span class="tooltip">Stationnement en parallèle</span></span> en une demi-heure</p>
+                        <p class="lyric-line">Comprendre enfin la passion sincère, sans censure</p>
+                        <p class="lyric-line">De regarder sur internet pendant, des heures, des chaussures</p>
+                    </div>
+                </div>
+                <div class="lyrics-panel">
+                    <div class="lyrics-section">
+                        <span class="section-label">Couplet 2 — Suzane imagine être un homme</span>
+                        <p class="lyric-line">J'mettrai la main au cul à un pote un peu lourd</p>
+                        <p class="lyric-line">Pour qu'il comprenne enfin que c'est pas très glamour</p>
+                        <p class="lyric-line">J'pourrai prendre tout mon temps, pas d'<span class="vocab-word">horloge biologique<span class="tooltip">Pression sociale d'avoir des enfants avant un certain âge</span></span></p>
+                        <p class="lyric-line">Si je veux pas d'enfant, personne en fera tout un <span class="vocab-word">cirque<span class="tooltip">Expression : faire une histoire, exagérer</span></span></p>
+                        <p class="lyric-line">Je testerai tout d'suite, ces p'tites <span class="vocab-word">galères<span class="tooltip">Argot : difficultés</span></span> au féminin</p>
+                        <p class="lyric-line">L'épilation, le maquillage, perdre ses clefs dans l'sac à main</p>
+                        <p class="lyric-line">Les talons hauts, le vernis à ongles et les rappels mensuels du corps</p>
+                        <p class="lyric-line">D'être une femme, je veux découvrir l'<span class="vocab-word">enfer du décor<span class="tooltip">Les difficultés cachées derrière les apparences</span></span></p>
+                        <p class="lyric-line">J'pourrai ne plus m'raser, personne dira qu'c'est <span class="vocab-word">dégeu'<span class="tooltip">Abréviation de « dégoûtant »</span></span></p>
+                        <p class="lyric-line">J'aurai plus mal au ventre, <span class="vocab-word">ragnagna<span class="tooltip">Argot familier : les règles</span></span> de mes deux</p>
+                        <p class="lyric-line">J'dirai « Bonjour, patron » sans qu'il me <span class="vocab-word">dévore des yeux<span class="tooltip">Regarder avec insistance de manière inappropriée</span></span></p>
+                        <p class="lyric-line"><span class="vocab-word">Dealer<span class="tooltip">Anglicisme : négocier</span></span> l'augmentation, sans dîner amoureux</p>
+                        <p class="lyric-line">Devant ma PS4, pendant qu'ma meuf se <span class="vocab-word">plie en quatre<span class="tooltip">Faire beaucoup d'efforts</span></span></p>
+                        <p class="lyric-line">Je mettrai pas la table, c'est pas la fin du match</p>
+                        <p class="lyric-line">J'pisserai sur le trottoir comme le p'tit chien de la voisine</p>
+                        <p class="lyric-line">C'est l'avantage de la physiologie masculine</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPREHENSION -->
+        <section id="comprehension">
+            <h2>Compréhension</h2>
+            <div class="progress-label"><span>Progression</span><span id="compProgress">0/5</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="compProgressBar" style="width:0%"></div></div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-number">1</div><span class="card-type">Choix multiple</span></div>
+                <div class="question" id="q1">
+                    <p class="question-text">Que signifie « À seize heures trente-cinq pile, j'arrêterai d'travailler » ?</p>
+                    <div class="options">
+                        <label class="option" data-correct="false"><input type="radio" name="q1" value="a"><span class="option-letter">A</span><span>Les femmes ont des horaires plus courts</span></label>
+                        <label class="option" data-correct="true"><input type="radio" name="q1" value="b"><span class="option-letter">B</span><span>Référence à l'écart salarial (les femmes gagnent moins)</span></label>
+                        <label class="option" data-correct="false"><input type="radio" name="q1" value="c"><span class="option-letter">C</span><span>C'est l'heure de chercher les enfants</span></label>
+                    </div>
+                    <div class="feedback" id="fb-q1"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-number">2</div><span class="card-type">Choix multiple</span></div>
+                <div class="question" id="q2">
+                    <p class="question-text">Pourquoi « J'irai marcher la nuit... plus besoin d'avoir peur » ?</p>
+                    <div class="options">
+                        <label class="option" data-correct="false"><input type="radio" name="q2" value="a"><span class="option-letter">A</span><span>Les hommes préfèrent marcher</span></label>
+                        <label class="option" data-correct="true"><input type="radio" name="q2" value="b"><span class="option-letter">B</span><span>En tant qu'homme, moins de peur de l'insécurité nocturne</span></label>
+                        <label class="option" data-correct="false"><input type="radio" name="q2" value="c"><span class="option-letter">C</span><span>Uber est trop cher</span></label>
+                    </div>
+                    <div class="feedback" id="fb-q2"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-number">3</div><span class="card-type">Choix multiple</span></div>
+                <div class="question" id="q3">
+                    <p class="question-text">Quelle critique avec « Dealer l'augmentation, sans dîner amoureux » ?</p>
+                    <div class="options">
+                        <label class="option" data-correct="true"><input type="radio" name="q3" value="a"><span class="option-letter">A</span><span>Dénonce le harcèlement et la sexualisation au travail</span></label>
+                        <label class="option" data-correct="false"><input type="radio" name="q3" value="b"><span class="option-letter">B</span><span>Les femmes préfèrent les dîners d'affaires</span></label>
+                        <label class="option" data-correct="false"><input type="radio" name="q3" value="c"><span class="option-letter">C</span><span>Il est difficile de négocier son salaire</span></label>
+                    </div>
+                    <div class="feedback" id="fb-q3"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-number">4</div><span class="card-type">Choix multiple</span></div>
+                <div class="question" id="q4">
+                    <p class="question-text">Quel est le ton général de la chanson ?</p>
+                    <div class="options">
+                        <label class="option" data-correct="false"><input type="radio" name="q4" value="a"><span class="option-letter">A</span><span>Tragique et désespéré</span></label>
+                        <label class="option" data-correct="true"><input type="radio" name="q4" value="b"><span class="option-letter">B</span><span>Ironique et engagé — l'humour pour faire réfléchir</span></label>
+                        <label class="option" data-correct="false"><input type="radio" name="q4" value="c"><span class="option-letter">C</span><span>Neutre et informatif</span></label>
+                    </div>
+                    <div class="feedback" id="fb-q4"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-number">5</div><span class="card-type">Choix multiple</span></div>
+                <div class="question" id="q5">
+                    <p class="question-text">Pourquoi la mention de « l'horloge biologique » ?</p>
+                    <div class="options">
+                        <label class="option" data-correct="false"><input type="radio" name="q5" value="a"><span class="option-letter">A</span><span>Pour parler de la gestion du temps</span></label>
+                        <label class="option" data-correct="true"><input type="radio" name="q5" value="b"><span class="option-letter">B</span><span>Pour critiquer la pression sociale sur la maternité</span></label>
+                        <label class="option" data-correct="false"><input type="radio" name="q5" value="c"><span class="option-letter">C</span><span>Pour expliquer un concept scientifique</span></label>
+                    </div>
+                    <div class="feedback" id="fb-q5"></div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="checkComprehension()">Vérifier</button>
+                <button class="btn btn-secondary" onclick="resetComprehension()">Recommencer</button>
+            </div>
+        </section>
+
+        <!-- MATCHING -->
+        <section id="matching">
+            <h2>Association : Question → Paroles</h2>
+            <p style="margin-bottom:1rem;color:var(--muted)">Cliquez sur une question, puis sur la citation correspondante.</p>
+            <div class="progress-label"><span>Associations</span><span id="matchProgress">0/6</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="matchProgressBar" style="width:0%"></div></div>
+
+            <div class="matching-grid">
+                <div class="match-column">
+                    <h4>Questions</h4>
+                    <div class="match-item" data-match="1" data-type="q"><span class="match-num">1</span><span>Comment la chanson illustre-t-elle la charge mentale ?</span></div>
+                    <div class="match-item" data-match="2" data-type="q"><span class="match-num">2</span><span>Quelle référence à l'inégalité salariale ?</span></div>
+                    <div class="match-item" data-match="3" data-type="q"><span class="match-num">3</span><span>Comment critique-t-on le comportement sur les apps ?</span></div>
+                    <div class="match-item" data-match="4" data-type="q"><span class="match-num">4</span><span>Quelle pression sociale sur les femmes et la famille ?</span></div>
+                    <div class="match-item" data-match="5" data-type="q"><span class="match-num">5</span><span>Comment évoque-t-on l'insécurité des femmes ?</span></div>
+                    <div class="match-item" data-match="6" data-type="q"><span class="match-num">6</span><span>Quel déséquilibre dans les tâches domestiques ?</span></div>
+                </div>
+                <div class="match-column">
+                    <h4>Paroles</h4>
+                    <div class="match-item" data-match="3" data-type="a"><span class="match-letter">A</span><span>« Pas de dick pics, des cœurs de toutes les couleurs »</span></div>
+                    <div class="match-item" data-match="1" data-type="a"><span class="match-letter">B</span><span>« Mail au taf en f'sant les courses... la charge mentale »</span></div>
+                    <div class="match-item" data-match="5" data-type="a"><span class="match-letter">C</span><span>« Marcher la nuit... plus besoin d'avoir peur »</span></div>
+                    <div class="match-item" data-match="6" data-type="a"><span class="match-letter">D</span><span>« Devant ma PS4, ma meuf se plie en quatre »</span></div>
+                    <div class="match-item" data-match="4" data-type="a"><span class="match-letter">E</span><span>« Pas d'horloge biologique... personne en fera un cirque »</span></div>
+                    <div class="match-item" data-match="2" data-type="a"><span class="match-letter">F</span><span>« À seize heures trente-cinq pile, j'arrêterai d'travailler »</span></div>
+                </div>
+            </div>
+            <div class="feedback" id="matchFeedback" style="margin-top:1rem"></div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="resetMatching()">Recommencer</button>
+            </div>
+        </section>
+
+        <!-- THEMES -->
+        <section id="themes">
+            <h2>Thèmes IB French B</h2>
+            <p style="margin-bottom:1.5rem;color:var(--muted)">Analysez comment la chanson illustre chaque thème IB. Trouvez des exemples dans les paroles.</p>
+
+            <div class="theme-analysis-grid">
+                <div class="theme-card">
+                    <h4>🪞 Identités</h4>
+                    <p class="theme-examples">Comment le genre influence notre perception de nous-mêmes et des autres</p>
+                    <p style="font-size:0.9rem;margin-bottom:0.75rem"><strong>Exemples dans la chanson :</strong> la charge mentale, les attentes liées à la maternité (« horloge biologique »), les standards de beauté (épilation, maquillage)</p>
+                    <div class="theme-question">
+                        <strong>Question :</strong> Comment la chanson montre-t-elle que le genre façonne les attentes sociales envers les individus ?
+                    </div>
+                    <textarea id="themeIdentites" placeholder="Votre analyse..." style="margin-top:0.75rem;min-height:100px"></textarea>
+                </div>
+
+                <div class="theme-card">
+                    <h4>✨ Expériences</h4>
+                    <p class="theme-examples">Les vécus quotidiens différents selon le genre</p>
+                    <p style="font-size:0.9rem;margin-bottom:0.75rem"><strong>Exemples dans la chanson :</strong> l'insécurité nocturne, le harcèlement dans les transports, les remarques au travail</p>
+                    <div class="theme-question">
+                        <strong>Question :</strong> Quelles expériences quotidiennes la chanson présente-t-elle comme différentes pour les hommes et les femmes ?
+                    </div>
+                    <textarea id="themeExperiences" placeholder="Votre analyse..." style="margin-top:0.75rem;min-height:100px"></textarea>
+                </div>
+
+                <div class="theme-card">
+                    <h4>🏛️ Organisation sociale</h4>
+                    <p class="theme-examples">Les structures et mouvements qui influencent les rapports de genre</p>
+                    <p style="font-size:0.9rem;margin-bottom:0.75rem"><strong>Exemples dans la chanson :</strong> l'écart salarial (16h35), le mouvement #BalanceTonPorc, le partage inégal des tâches</p>
+                    <div class="theme-question">
+                        <strong>Question :</strong> Comment la chanson critique-t-elle les structures sociales qui perpétuent les inégalités ?
+                    </div>
+                    <textarea id="themeOrganisation" placeholder="Votre analyse..." style="margin-top:0.75rem;min-height:100px"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOK -->
+        <section id="tok">
+            <h2>Théorie de la Connaissance</h2>
+            
+            <div class="tok-card">
+                <span class="tok-badge">TOK 1</span>
+                <h3>Peut-on comprendre l'expérience d'autrui ?</h3>
+                <p style="margin:1rem 0;font-size:0.95rem">La chanson propose de « vivre dans la peau » d'une autre personne. Quelle position épistémologique cela reflète-t-il ?</p>
+                <div class="question" id="tok1">
+                    <div class="options">
+                        <label class="option" data-correct="false"><input type="radio" name="tok1" value="a"><span class="option-letter">A</span><span>Seule l'expérience directe permet de comprendre</span></label>
+                        <label class="option" data-correct="true"><input type="radio" name="tok1" value="b"><span class="option-letter">B</span><span>L'imagination et l'empathie peuvent nous rapprocher de l'expérience d'autrui</span></label>
+                        <label class="option" data-correct="false"><input type="radio" name="tok1" value="c"><span class="option-letter">C</span><span>Les statistiques suffisent pour comprendre les inégalités</span></label>
+                    </div>
+                    <div class="feedback" id="fb-tok1"></div>
+                </div>
+            </div>
+
+            <div class="tok-card">
+                <span class="tok-badge">TOK 2</span>
+                <h3>L'art peut-il transmettre des connaissances ?</h3>
+                <p style="margin:1rem 0;font-size:0.95rem">Grand Corps Malade utilise le slam pour communiquer. Quel est le rôle du langage artistique ?</p>
+                <div class="question" id="tok2">
+                    <div class="options">
+                        <label class="option" data-correct="false"><input type="radio" name="tok2" value="a"><span class="option-letter">A</span><span>Le langage poétique déforme la réalité</span></label>
+                        <label class="option" data-correct="true"><input type="radio" name="tok2" value="b"><span class="option-letter">B</span><span>Les arts transmettent des connaissances émotionnelles uniques</span></label>
+                        <label class="option" data-correct="false"><input type="radio" name="tok2" value="c"><span class="option-letter">C</span><span>La musique n'est que divertissement</span></label>
+                    </div>
+                    <div class="feedback" id="fb-tok2"></div>
+                </div>
+            </div>
+
+            <div class="tok-card">
+                <span class="tok-badge">TOK 3</span>
+                <h3>L'ironie comme outil de connaissance</h3>
+                <p style="margin:1rem 0;font-size:0.95rem">La chanson utilise l'humour pour aborder des sujets sérieux (stéréotypes sur le créneau, les chaussures). Comment l'ironie contribue-t-elle à la réflexion ?</p>
+                <div class="question" id="tok3">
+                    <div class="options">
+                        <label class="option" data-correct="false"><input type="radio" name="tok3" value="a"><span class="option-letter">A</span><span>L'humour trivialise les sujets sérieux</span></label>
+                        <label class="option" data-correct="true"><input type="radio" name="tok3" value="b"><span class="option-letter">B</span><span>L'ironie révèle l'absurdité des préjugés en les exagérant</span></label>
+                        <label class="option" data-correct="false"><input type="radio" name="tok3" value="c"><span class="option-letter">C</span><span>Seuls les arguments logiques peuvent changer les mentalités</span></label>
+                    </div>
+                    <div class="feedback" id="fb-tok3"></div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="checkTOK()">Vérifier</button>
+            </div>
+
+            <div class="card" style="margin-top:2rem">
+                <h3>Réflexion TOK approfondie</h3>
+                <div class="writing-scaffold">
+                    <p class="scaffold-title">💡 Guide de rédaction (200-300 mots)</p>
+                    <ul class="scaffold-prompts">
+                        <li><strong>Introduction :</strong> Reformulez la question TOK choisie</li>
+                        <li><strong>Argument 1 :</strong> Utilisez un exemple de la chanson</li>
+                        <li><strong>Argument 2 :</strong> Connectez à un autre domaine de connaissance</li>
+                        <li><strong>Conclusion :</strong> Nuancez votre position</li>
+                    </ul>
+                </div>
+                <textarea id="tokReflection" placeholder="Développez votre réflexion TOK..." style="min-height:180px"></textarea>
+                <div class="word-count" id="tokWordCount">0 mots</div>
+            </div>
+        </section>
+
+        <!-- PRODUCTION -->
+        <section id="production">
+            <h2>Production Écrite</h2>
+
+            <div class="card">
+                <div class="card-header"><div class="card-number">A</div><span class="card-type">Blog — SL/HL (250-400 mots)</span></div>
+                <h3>« 24 heures dans la peau de... »</h3>
+                <p style="margin-bottom:1rem;color:var(--muted)">Imaginez que vous êtes d'un autre genre, âge ou culture pendant 24 heures. Que découvririez-vous ?</p>
+                
+                <div class="writing-scaffold">
+                    <p class="scaffold-title">📝 Structure suggérée</p>
+                    <ul class="scaffold-prompts">
+                        <li><strong>Accroche (2-3 phrases) :</strong> Situez le contexte — qui êtes-vous pendant ces 24h ?</li>
+                        <li><strong>Le matin (1 paragraphe) :</strong> Premières découvertes au réveil, routine différente</li>
+                        <li><strong>L'après-midi (1 paragraphe) :</strong> Interactions sociales, travail ou école — qu'est-ce qui change ?</li>
+                        <li><strong>Le soir (1 paragraphe) :</strong> Réflexions, surprises, ce qui vous manque</li>
+                        <li><strong>Conclusion (2-3 phrases) :</strong> Ce que vous avez appris, comment cela change votre perspective</li>
+                    </ul>
+                </div>
+                
+                <h4>Accroche</h4>
+                <textarea id="blogAccroche" placeholder="Situez le contexte : qui êtes-vous pendant ces 24h ?" style="min-height:80px"></textarea>
+                
+                <h4>Le matin</h4>
+                <textarea id="blogMatin" placeholder="Premières découvertes, routine différente..." style="min-height:100px"></textarea>
+                
+                <h4>L'après-midi</h4>
+                <textarea id="blogMidi" placeholder="Interactions sociales, travail/école..." style="min-height:100px"></textarea>
+                
+                <h4>Le soir</h4>
+                <textarea id="blogSoir" placeholder="Réflexions, surprises..." style="min-height:100px"></textarea>
+                
+                <h4>Conclusion</h4>
+                <textarea id="blogConclusion" placeholder="Ce que vous avez appris..." style="min-height:80px"></textarea>
+                
+                <div class="word-count" id="blogWordCount">0 mots</div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-number">B</div><span class="card-type">Dissertation — HL (400-600 mots)</span></div>
+                <h3>« L'art engagé est-il plus efficace que le discours politique pour changer les mentalités ? »</h3>
+                
+                <div class="writing-scaffold">
+                    <p class="scaffold-title">📝 Structure suggérée</p>
+                    <ul class="scaffold-prompts">
+                        <li><strong>Introduction :</strong> Contexte + thèse + annonce du plan</li>
+                        <li><strong>Partie 1 :</strong> Arguments en faveur de l'art engagé (ex: cette chanson)</li>
+                        <li><strong>Partie 2 :</strong> Limites de l'art / forces du discours politique</li>
+                        <li><strong>Partie 3 :</strong> Synthèse — complémentarité des approches</li>
+                        <li><strong>Conclusion :</strong> Réponse nuancée + ouverture</li>
+                    </ul>
+                </div>
+                
+                <h4>Introduction</h4>
+                <textarea id="dissIntro" placeholder="Contexte, thèse, annonce du plan..." style="min-height:100px"></textarea>
+                
+                <h4>Partie 1 : Forces de l'art engagé</h4>
+                <textarea id="dissP1" placeholder="Arguments + exemples (utilisez la chanson)..." style="min-height:120px"></textarea>
+                
+                <h4>Partie 2 : Limites et alternatives</h4>
+                <textarea id="dissP2" placeholder="Nuances, contre-arguments..." style="min-height:120px"></textarea>
+                
+                <h4>Partie 3 : Synthèse</h4>
+                <textarea id="dissP3" placeholder="Complémentarité des approches..." style="min-height:100px"></textarea>
+                
+                <h4>Conclusion</h4>
+                <textarea id="dissConclusion" placeholder="Réponse nuancée, ouverture..." style="min-height:80px"></textarea>
+                
+                <div class="word-count" id="dissWordCount">0 mots</div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-number">C</div><span class="card-type">Préparation orale</span></div>
+                <h3>Notes pour l'oral individuel</h3>
+                <p style="margin-bottom:1rem;color:var(--muted)">Stimulus : « Vingt-quatre heures dans la peau d'une femme, je comprendrai la charge mentale »</p>
+                
+                <div class="writing-scaffold">
+                    <p class="scaffold-title">📝 Points à préparer</p>
+                    <ul class="scaffold-prompts">
+                        <li><strong>Description du stimulus :</strong> Que montre cette citation ?</li>
+                        <li><strong>Lien avec la chanson :</strong> Contexte et message</li>
+                        <li><strong>Thème IB :</strong> Identités / Expériences / Organisation sociale</li>
+                        <li><strong>Perspective francophone :</strong> Spécificités culturelles françaises</li>
+                        <li><strong>Lien personnel :</strong> Votre culture, votre expérience</li>
+                    </ul>
+                </div>
+                <textarea id="oralNotes" placeholder="Vos notes pour l'oral..." style="min-height:150px"></textarea>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-export" onclick="exportResponses()">📥 Exporter mes réponses</button>
+            </div>
+        </section>
+
+        <!-- GLOSSARY -->
+        <section id="glossary">
+            <h2>Glossaire</h2>
+            <div class="glossary-search">
+                <input type="text" id="glossarySearch" placeholder="Rechercher un mot...">
+            </div>
+            <div class="glossary-grid" id="glossaryGrid"></div>
+        </section>
+    </main>
+</div>
+
+<!-- Export Modal -->
+<div class="modal-overlay" id="exportModal">
+    <div class="modal">
+        <h3>Mes réponses — Pendant 24h</h3>
+        <pre id="exportContent"></pre>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="copyExport()">Copier</button>
+            <button class="btn btn-secondary" onclick="downloadExport()">Télécharger .txt</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Data
+const glossaryData = [
+    {term:"le taf",type:"n.m. (argot)",def:"Le travail",ex:"J'enverrai un mail au taf"},
+    {term:"la charge mentale",type:"n.f.",def:"Poids psychologique de gérer les responsabilités domestiques",ex:"Je comprendrai la charge mentale"},
+    {term:"Balance ton porc",type:"expr.",def:"Mouvement #MeToo français",ex:"Le hashtag Balance ton porc"},
+    {term:"balaise",type:"adj. (argot)",def:"Fort, costaud",ex:"Les mecs balaises"},
+    {term:"draguer",type:"v.",def:"Flirter, séduire",ex:"J'irai draguer une fille"},
+    {term:"les meufs",type:"n.f.pl. (verlan)",def:"Les femmes",ex:"Romantique avec les meufs"},
+    {term:"kiffer",type:"v. (argot)",def:"Adorer",ex:"J'veux aussi kiffer"},
+    {term:"chiant(e)",type:"adj. (argot)",def:"Ennuyeux",ex:"Fanny est chiante"},
+    {term:"un créneau",type:"n.m.",def:"Stationnement parallèle",ex:"Faire un créneau"},
+    {term:"l'horloge biologique",type:"n.f.",def:"Pression d'avoir des enfants",ex:"Pas d'horloge biologique"},
+    {term:"les galères",type:"n.f.pl. (argot)",def:"Difficultés",ex:"Ces p'tites galères"},
+    {term:"l'enfer du décor",type:"expr.",def:"Difficultés cachées",ex:"Découvrir l'enfer du décor"},
+    {term:"dégeu'",type:"adj. (argot)",def:"Dégoûtant",ex:"C'est dégeu'"},
+    {term:"ragnagna",type:"n.m. (argot)",def:"Les règles/menstruations",ex:"Ragnagna de mes deux"},
+    {term:"dévorer des yeux",type:"expr.",def:"Regarder de manière inappropriée",ex:"Il me dévore des yeux"},
+    {term:"se plier en quatre",type:"expr.",def:"Faire beaucoup d'efforts",ex:"Ma meuf se plie en quatre"},
+    {term:"femme fatale",type:"n.f.",def:"Femme séduisante mystérieuse",ex:"Avec mon mec, femme fatale"},
+    {term:"faire un cirque",type:"expr.",def:"Faire une histoire, exagérer",ex:"Personne en fera un cirque"},
+    {term:"dealer",type:"v. (anglicisme)",def:"Négocier",ex:"Dealer l'augmentation"}
+];
+
+let userProgress = {};
+
+// Autosave
+function save() {
+    const fields = ['firstImpressions','preliminaryReflection','themeIdentites','themeExperiences','themeOrganisation','tokReflection','blogAccroche','blogMatin','blogMidi','blogSoir','blogConclusion','dissIntro','dissP1','dissP2','dissP3','dissConclusion','oralNotes'];
+    fields.forEach(id => { const el = document.getElementById(id); if(el) userProgress[id] = el.value; });
+    localStorage.setItem('pendant24h_v2', JSON.stringify(userProgress));
+    document.getElementById('saveStatus').textContent = 'Sauvegardé ✓';
+    setTimeout(() => document.getElementById('saveStatus').textContent = 'Sauvegardé', 1500);
+}
+
+function load() {
+    const saved = localStorage.getItem('pendant24h_v2');
+    if(saved) {
+        userProgress = JSON.parse(saved);
+        Object.keys(userProgress).forEach(id => {
+            const el = document.getElementById(id);
+            if(el && userProgress[id]) el.value = userProgress[id];
+        });
+    }
+}
+
+let saveTimer;
+function debounceSave() { clearTimeout(saveTimer); saveTimer = setTimeout(save, 800); }
+
+// Navigation
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.getElementById(btn.dataset.section).classList.add('active');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+});
+
+// Questions
+document.querySelectorAll('.question .option').forEach(opt => {
+    opt.addEventListener('click', function() {
+        const q = this.closest('.question');
+        q.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        this.querySelector('input').checked = true;
+    });
+});
+
+function checkComprehension() {
+    let correct = 0;
+    for(let i=1; i<=5; i++) {
+        const q = document.getElementById(`q${i}`);
+        const sel = q.querySelector('.option.selected');
+        const fb = document.getElementById(`fb-q${i}`);
+        q.querySelectorAll('.option').forEach(o => o.classList.remove('correct','incorrect'));
+        if(sel) {
+            if(sel.dataset.correct === 'true') {
+                correct++;
+                sel.classList.add('correct');
+                fb.className = 'feedback success show';
+                fb.textContent = '✓ Correct';
+            } else {
+                sel.classList.add('incorrect');
+                fb.className = 'feedback error show';
+                fb.textContent = '✗ Incorrect';
+                q.querySelector('.option[data-correct="true"]').classList.add('correct');
+            }
+        }
+    }
+    document.getElementById('compProgress').textContent = `${correct}/5`;
+    document.getElementById('compProgressBar').style.width = `${correct*20}%`;
+}
+
+function resetComprehension() {
+    for(let i=1; i<=5; i++) {
+        const q = document.getElementById(`q${i}`);
+        q.querySelectorAll('.option').forEach(o => o.classList.remove('selected','correct','incorrect'));
+        q.querySelectorAll('input').forEach(inp => inp.checked = false);
+        document.getElementById(`fb-q${i}`).className = 'feedback';
+    }
+    document.getElementById('compProgress').textContent = '0/5';
+    document.getElementById('compProgressBar').style.width = '0%';
+}
+
+function checkTOK() {
+    ['tok1','tok2','tok3'].forEach(id => {
+        const q = document.getElementById(id);
+        const sel = q.querySelector('.option.selected');
+        const fb = document.getElementById(`fb-${id}`);
+        q.querySelectorAll('.option').forEach(o => o.classList.remove('correct','incorrect'));
+        if(sel) {
+            if(sel.dataset.correct === 'true') {
+                sel.classList.add('correct');
+                fb.className = 'feedback success show';
+                fb.textContent = '✓ Bonne réflexion';
+            } else {
+                sel.classList.add('incorrect');
+                fb.className = 'feedback error show';
+                fb.textContent = '✗ Réfléchissez davantage';
+                q.querySelector('.option[data-correct="true"]').classList.add('correct');
+            }
+        }
+    });
+}
+
+// Matching
+let selQ = null, matched = [];
+document.querySelectorAll('.match-item').forEach(item => {
+    item.addEventListener('click', function() {
+        if(this.classList.contains('matched')) return;
+        const type = this.dataset.type;
+        const match = this.dataset.match;
+        if(type === 'q') {
+            document.querySelectorAll('.match-item[data-type="q"]').forEach(q => { if(!q.classList.contains('matched')) q.classList.remove('selected'); });
+            this.classList.add('selected');
+            selQ = {el: this, match};
+        } else if(type === 'a' && selQ) {
+            if(match === selQ.match) {
+                this.classList.add('matched');
+                selQ.el.classList.remove('selected');
+                selQ.el.classList.add('matched');
+                matched.push(match);
+                document.getElementById('matchProgress').textContent = `${matched.length}/6`;
+                document.getElementById('matchProgressBar').style.width = `${matched.length*100/6}%`;
+                if(matched.length === 6) {
+                    document.getElementById('matchFeedback').className = 'feedback success show';
+                    document.getElementById('matchFeedback').textContent = '🎉 Toutes les associations sont correctes !';
+                }
+            } else {
+                this.classList.add('wrong');
+                setTimeout(() => this.classList.remove('wrong'), 400);
+            }
+            selQ = null;
+        }
+    });
+});
+
+function resetMatching() {
+    document.querySelectorAll('.match-item').forEach(item => item.classList.remove('selected','matched','wrong'));
+    matched = [];
+    selQ = null;
+    document.getElementById('matchProgress').textContent = '0/6';
+    document.getElementById('matchProgressBar').style.width = '0%';
+    document.getElementById('matchFeedback').className = 'feedback';
+}
+
+// Glossary
+function renderGlossary(filter = '') {
+    const grid = document.getElementById('glossaryGrid');
+    grid.innerHTML = '';
+    glossaryData.filter(g => g.term.toLowerCase().includes(filter.toLowerCase()) || g.def.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(g => {
+            grid.innerHTML += `<div class="glossary-item"><div class="glossary-term">${g.term}</div><div class="glossary-type">${g.type}</div><div class="glossary-def">${g.def}</div><div class="glossary-ex">« ${g.ex} »</div></div>`;
+        });
+}
+document.getElementById('glossarySearch').addEventListener('input', function() { renderGlossary(this.value); });
+
+// Word counts
+function countWords(ids) {
+    let total = 0;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el && el.value.trim()) total += el.value.trim().split(/\s+/).filter(w => w).length;
+    });
+    return total;
+}
+
+function updateWordCounts() {
+    document.getElementById('tokWordCount').textContent = countWords(['tokReflection']) + ' mots';
+    document.getElementById('blogWordCount').textContent = countWords(['blogAccroche','blogMatin','blogMidi','blogSoir','blogConclusion']) + ' mots';
+    document.getElementById('dissWordCount').textContent = countWords(['dissIntro','dissP1','dissP2','dissP3','dissConclusion']) + ' mots';
+}
+
+// Export
+function exportResponses() {
+    let content = `PENDANT 24H — MES RÉPONSES\n${'='.repeat(40)}\n\n`;
+    
+    const sections = [
+        {title: 'PREMIÈRE ÉCOUTE', ids: ['firstImpressions']},
+        {title: 'RÉFLEXION PRÉLIMINAIRE', ids: ['preliminaryReflection']},
+        {title: 'THÈME : IDENTITÉS', ids: ['themeIdentites']},
+        {title: 'THÈME : EXPÉRIENCES', ids: ['themeExperiences']},
+        {title: 'THÈME : ORGANISATION SOCIALE', ids: ['themeOrganisation']},
+        {title: 'RÉFLEXION TOK', ids: ['tokReflection']},
+        {title: 'BLOG POST', ids: ['blogAccroche','blogMatin','blogMidi','blogSoir','blogConclusion']},
+        {title: 'DISSERTATION', ids: ['dissIntro','dissP1','dissP2','dissP3','dissConclusion']},
+        {title: 'NOTES ORAL', ids: ['oralNotes']}
+    ];
+    
+    sections.forEach(s => {
+        const texts = s.ids.map(id => document.getElementById(id)?.value || '').filter(t => t.trim());
+        if(texts.length) {
+            content += `${s.title}\n${'-'.repeat(30)}\n${texts.join('\n\n')}\n\n`;
+        }
+    });
+    
+    document.getElementById('exportContent').textContent = content;
+    document.getElementById('exportModal').classList.add('show');
+}
+
+function copyExport() {
+    navigator.clipboard.writeText(document.getElementById('exportContent').textContent);
+    alert('Copié !');
+}
+
+function downloadExport() {
+    const blob = new Blob([document.getElementById('exportContent').textContent], {type: 'text/plain'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'pendant-24h-reponses.txt';
+    a.click();
+}
+
+function closeModal() {
+    document.getElementById('exportModal').classList.remove('show');
+}
+
+// Textarea listeners
+document.querySelectorAll('textarea').forEach(ta => {
+    ta.addEventListener('input', () => { debounceSave(); updateWordCounts(); });
+});
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    load();
+    renderGlossary();
+    updateWordCounts();
+});
+</script>
+</body>
+</html>
