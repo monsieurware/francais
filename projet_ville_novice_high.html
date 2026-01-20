@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet Ville Francophone — Guide de planification (Novice High)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-500: #64748b;
+            --slate-400: #94a3b8;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+            --accent: #2563eb;
+            --accent-light: #3b82f6;
+            --success: #059669;
+            --success-light: #d1fae5;
+            --error: #dc2626;
+            --error-light: #fee2e2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--slate-100);
+            color: var(--slate-800);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--slate-300);
+        }
+
+        h1 {
+            font-family: 'Source Serif 4', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--slate-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--slate-500);
+            font-size: 0.95rem;
+        }
+
+        .save-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--slate-200);
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            color: var(--slate-600);
+        }
+
+        .save-status.saved {
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .save-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--slate-400);
+        }
+
+        .save-status.saved .save-dot {
+            background: var(--success);
+        }
+
+        .name-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .name-section label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--slate-700);
+        }
+
+        .name-section input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--slate-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .name-section input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .reminder-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .reminder-icon {
+            font-size: 1.4rem;
+        }
+
+        .reminder-content {
+            flex: 1;
+        }
+
+        .reminder-title {
+            font-weight: 600;
+            color: var(--slate-800);
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .reminder-text {
+            font-size: 0.85rem;
+            color: var(--slate-600);
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.15rem 1.5rem;
+            background: var(--slate-800);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: var(--slate-700);
+        }
+
+        .section-header h2 {
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .section-toggle {
+            font-size: 1.4rem;
+            line-height: 1;
+            transition: transform 0.3s;
+        }
+
+        .section.collapsed .section-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .section.collapsed .section-content {
+            display: none;
+        }
+
+        .section-content {
+            padding: 1.25rem;
+        }
+
+        .instructions {
+            background: var(--slate-50);
+            border-left: 3px solid var(--accent);
+            padding: 0.85rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            color: var(--slate-600);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 0.85rem;
+            border: 1px solid var(--slate-300);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .vocab-bank {
+            background: var(--slate-50);
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .vocab-bank-title {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--slate-600);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .vocab-bank-title::before {
+            content: "📚";
+            font-size: 0.9rem;
+        }
+
+        .vocab-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .vocab-item {
+            background: white;
+            border: 1px solid var(--slate-200);
+            padding: 0.35rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: var(--slate-700);
+        }
+
+        .vocab-item .translation {
+            color: var(--slate-400);
+            font-style: italic;
+            margin-left: 0.3rem;
+        }
+
+        .sentence-starters {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 100%);
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .sentence-starters-title {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--slate-700);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .sentence-starters-title::before {
+            content: "✍️";
+        }
+
+        .starter-list {
+            list-style: none;
+            font-size: 0.85rem;
+            color: var(--slate-600);
+        }
+
+        .starter-list li {
+            padding: 0.25rem 0;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .starter-list li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .starter-list code {
+            background: white;
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            font-family: inherit;
+            color: var(--accent);
+            border: 1px solid var(--slate-200);
+        }
+
+        .model-response {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .model-response-title {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .model-response-title::before {
+            content: "💡";
+        }
+
+        .model-response p {
+            font-size: 0.85rem;
+            color: #78350f;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .exercise-box {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .exercise-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--slate-700);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .exercise-title::before {
+            content: "✏️";
+        }
+
+        .exercise-prompt {
+            font-size: 0.85rem;
+            color: var(--slate-600);
+            margin-bottom: 0.6rem;
+        }
+
+        .word-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .word-btn {
+            padding: 0.45rem 0.85rem;
+            border: 2px solid var(--slate-300);
+            background: white;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .word-btn:hover:not(:disabled) {
+            border-color: var(--slate-400);
+            background: var(--slate-50);
+        }
+
+        .word-btn.correct {
+            border-color: var(--success);
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .word-btn.incorrect {
+            border-color: var(--error);
+            background: var(--error-light);
+            color: var(--error);
+        }
+
+        .word-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .exercise-feedback {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.65rem;
+            border-radius: 6px;
+            margin-top: 0.4rem;
+            display: none;
+        }
+
+        .exercise-feedback.show {
+            display: block;
+        }
+
+        .exercise-feedback.correct {
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .exercise-feedback.incorrect {
+            background: var(--error-light);
+            color: var(--error);
+        }
+
+        .reset-btn {
+            padding: 0.35rem 0.65rem;
+            border: 1px solid var(--slate-300);
+            background: white;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: var(--slate-600);
+            transition: all 0.2s;
+            margin-top: 0.4rem;
+        }
+
+        .reset-btn:hover {
+            background: var(--slate-50);
+            border-color: var(--slate-400);
+        }
+
+        .match-exercise {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .match-french {
+            min-width: 140px;
+            color: var(--slate-700);
+        }
+
+        .match-select {
+            flex: 1;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid var(--slate-300);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .match-select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .match-select.correct {
+            border-color: var(--success);
+            background: var(--success-light);
+        }
+
+        .match-select.incorrect {
+            border-color: var(--error);
+            background: var(--error-light);
+        }
+
+        .check-btn {
+            padding: 0.45rem 0.85rem;
+            border: none;
+            background: var(--accent);
+            color: white;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 0.4rem;
+            margin-top: 0.5rem;
+        }
+
+        .check-btn:hover {
+            background: var(--accent-light);
+        }
+
+        .subsection-title {
+            font-weight: 600;
+            color: var(--slate-700);
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .checklist {
+            list-style: none;
+            margin-top: 0.85rem;
+            background: var(--slate-50);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.35rem 0;
+            font-size: 0.85rem;
+            color: var(--slate-600);
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 17px;
+            height: 17px;
+            margin-top: 1px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .fill-blank-sentence {
+            font-size: 0.9rem;
+            color: var(--slate-700);
+            margin-bottom: 0.6rem;
+            line-height: 1.9;
+        }
+
+        .fill-blank-input {
+            display: inline-block;
+            width: 100px;
+            padding: 0.25rem 0.4rem;
+            border: none;
+            border-bottom: 2px solid var(--slate-400);
+            background: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            text-align: center;
+            transition: border-color 0.2s;
+        }
+
+        .fill-blank-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .fill-blank-input.correct {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .fill-blank-input.incorrect {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .reflection-section {
+            background: linear-gradient(135deg, var(--slate-800) 0%, var(--slate-900) 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .reflection-section h2 {
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.2rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .reflection-section .instructions {
+            background: rgba(255,255,255,0.1);
+            border-left-color: var(--accent-light);
+            color: var(--slate-300);
+        }
+
+        .reflection-fillblank {
+            background: rgba(255,255,255,0.95);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--slate-700);
+            font-size: 0.9rem;
+            line-height: 2;
+        }
+
+        .reflection-fillblank input {
+            border: none;
+            border-bottom: 2px solid var(--slate-400);
+            background: transparent;
+            padding: 0.2rem 0.4rem;
+            font-family: inherit;
+            font-size: inherit;
+            min-width: 150px;
+            transition: border-color 0.2s;
+        }
+
+        .reflection-fillblank input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .export-section {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--slate-300);
+        }
+
+        .export-btn {
+            padding: 0.9rem 2rem;
+            border: none;
+            background: var(--accent);
+            color: white;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .export-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        .export-note {
+            margin-top: 0.85rem;
+            font-size: 0.8rem;
+            color: var(--slate-500);
+        }
+
+        @media print {
+            body { background: white; }
+            .section-header {
+                background: var(--slate-800) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .section.collapsed .section-content { display: block !important; }
+            .export-section, .reminder-box { display: none; }
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 1.6rem; }
+            .section-content { padding: 1rem; }
+            .word-options { flex-direction: column; }
+            .word-btn { width: 100%; }
+            .match-row { flex-direction: column; align-items: flex-start; }
+            .match-french { min-width: auto; }
+            .match-select { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <span class="level-badge">Novice High</span>
+            <h1>Projet Ville Francophone</h1>
+            <p class="subtitle">Guide de planification</p>
+            <div class="save-status" id="saveStatus">
+                <span class="save-dot"></span>
+                <span id="saveText">Sauvegarde automatique ✓</span>
+            </div>
+        </header>
+
+        <div class="reminder-box">
+            <span class="reminder-icon">📝</span>
+            <div class="reminder-content">
+                <div class="reminder-title">Rappel important</div>
+                <div class="reminder-text">Utilisez votre article Génération voyage ! Trouvez <strong>10 phrases modèles</strong> à réutiliser. <strong>Pas de notes</strong> le jour de la présentation !</div>
+            </div>
+        </div>
+
+        <div class="name-section">
+            <label for="studentName">Ton nom</label>
+            <input type="text" id="studentName" placeholder="Prénom Nom" data-save="studentName">
+        </div>
+
+        <!-- Section 1: Pourquoi cette ville -->
+        <div class="section" id="section1">
+            <div class="section-header" onclick="toggleSection('section1')">
+                <h2>1. Pourquoi cette ville ?</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Explique pourquoi tu veux visiter cette ville. Utilise des mots pour décrire ce que tu vois, entends, ou sens.
+                </div>
+
+                <div class="vocab-bank">
+                    <div class="vocab-bank-title">Mots utiles</div>
+                    <div class="vocab-list">
+                        <span class="vocab-item">beau / belle <span class="translation">(beautiful)</span></span>
+                        <span class="vocab-item">coloré(e) <span class="translation">(colorful)</span></span>
+                        <span class="vocab-item">animé(e) <span class="translation">(lively)</span></span>
+                        <span class="vocab-item">calme <span class="translation">(calm)</span></span>
+                        <span class="vocab-item">intéressant(e) <span class="translation">(interesting)</span></span>
+                        <span class="vocab-item">délicieux <span class="translation">(delicious)</span></span>
+                        <span class="vocab-item">historique <span class="translation">(historic)</span></span>
+                        <span class="vocab-item">moderne <span class="translation">(modern)</span></span>
+                    </div>
+                </div>
+
+                <div class="sentence-starters">
+                    <div class="sentence-starters-title">Commence tes phrases avec...</div>
+                    <ul class="starter-list">
+                        <li><code>Je veux visiter... parce que...</code></li>
+                        <li><code>Cette ville est...</code></li>
+                        <li><code>J'aime... de cette ville.</code></li>
+                        <li><code>Il y a...</code> (there is/are)</li>
+                        <li><code>On peut voir / entendre / manger...</code></li>
+                    </ul>
+                </div>
+
+                <div class="model-response">
+                    <div class="model-response-title">Exemple</div>
+                    <p>Je veux visiter Dakar parce que c'est une ville colorée et animée. Il y a des marchés avec des fruits et des tissus. On peut entendre de la musique dans les rues. J'aime les plages de cette ville.</p>
+                </div>
+
+                <div class="exercise-box">
+                    <div class="exercise-title">Exercice — Trouve l'intrus</div>
+                    <p class="exercise-prompt">Quel mot ne décrit PAS une ville ?</p>
+                    <div class="word-options" data-exercise="intruder1">
+                        <button class="word-btn" data-correct="false">animée</button>
+                        <button class="word-btn" data-correct="false">historique</button>
+                        <button class="word-btn" data-correct="true">manger</button>
+                        <button class="word-btn" data-correct="false">moderne</button>
+                    </div>
+                    <div class="exercise-feedback"></div>
+                    <button class="reset-btn" onclick="resetExercise(this)">Réessayer</button>
+                </div>
+
+                <div class="subsection-title">Ta réponse</div>
+                <textarea placeholder="Je veux visiter... parce que..." data-save="section1_response"></textarea>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check1_1"> J'ai dit pourquoi je veux visiter cette ville</li>
+                    <li><input type="checkbox" data-save="check1_2"> J'ai utilisé 2-3 adjectifs descriptifs</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 2: Activités -->
+        <div class="section" id="section2">
+            <div class="section-header" onclick="toggleSection('section2')">
+                <h2>2. Activités à faire</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Présente <strong>2 activités</strong> à faire dans la ville. Pour chaque activité : <strong>où</strong> et <strong>quoi</strong>.
+                </div>
+
+                <div class="vocab-bank">
+                    <div class="vocab-bank-title">Verbes d'activités</div>
+                    <div class="vocab-list">
+                        <span class="vocab-item">visiter <span class="translation">(to visit)</span></span>
+                        <span class="vocab-item">manger <span class="translation">(to eat)</span></span>
+                        <span class="vocab-item">voir <span class="translation">(to see)</span></span>
+                        <span class="vocab-item">aller <span class="translation">(to go)</span></span>
+                        <span class="vocab-item">acheter <span class="translation">(to buy)</span></span>
+                        <span class="vocab-item">prendre des photos <span class="translation">(to take photos)</span></span>
+                        <span class="vocab-item">marcher <span class="translation">(to walk)</span></span>
+                        <span class="vocab-item">nager <span class="translation">(to swim)</span></span>
+                    </div>
+                </div>
+
+                <div class="vocab-bank">
+                    <div class="vocab-bank-title">Lieux</div>
+                    <div class="vocab-list">
+                        <span class="vocab-item">le musée <span class="translation">(museum)</span></span>
+                        <span class="vocab-item">le marché <span class="translation">(market)</span></span>
+                        <span class="vocab-item">la plage <span class="translation">(beach)</span></span>
+                        <span class="vocab-item">le restaurant <span class="translation">(restaurant)</span></span>
+                        <span class="vocab-item">le parc <span class="translation">(park)</span></span>
+                        <span class="vocab-item">la place <span class="translation">(square/plaza)</span></span>
+                        <span class="vocab-item">le monument <span class="translation">(monument)</span></span>
+                        <span class="vocab-item">la mosquée / l'église <span class="translation">(mosque/church)</span></span>
+                    </div>
+                </div>
+
+                <div class="sentence-starters">
+                    <div class="sentence-starters-title">Commence tes phrases avec...</div>
+                    <ul class="starter-list">
+                        <li><code>Je veux visiter...</code></li>
+                        <li><code>Je veux aller à / au / à la...</code></li>
+                        <li><code>Je veux manger... au restaurant...</code></li>
+                        <li><code>Je veux voir...</code></li>
+                        <li><code>C'est intéressant parce que...</code></li>
+                    </ul>
+                </div>
+
+                <div class="model-response">
+                    <div class="model-response-title">Exemple</div>
+                    <p><strong>Activité 1 :</strong> Je veux visiter le Musée des Civilisations. C'est intéressant parce qu'il y a de l'art africain.<br><strong>Activité 2 :</strong> Je veux manger du thiéboudienne au restaurant Chez Loutcha. C'est un plat traditionnel.</p>
+                </div>
+
+                <div class="exercise-box">
+                    <div class="exercise-title">Exercice — Associe le français et l'anglais</div>
+                    <div class="match-exercise" data-exercise="match1">
+                        <div class="match-row">
+                            <span class="match-french">visiter</span>
+                            <select class="match-select" data-answer="to visit">
+                                <option value="">-- choisis --</option>
+                                <option value="to eat">to eat</option>
+                                <option value="to visit">to visit</option>
+                                <option value="to walk">to walk</option>
+                                <option value="to buy">to buy</option>
+                            </select>
+                        </div>
+                        <div class="match-row">
+                            <span class="match-french">manger</span>
+                            <select class="match-select" data-answer="to eat">
+                                <option value="">-- choisis --</option>
+                                <option value="to eat">to eat</option>
+                                <option value="to visit">to visit</option>
+                                <option value="to walk">to walk</option>
+                                <option value="to buy">to buy</option>
+                            </select>
+                        </div>
+                        <div class="match-row">
+                            <span class="match-french">acheter</span>
+                            <select class="match-select" data-answer="to buy">
+                                <option value="">-- choisis --</option>
+                                <option value="to eat">to eat</option>
+                                <option value="to visit">to visit</option>
+                                <option value="to walk">to walk</option>
+                                <option value="to buy">to buy</option>
+                            </select>
+                        </div>
+                        <div class="match-row">
+                            <span class="match-french">marcher</span>
+                            <select class="match-select" data-answer="to walk">
+                                <option value="">-- choisis --</option>
+                                <option value="to eat">to eat</option>
+                                <option value="to visit">to visit</option>
+                                <option value="to walk">to walk</option>
+                                <option value="to buy">to buy</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="check-btn" onclick="checkMatch(this)">Vérifier</button>
+                    <button class="reset-btn" onclick="resetMatch(this)">Réessayer</button>
+                    <div class="exercise-feedback"></div>
+                </div>
+
+                <div class="subsection-title">Tes activités (minimum 2)</div>
+                <textarea placeholder="Activité 1 : Je veux...&#10;&#10;Activité 2 : Je veux..." data-save="section2_response" style="min-height: 140px;"></textarea>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check2_1"> J'ai présenté 2 activités</li>
+                    <li><input type="checkbox" data-save="check2_2"> J'ai dit où pour chaque activité</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 3: À éviter -->
+        <div class="section" id="section3">
+            <div class="section-header" onclick="toggleSection('section3')">
+                <h2>3. Choses à éviter</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Présente <strong>1 chose à éviter</strong> pour les touristes. Explique pourquoi.
+                </div>
+
+                <div class="vocab-bank">
+                    <div class="vocab-bank-title">Mots utiles</div>
+                    <div class="vocab-list">
+                        <span class="vocab-item">dangereux <span class="translation">(dangerous)</span></span>
+                        <span class="vocab-item">cher <span class="translation">(expensive)</span></span>
+                        <span class="vocab-item">irrespectueux <span class="translation">(disrespectful)</span></span>
+                        <span class="vocab-item">la nuit <span class="translation">(at night)</span></span>
+                        <span class="vocab-item">seul(e) <span class="translation">(alone)</span></span>
+                        <span class="vocab-item">trop de touristes <span class="translation">(too many tourists)</span></span>
+                    </div>
+                </div>
+
+                <div class="sentence-starters">
+                    <div class="sentence-starters-title">Commence tes phrases avec...</div>
+                    <ul class="starter-list">
+                        <li><code>Il ne faut pas...</code> (you shouldn't...)</li>
+                        <li><code>N'allez pas...</code> (don't go...)</li>
+                        <li><code>Évitez de...</code> (avoid...)</li>
+                        <li><code>C'est dangereux / cher / irrespectueux parce que...</code></li>
+                    </ul>
+                </div>
+
+                <div class="model-response">
+                    <div class="model-response-title">Exemple</div>
+                    <p>Il ne faut pas marcher seul la nuit dans le quartier de la Médina. C'est dangereux. Aussi, n'achetez pas de souvenirs près de la mosquée — c'est très cher !</p>
+                </div>
+
+                <div class="exercise-box">
+                    <div class="exercise-title">Exercice — Trouve l'intrus</div>
+                    <p class="exercise-prompt">Quelle phrase n'est PAS un conseil d'éviter ?</p>
+                    <div class="word-options" data-exercise="intruder2">
+                        <button class="word-btn" data-correct="false">Il ne faut pas...</button>
+                        <button class="word-btn" data-correct="false">N'allez pas...</button>
+                        <button class="word-btn" data-correct="true">Je veux visiter...</button>
+                        <button class="word-btn" data-correct="false">Évitez de...</button>
+                    </div>
+                    <div class="exercise-feedback"></div>
+                    <button class="reset-btn" onclick="resetExercise(this)">Réessayer</button>
+                </div>
+
+                <div class="subsection-title">Ta réponse</div>
+                <textarea placeholder="Il ne faut pas... parce que..." data-save="section3_response"></textarea>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check3_1"> J'ai présenté 1 chose à éviter</li>
+                    <li><input type="checkbox" data-save="check3_2"> J'ai expliqué pourquoi</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 4: Directions -->
+        <div class="section" id="section4">
+            <div class="section-header" onclick="toggleSection('section4')">
+                <h2>4. Directions (Google Street View)</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Guide la classe d'un point A à un point B. Utilise Google Street View pour montrer le chemin.
+                </div>
+
+                <div class="vocab-bank">
+                    <div class="vocab-bank-title">Directions — IMPORTANT !</div>
+                    <div class="vocab-list">
+                        <span class="vocab-item">tournez à gauche <span class="translation">(turn left)</span></span>
+                        <span class="vocab-item">tournez à droite <span class="translation">(turn right)</span></span>
+                        <span class="vocab-item">allez tout droit <span class="translation">(go straight)</span></span>
+                        <span class="vocab-item">traversez <span class="translation">(cross)</span></span>
+                        <span class="vocab-item">au coin <span class="translation">(at the corner)</span></span>
+                        <span class="vocab-item">en face de <span class="translation">(in front of)</span></span>
+                        <span class="vocab-item">à côté de <span class="translation">(next to)</span></span>
+                        <span class="vocab-item">entre... et... <span class="translation">(between)</span></span>
+                    </div>
+                </div>
+
+                <div class="sentence-starters">
+                    <div class="sentence-starters-title">Commence tes phrases avec...</div>
+                    <ul class="starter-list">
+                        <li><code>D'abord, allez...</code> (first, go...)</li>
+                        <li><code>Puis, tournez...</code> (then, turn...)</li>
+                        <li><code>Ensuite, traversez...</code> (next, cross...)</li>
+                        <li><code>Vous allez voir... sur votre gauche / droite</code></li>
+                        <li><code>C'est en face de... / à côté de...</code></li>
+                    </ul>
+                </div>
+
+                <div class="model-response">
+                    <div class="model-response-title">Exemple</div>
+                    <p>D'abord, allez tout droit sur la rue principale. Puis, tournez à gauche au coin. Ensuite, traversez la place. Vous allez voir le musée sur votre droite. C'est à côté du parc.</p>
+                </div>
+
+                <div class="exercise-box">
+                    <div class="exercise-title">Exercice — Complète les directions</div>
+                    <p class="fill-blank-sentence">
+                        D'abord, <input type="text" class="fill-blank-input" data-answer="allez" placeholder="(aller)"> tout droit. Puis, <input type="text" class="fill-blank-input" data-answer="tournez" placeholder="(tourner)"> à gauche.
+                    </p>
+                    <button class="check-btn" onclick="checkFillBlank(this)">Vérifier</button>
+                    <button class="reset-btn" onclick="resetFillBlank(this)">Réessayer</button>
+                    <div class="exercise-feedback"></div>
+                </div>
+
+                <div class="subsection-title">Tes directions</div>
+                <textarea placeholder="Point de départ :&#10;Destination :&#10;&#10;D'abord...&#10;Puis...&#10;Ensuite..." data-save="section4_response" style="min-height: 140px;"></textarea>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check4_1"> J'ai un point de départ et une destination</li>
+                    <li><input type="checkbox" data-save="check4_2"> J'ai utilisé au moins 4 expressions de direction</li>
+                    <li><input type="checkbox" data-save="check4_3"> J'ai des images Street View</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 5: Histoire -->
+        <div class="section" id="section5">
+            <div class="section-header" onclick="toggleSection('section5')">
+                <h2>5. Histoire de la ville</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Donne quelques informations simples sur l'histoire de la ville.
+                </div>
+
+                <div class="vocab-bank">
+                    <div class="vocab-bank-title">Mots pour l'histoire</div>
+                    <div class="vocab-list">
+                        <span class="vocab-item">fondée en... <span class="translation">(founded in...)</span></span>
+                        <span class="vocab-item">vieux / vieille <span class="translation">(old)</span></span>
+                        <span class="vocab-item">ancien(ne) <span class="translation">(ancient)</span></span>
+                        <span class="vocab-item">le roi / la reine <span class="translation">(king/queen)</span></span>
+                        <span class="vocab-item">la guerre <span class="translation">(war)</span></span>
+                        <span class="vocab-item">l'indépendance <span class="translation">(independence)</span></span>
+                        <span class="vocab-item">la population <span class="translation">(population)</span></span>
+                    </div>
+                </div>
+
+                <div class="sentence-starters">
+                    <div class="sentence-starters-title">Commence tes phrases avec...</div>
+                    <ul class="starter-list">
+                        <li><code>La ville a été fondée en...</code> (was founded in...)</li>
+                        <li><code>C'est une ville...</code> (grande / petite / ancienne)</li>
+                        <li><code>Il y a... habitants.</code></li>
+                        <li><code>Un événement important : ...</code></li>
+                        <li><code>Aujourd'hui, la ville est...</code></li>
+                    </ul>
+                </div>
+
+                <div class="model-response">
+                    <div class="model-response-title">Exemple</div>
+                    <p>Dakar a été fondée en 1857. C'est une grande ville avec 3 millions d'habitants. C'était la capitale de l'Afrique-Occidentale française. Aujourd'hui, la ville est moderne et très animée.</p>
+                </div>
+
+                <div class="subsection-title">Ta réponse</div>
+                <textarea placeholder="La ville a été fondée en...&#10;C'est une ville...&#10;Il y a... habitants." data-save="section5_response"></textarea>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check5_1"> J'ai dit quand la ville a été fondée</li>
+                    <li><input type="checkbox" data-save="check5_2"> J'ai donné une idée de la taille</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 6: Monuments -->
+        <div class="section" id="section6">
+            <div class="section-header" onclick="toggleSection('section6')">
+                <h2>6. Un monument important</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Présente <strong>1 monument</strong> de la ville. Dis ce que c'est et pourquoi c'est important.
+                </div>
+
+                <div class="vocab-bank">
+                    <div class="vocab-bank-title">Types de monuments</div>
+                    <div class="vocab-list">
+                        <span class="vocab-item">une statue <span class="translation">(statue)</span></span>
+                        <span class="vocab-item">une mosquée <span class="translation">(mosque)</span></span>
+                        <span class="vocab-item">une église <span class="translation">(church)</span></span>
+                        <span class="vocab-item">un palais <span class="translation">(palace)</span></span>
+                        <span class="vocab-item">une tour <span class="translation">(tower)</span></span>
+                        <span class="vocab-item">un musée <span class="translation">(museum)</span></span>
+                        <span class="vocab-item">un pont <span class="translation">(bridge)</span></span>
+                    </div>
+                </div>
+
+                <div class="sentence-starters">
+                    <div class="sentence-starters-title">Commence tes phrases avec...</div>
+                    <ul class="starter-list">
+                        <li><code>Le monument s'appelle...</code></li>
+                        <li><code>C'est un(e)...</code></li>
+                        <li><code>Il / Elle a été construit(e) en...</code></li>
+                        <li><code>C'est important parce que...</code></li>
+                        <li><code>Beaucoup de touristes visitent...</code></li>
+                    </ul>
+                </div>
+
+                <div class="model-response">
+                    <div class="model-response-title">Exemple</div>
+                    <p>Le monument s'appelle le Monument de la Renaissance Africaine. C'est une grande statue de 49 mètres. Elle a été construite en 2010. C'est important parce que ça représente la liberté de l'Afrique. Beaucoup de touristes visitent ce monument.</p>
+                </div>
+
+                <div class="exercise-box">
+                    <div class="exercise-title">Exercice — Trouve l'intrus</div>
+                    <p class="exercise-prompt">Quel mot n'est PAS un type de monument ?</p>
+                    <div class="word-options" data-exercise="intruder3">
+                        <button class="word-btn" data-correct="false">statue</button>
+                        <button class="word-btn" data-correct="false">mosquée</button>
+                        <button class="word-btn" data-correct="true">marché</button>
+                        <button class="word-btn" data-correct="false">palais</button>
+                    </div>
+                    <div class="exercise-feedback"></div>
+                    <button class="reset-btn" onclick="resetExercise(this)">Réessayer</button>
+                </div>
+
+                <div class="subsection-title">Ton monument</div>
+                <textarea placeholder="Le monument s'appelle...&#10;C'est un(e)...&#10;C'est important parce que..." data-save="section6_response"></textarea>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check6_1"> J'ai présenté 1 monument</li>
+                    <li><input type="checkbox" data-save="check6_2"> J'ai dit pourquoi c'est important</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 7: Questions de réflexion (TOK simplifié) -->
+        <div class="section" id="section7">
+            <div class="section-header" onclick="toggleSection('section7')">
+                <h2>7. Questions de réflexion</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    Réponds à <strong>2 questions</strong> avec ton groupe. Donne des exemples simples.
+                </div>
+
+                <div style="background: var(--slate-50); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <p style="font-size: 0.9rem; color: var(--slate-700); margin-bottom: 0.75rem;"><strong>Choisis 2 questions :</strong></p>
+                    <ol style="padding-left: 1.25rem; font-size: 0.85rem; color: var(--slate-600); line-height: 1.8;">
+                        <li>Est-ce que notre présentation montre <em>toute</em> la ville ? Qu'est-ce qu'on ne montre pas ?</li>
+                        <li>Est-ce qu'une photo montre la réalité ? Qu'est-ce qu'on ne peut pas voir sur une photo ?</li>
+                        <li>Est-ce que le tourisme est bon ou mauvais pour cette ville ?</li>
+                        <li>Est-ce que ce monument raconte toute l'histoire ? Qui n'est pas représenté ?</li>
+                    </ol>
+                </div>
+
+                <div class="sentence-starters">
+                    <div class="sentence-starters-title">Pour répondre...</div>
+                    <ul class="starter-list">
+                        <li><code>Nous pensons que...</code> (we think that...)</li>
+                        <li><code>Par exemple,...</code></li>
+                        <li><code>On ne montre pas...</code></li>
+                        <li><code>C'est bon parce que... / C'est mauvais parce que...</code></li>
+                    </ul>
+                </div>
+
+                <div class="model-response">
+                    <div class="model-response-title">Exemple</div>
+                    <p><strong>Question 3 :</strong> Est-ce que le tourisme est bon ou mauvais ?<br>Nous pensons que le tourisme est bon ET mauvais. C'est bon parce qu'il y a plus d'argent pour la ville. C'est mauvais parce qu'il y a trop de monde.</p>
+                </div>
+
+                <div class="subsection-title">Vos réponses (2 questions)</div>
+                <textarea placeholder="Question # :&#10;Nous pensons que...&#10;&#10;Question # :&#10;Nous pensons que..." data-save="section7_response" style="min-height: 140px;"></textarea>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check7_1"> Nous avons répondu à 2 questions</li>
+                    <li><input type="checkbox" data-save="check7_2"> Nous avons donné des exemples</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 8: Carte postale -->
+        <div class="section" id="section8">
+            <div class="section-header" onclick="toggleSection('section8')">
+                <h2>8. Carte postale</h2>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="instructions">
+                    <strong>Avant :</strong> Crée une carte postale avec une image de ta ville.<br>
+                    <strong>Après les présentations :</strong> Tu vas écrire sur la carte d'une AUTRE ville.
+                </div>
+
+                <div class="vocab-bank">
+                    <div class="vocab-bank-title">Pour écrire au passé composé</div>
+                    <div class="vocab-list">
+                        <span class="vocab-item">j'ai visité <span class="translation">(I visited)</span></span>
+                        <span class="vocab-item">j'ai mangé <span class="translation">(I ate)</span></span>
+                        <span class="vocab-item">j'ai vu <span class="translation">(I saw)</span></span>
+                        <span class="vocab-item">j'ai acheté <span class="translation">(I bought)</span></span>
+                        <span class="vocab-item">je suis allé(e) <span class="translation">(I went)</span></span>
+                        <span class="vocab-item">c'était <span class="translation">(it was)</span></span>
+                    </div>
+                </div>
+
+                <div class="sentence-starters">
+                    <div class="sentence-starters-title">Pour ta carte postale...</div>
+                    <ul class="starter-list">
+                        <li><code>Cher / Chère [nom],</code></li>
+                        <li><code>Je suis à [ville] !</code></li>
+                        <li><code>Hier, j'ai visité...</code></li>
+                        <li><code>J'ai mangé... et c'était délicieux !</code></li>
+                        <li><code>C'est une ville très...</code></li>
+                        <li><code>Bisous, [ton nom]</code></li>
+                    </ul>
+                </div>
+
+                <div class="model-response">
+                    <div class="model-response-title">Exemple de carte postale</div>
+                    <p>Chère Maman,<br>Je suis à Dakar ! C'est une ville très animée. Hier, j'ai visité le Monument de la Renaissance. C'était incroyable ! J'ai mangé du thiéboudienne et c'était délicieux. Il fait très chaud ici.<br>Bisous, Marie</p>
+                </div>
+
+                <div class="exercise-box">
+                    <div class="exercise-title">Exercice — Passé composé avec AVOIR ou ÊTRE ?</div>
+                    <p class="exercise-prompt">Quel verbe utilise ÊTRE au passé composé ?</p>
+                    <div class="word-options" data-exercise="intruder4">
+                        <button class="word-btn" data-correct="false">manger</button>
+                        <button class="word-btn" data-correct="false">visiter</button>
+                        <button class="word-btn" data-correct="true">aller</button>
+                        <button class="word-btn" data-correct="false">acheter</button>
+                    </div>
+                    <div class="exercise-feedback"></div>
+                    <button class="reset-btn" onclick="resetExercise(this)">Réessayer</button>
+                </div>
+
+                <div class="subsection-title">Notes pour ta carte postale</div>
+                <textarea placeholder="Image choisie :&#10;&#10;Éléments importants de ma ville :" data-save="section8_response"></textarea>
+
+                <ul class="checklist">
+                    <li><input type="checkbox" data-save="check8_1"> J'ai choisi une image Street View</li>
+                    <li><input type="checkbox" data-save="check8_2"> Ma carte postale est prête</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Reflection (fill-in-the-blank style) -->
+        <div class="reflection-section">
+            <h2>Réflexion — Es-tu prêt(e) ?</h2>
+            <div class="instructions">
+                Complète les phrases pour réfléchir à ta préparation. Rappel : <strong>pas de notes</strong> le jour de la présentation !
+            </div>
+
+            <div class="reflection-fillblank">
+                <p>
+                    Je me sens <input type="text" data-save="refl1" placeholder="(prêt / nerveux / confiant...)"> pour la présentation.
+                </p>
+                <p>
+                    La partie la plus facile pour moi, c'est <input type="text" data-save="refl2" placeholder="(les activités / les directions...)">.
+                </p>
+                <p>
+                    La partie la plus difficile pour moi, c'est <input type="text" data-save="refl3" placeholder="(l'histoire / parler sans notes...)">.
+                </p>
+                <p>
+                    J'ai recyclé <input type="text" data-save="refl4" placeholder="(nombre)" style="width: 60px;"> structures de mon article annoté.
+                </p>
+                <p>
+                    Pour me préparer, je vais <input type="text" data-save="refl5" placeholder="(pratiquer / réviser le vocabulaire...)">.
+                </p>
+                <p>
+                    Ce que j'ai appris sur cette ville : <input type="text" data-save="refl6" placeholder="(une chose intéressante)" style="width: 200px;">.
+                </p>
+            </div>
+        </div>
+
+        <!-- Export -->
+        <div class="export-section">
+            <button class="export-btn" onclick="exportPDF()">📄 Exporter en PDF</button>
+            <p class="export-note">Ton plan sera sauvegardé avec ton nom et ta réflexion.</p>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'projet_ville_novice_high';
+        let saveTimeout;
+
+        function saveData() {
+            const data = {};
+            document.querySelectorAll('[data-save]').forEach(el => {
+                const key = el.dataset.save;
+                if (el.type === 'checkbox') {
+                    data[key] = el.checked;
+                } else {
+                    data[key] = el.value;
+                }
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            showSaveStatus();
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.querySelectorAll('[data-save]').forEach(el => {
+                    const key = el.dataset.save;
+                    if (data[key] !== undefined) {
+                        if (el.type === 'checkbox') {
+                            el.checked = data[key];
+                        } else {
+                            el.value = data[key];
+                        }
+                    }
+                });
+            }
+        }
+
+        function showSaveStatus() {
+            const status = document.getElementById('saveStatus');
+            const text = document.getElementById('saveText');
+            status.classList.add('saved');
+            text.textContent = 'Sauvegardé ✓';
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                status.classList.remove('saved');
+                text.textContent = 'Sauvegarde automatique ✓';
+            }, 2000);
+        }
+
+        document.querySelectorAll('[data-save]').forEach(el => {
+            el.addEventListener('input', () => {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(saveData, 500);
+            });
+            el.addEventListener('change', saveData);
+        });
+
+        document.addEventListener('DOMContentLoaded', loadData);
+
+        function toggleSection(sectionId) {
+            document.getElementById(sectionId).classList.toggle('collapsed');
+        }
+
+        // Intruder exercise
+        document.querySelectorAll('.word-options[data-exercise]').forEach(container => {
+            const buttons = container.querySelectorAll('.word-btn');
+            const feedback = container.parentElement.querySelector('.exercise-feedback');
+            
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.disabled) return;
+                    const isCorrect = this.dataset.correct === 'true';
+                    buttons.forEach(b => b.disabled = true);
+                    
+                    if (isCorrect) {
+                        this.classList.add('correct');
+                        feedback.textContent = '✓ Correct ! Bravo !';
+                        feedback.className = 'exercise-feedback show correct';
+                    } else {
+                        this.classList.add('incorrect');
+                        feedback.textContent = '✗ Pas tout à fait. Essaie encore.';
+                        feedback.className = 'exercise-feedback show incorrect';
+                        setTimeout(() => {
+                            buttons.forEach(b => { b.disabled = false; b.classList.remove('incorrect'); });
+                            feedback.classList.remove('show');
+                        }, 1500);
+                    }
+                });
+            });
+        });
+
+        function resetExercise(btn) {
+            const container = btn.parentElement.querySelector('.word-options');
+            container.querySelectorAll('.word-btn').forEach(b => {
+                b.disabled = false;
+                b.classList.remove('correct', 'incorrect');
+            });
+            btn.parentElement.querySelector('.exercise-feedback').classList.remove('show');
+        }
+
+        // Match exercise
+        function checkMatch(btn) {
+            const container = btn.parentElement.querySelector('.match-exercise');
+            const selects = container.querySelectorAll('.match-select');
+            const feedback = btn.parentElement.querySelector('.exercise-feedback');
+            let allCorrect = true;
+
+            selects.forEach(select => {
+                if (select.value === select.dataset.answer) {
+                    select.classList.add('correct');
+                    select.classList.remove('incorrect');
+                } else {
+                    select.classList.add('incorrect');
+                    select.classList.remove('correct');
+                    allCorrect = false;
+                }
+            });
+
+            feedback.textContent = allCorrect ? '✓ Parfait ! Toutes les réponses sont correctes.' : '✗ Vérifie les réponses en rouge.';
+            feedback.className = 'exercise-feedback show ' + (allCorrect ? 'correct' : 'incorrect');
+        }
+
+        function resetMatch(btn) {
+            const container = btn.parentElement.querySelector('.match-exercise');
+            container.querySelectorAll('.match-select').forEach(select => {
+                select.value = '';
+                select.classList.remove('correct', 'incorrect');
+            });
+            btn.parentElement.querySelector('.exercise-feedback').classList.remove('show');
+        }
+
+        // Fill in the blank
+        function checkFillBlank(btn) {
+            const container = btn.parentElement;
+            const inputs = container.querySelectorAll('.fill-blank-input');
+            const feedback = container.querySelector('.exercise-feedback');
+            let allCorrect = true;
+
+            inputs.forEach(input => {
+                const answer = input.dataset.answer.toLowerCase();
+                const userAnswer = input.value.trim().toLowerCase();
+                if (userAnswer === answer) {
+                    input.classList.add('correct');
+                    input.classList.remove('incorrect');
+                } else {
+                    input.classList.add('incorrect');
+                    input.classList.remove('correct');
+                    allCorrect = false;
+                }
+            });
+
+            feedback.textContent = allCorrect ? '✓ Excellent !' : '✗ Vérifie les réponses en rouge.';
+            feedback.className = 'exercise-feedback show ' + (allCorrect ? 'correct' : 'incorrect');
+        }
+
+        function resetFillBlank(btn) {
+            const container = btn.parentElement;
+            container.querySelectorAll('.fill-blank-input').forEach(input => {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect');
+            });
+            container.querySelector('.exercise-feedback').classList.remove('show');
+        }
+
+        // PDF Export
+        function exportPDF() {
+            const studentName = document.getElementById('studentName').value || 'Étudiant';
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('collapsed'));
+            
+            const hide = document.querySelectorAll('.exercise-box, .vocab-bank, .sentence-starters, .model-response, .export-section, .reset-btn, .check-btn, .reminder-box');
+            hide.forEach(el => el.style.display = 'none');
+            
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `Plan_Ville_${studentName.replace(/\s+/g, '_')}_NoviceHigh.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+
+            html2pdf().set(opt).from(document.querySelector('.container')).save().then(() => {
+                hide.forEach(el => el.style.display = '');
+            });
+        }
+    </script>
+</body>
+</html>
