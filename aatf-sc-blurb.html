@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AATF Caroline du Sud</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Source+Sans+3:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bleu: #002395;
+    --blanc: #ffffff;
+    --rouge: #ED2939;
+    --or: #C9A84C;
+    --fond: #F7F5F0;
+    --texte: #2C2C2C;
+  }
+
+  .aatf-blurb {
+    font-family: 'Source Sans 3', sans-serif;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    background: var(--fond);
+    border-top: 4px solid var(--bleu);
+    border-bottom: 4px solid var(--rouge);
+    color: var(--texte);
+    line-height: 1.7;
+    position: relative;
+  }
+
+  /* Tricolore accent bar */
+  .aatf-blurb::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--bleu) 33%, var(--blanc) 33%, var(--blanc) 66%, var(--rouge) 66%);
+  }
+
+  .aatf-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.65rem;
+    color: var(--bleu);
+    margin-bottom: 1.2rem;
+    min-height: 2.5rem;
+    overflow: hidden;
+  }
+
+  .aatf-title .letter {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(18px);
+    animation: letterPop 0.4s forwards;
+  }
+
+  .aatf-title .letter.space {
+    width: 0.3em;
+  }
+
+  @keyframes letterPop {
+    0% { opacity: 0; transform: translateY(18px) rotate(-4deg); }
+    60% { opacity: 1; transform: translateY(-3px) rotate(1deg); }
+    100% { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+
+  /* Repeat animation on hover */
+  .aatf-title:hover .letter {
+    animation: letterPop 0.4s forwards;
+  }
+
+  .aatf-body p {
+    margin: 0 0 1rem 0;
+    font-size: 1.05rem;
+    font-weight: 300;
+  }
+
+  .aatf-body p:last-child {
+    font-weight: 500;
+    color: var(--bleu);
+    font-style: italic;
+  }
+
+  .aatf-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    background: var(--bleu);
+    color: var(--blanc);
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 2px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+
+  .aatf-toggle:hover {
+    background: var(--rouge);
+  }
+
+  .aatf-toggle .flag {
+    font-style: normal;
+    font-size: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="aatf-blurb" id="aatfBlurb">
+  <button class="aatf-toggle" onclick="toggleLang()">
+    <span class="flag" id="flagIcon">🇬🇧</span>
+    <span id="toggleLabel">English</span>
+  </button>
+
+  <div class="aatf-title" id="aatfTitle"></div>
+
+  <div class="aatf-body" id="aatfBody"></div>
+</div>
+
+<script>
+const content = {
+  fr: {
+    title: "Bienvenue sur le site de l'AATF Caroline du Sud !",
+    body: [
+      "Nous sommes heureux·ses de vous accueillir sur la page de l'American Association of Teachers of French, section Caroline du Sud. Notre mission est de soutenir et d'inspirer les enseignant·e·s de français à tous les niveaux, de promouvoir la langue et les cultures francophones, et de renforcer une communauté dynamique et engagée à travers l'État.",
+      "Vous trouverez ici des informations sur nos événements, nos possibilités de développement professionnel, nos concours pour les élèves et des ressources pédagogiques pour enrichir vos cours et favoriser la réussite de vos apprenant·e·s.",
+      "Merci de faire partie de notre communauté et vive le français !"
+    ],
+    toggleLabel: "English",
+    flag: "🇬🇧"
+  },
+  en: {
+    title: "Welcome to the AATF South Carolina Chapter!",
+    body: [
+      "We are delighted to welcome you to the page of the American Association of Teachers of French, South Carolina Chapter. Our mission is to support and inspire French teachers at all levels, promote the French language and Francophone cultures, and strengthen a dynamic, engaged community across the state.",
+      "Here you will find information about our events, professional development opportunities, student competitions, and teaching resources to enrich your classes and support your students' success.",
+      "Thank you for being part of our community — vive le français!"
+    ],
+    toggleLabel: "Français",
+    flag: "🇫🇷"
+  }
+};
+
+let currentLang = 'fr';
+
+function animateTitle(text) {
+  const titleEl = document.getElementById('aatfTitle');
+  titleEl.innerHTML = '';
+  [...text].forEach((char, i) => {
+    const span = document.createElement('span');
+    span.className = 'letter' + (char === ' ' ? ' space' : '');
+    span.textContent = char === ' ' ? '\u00A0' : char;
+    span.style.animationDelay = `${i * 0.03}s`;
+    titleEl.appendChild(span);
+  });
+}
+
+function renderBody(paragraphs) {
+  const bodyEl = document.getElementById('aatfBody');
+  bodyEl.innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'fr' ? 'en' : 'fr';
+  render();
+}
+
+function render() {
+  const c = content[currentLang];
+  animateTitle(c.title);
+  renderBody(c.body);
+  document.getElementById('toggleLabel').textContent = c.toggleLabel;
+  document.getElementById('flagIcon').textContent = c.flag;
+  document.getElementById('aatfBlurb').closest('html').lang = currentLang === 'fr' ? 'fr' : 'en';
+}
+
+render();
+</script>
+
+</body>
+</html>
