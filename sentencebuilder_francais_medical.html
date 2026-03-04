@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SentenceBuilder — Français médical</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --surface: #ffffff;
+    --border: #d0dbe7;
+    --text: #1a2b3c;
+    --muted: #6b7f94;
+    --accent: #0077b6;
+    --accent-light: #caf0f8;
+    --urgent: #d00000;
+    --urgent-light: #fce4e4;
+    --teal: #00897b;
+    --teal-light: #e0f2f1;
+    --warm: #e65100;
+    --warm-light: #fff3e0;
+    --row1: #e8f4fd;
+    --row1-border: #90caf9;
+    --row2: #e8f5e9;
+    --row2-border: #81c784;
+    --row3: #fff8e1;
+    --row3-border: #ffd54f;
+    --row4: #fce4ec;
+    --row4-border: #f48fb1;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 20px rgba(0,0,0,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ======================== HEADER ======================== */
+  .header {
+    background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+    padding: 24px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -50%; right: -10%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.75rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header h1 .cross {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px; height: 36px;
+    background: #d00000;
+    border-radius: 6px;
+    font-size: 1.4rem;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .header-sub {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+  .level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+  }
+  .level-badge .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #90e0ef;
+  }
+
+  /* ======================== MODEL SENTENCE ======================== */
+  .model-bar {
+    max-width: 1400px;
+    margin: 16px auto 0;
+    padding: 0 24px;
+  }
+  .model-sentence {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: var(--shadow);
+  }
+  .model-sentence .label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .model-sentence .fr-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .model-sentence .en-text {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  /* ======================== BUILD BAR ======================== */
+  .build-section {
+    max-width: 1400px;
+    margin: 16px auto;
+    padding: 0 24px;
+  }
+  .build-bar {
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 18px;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .build-bar.empty::before {
+    content: "Cliquez sur les mots ci-dessous pour construire une phrase…";
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.92rem;
+  }
+  .build-chip {
+    background: var(--accent);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    animation: chipIn 0.2s ease-out;
+  }
+  .build-chip:hover {
+    background: var(--urgent);
+    transform: scale(0.95);
+  }
+  @keyframes chipIn {
+    from { opacity: 0; transform: translateY(-6px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .build-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .build-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .build-btn.clear {
+    background: #eee;
+    color: var(--muted);
+  }
+  .build-btn.clear:hover { background: #ddd; }
+  .build-btn.copy {
+    background: var(--teal);
+    color: #fff;
+  }
+  .build-btn.copy:hover { background: #00695c; }
+
+  /* ======================== TABLE ======================== */
+  .table-section {
+    max-width: 1400px;
+    margin: 0 auto 40px;
+    padding: 0 24px;
+  }
+  .row-group {
+    margin-bottom: 12px;
+  }
+  .row-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 6px 14px;
+    border-radius: 6px 6px 0 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .row-label .icon { font-size: 0.85rem; }
+  .row-label.r1 { background: var(--row1); color: #1565c0; border: 1px solid var(--row1-border); border-bottom: none; }
+  .row-label.r2 { background: var(--row2); color: #2e7d32; border: 1px solid var(--row2-border); border-bottom: none; }
+  .row-label.r3 { background: var(--row3); color: #f57f17; border: 1px solid var(--row3-border); border-bottom: none; }
+  .row-label.r4 { background: var(--row4); color: #c62828; border: 1px solid var(--row4-border); border-bottom: none; }
+
+  .sb-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 0 8px 8px 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .sb-row { display: table-row; }
+  .sb-cell {
+    display: table-cell;
+    vertical-align: top;
+    padding: 0;
+    border-right: 1px solid rgba(0,0,0,0.06);
+  }
+  .sb-cell:last-child { border-right: none; }
+
+  .r1-row .sb-cell { background: var(--row1); border-bottom: 2px solid var(--row1-border); }
+  .r2-row .sb-cell { background: var(--row2); border-bottom: 2px solid var(--row2-border); }
+  .r3-row .sb-cell { background: var(--row3); border-bottom: 2px solid var(--row3-border); }
+  .r4-row .sb-cell { background: var(--row4); border-bottom: 2px solid var(--row4-border); }
+
+  .sb-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .sb-item:hover {
+    background: rgba(0,0,0,0.06);
+    transform: translateX(2px);
+  }
+  .sb-item:active {
+    transform: scale(0.97);
+  }
+  .sb-item .fr {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .sb-item .en {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+  .sb-item + .sb-item {
+    border-top: 1px dashed rgba(0,0,0,0.1);
+  }
+
+  /* Column header */
+  .col-head {
+    padding: 8px 14px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  .r1-row .col-head { color: #1565c0; }
+  .r2-row .col-head { color: #2e7d32; }
+  .r3-row .col-head { color: #f57f17; }
+  .r4-row .col-head { color: #c62828; }
+
+  /* Toggle translations */
+  .toggle-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+  }
+  .toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    box-shadow: var(--shadow);
+  }
+  .toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .toggle-btn .toggle-track {
+    width: 34px; height: 18px;
+    background: #ccc;
+    border-radius: 9px;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .toggle-btn.active .toggle-track { background: var(--accent); }
+  .toggle-btn .toggle-knob {
+    width: 14px; height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px; left: 2px;
+    transition: left 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle-btn.active .toggle-knob { left: 18px; }
+
+  body.hide-en .sb-item .en,
+  body.hide-en .model-sentence .en-text { display: none; }
+
+  /* ======================== RESPONSIVE ======================== */
+  @media (max-width: 900px) {
+    .sb-table, .sb-row, .sb-cell {
+      display: block;
+    }
+    .sb-cell {
+      border-right: none;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .sb-cell:last-child { border-bottom: none; }
+    .col-head {
+      background: rgba(0,0,0,0.04);
+    }
+    .header h1 { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================== HEADER ======================== -->
+<header class="header">
+  <div class="header-inner">
+    <div>
+      <h1><span class="cross">+</span> Français médical</h1>
+      <p class="header-sub">Décrire ses symptômes · Situations d'urgence</p>
+    </div>
+    <span class="level-badge"><span class="dot"></span> Niveau A2 → B1</span>
+  </div>
+</header>
+
+<!-- ======================== MODEL SENTENCE ======================== -->
+<div class="model-bar">
+  <div class="model-sentence">
+    <span class="label">Exemple</span>
+    <div>
+      <div class="fr-text">J'ai mal à la tête depuis ce matin et je me sens étourdi.</div>
+      <div class="en-text">I've had a headache since this morning and I feel dizzy.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== BUILD BAR ======================== -->
+<div class="build-section">
+  <div class="build-bar empty" id="buildBar">
+    <div class="build-actions" id="buildActions" style="display:none;">
+      <button class="build-btn clear" onclick="clearBar()">✕ Effacer</button>
+      <button class="build-btn copy" onclick="copyBar()">Copier</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== TABLE ======================== -->
+<div class="table-section">
+
+  <div class="toggle-row">
+    <button class="toggle-btn active" id="toggleEn" onclick="toggleTranslations()">
+      Traductions
+      <span class="toggle-track"><span class="toggle-knob"></span></span>
+    </button>
+  </div>
+
+  <!-- ======== ROW 1: Basic symptom (A2) ======== -->
+  <div class="row-group">
+    <div class="row-label r1"><span class="icon">🩺</span> Décrire un symptôme</div>
+    <table class="sb-table">
+      <tr class="sb-row r1-row">
+        <td class="sb-cell" style="width:18%">
+          <div class="col-head">Sujet</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">J'ai</span><span class="en">I have</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Mon fils a</span><span class="en">My son has</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Ma fille a</span><span class="en">My daughter has</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Mon mari / ma femme a</span><span class="en">My husband / wife has</span></div>
+        </td>
+        <td class="sb-cell" style="width:22%">
+          <div class="col-head">Symptôme</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">mal à la tête</span><span class="en">a headache</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">mal au ventre</span><span class="en">a stomachache</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">mal à la gorge</span><span class="en">a sore throat</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">mal au dos</span><span class="en">a backache</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">de la fièvre</span><span class="en">a fever</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">mal à la poitrine</span><span class="en">chest pain</span></div>
+        </td>
+        <td class="sb-cell" style="width:15%">
+          <div class="col-head">Durée</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">depuis hier</span><span class="en">since yesterday</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">depuis ce matin</span><span class="en">since this morning</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">depuis trois jours</span><span class="en">for three days</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">depuis une semaine</span><span class="en">for a week</span></div>
+        </td>
+        <td class="sb-cell" style="width:12%">
+          <div class="col-head">Connecteur</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">et</span><span class="en">and</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">mais</span><span class="en">but</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">aussi</span><span class="en">also</span></div>
+        </td>
+        <td class="sb-cell" style="width:33%">
+          <div class="col-head">Détail supplémentaire</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">je tousse beaucoup.</span><span class="en">I'm coughing a lot.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">j'ai du mal à dormir.</span><span class="en">I'm having trouble sleeping.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">j'ai vomi deux fois.</span><span class="en">I've vomited twice.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">ça empire.</span><span class="en">it's getting worse.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">j'ai perdu l'appétit.</span><span class="en">I've lost my appetite.</span></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ======== ROW 2: Describing how you feel (A2+) ======== -->
+  <div class="row-group">
+    <div class="row-label r2"><span class="icon">🌡️</span> Décrire son état</div>
+    <table class="sb-table">
+      <tr class="sb-row r2-row">
+        <td class="sb-cell" style="width:18%">
+          <div class="col-head">Sujet</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Je me sens</span><span class="en">I feel</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Je suis</span><span class="en">I am</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Il / Elle se sent</span><span class="en">He / She feels</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Je ne me sens pas</span><span class="en">I don't feel</span></div>
+        </td>
+        <td class="sb-cell" style="width:22%">
+          <div class="col-head">État</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">très fatigué(e)</span><span class="en">very tired</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">étourdi(e)</span><span class="en">dizzy</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">faible</span><span class="en">weak</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">nauséeux / nauséeuse</span><span class="en">nauseous</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">essoufflé(e)</span><span class="en">short of breath</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">bien du tout</span><span class="en">well at all</span></div>
+        </td>
+        <td class="sb-cell" style="width:20%">
+          <div class="col-head">Contexte</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">quand je me lève</span><span class="en">when I get up</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">après avoir mangé</span><span class="en">after eating</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">pendant la nuit</span><span class="en">during the night</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">tout le temps</span><span class="en">all the time</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">depuis l'accident</span><span class="en">since the accident</span></div>
+        </td>
+        <td class="sb-cell" style="width:40%">
+          <div class="col-head">Précision</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">et j'ai aussi des frissons.</span><span class="en">and I also have chills.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">et je transpire beaucoup.</span><span class="en">and I'm sweating a lot.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">et j'ai des vertiges.</span><span class="en">and I have dizziness.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">et j'ai une éruption cutanée.</span><span class="en">and I have a rash.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">mais je n'ai pas de fièvre.</span><span class="en">but I don't have a fever.</span></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ======== ROW 3: Urgency / Getting help (A2→B1) ======== -->
+  <div class="row-group">
+    <div class="row-label r3"><span class="icon">🚑</span> Demander de l'aide · Urgences</div>
+    <table class="sb-table">
+      <tr class="sb-row r3-row">
+        <td class="sb-cell" style="width:22%">
+          <div class="col-head">Expression</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Il faut</span><span class="en">We need to / It's necessary to</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Je dois</span><span class="en">I need to</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Pouvez-vous</span><span class="en">Can you</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Est-ce que je peux</span><span class="en">Can I</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Appelez le 15 !</span><span class="en">Call 15 (SAMU)!</span></div>
+        </td>
+        <td class="sb-cell" style="width:28%">
+          <div class="col-head">Action</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">appeler une ambulance</span><span class="en">call an ambulance</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">aller aux urgences</span><span class="en">go to the ER</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">voir un médecin tout de suite</span><span class="en">see a doctor right away</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">avoir une ordonnance</span><span class="en">get a prescription</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">prendre ma tension</span><span class="en">take my blood pressure</span></div>
+        </td>
+        <td class="sb-cell" style="width:16%">
+          <div class="col-head">Cause</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">parce que</span><span class="en">because</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">car</span><span class="en">because / as</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">c'est urgent :</span><span class="en">it's urgent:</span></div>
+        </td>
+        <td class="sb-cell" style="width:34%">
+          <div class="col-head">Explication</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">j'ai très mal.</span><span class="en">I'm in a lot of pain.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">je ne peux pas respirer.</span><span class="en">I can't breathe.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">il / elle a perdu connaissance.</span><span class="en">he / she lost consciousness.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">il y a beaucoup de sang.</span><span class="en">there's a lot of blood.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">la douleur ne passe pas.</span><span class="en">the pain won't go away.</span></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ======== ROW 4: At the doctor / follow-up (B1) ======== -->
+  <div class="row-group">
+    <div class="row-label r4"><span class="icon">💊</span> Chez le médecin · Suivi</div>
+    <table class="sb-table">
+      <tr class="sb-row r4-row">
+        <td class="sb-cell" style="width:24%">
+          <div class="col-head">Début de phrase</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Le médecin m'a dit que</span><span class="en">The doctor told me that</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Je voudrais savoir si</span><span class="en">I'd like to know if</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Est-ce que</span><span class="en">Is it that / Do</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">Je suis allergique à</span><span class="en">I'm allergic to</span></div>
+        </td>
+        <td class="sb-cell" style="width:26%">
+          <div class="col-head">Suite</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">je dois prendre des médicaments</span><span class="en">I need to take medication</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">c'est grave</span><span class="en">it's serious</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">je peux reprendre le travail</span><span class="en">I can go back to work</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">j'ai besoin d'une radio</span><span class="en">I need an X-ray</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">la pénicilline / l'aspirine</span><span class="en">penicillin / aspirin</span></div>
+        </td>
+        <td class="sb-cell" style="width:18%">
+          <div class="col-head">But</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">pour</span><span class="en">in order to</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">avant de</span><span class="en">before</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">ou si</span><span class="en">or if</span></div>
+        </td>
+        <td class="sb-cell" style="width:32%">
+          <div class="col-head">Résultat</div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">guérir plus vite.</span><span class="en">get better faster.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">éviter les complications.</span><span class="en">avoid complications.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">je dois revenir la semaine prochaine.</span><span class="en">I need to come back next week.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">il faut faire des analyses de sang.</span><span class="en">blood tests are needed.</span></div>
+          <div class="sb-item" onclick="add(this)"><span class="fr">je peux prendre autre chose ?</span><span class="en">can I take something else?</span></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+
+<script>
+// ======================== BUILD BAR LOGIC ========================
+const bar = document.getElementById('buildBar');
+const actions = document.getElementById('buildActions');
+let chips = [];
+
+function add(el) {
+  const fr = el.querySelector('.fr').textContent.trim();
+  chips.push(fr);
+  render();
+  // quick flash
+  el.style.background = 'rgba(0,119,182,0.15)';
+  setTimeout(() => el.style.background = '', 200);
+}
+
+function render() {
+  // Remove old chips
+  bar.querySelectorAll('.build-chip').forEach(c => c.remove());
+  if (chips.length === 0) {
+    bar.classList.add('empty');
+    actions.style.display = 'none';
+    return;
+  }
+  bar.classList.remove('empty');
+  actions.style.display = 'flex';
+  // Insert chips before actions
+  chips.forEach((text, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'build-chip';
+    chip.textContent = text;
+    chip.title = 'Cliquez pour supprimer';
+    chip.onclick = () => { chips.splice(i, 1); render(); };
+    bar.insertBefore(chip, actions);
+  });
+}
+
+function clearBar() {
+  chips = [];
+  render();
+}
+
+function copyBar() {
+  const text = chips.join(' ');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.build-btn.copy');
+    btn.textContent = '✓ Copié !';
+    setTimeout(() => btn.textContent = 'Copier', 1200);
+  });
+}
+
+// ======================== TOGGLE TRANSLATIONS ========================
+function toggleTranslations() {
+  document.body.classList.toggle('hide-en');
+  document.getElementById('toggleEn').classList.toggle('active');
+}
+</script>
+</body>
+</html>
