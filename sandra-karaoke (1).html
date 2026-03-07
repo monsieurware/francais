@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noche de karaoke — La historia de Sandra</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--warm:#FAF6F1;--warm-dark:#EDE7DE;--card:#FFFFFF;--oil:#1E1E1E;--steel:#3A3F47;--steel-light:#6B7280;--neon:#E040FB;--neon-light:#F9E0FF;--neon-border:rgba(224,64,251,.3);--orange:#D97730;--orange-light:#FCECD8;--green:#3D7A5A;--green-bg:rgba(61,122,90,.08);--green-border:rgba(61,122,90,.25);--purple:#7B2FBE;--purple-bg:rgba(123,47,190,.08);--purple-border:rgba(123,47,190,.25);--vocab-orange:#C46A25;--vocab-orange-bg:rgba(196,106,37,.08);--vocab-orange-border:rgba(196,106,37,.25);--text:#1C1917;--text-mid:#57534E;--text-light:#9CA3AF;--border:#E5E1DB;--correct:#2D6A4F;--correct-bg:#D8F3DC;--incorrect:#9B2226;--incorrect-bg:#FDE8E8;--sandra:#B45B1A;--sandra-bg:#FEF0E3;--cliente-c:#3B5279;--cliente-bg:#E0E7F1;--shadow:0 1px 4px rgba(0,0,0,.05);--shadow-md:0 4px 16px rgba(0,0,0,.07);--r:8px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito Sans',sans-serif;background:var(--warm);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased}
+.header{background:linear-gradient(160deg,#1a0a2e 0%,#2d1b4e 40%,#4a1942 100%);color:#fff;padding:3.5rem 1.5rem 3rem;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 70%,rgba(224,64,251,.15) 0%,transparent 50%),radial-gradient(circle at 70% 30%,rgba(224,64,251,.08) 0%,transparent 50%)}
+.header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--neon),var(--orange),var(--neon))}
+.header-content{position:relative;z-index:1;max-width:600px;margin:0 auto}
+.header-emoji{font-size:2.4rem;margin-bottom:.75rem}
+.header h1{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:600}
+.header h1 em{color:var(--neon);font-style:italic}
+.header .tagline{font-size:.9rem;font-weight:300;opacity:.6;letter-spacing:.1em;text-transform:uppercase}
+.header .badges{display:flex;gap:.5rem;justify-content:center;margin-top:1rem;flex-wrap:wrap}
+.badge{padding:.25rem .75rem;border-radius:3px;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.badge-level{border:1.5px solid var(--neon);color:var(--neon)}
+.badge-tprs{border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.6)}
+.tts-banner{text-align:center;padding:.7rem 1rem;margin:1.25rem auto 0;max-width:700px;background:var(--neon-light);border-radius:var(--r);font-size:.8rem;font-weight:500;color:var(--steel)}
+.container{max-width:700px;margin:0 auto;padding:0 1.25rem 3rem}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;padding:.75rem 1rem;background:var(--card);border-radius:var(--r);border:1px solid var(--border);margin-top:1.5rem;font-size:.75rem}
+.legend-item{display:flex;align-items:center;gap:.3rem}
+.legend-dot{width:8px;height:8px;border-radius:2px}
+/* VOCAB BOX */
+.vocab-box{margin:1rem 0;padding:.85rem 1.1rem;background:var(--neon-light);border-radius:var(--r);border:1px solid var(--neon-border)}
+.vocab-box-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);margin-bottom:.4rem}
+.vocab-grid{display:grid;grid-template-columns:1fr 1fr;gap:.25rem .75rem}
+.vocab-pair{font-size:.88rem;display:flex;gap:.35rem}
+.vocab-pair .es{font-weight:600;color:var(--steel);cursor:pointer}
+.vocab-pair .es:hover{color:var(--neon)}
+.vocab-pair .en{color:var(--text-light);font-style:italic}
+/* SCENE */
+.scene{margin-top:2.5rem;background:var(--card);border-radius:12px;box-shadow:var(--shadow-md);overflow:visible;border:1px solid var(--border)}
+.scene-header{background:linear-gradient(135deg,#1a0a2e,#3d1952);color:#fff;padding:1.25rem 1.75rem;display:flex;align-items:center;gap:.75rem;border-radius:12px 12px 0 0}
+.scene-number{background:var(--neon);color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0}
+.scene-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:600}
+.scene-body{padding:1.75rem;overflow:visible}
+.story-p{font-size:1.02rem;line-height:1.95;margin-bottom:.85rem}
+.story-p .sensory{color:var(--text-mid);font-style:italic}
+.narration{font-size:.95rem;color:var(--text-mid);font-style:italic;margin-bottom:.85rem;padding-left:1rem;border-left:2px solid var(--warm-dark)}
+/* GRAMMAR TOOLTIPS */
+.g-verb,.g-struct,.g-vocab{position:relative;cursor:help;border-bottom:1.5px dotted;font-weight:500}
+.g-verb{color:var(--green);border-color:var(--green)}
+.g-struct{color:var(--purple);border-color:var(--purple)}
+.g-vocab{color:var(--vocab-orange);border-color:var(--vocab-orange)}
+.g-tip{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);width:260px;padding:.7rem .9rem;border-radius:var(--r);font-size:.78rem;font-weight:400;line-height:1.55;color:var(--text);box-shadow:0 6px 24px rgba(0,0,0,.12);z-index:200;pointer-events:none;font-style:normal}
+.g-verb .g-tip{background:#EAF2ED;border:1px solid var(--green-border)}
+.g-struct .g-tip{background:#EEEAF5;border:1px solid var(--purple-border)}
+.g-vocab .g-tip{background:#FAF0E6;border:1px solid var(--vocab-orange-border)}
+.g-verb:hover .g-tip,.g-struct:hover .g-tip,.g-vocab:hover .g-tip{display:block}
+.g-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent}
+.g-verb .g-tip::after{border-top-color:#EAF2ED}
+.g-struct .g-tip::after{border-top-color:#EEEAF5}
+.g-vocab .g-tip::after{border-top-color:#FAF0E6}
+/* DIALOGUE */
+.dialogue{margin:1rem 0;padding:1rem 1.25rem;background:var(--warm);border-radius:var(--r)}
+.d-line{display:flex;gap:.6rem;margin-bottom:.65rem;align-items:flex-start;cursor:pointer;padding:.3rem .4rem;border-radius:5px;transition:background .15s}
+.d-line:hover{background:rgba(224,64,251,.06)}
+.d-line:last-child{margin-bottom:0}
+.d-speaker{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.15rem .45rem;border-radius:3px;flex-shrink:0;margin-top:.2rem;white-space:nowrap}
+.d-speaker.sandra{background:var(--sandra-bg);color:var(--sandra)}
+.d-speaker.cliente{background:var(--cliente-bg);color:var(--cliente-c)}
+.d-speaker.narrador{background:#f3e8ff;color:var(--purple)}
+.d-text{font-size:.95rem;line-height:1.65;flex:1}
+.d-translation{font-size:.78rem;color:var(--text-light);font-style:italic;margin:-.3rem 0 .65rem 4.5rem}
+.d-line .tts-loading{opacity:.5;pointer-events:none}
+.d-line.playing{background:rgba(224,64,251,.08)}
+body.tts-busy .d-line{cursor:wait}
+body.tts-busy .vocab-pair .es{cursor:wait}
+body.tts-busy .grammar-example{cursor:wait}
+body.tts-busy .btn-sm.listen{cursor:wait;opacity:.6}
+/* CORRECTION */
+.correction-spot{display:inline-block;background:#FEE2E2;border:1.5px dashed var(--incorrect);border-radius:4px;padding:.1rem .4rem;cursor:pointer;font-weight:600;color:var(--incorrect);transition:all .2s}
+.correction-spot:hover{background:#FECACA;border-style:solid}
+.correction-spot.active{background:var(--neon-light);border-color:var(--neon);color:var(--purple)}
+.correction-input-wrap{display:inline-flex;align-items:center;gap:.3rem}
+.correction-input{border:2px solid var(--neon);border-radius:4px;padding:.15rem .4rem;font-family:inherit;font-size:.95rem;font-weight:600;width:130px;color:var(--steel);outline:none;background:#fff}
+.correction-submit{background:var(--steel);color:#fff;border:none;border-radius:4px;padding:.2rem .5rem;font-size:.75rem;font-weight:700;cursor:pointer}
+.correction-spot.corrected{background:var(--correct-bg);border:1.5px solid var(--correct);color:var(--correct);cursor:default;border-style:solid}
+.correction-spot.wrong{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+/* COLLAPSIBLE GRAMMAR */
+.grammar-drop{margin:1.25rem 0;border-radius:var(--r);overflow:hidden;border:1px solid var(--border)}
+.grammar-drop-header{display:flex;align-items:center;cursor:pointer;padding:0;transition:filter .2s}
+.grammar-drop-header:hover{filter:brightness(.97)}
+.grammar-pulse{width:5px;flex-shrink:0;align-self:stretch;animation:pulse-glow 2s ease-in-out infinite}
+.grammar-pulse.verb{background:var(--green)}
+.grammar-pulse.struct{background:var(--purple)}
+.grammar-pulse.vocab{background:var(--vocab-orange)}
+@keyframes pulse-glow{0%,100%{opacity:1}50%{opacity:.35}}
+.grammar-drop-label{flex:1;padding:.75rem 1rem;font-size:.82rem;font-weight:700;letter-spacing:.03em}
+.grammar-drop-label.verb{color:var(--green);background:var(--green-bg)}
+.grammar-drop-label.struct{color:var(--purple);background:var(--purple-bg)}
+.grammar-drop-label.vocab{color:var(--vocab-orange);background:var(--vocab-orange-bg)}
+.grammar-drop-arrow{padding:.75rem 1rem;font-size:.8rem;transition:transform .3s}
+.grammar-drop.open .grammar-drop-arrow{transform:rotate(180deg)}
+.grammar-drop-body{max-height:0;overflow:hidden;transition:max-height .4s ease;background:#fff}
+.grammar-drop.open .grammar-drop-body{max-height:600px}
+.grammar-drop-inner{padding:1rem 1.25rem;font-size:.9rem;line-height:1.7;color:var(--text-mid)}
+.grammar-drop-inner strong{color:var(--text)}
+.grammar-example{background:var(--warm);border-radius:5px;padding:.5rem .75rem;margin:.5rem 0;cursor:pointer;transition:background .15s}
+.grammar-example:hover{background:var(--neon-light)}
+.grammar-example .ex-es{font-weight:600;color:var(--steel)}
+.grammar-example .ex-en{color:var(--text-light);font-style:italic;font-size:.82rem}
+/* CIRCLING */
+.circling{margin:1.25rem 0;padding:1rem 1.25rem;background:var(--warm);border-radius:var(--r);border-left:3px solid var(--green)}
+.circling-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:.75rem}
+.cq{margin-bottom:.85rem}.cq:last-child{margin-bottom:0}
+.cq-type{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--neon);margin-bottom:.15rem}
+.cq-text{font-size:.95rem;font-weight:500;color:var(--steel);margin-bottom:.1rem}
+.cq-trans{font-size:.78rem;color:var(--text-light);font-style:italic;margin-bottom:.35rem}
+.cq-options{display:flex;gap:.35rem;flex-wrap:wrap}
+.cq-btn{background:#fff;border:1.5px solid var(--border);border-radius:5px;padding:.3rem .7rem;font-family:inherit;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .15s;color:var(--text)}
+.cq-btn:hover{border-color:var(--neon);background:var(--neon-light)}
+.cq-btn.correct{border-color:var(--correct);background:var(--correct-bg);color:var(--correct)}
+.cq-btn.incorrect{border-color:var(--incorrect);background:var(--incorrect-bg);color:var(--incorrect);opacity:.7}
+.cq-btn:disabled{cursor:default}
+.cq-feedback{font-size:.78rem;font-weight:500;margin-top:.25rem;min-height:1.2em}
+.cq-feedback.correct{color:var(--correct)}.cq-feedback.incorrect{color:var(--incorrect)}
+/* SEPARA */
+.sep-section{margin:1.25rem 0;padding:1rem 1.25rem;background:var(--warm);border-radius:var(--r);border-left:3px solid var(--purple)}
+.sep-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);margin-bottom:.75rem}
+.sep-item{margin-bottom:1rem}
+.sep-english{font-size:.82rem;color:var(--text-light);font-style:italic;margin-bottom:.3rem}
+.sep-display{display:flex;flex-wrap:wrap;align-items:center;padding:.6rem .75rem;background:#fff;border:2px solid var(--border);border-radius:6px;min-height:44px;font-size:1.05rem;font-weight:600;color:var(--steel);letter-spacing:.5px;cursor:default;user-select:none}
+.sep-display.correct{border-color:var(--correct);background:var(--correct-bg)}
+.sep-display.incorrect{border-color:var(--incorrect);background:var(--incorrect-bg)}
+.sep-letter{display:inline}.sep-cursor{display:inline-block;width:3px;color:var(--text-light);cursor:pointer;text-align:center;transition:all .1s;font-size:.7rem;opacity:.3}
+.sep-cursor:hover{opacity:1;color:var(--neon);transform:scaleY(1.3)}
+.sep-separator{display:inline-block;margin:0 1px;color:var(--neon);cursor:pointer;font-weight:700;font-size:.9rem}
+.sep-separator:hover{color:var(--incorrect)}
+.sep-btn-row{display:flex;gap:.4rem;margin-top:.4rem;align-items:center}
+.sep-result{font-size:.8rem;font-weight:500;margin-top:.3rem;min-height:1.2em}
+.sep-result.ok{color:var(--correct)}.sep-result.err{color:var(--incorrect)}
+.btn-sm{background:var(--steel);color:#fff;border:none;border-radius:5px;padding:.35rem .85rem;font-family:inherit;font-size:.78rem;font-weight:600;cursor:pointer;transition:background .15s}
+.btn-sm:hover{background:var(--steel-light)}
+.btn-sm.outline{background:transparent;color:var(--steel-light);border:1.5px solid var(--border)}
+.btn-sm.outline:hover{border-color:var(--steel);color:var(--steel)}
+.btn-sm.listen{background:var(--neon)}.btn-sm.listen:hover{background:#c030d0}
+/* PROGRESS */
+.progress-bar{position:sticky;top:0;z-index:100;height:4px;background:var(--warm-dark)}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--orange));width:0%;transition:width .5s ease}
+.score-orb{position:fixed;bottom:1.25rem;right:1.25rem;background:var(--oil);color:var(--neon);border-radius:50%;width:52px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:var(--shadow-md);z-index:100;font-weight:700;font-size:1.1rem;line-height:1}
+.score-orb .lbl{font-size:.45rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;opacity:.5;color:#fff}
+/* AUTOSAVE INDICATOR */
+.autosave-indicator{position:fixed;top:10px;right:10px;background:var(--correct-bg);color:var(--correct);padding:.2rem .6rem;border-radius:4px;font-size:.7rem;font-weight:600;opacity:0;transition:opacity .3s;z-index:200}
+.autosave-indicator.show{opacity:1}
+@media(max-width:500px){.scene-body{padding:1.25rem}.g-tip{width:230px;left:0;transform:none}.d-translation{margin-left:0}.vocab-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="score-orb"><span id="scoreNum">0</span><span class="lbl">pts</span></div>
+<div class="autosave-indicator" id="autosaveInd">✓ Guardado</div>
+
+<header class="header"><div class="header-content"><div class="header-emoji">🎤🎶</div><h1>Noche de <em>karaoke</em></h1><p class="tagline">La historia de Sandra · Capítulo 2 · TPRS</p><div class="badges"><span class="badge badge-level">Novice Mid → Novice High</span><span class="badge badge-tprs">Historia interactiva</span></div></div></header>
+
+<div class="tts-banner">🔊 Haz clic en los diálogos para escuchar. Cada personaje tiene su propia voz.</div>
+
+<div class="container">
+
+<div class="legend"><div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> Verbos</div><div class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span> Estructuras</div><div class="legend-item"><span class="legend-dot" style="background:var(--vocab-orange)"></span> Vocabulario</div><div class="legend-item"><span class="legend-dot" style="background:var(--incorrect)"></span> ¡Corrígeme!</div></div>
+
+<!-- KEY VOCAB -->
+<div class="vocab-box">
+  <div class="vocab-box-title">🔑 Vocabulario clave — Key Vocabulary</div>
+  <div class="vocab-grid">
+    <div class="vocab-pair"><span class="es" onclick="speak('cantar','sandra')">cantar</span> <span class="en">— to sing</span></div>
+    <div class="vocab-pair"><span class="es" onclick="speak('bailar','sandra')">bailar</span> <span class="en">— to dance</span></div>
+    <div class="vocab-pair"><span class="es" onclick="speak('la canción','sandra')">la canción</span> <span class="en">— the song</span></div>
+    <div class="vocab-pair"><span class="es" onclick="speak('la música','sandra')">la música</span> <span class="en">— the music</span></div>
+    <div class="vocab-pair"><span class="es" onclick="speak('el micrófono','sandra')">el micrófono</span> <span class="en">— the microphone</span></div>
+    <div class="vocab-pair"><span class="es" onclick="speak('la bocina','sandra')">la bocina</span> <span class="en">— the speaker</span></div>
+    <div class="vocab-pair"><span class="es" onclick="speak('las luces','sandra')">las luces</span> <span class="en">— the lights</span></div>
+    <div class="vocab-pair"><span class="es" onclick="speak('juntos','sandra')">juntos</span> <span class="en">— together</span></div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 1 ═══ -->
+<div class="scene"><div class="scene-header"><div class="scene-number">1</div><div class="scene-title">La idea</div></div><div class="scene-body">
+
+<p class="story-p"><span class="sensory">Es viernes por la tarde 🌇. El taller está en silencio 🤫. Sandra se limpia las manos. Mira el taller vacío y piensa 🤔.</span></p>
+
+<p class="story-p">Sandra <span class="g-verb">quiere<span class="g-tip"><b>quiere</b> = she wants. "Quiere hacer algo especial" = She wants to do something special.</span></span> hacer algo especial. Los clientes son muy amables 🙏. Don Miguel, doña Carmen, Lucía, el señor Ramírez… todos son parte de su comunidad ❤️.</p>
+
+<p class="story-p">Sandra tiene una idea 💡: ¡una noche de <span class="g-vocab">karaoke<span class="g-tip"><b>karaoke</b> = karaoke! The same word in Spanish!</span></span> en el taller!</p>
+
+<p class="narration">Sandra sonríe 😊. Es una buena idea.</p>
+
+<div class="dialogue">
+<div class="d-line" data-voice="sandra" data-text="Quiero hacer una fiesta de karaoke. Aquí, en el taller."><span class="d-speaker sandra">Sandra</span><span class="d-text">Quiero hacer una fiesta de karaoke. Aquí, en el taller.</span></div>
+<div class="d-translation">I want to throw a karaoke party. Here, in the shop.</div>
+
+<div class="d-line" data-voice="sandra" data-text="Pero necesito ayuda. No sé cómo preparar todo."><span class="d-speaker sandra">Sandra</span><span class="d-text">Pero <span class="g-verb">necesito<span class="g-tip"><b>necesito</b> = I need. Recycled from the mechanic story!</span></span> ayuda. <span class="g-struct">No sé<span class="g-tip"><b>no sé</b> = I don't know (how to). "No sé cantar" = I don't know how to sing.</span></span> cómo preparar todo.</span></div>
+<div class="d-translation">But I need help. I don't know how to prepare everything.</div>
+</div>
+
+<p class="story-p"><span class="sensory">Sandra toma su teléfono 📱. Llama a don Miguel.</span></p>
+
+<div class="dialogue">
+<div class="d-line" data-voice="miguel" data-text="¿Bueno?"><span class="d-speaker cliente">Don Miguel</span><span class="d-text">¿Bueno?</span></div>
+<div class="d-translation">Hello?</div>
+
+<div class="d-line" data-voice="sandra" data-text="Don Miguel, quiero hacer una fiesta de karaoke en el taller. ¿Quiere venir?"><span class="d-speaker sandra">Sandra</span><span class="d-text">Don Miguel, quiero hacer una fiesta de karaoke en el taller. <span class="g-struct">¿Quiere venir?<span class="g-tip"><b>¿Quiere venir?</b> = Do you want to come? Use this to invite someone (formal).</span></span></span></div>
+<div class="d-translation">Don Miguel, I want to throw a karaoke party in the shop. Do you want to come?</div>
+
+<div class="d-line" data-voice="miguel" data-text="¡Qué buena idea! ¡Claro que sí! Me encanta la música."><span class="d-speaker cliente">Don Miguel</span><span class="d-text">¡Qué buena idea! ¡Claro que sí! <span class="g-struct">Me encanta<span class="g-tip"><b>me encanta</b> = I love (it). Stronger than "me gusta." "Me encanta la música" = I love music.</span></span> la <span class="g-vocab">música<span class="g-tip"><b>la música</b> = the music.</span></span> 🎶.</span></div>
+<div class="d-translation">What a great idea! Of course! I love music.</div>
+
+<div class="d-line" data-voice="sandra" data-text="¿Me puede ayudar con los preparativos?"><span class="d-speaker sandra">Sandra</span><span class="d-text"><span class="g-struct">¿Me puede ayudar con<span class="g-tip"><b>¿Me puede ayudar con...?</b> = Can you help me with...?</span></span> los preparativos?</span></div>
+<div class="d-translation">Can you help me with the preparations?</div>
+
+<div class="d-line" data-voice="miguel" data-text="¡Por supuesto! Yo puedo traer las bocinas."><span class="d-speaker cliente">Don Miguel</span><span class="d-text">¡Por supuesto! Yo <span class="g-struct">puedo traer<span class="g-tip"><b>puedo traer</b> = I can bring. "¿Puedes traer...?" = Can you bring...?</span></span> las <span class="g-vocab">bocinas<span class="g-tip"><b>las bocinas</b> = the speakers (audio).</span></span> 🔊.</span></div>
+<div class="d-translation">Of course! I can bring the speakers.</div>
+
+<div class="d-line" data-voice="sandra" data-text="¡Perfecto! Muchas gracias, don Miguel."><span class="d-speaker sandra">Sandra</span><span class="d-text">¡Perfecto! Muchas gracias, don Miguel.</span></div>
+<div class="d-translation">Perfect! Thank you so much, Don Miguel.</div>
+</div>
+
+<!-- GRAMMAR DROP -->
+<div class="grammar-drop" onclick="toggleGrammar(this)"><div class="grammar-drop-header"><div class="grammar-pulse struct"></div><div class="grammar-drop-label struct">⬥ Estructura: Invitar — ¿Quieres venir? & Me encanta</div><div class="grammar-drop-arrow">▼</div></div><div class="grammar-drop-body"><div class="grammar-drop-inner">
+Two new chunks for inviting and reacting:
+<div class="grammar-example" onclick="event.stopPropagation();speak('¿Quieres venir a la fiesta?','sandra')"><div class="ex-es">🔊 ¿Quieres venir a la fiesta?</div><div class="ex-en">Do you want to come to the party? (informal)</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('¿Quiere venir a la fiesta?','sandra')"><div class="ex-es">🔊 ¿Quiere venir a la fiesta?</div><div class="ex-en">Do you want to come to the party? (formal)</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('Me encanta la música.','miguel')"><div class="ex-es">🔊 Me encanta la música.</div><div class="ex-en">I love music.</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('Me gusta cantar.','sandra')"><div class="ex-es">🔊 Me gusta cantar.</div><div class="ex-en">I like to sing.</div></div>
+</div></div></div>
+
+<!-- CIRCLING -->
+<div class="circling"><div class="circling-label">Preguntas — Questions</div>
+<div class="cq"><div class="cq-type">Sí / No</div><div class="cq-text">¿Sandra quiere hacer una fiesta?</div><div class="cq-trans">Does Sandra want to throw a party?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,true)">Sí</button><button class="cq-btn" onclick="checkCQ(this,false)">No</button></div><div class="cq-feedback"></div></div>
+<div class="cq"><div class="cq-type">Either / Or</div><div class="cq-text">¿La fiesta es en el taller o en un restaurante?</div><div class="cq-trans">Is the party in the shop or in a restaurant?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,true)">En el taller</button><button class="cq-btn" onclick="checkCQ(this,false)">En un restaurante</button></div><div class="cq-feedback"></div></div>
+<div class="cq"><div class="cq-type">¿Qué?</div><div class="cq-text">¿Qué puede traer don Miguel?</div><div class="cq-trans">What can Don Miguel bring?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,true)">Las bocinas</button><button class="cq-btn" onclick="checkCQ(this,false)">Las luces</button><button class="cq-btn" onclick="checkCQ(this,false)">La comida</button></div><div class="cq-feedback"></div></div>
+</div>
+
+<!-- SEP -->
+<div class="sep-section"><div class="sep-label">✂️ Separa las palabras</div>
+<div class="sep-item" data-answer="me encanta la música"><div class="sep-english">🇬🇧 I love music.</div><div class="sep-display"></div><div class="sep-btn-row"><button class="btn-sm" onclick="checkSepItem(this)">✓ Verificar</button><button class="btn-sm outline" onclick="resetSepItem(this)">↺</button><button class="btn-sm listen" onclick="event.stopPropagation();speak('Me encanta la música.','sandra')">🔊</button></div><div class="sep-result"></div></div>
+<div class="sep-item" data-answer="quiero hacer una fiesta"><div class="sep-english">🇬🇧 I want to throw a party.</div><div class="sep-display"></div><div class="sep-btn-row"><button class="btn-sm" onclick="checkSepItem(this)">✓ Verificar</button><button class="btn-sm outline" onclick="resetSepItem(this)">↺</button><button class="btn-sm listen" onclick="event.stopPropagation();speak('Quiero hacer una fiesta.','sandra')">🔊</button></div><div class="sep-result"></div></div>
+</div>
+
+</div></div>
+
+<!-- ═══ SCENE 2 ═══ -->
+<div class="scene"><div class="scene-header"><div class="scene-number">2</div><div class="scene-title">Los preparativos</div></div><div class="scene-body">
+
+<p class="story-p"><span class="sensory">Es sábado por la mañana ☀️. Sandra abre la puerta 🚪 del taller. Huele a aceite 🛢️, como siempre. Pero hoy es diferente.</span></p>
+
+<p class="story-p">Sandra <span class="g-struct">tiene que<span class="g-tip"><b>tiene que</b> = she has to. Recycled! "Tiene que limpiar" = She has to clean.</span></span> limpiar el taller. Tiene que mover los carros 🚗. <span class="g-struct">Tiene que<span class="g-tip"><b>tiene que</b> = she has to. Notice the repetition — it's the same chunk every time!</span></span> preparar las <span class="g-vocab">luces<span class="g-tip"><b>las luces</b> = the lights.</span></span> 💡 y el <span class="g-vocab">micrófono<span class="g-tip"><b>el micrófono</b> = the microphone.</span></span> 🎤.</p>
+
+<p class="narration">Sandra está ocupada 😰. Hay mucho trabajo.</p>
+
+<div class="dialogue">
+<div class="d-line" data-voice="miguel" data-text="¡Buenos días, Sandra! Aquí están las bocinas."><span class="d-speaker cliente">Don Miguel</span><span class="d-text">¡Buenos días, Sandra! Aquí están las bocinas 🔊.</span></div>
+<div class="d-translation">Good morning, Sandra! Here are the speakers.</div>
+
+<div class="d-line" data-voice="sandra" data-text="¡Gracias, don Miguel! ¿Me puede ayudar con las luces?"><span class="d-speaker sandra">Sandra</span><span class="d-text">¡Gracias, don Miguel! ¿Me puede ayudar con las <span class="g-vocab">luces<span class="g-tip"><b>las luces</b> = the lights.</span></span> 💡?</span></div>
+<div class="d-translation">Thanks, Don Miguel! Can you help me with the lights?</div>
+
+<div class="d-line" data-voice="miguel" data-text="Claro. ¿Dónde pongo las luces?"><span class="d-speaker cliente">Don Miguel</span><span class="d-text">Claro. ¿Dónde pongo las luces?</span></div>
+<div class="d-translation">Sure. Where do I put the lights?</div>
+
+<div class="d-line" data-voice="sandra" data-text="Allí, por favor. Encima del motor viejo."><span class="d-speaker sandra">Sandra</span><span class="d-text">Allí, por favor. Encima del motor viejo.</span></div>
+<div class="d-translation">Over there, please. On top of the old engine.</div>
+</div>
+
+<p class="story-p"><span class="sensory">La puerta se abre 🚪. Entra doña Carmen con una caja grande 📦.</span></p>
+
+<div class="dialogue">
+<div class="d-line" data-voice="carmen" data-text="¡Sandra! Te traigo un micrófono. Era de mi hijo."><span class="d-speaker cliente">Doña Carmen</span><span class="d-text">¡Sandra! <span class="g-struct">Te traigo<span class="g-tip"><b>te traigo</b> = I'm bringing you. "Te traigo un micrófono" = I'm bringing you a microphone.</span></span> un micrófono 🎤. Era de mi hijo.</span></div>
+<div class="d-translation">Sandra! I'm bringing you a microphone. It was my son's.</div>
+
+<div class="d-line" data-voice="sandra" data-text="¡Ay, doña Carmen! ¡Muchas gracias! ¿Le gusta cantar?"><span class="d-speaker sandra">Sandra</span><span class="d-text">¡Ay, doña Carmen! ¡Muchas gracias! <span class="g-struct">¿Le gusta<span class="g-tip"><b>¿Le gusta...?</b> = Do you like...? (formal). "¿Le gusta cantar?" = Do you like to sing?</span></span> <span class="g-vocab">cantar<span class="g-tip"><b>cantar</b> = to sing.</span></span> 🎤?</span></div>
+<div class="d-translation">Oh, Doña Carmen! Thank you so much! Do you like to sing?</div>
+
+<div class="d-line" data-voice="carmen" data-text="¡Me encanta cantar! Pero no sé bailar."><span class="d-speaker cliente">Doña Carmen</span><span class="d-text">¡Me encanta cantar! Pero <span class="g-struct">no sé<span class="g-tip"><b>no sé</b> = I don't know how to. "No sé bailar" = I don't know how to dance.</span></span> <span class="g-vocab">bailar<span class="g-tip"><b>bailar</b> = to dance.</span></span> 💃.</span></div>
+<div class="d-translation">I love to sing! But I don't know how to dance.</div>
+
+<div class="d-line" data-voice="sandra" data-text="¡No importa! Aquí todos cantamos juntos."><span class="d-speaker sandra">Sandra</span><span class="d-text">¡No importa! Aquí todos cantamos <span class="g-vocab">juntos<span class="g-tip"><b>juntos</b> = together.</span></span>.</span></div>
+<div class="d-translation">It doesn't matter! Here we all sing together.</div>
+</div>
+
+<p class="story-p">Sandra mira 👀 el taller. Las luces 💡 brillan. Las bocinas 🔊 están listas ✅. El micrófono 🎤 está listo ✅. <span class="sensory">El taller ya no huele solo a aceite. Ahora huele a posibilidades ✨.</span></p>
+
+<!-- GRAMMAR DROP -->
+<div class="grammar-drop" onclick="toggleGrammar(this)"><div class="grammar-drop-header"><div class="grammar-pulse struct"></div><div class="grammar-drop-label struct">⬥ Estructura: Sé / No sé + infinitivo (I know how to…)</div><div class="grammar-drop-arrow">▼</div></div><div class="grammar-drop-body"><div class="grammar-drop-inner">
+<strong>Sé + verb</strong> = I know how to... <strong>No sé + verb</strong> = I don't know how to...
+<div class="grammar-example" onclick="event.stopPropagation();speak('Sé cantar.','sandra')"><div class="ex-es">🔊 Sé cantar.</div><div class="ex-en">I know how to sing.</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('No sé bailar.','carmen')"><div class="ex-es">🔊 No sé bailar.</div><div class="ex-en">I don't know how to dance.</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('¿Sabes cantar?','sandra')"><div class="ex-es">🔊 ¿Sabes cantar?</div><div class="ex-en">Do you know how to sing? (informal)</div></div>
+</div></div></div>
+
+<div class="grammar-drop" onclick="toggleGrammar(this)"><div class="grammar-drop-header"><div class="grammar-pulse vocab"></div><div class="grammar-drop-label vocab">⬥ Vocabulario: Pedir cosas — Asking for things</div><div class="grammar-drop-arrow">▼</div></div><div class="grammar-drop-body"><div class="grammar-drop-inner">
+Useful chunks for asking people to bring or do things:
+<div class="grammar-example" onclick="event.stopPropagation();speak('¿Puedes traer las bocinas?','sandra')"><div class="ex-es">🔊 ¿Puedes traer las bocinas?</div><div class="ex-en">Can you bring the speakers?</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('¿Me puede ayudar con las luces?','sandra')"><div class="ex-es">🔊 ¿Me puede ayudar con las luces?</div><div class="ex-en">Can you help me with the lights?</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('Te traigo un micrófono.','carmen')"><div class="ex-es">🔊 Te traigo un micrófono.</div><div class="ex-en">I'm bringing you a microphone.</div></div>
+</div></div></div>
+
+<!-- CIRCLING -->
+<div class="circling"><div class="circling-label">Preguntas — Questions</div>
+<div class="cq"><div class="cq-type">¿Qué?</div><div class="cq-text">¿Qué tiene que hacer Sandra?</div><div class="cq-trans">What does Sandra have to do?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,true)">Limpiar y preparar el taller</button><button class="cq-btn" onclick="checkCQ(this,false)">Comprar un carro nuevo</button></div><div class="cq-feedback"></div></div>
+<div class="cq"><div class="cq-type">¿Quién?</div><div class="cq-text">¿Quién trae el micrófono?</div><div class="cq-trans">Who brings the microphone?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,false)">Don Miguel</button><button class="cq-btn" onclick="checkCQ(this,true)">Doña Carmen</button><button class="cq-btn" onclick="checkCQ(this,false)">Lucía</button></div><div class="cq-feedback"></div></div>
+<div class="cq"><div class="cq-type">Sí / No</div><div class="cq-text">¿Doña Carmen sabe bailar?</div><div class="cq-trans">Does Doña Carmen know how to dance?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,false)">Sí, sabe bailar</button><button class="cq-btn" onclick="checkCQ(this,true)">No, no sabe bailar</button></div><div class="cq-feedback"></div></div>
+<div class="cq"><div class="cq-type">Sí / No</div><div class="cq-text">¿El taller está listo para la fiesta?</div><div class="cq-trans">Is the shop ready for the party?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,true)">Sí, está listo</button><button class="cq-btn" onclick="checkCQ(this,false)">No, necesita más tiempo</button></div><div class="cq-feedback"></div></div>
+</div>
+
+<div class="sep-section"><div class="sep-label">✂️ Separa las palabras</div>
+<div class="sep-item" data-answer="no sé bailar"><div class="sep-english">🇬🇧 I don't know how to dance.</div><div class="sep-display"></div><div class="sep-btn-row"><button class="btn-sm" onclick="checkSepItem(this)">✓ Verificar</button><button class="btn-sm outline" onclick="resetSepItem(this)">↺</button><button class="btn-sm listen" onclick="event.stopPropagation();speak('No sé bailar.','carmen')">🔊</button></div><div class="sep-result"></div></div>
+<div class="sep-item" data-answer="puedes traer las bocinas"><div class="sep-english">🇬🇧 Can you bring the speakers?</div><div class="sep-display"></div><div class="sep-btn-row"><button class="btn-sm" onclick="checkSepItem(this)">✓ Verificar</button><button class="btn-sm outline" onclick="resetSepItem(this)">↺</button><button class="btn-sm listen" onclick="event.stopPropagation();speak('¿Puedes traer las bocinas?','sandra')">🔊</button></div><div class="sep-result"></div></div>
+</div>
+
+</div></div>
+
+<!-- ═══ SCENE 3 ═══ -->
+<div class="scene"><div class="scene-header"><div class="scene-number">3</div><div class="scene-title">La fiesta</div></div><div class="scene-body">
+
+<p class="story-p"><span class="sensory">Son las ocho de la noche 🌙. Las luces 💡 del taller brillan de colores: azul, rosa, morado. La música 🎶 suena fuerte. Huele a tacos y a café ☕.</span></p>
+
+<p class="story-p"><span class="g-struct">Hay<span class="g-tip"><b>hay</b> = there is / there are. Recycled! "Hay muchas personas" = There are many people.</span></span> muchas personas en el taller. Todos los clientes están aquí: don Miguel, doña Carmen, el señor Ramírez y Lucía. Hay comida 🌮. Hay música 🎶. Hay <span class="g-vocab">canciones<span class="g-tip"><b>las canciones</b> = the songs. "Hay muchas canciones" = There are many songs.</span></span>.</p>
+
+<div class="dialogue">
+<div class="d-line" data-voice="ramirez" data-text="¡Sandra! El taller está increíble. ¡Me gusta mucho!"><span class="d-speaker cliente">Sr. Ramírez</span><span class="d-text">¡Sandra! El taller está increíble. <span class="g-struct">¡Me gusta mucho!<span class="g-tip"><b>¡Me gusta mucho!</b> = I like it a lot!</span></span></span></div>
+<div class="d-translation">Sandra! The shop looks incredible. I like it a lot!</div>
+
+<div class="d-line" data-voice="sandra" data-text="¡Gracias! ¿Quiere cantar una canción?"><span class="d-speaker sandra">Sandra</span><span class="d-text">¡Gracias! ¿Quiere <span class="g-vocab">cantar<span class="g-tip"><b>cantar</b> = to sing.</span></span> una <span class="g-vocab">canción<span class="g-tip"><b>la canción</b> = the song.</span></span> 🎤?</span></div>
+<div class="d-translation">Thanks! Do you want to sing a song?</div>
+
+<div class="d-line" data-voice="ramirez" data-text="¡Yo no sé cantar! Pero sé bailar."><span class="d-speaker cliente">Sr. Ramírez</span><span class="d-text">¡Yo no sé cantar! Pero <span class="g-struct">sé<span class="g-tip"><b>sé</b> = I know how to. "Sé bailar" = I know how to dance.</span></span> <span class="g-vocab">bailar<span class="g-tip"><b>bailar</b> = to dance.</span></span> 💃.</span></div>
+<div class="d-translation">I don't know how to sing! But I know how to dance.</div>
+</div>
+
+<p class="story-p"><span class="sensory">Don Miguel toma el micrófono 🎤. La música empieza. Todos están en silencio 🤫.</span></p>
+
+<div class="dialogue">
+<div class="d-line" data-voice="miguel" data-text="Esta canción es para Sandra. Porque ella es parte de nuestra comunidad."><span class="d-speaker cliente">Don Miguel</span><span class="d-text">Esta canción es para Sandra. Porque ella es parte de nuestra comunidad ❤️.</span></div>
+<div class="d-translation">This song is for Sandra. Because she is part of our community.</div>
+</div>
+
+<p class="narration">Don Miguel canta 🎤. Su voz es suave y bonita. Todos escuchan 👂.</p>
+
+<div class="dialogue">
+<div class="d-line" data-voice="lucia" data-text="¡Qué bonito! ¡Don Miguel canta muy bien!"><span class="d-speaker cliente">Lucía</span><span class="d-text"><span class="g-struct">¡Qué bonito!<span class="g-tip"><b>¡Qué bonito!</b> = How beautiful! Use "¡Qué + adjective!" to react.</span></span> ¡Don Miguel canta muy bien!</span></div>
+<div class="d-translation">How beautiful! Don Miguel sings very well!</div>
+
+<div class="d-line" data-voice="carmen" data-text="¡Otra vez! ¡Otra vez!"><span class="d-speaker cliente">Doña Carmen</span><span class="d-text"><span class="g-struct">¡Otra vez!<span class="g-tip"><b>¡Otra vez!</b> = Again! Use this to ask someone to repeat.</span></span> ¡Otra vez!</span></div>
+<div class="d-translation">Again! Again!</div>
+</div>
+
+<p class="story-p">Ahora Lucía toma el micrófono 🎤. Lucía canta una canción de reggaetón. El señor Ramírez <span class="g-vocab">baila<span class="g-tip"><b>baila</b> = he/she dances. "El señor Ramírez baila" = Sr. Ramírez dances.</span></span> 💃. Doña Carmen baila también. ¡Todos <span class="g-vocab">bailan<span class="g-tip"><b>bailan</b> = they dance.</span></span>!</p>
+
+<p class="story-p">Sandra mira 👀 a todos. Están contentos 😊. <span class="g-struct">Están cantando<span class="g-tip"><b>están cantando</b> = they are singing (right now). Present progressive — learn it as a chunk!</span></span>. <span class="g-struct">Están bailando<span class="g-tip"><b>están bailando</b> = they are dancing (right now).</span></span>. Están juntos.</p>
+
+<p class="narration">Pero Sandra no canta. Sandra está nerviosa 😟.</p>
+
+<!-- GRAMMAR DROP -->
+<div class="grammar-drop" onclick="toggleGrammar(this)"><div class="grammar-drop-header"><div class="grammar-pulse struct"></div><div class="grammar-drop-label struct">⬥ Estructura: Reaccionar — ¡Qué bonito! / ¡Otra vez!</div><div class="grammar-drop-arrow">▼</div></div><div class="grammar-drop-body"><div class="grammar-drop-inner">
+Use <strong>¡Qué + adjective!</strong> to react to something:
+<div class="grammar-example" onclick="event.stopPropagation();speak('¡Qué bonito!','lucia')"><div class="ex-es">🔊 ¡Qué bonito!</div><div class="ex-en">How beautiful!</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('¡Qué bien!','carmen')"><div class="ex-es">🔊 ¡Qué bien!</div><div class="ex-en">How great!</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('¡Otra vez!','carmen')"><div class="ex-es">🔊 ¡Otra vez!</div><div class="ex-en">Again!</div></div>
+</div></div></div>
+
+<!-- CIRCLING -->
+<div class="circling"><div class="circling-label">Preguntas — Questions</div>
+<div class="cq"><div class="cq-type">¿Quién?</div><div class="cq-text">¿Quién canta primero?</div><div class="cq-trans">Who sings first?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,false)">Sandra</button><button class="cq-btn" onclick="checkCQ(this,true)">Don Miguel</button><button class="cq-btn" onclick="checkCQ(this,false)">Lucía</button></div><div class="cq-feedback"></div></div>
+<div class="cq"><div class="cq-type">¿Qué?</div><div class="cq-text">¿Qué sabe hacer el señor Ramírez?</div><div class="cq-trans">What does Sr. Ramírez know how to do?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,false)">Sabe cantar</button><button class="cq-btn" onclick="checkCQ(this,true)">Sabe bailar</button></div><div class="cq-feedback"></div></div>
+<div class="cq"><div class="cq-type">Sí / No</div><div class="cq-text">¿Sandra canta en la fiesta?</div><div class="cq-trans">Does Sandra sing at the party?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,false)">Sí, canta</button><button class="cq-btn" onclick="checkCQ(this,true)">No, está nerviosa</button></div><div class="cq-feedback"></div></div>
+<div class="cq"><div class="cq-type">¿Cómo?</div><div class="cq-text">¿Cómo están todos en la fiesta?</div><div class="cq-trans">How is everyone at the party?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,false)">Cansados</button><button class="cq-btn" onclick="checkCQ(this,true)">Contentos</button><button class="cq-btn" onclick="checkCQ(this,false)">Nerviosos</button></div><div class="cq-feedback"></div></div>
+</div>
+
+<div class="sep-section"><div class="sep-label">✂️ Separa las palabras</div>
+<div class="sep-item" data-answer="están cantando juntos"><div class="sep-english">🇬🇧 They are singing together.</div><div class="sep-display"></div><div class="sep-btn-row"><button class="btn-sm" onclick="checkSepItem(this)">✓ Verificar</button><button class="btn-sm outline" onclick="resetSepItem(this)">↺</button><button class="btn-sm listen" onclick="event.stopPropagation();speak('Están cantando juntos.','narrator')">🔊</button></div><div class="sep-result"></div></div>
+<div class="sep-item" data-answer="no sé cantar"><div class="sep-english">🇬🇧 I don't know how to sing.</div><div class="sep-display"></div><div class="sep-btn-row"><button class="btn-sm" onclick="checkSepItem(this)">✓ Verificar</button><button class="btn-sm outline" onclick="resetSepItem(this)">↺</button><button class="btn-sm listen" onclick="event.stopPropagation();speak('No sé cantar.','ramirez')">🔊</button></div><div class="sep-result"></div></div>
+</div>
+
+</div></div>
+
+<!-- ═══ SCENE 4 ═══ -->
+<div class="scene"><div class="scene-header"><div class="scene-number">4</div><div class="scene-title">Sandra canta</div></div><div class="scene-body">
+
+<p class="story-p"><span class="sensory">Son las diez de la noche 🌙. El taller está caliente 🔥. Hay olor a café ☕ y a aceite 🛢️. Las luces 💡 brillan suavemente.</span></p>
+
+<p class="story-p">Sandra está en una esquina. Mira 👀 a todos. Todos están contentos 😊. Pero Sandra no ha cantado.</p>
+
+<div class="dialogue">
+<div class="d-line" data-voice="carmen" data-text="Sandra, ¿no quieres cantar?"><span class="d-speaker cliente">Doña Carmen</span><span class="d-text">Sandra, ¿no quieres <span class="g-vocab">cantar<span class="g-tip"><b>cantar</b> = to sing.</span></span>?</span></div>
+<div class="d-translation">Sandra, don't you want to sing?</div>
+
+<div class="d-line" data-voice="sandra" data-text="Es que… no sé cantar bien. Y mi español… no es perfecto."><span class="d-speaker sandra">Sandra</span><span class="d-text">Es que… no sé cantar bien. Y mi español… no es perfecto.</span></div>
+<div class="d-translation">It's just that… I don't know how to sing well. And my Spanish… isn't perfect.</div>
+
+<div class="d-line" data-voice="miguel" data-text="Sandra, nadie aquí canta perfecto. Cantamos porque nos gusta. Cantamos juntos."><span class="d-speaker cliente">Don Miguel</span><span class="d-text">Sandra, nadie aquí canta perfecto. Cantamos porque <span class="g-struct">nos gusta<span class="g-tip"><b>nos gusta</b> = we like it. "Cantamos porque nos gusta" = We sing because we like it.</span></span>. Cantamos juntos.</span></div>
+<div class="d-translation">Sandra, nobody here sings perfectly. We sing because we like it. We sing together.</div>
+
+<div class="d-line" data-voice="lucia" data-text="¡Sí, Sandra! ¡Canta con nosotros!"><span class="d-speaker cliente">Lucía</span><span class="d-text">¡Sí, Sandra! ¡Canta con nosotros!</span></div>
+<div class="d-translation">Yes, Sandra! Sing with us!</div>
+
+<div class="d-line" data-voice="carmen" data-text="Te invitamos a cantar. Aquí no hay errores. Solo hay música."><span class="d-speaker cliente">Doña Carmen</span><span class="d-text"><span class="g-struct">Te invitamos a<span class="g-tip"><b>te invitamos a</b> = we invite you to. "Te invitamos a cantar" = We invite you to sing.</span></span> cantar. Aquí no hay errores. Solo hay <span class="g-vocab">música<span class="g-tip"><b>la música</b> = the music.</span></span> 🎶.</span></div>
+<div class="d-translation">We invite you to sing. Here there are no mistakes. There is only music.</div>
+</div>
+
+<p class="narration">Sandra sonríe 😊. Toma el micrófono 🎤. Las manos le tiemblan un poco.</p>
+
+<p class="story-p"><span class="sensory">La música empieza 🎶. Las luces 💡 bajan. Todo el taller está en silencio 🤫.</span></p>
+
+<p class="story-p">Sandra canta. Su voz es suave al principio. Después, más fuerte. No es perfecta. Pero es real. Es honesta. Es de corazón ❤️.</p>
+
+<div class="dialogue">
+<div class="d-line" data-voice="lucia" data-text="¡Qué bonito, Sandra!"><span class="d-speaker cliente">Lucía</span><span class="d-text">¡Qué bonito, Sandra! 🥹</span></div>
+<div class="d-translation">How beautiful, Sandra!</div>
+
+<div class="d-line" data-voice="ramirez" data-text="¡Otra vez! ¡Otra vez!"><span class="d-speaker cliente">Sr. Ramírez</span><span class="d-text">¡Otra vez! ¡Otra vez!</span></div>
+<div class="d-translation">Again! Again!</div>
+
+<div class="d-line" data-voice="miguel" data-text="¿Yes, Sandra? Tu voz es bonita. Y tu español también."><span class="d-speaker cliente">Don Miguel</span><span class="d-text">¿Ves, Sandra? Tu voz es bonita. Y tu español también 📈.</span></div>
+<div class="d-translation">See, Sandra? Your voice is beautiful. And your Spanish too.</div>
+
+<div class="d-line" data-voice="sandra" data-text="Gracias. Eso significa mucho para mí. Ustedes son mi familia aquí."><span class="d-speaker sandra">Sandra</span><span class="d-text">Gracias. <span class="g-struct">Eso significa mucho para mí.<span class="g-tip"><b>Eso significa mucho para mí.</b> = That means a lot to me. Recycled from the mechanic story!</span></span> Ustedes son mi familia aquí 🥹.</span></div>
+<div class="d-translation">Thank you. That means a lot to me. You are my family here.</div>
+</div>
+
+<p class="narration">Doña Carmen sonríe 😊. Don Miguel sonríe 😊. Todos sonríen.</p>
+
+<p class="story-p">Sandra toma el micrófono otra vez.</p>
+
+<div class="dialogue">
+<div class="d-line" data-voice="sandra" data-text="¿Cantamos juntos? ¡Todos!"><span class="d-speaker sandra">Sandra</span><span class="d-text">¿Cantamos juntos? ¡Todos!</span></div>
+<div class="d-translation">Shall we sing together? Everyone!</div>
+</div>
+
+<p class="story-p"><span class="sensory">Y cantan. Todos cantan juntos 🎶. El taller, que normalmente huele a aceite y a metal, ahora está lleno de música y de amor ❤️.</span></p>
+
+<p class="story-p" style="text-align:center;font-size:1.1rem;font-style:italic;margin:1rem 0;">"No importa cómo cantas. Importa que cantas juntos 🎤."</p>
+<p style="text-align:center;font-size:.82rem;color:var(--text-light);font-style:italic;margin-bottom:1rem;">"It doesn't matter how you sing. What matters is that you sing together."</p>
+
+<!-- GRAMMAR DROP -->
+<div class="grammar-drop" onclick="toggleGrammar(this)"><div class="grammar-drop-header"><div class="grammar-pulse struct"></div><div class="grammar-drop-label struct">⬥ Estructura: Me gusta / Nos gusta / Me encanta</div><div class="grammar-drop-arrow">▼</div></div><div class="grammar-drop-body"><div class="grammar-drop-inner">
+The "gustar" family — learn these as chunks!
+<div class="grammar-example" onclick="event.stopPropagation();speak('Me gusta cantar.','sandra')"><div class="ex-es">🔊 Me gusta cantar.</div><div class="ex-en">I like to sing.</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('Me encanta la música.','carmen')"><div class="ex-es">🔊 Me encanta la música.</div><div class="ex-en">I love music.</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('Nos gusta cantar juntos.','narrator')"><div class="ex-es">🔊 Nos gusta cantar juntos.</div><div class="ex-en">We like to sing together.</div></div>
+<div class="grammar-example" onclick="event.stopPropagation();speak('No me gusta cantar solo.','ramirez')"><div class="ex-es">🔊 No me gusta cantar solo.</div><div class="ex-en">I don't like to sing alone.</div></div>
+</div></div></div>
+
+<!-- FINAL QUESTIONS -->
+<div class="circling"><div class="circling-label">Comprensión final — Final comprehension</div>
+<div class="cq"><div class="cq-type">¿Por qué?</div><div class="cq-text">¿Por qué Sandra no quiere cantar al principio?</div><div class="cq-trans">Why doesn't Sandra want to sing at first?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,false)">No le gusta la música</button><button class="cq-btn" onclick="checkCQ(this,true)">Está nerviosa — no canta perfecto</button></div><div class="cq-feedback"></div></div>
+<div class="cq"><div class="cq-type">¿Qué?</div><div class="cq-text">¿Qué dice don Miguel para ayudar a Sandra?</div><div class="cq-trans">What does Don Miguel say to help Sandra?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,true)">Nadie canta perfecto. Cantamos juntos.</button><button class="cq-btn" onclick="checkCQ(this,false)">Tu español es malo.</button></div><div class="cq-feedback"></div></div>
+<div class="cq"><div class="cq-type">¿Cuál?</div><div class="cq-text">¿Cuál es el mensaje de la historia?</div><div class="cq-trans">What is the message of the story?</div><div class="cq-options"><button class="cq-btn" onclick="checkCQ(this,false)">Cantar es fácil</button><button class="cq-btn" onclick="checkCQ(this,true)">Lo importante es cantar juntos</button></div><div class="cq-feedback"></div></div>
+</div>
+
+<!-- FINAL SEP -->
+<div class="sep-section"><div class="sep-label">✂️ Separa las palabras — final</div>
+<div class="sep-item" data-answer="eso significa mucho para mí"><div class="sep-english">🇬🇧 That means a lot to me.</div><div class="sep-display"></div><div class="sep-btn-row"><button class="btn-sm" onclick="checkSepItem(this)">✓ Verificar</button><button class="btn-sm outline" onclick="resetSepItem(this)">↺</button><button class="btn-sm listen" onclick="event.stopPropagation();speak('Eso significa mucho para mí.','sandra')">🔊</button></div><div class="sep-result"></div></div>
+<div class="sep-item" data-answer="nos gusta cantar juntos"><div class="sep-english">🇬🇧 We like to sing together.</div><div class="sep-display"></div><div class="sep-btn-row"><button class="btn-sm" onclick="checkSepItem(this)">✓ Verificar</button><button class="btn-sm outline" onclick="resetSepItem(this)">↺</button><button class="btn-sm listen" onclick="event.stopPropagation();speak('Nos gusta cantar juntos.','narrator')">🔊</button></div><div class="sep-result"></div></div>
+</div>
+
+</div></div>
+
+<div style="text-align:center;margin-top:3rem;padding:1.5rem;color:var(--text-light);font-size:.8rem"><span style="font-size:1.25rem">🎤🎶</span><br><strong>Noche de karaoke</strong> — La historia de Sandra, Capítulo 2<br>Novice Mid → Novice High · TPRS</div>
+</div>
+
+<script>
+// ═══ ELEVENLABS TTS ═══
+const ELEVEN_KEY = 'sk_99d47dea35d30b615d7558970be0dee3211eb2d41310916f';
+const ELEVEN_MODEL = 'eleven_multilingual_v2';
+const VOICES = {
+  sandra:   { id: '21m00Tcm4TlvDq8ikWAM', stability: 0.5, similarity: 0.8 },
+  miguel:   { id: 'TxGEqnHWrfWFTfGW9XjX', stability: 0.6, similarity: 0.75 },
+  carmen:   { id: 'EXAVITQu4vr4xnSDxMaL', stability: 0.5, similarity: 0.8 },
+  ramirez:  { id: 'yoZ06aMxZJJ28mfd3POQ', stability: 0.55, similarity: 0.75 },
+  lucia:    { id: 'MF3mGyEYCl7XYWbV9V6O', stability: 0.45, similarity: 0.8 },
+  narrator: { id: 'ErXwobaYiN019PkySvjV', stability: 0.7, similarity: 0.85 }
+};
+
+const audioCache = {};
+let currentAudio = null;
+let isSpeaking = false;
+function setSpeak(on) { isSpeaking = on; if (on) document.body.classList.add('tts-busy'); else document.body.classList.remove('tts-busy'); }
+
+async function speak(text, voice) {
+  if (isSpeaking) return; // Block while audio is playing
+  if (!voice) voice = 'narrator';
+  const v = VOICES[voice] || VOICES.narrator;
+  const cacheKey = voice + ':' + text.substring(0, 80);
+
+  // Stop current audio
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+
+  setSpeak(true);
+
+  // Check cache
+  if (audioCache[cacheKey]) {
+    const audio = new Audio(audioCache[cacheKey]);
+    currentAudio = audio;
+    audio.onended = () => { setSpeak(false); currentAudio = null; };
+    audio.onerror = () => { setSpeak(false); currentAudio = null; };
+    audio.play().catch(() => { setSpeak(false); });
+    return;
+  }
+
+  try {
+    const resp = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${v.id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'xi-api-key': ELEVEN_KEY },
+      body: JSON.stringify({
+        text: text,
+        model_id: ELEVEN_MODEL,
+        voice_settings: { stability: v.stability, similarity_boost: v.similarity, speed: 0.5 }
+      })
+    });
+    if (!resp.ok) { setSpeak(false); fallbackSpeak(text); return; }
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    audioCache[cacheKey] = url;
+    const audio = new Audio(url);
+    currentAudio = audio;
+    audio.onended = () => { setSpeak(false); currentAudio = null; };
+    audio.onerror = () => { setSpeak(false); currentAudio = null; };
+    audio.play().catch(() => { setSpeak(false); });
+  } catch (e) {
+    console.warn('ElevenLabs failed, using fallback TTS', e);
+    setSpeak(false);
+    fallbackSpeak(text);
+  }
+}
+
+// Web Speech API fallback
+function fallbackSpeak(text) {
+  if (!('speechSynthesis' in window)) { setSpeak(false); return; }
+  speechSynthesis.cancel();
+  setSpeak(true);
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'es-MX'; u.rate = 0.6;
+  u.onend = () => { setSpeak(false); };
+  u.onerror = () => { setSpeak(false); };
+  speechSynthesis.speak(u);
+}
+
+// Attach click handlers to dialogue lines
+document.querySelectorAll('.d-line[data-voice]').forEach(line => {
+  line.addEventListener('click', function() {
+    const voice = this.dataset.voice;
+    const text = this.dataset.text;
+    if (voice && text) speak(text, voice);
+  });
+});
+
+// ═══ SCORE & PROGRESS ═══
+let score = 0;
+function addScore(p) { score += p; document.getElementById('scoreNum').textContent = score; updateProgress(); autoSave(); }
+function updateProgress() {
+  const d = document.querySelectorAll('.correction-spot.corrected,.cq-btn.correct,.sep-display.correct').length;
+  const t = document.querySelectorAll('.correction-spot,.cq,.sep-item').length;
+  document.getElementById('progressFill').style.width = (t ? Math.min((d / t) * 100, 100) : 0) + '%';
+}
+
+// ═══ AUTOSAVE ═══
+const SAVE_KEY = 'sandra_karaoke_v1';
+function autoSave() {
+  const state = { score, corrected: [], cqAnswered: [], sepCorrect: [] };
+  document.querySelectorAll('.correction-spot.corrected').forEach(el => state.corrected.push(el.id));
+  document.querySelectorAll('.cq').forEach((cq, i) => {
+    const correct = cq.querySelector('.cq-btn.correct');
+    if (correct) state.cqAnswered.push(i);
+  });
+  document.querySelectorAll('.sep-display.correct').forEach((el, i) => state.sepCorrect.push(i));
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch(e) {}
+  const ind = document.getElementById('autosaveInd');
+  ind.classList.add('show');
+  setTimeout(() => ind.classList.remove('show'), 1200);
+}
+function autoLoad() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return;
+    const state = JSON.parse(raw);
+    score = state.score || 0;
+    document.getElementById('scoreNum').textContent = score;
+    (state.corrected || []).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.classList.add('corrected'); el.innerHTML = el.dataset.correct; }
+    });
+    (state.cqAnswered || []).forEach(i => {
+      const cqs = document.querySelectorAll('.cq');
+      if (cqs[i]) {
+        const btns = cqs[i].querySelectorAll('.cq-btn');
+        btns.forEach(b => b.disabled = true);
+        // Find and mark correct
+        btns.forEach(b => { if (b.onclick && b.onclick.toString().includes('true')) b.classList.add('correct'); });
+      }
+    });
+    updateProgress();
+  } catch(e) {}
+}
+
+// ═══ GRAMMAR TOGGLES ═══
+function toggleGrammar(el) { el.classList.toggle('open'); }
+
+// ═══ CIRCLING QUESTIONS ═══
+function checkCQ(btn, ok) {
+  const cq = btn.closest('.cq');
+  const fb = cq.querySelector('.cq-feedback');
+  const btns = cq.querySelectorAll('.cq-btn');
+  if (ok) {
+    btns.forEach(b => b.disabled = true);
+    btn.classList.add('correct');
+    fb.textContent = '¡Correcto! ✓'; fb.className = 'cq-feedback correct';
+    addScore(10);
+  } else {
+    btn.classList.add('incorrect'); btn.disabled = true;
+    fb.textContent = 'Intenta de nuevo…'; fb.className = 'cq-feedback incorrect';
+    setTimeout(() => { fb.textContent = ''; fb.className = 'cq-feedback'; }, 1500);
+  }
+  updateProgress();
+}
+
+// ═══ CORRECTION SPOTS ═══
+document.querySelectorAll('.correction-spot').forEach(spot => {
+  spot.addEventListener('click', function() {
+    if (this.classList.contains('corrected') || this.querySelector('.correction-input')) return;
+    const correct = this.dataset.correct;
+    const hint = this.dataset.hint;
+    if (hint) speak(hint, 'miguel');
+    this.classList.add('active'); this.innerHTML = '';
+    const w = document.createElement('span'); w.className = 'correction-input-wrap';
+    const i = document.createElement('input'); i.type = 'text'; i.className = 'correction-input'; i.placeholder = '¿Cómo se dice?'; i.autocomplete = 'off';
+    const s = document.createElement('button'); s.className = 'correction-submit'; s.textContent = '→';
+    const chk = () => {
+      if (i.value.trim().toLowerCase() === correct.toLowerCase()) {
+        spot.classList.remove('active'); spot.classList.add('corrected');
+        spot.innerHTML = correct; addScore(15); speak(correct, 'sandra');
+      } else {
+        spot.classList.add('wrong');
+        setTimeout(() => spot.classList.remove('wrong'), 400);
+        i.value = ''; i.placeholder = 'Intenta de nuevo…';
+      }
+    };
+    i.addEventListener('keydown', e => { if (e.key === 'Enter') chk(); });
+    s.addEventListener('click', chk);
+    w.appendChild(i); w.appendChild(s); this.appendChild(w);
+    setTimeout(() => i.focus(), 50);
+  });
+});
+
+// ═══ SEPARA LAS PALABRAS ═══
+const sepState = {};
+function initSep() {
+  document.querySelectorAll('.sep-item').forEach((item, idx) => {
+    const answer = item.dataset.answer;
+    const raw = answer.replace(/\s/g, '');
+    const letters = raw.split('');
+    const seps = new Array(letters.length - 1).fill(false);
+    sepState[idx] = { letters, seps, answer };
+    renderSep(item, idx);
+  });
+}
+function renderSep(item, idx) {
+  const display = item.querySelector('.sep-display');
+  const { letters, seps } = sepState[idx];
+  display.innerHTML = ''; display.classList.remove('correct', 'incorrect');
+  letters.forEach((letter, i) => {
+    const span = document.createElement('span'); span.className = 'sep-letter'; span.textContent = letter; display.appendChild(span);
+    if (i < letters.length - 1) {
+      if (seps[i]) {
+        const sep = document.createElement('span'); sep.className = 'sep-separator'; sep.textContent = ' | ';
+        sep.onclick = () => { seps[i] = false; renderSep(item, idx); };
+        display.appendChild(sep);
+      } else {
+        const cur = document.createElement('span'); cur.className = 'sep-cursor'; cur.textContent = '·';
+        cur.onclick = () => { seps[i] = true; renderSep(item, idx); };
+        display.appendChild(cur);
+      }
+    }
+  });
+}
+function checkSepItem(btn) {
+  const item = btn.closest('.sep-item');
+  const idx = Array.from(document.querySelectorAll('.sep-item')).indexOf(item);
+  const { letters, seps, answer } = sepState[idx];
+  const display = item.querySelector('.sep-display');
+  const result = item.querySelector('.sep-result');
+  let u = ''; letters.forEach((l, i) => { u += l; if (seps[i]) u += ' '; });
+  const n = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim();
+  if (n(u) === n(answer)) {
+    display.classList.add('correct'); result.textContent = '¡Correcto! ✓ → ' + answer; result.className = 'sep-result ok'; addScore(10);
+  } else {
+    display.classList.add('incorrect'); result.textContent = '¡Casi! Intenta de nuevo.'; result.className = 'sep-result err';
+    setTimeout(() => { display.classList.remove('incorrect'); result.textContent = ''; result.className = 'sep-result'; }, 2000);
+  }
+  updateProgress();
+}
+function resetSepItem(btn) {
+  const item = btn.closest('.sep-item');
+  const idx = Array.from(document.querySelectorAll('.sep-item')).indexOf(item);
+  sepState[idx].seps.fill(false);
+  item.querySelector('.sep-result').textContent = '';
+  item.querySelector('.sep-result').className = 'sep-result';
+  renderSep(item, idx);
+}
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded', () => { initSep(); autoLoad(); updateProgress(); });
+</script>
+</body>
+</html>
