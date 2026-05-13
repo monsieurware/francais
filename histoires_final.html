@@ -1234,6 +1234,120 @@
   .custom-color-input::-webkit-color-swatch { border: none; border-radius: 4px; }
   .custom-color-input::-moz-color-swatch { border: none; border-radius: 4px; }
 
+  /* ---------- Roster picker (student name selection) ---------- */
+  .roster-picker {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px 22px;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+  }
+  .roster-title {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    color: var(--text);
+    margin: 0 0 8px;
+  }
+  .roster-hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0 auto 22px;
+    max-width: 500px;
+  }
+  .roster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .roster-btn {
+    padding: 14px 10px;
+    background: white;
+    border: 2px solid var(--sage);
+    color: var(--sage);
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: all 120ms;
+  }
+  .roster-btn:hover:not(:disabled) {
+    background: var(--sage);
+    color: white;
+    transform: translateY(-1px);
+  }
+  .roster-btn:active:not(:disabled) { transform: translateY(0); }
+  .roster-btn.claimed {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+  .roster-btn .check {
+    color: var(--success);
+    margin-left: 4px;
+  }
+
+  /* Teacher attendance / release panel */
+  .attendance-panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    margin-top: 14px;
+  }
+  .attendance-panel h4 {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  .attendance-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .attendance-chip {
+    background: var(--sage-soft);
+    color: var(--sage);
+    border-radius: 999px;
+    padding: 4px 10px 4px 12px;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .attendance-chip .release-btn {
+    background: none;
+    border: none;
+    color: var(--sage);
+    cursor: pointer;
+    font-size: 1.05rem;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.55;
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .attendance-chip .release-btn:hover {
+    background: var(--error);
+    color: white;
+    opacity: 1;
+  }
+  .attendance-empty {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
   /* ---------- Drawing canvas ---------- */
   .drawing-prompt {
     background: var(--surface);
@@ -5951,6 +6065,12 @@ async function renderTeacherView(shell, classCode) {
         <span class="mw-time" id="mw-time">0:00</span>
       </div>
       <audio id="bg-music" src="https://audio.jukehost.co.uk/019e1ca5-d6e3-70e1-b49a-598df8fbbdc0" loop preload="none"></audio>
+      <div class="attendance-panel" id="attendance-panel">
+        <h4>Élèves connectés</h4>
+        <div class="attendance-list" id="attendance-list">
+          <span class="attendance-empty">Personne n'a encore rejoint la partie.</span>
+        </div>
+      </div>
       <div class="game-link-box" id="student-link">Le lien élève apparaîtra ici quand le jeu sera lancé.</div>
     </div>
     <div id="teacher-gallery"></div>
@@ -6308,6 +6428,8 @@ async function renderTeacherView(shell, classCode) {
       jamBtn.style.opacity = canJam ? '1' : '0.5';
       // Sync mode toggle button label with session state
       applyModeLabel(data.sentenceVisible !== false);
+      // Render attendance chips
+      renderAttendance(shell, data.claimedNames || {}, sessionId, fs);
       renderTeacherGallery(galleryEl, data);
     });
     gameDrawingsUnsub = fs.onSnapshot(fs.collection(firestore, `game_sessions/${sid}/game_drawings`), snap => {
@@ -6402,6 +6524,42 @@ async function renderTeacherView(shell, classCode) {
     mwWidget.classList.remove('playing');
     // Show cumulative leaderboards
     renderCumulativeLeaderboards(galleryEl);
+  });
+}
+
+function renderAttendance(shell, claimedNames, sessionId, fs) {
+  const list = shell.querySelector('#attendance-list');
+  if (!list) return;
+  const entries = Object.entries(claimedNames || {});
+  if (entries.length === 0) {
+    list.innerHTML = `<span class="attendance-empty">Personne n'a encore rejoint la partie.</span>`;
+    return;
+  }
+  list.innerHTML = '';
+  // Sort to keep stable display order
+  entries.sort((a, b) => a[0].localeCompare(b[0], 'fr'));
+  entries.forEach(([name, deviceId]) => {
+    const chip = document.createElement('span');
+    chip.className = 'attendance-chip';
+    chip.innerHTML = `${name}<button class="release-btn" title="Libérer ${name}" aria-label="Libérer ${name}">×</button>`;
+    chip.querySelector('.release-btn').addEventListener('click', async () => {
+      if (!confirm(`Libérer "${name}" ? Un(e) autre élève pourra le choisir.`)) return;
+      try {
+        await fs.runTransaction(firestore, async tx => {
+          const ref = fs.doc(firestore, `game_sessions/${sessionId}`);
+          const snap = await tx.get(ref);
+          if (!snap.exists()) return;
+          const data = snap.data();
+          const cn = { ...(data.claimedNames || {}) };
+          delete cn[name];
+          tx.update(ref, { claimedNames: cn });
+        });
+      } catch (err) {
+        console.warn("release failed", err);
+        alert("Erreur — réessaie.");
+      }
+    });
+    list.appendChild(chip);
   });
 }
 
@@ -6508,6 +6666,106 @@ function renderTeacherGallery(host, session) {
 }
 
 // ---------------- STUDENT VIEW ----------------
+// Pre-selected student roster. Names are locked to a device once claimed in a
+// session. Teacher can release a claim from the teacher control panel.
+const STUDENT_ROSTER = [
+  "Lillian", "Rhys", "Eli", "Anna", "Andrew",
+  "Jean", "Juanita", "Kate", "Adéline", "Margaretta",
+  "Hampton", "Marguerite", "Rowan", "Henri", "Matéo"
+];
+
+function getOrCreateDeviceId() {
+  let id = localStorage.getItem('histoiresFII.deviceId');
+  if (!id) {
+    id = (crypto.randomUUID && crypto.randomUUID()) ||
+         (Math.random().toString(36).slice(2) + Date.now().toString(36));
+    localStorage.setItem('histoiresFII.deviceId', id);
+  }
+  return id;
+}
+
+// Atomically claim a name. Throws if another device already holds it.
+async function claimRosterName(sessionId, name, deviceId) {
+  const fs = await getFirestoreApi();
+  return fs.runTransaction(firestore, async tx => {
+    const ref = fs.doc(firestore, `game_sessions/${sessionId}`);
+    const snap = await tx.get(ref);
+    if (!snap.exists()) throw new Error("session-missing");
+    const data = snap.data();
+    const claimedNames = { ...(data.claimedNames || {}) };
+    const existing = claimedNames[name];
+    if (existing && existing !== deviceId) throw new Error("name-taken");
+    // Release any other name this device previously claimed
+    Object.keys(claimedNames).forEach(n => {
+      if (claimedNames[n] === deviceId && n !== name) delete claimedNames[n];
+    });
+    claimedNames[name] = deviceId;
+    tx.update(ref, { claimedNames });
+  });
+}
+
+// Show roster picker and resolve with the chosen name. Auto-rejoins if this
+// device already holds a name in the session.
+async function pickNameFromRoster(host, sessionId, deviceId) {
+  const fs = await getFirestoreApi();
+  return new Promise(resolve => {
+    let unsub = null;
+    function render(claimedNames) {
+      const grid = host.querySelector('#roster-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      STUDENT_ROSTER.forEach(name => {
+        const claimedBy = claimedNames[name];
+        const btn = document.createElement('button');
+        btn.className = 'roster-btn';
+        if (claimedBy) {
+          btn.classList.add('claimed');
+          btn.disabled = true;
+          btn.innerHTML = `${name} <span class="check">✓</span>`;
+        } else {
+          btn.textContent = name;
+          btn.addEventListener('click', async () => {
+            btn.disabled = true; // anti double-click
+            try {
+              await claimRosterName(sessionId, name, deviceId);
+              if (unsub) unsub();
+              resolve(name);
+            } catch (err) {
+              btn.disabled = false;
+              if (err.message === 'name-taken') {
+                alert(`"${name}" est déjà pris. Choisis-en un autre.`);
+              } else if (err.message === 'session-missing') {
+                alert("La session n'existe plus. Recharge la page.");
+              } else {
+                console.warn("claim failed", err);
+                alert("Erreur. Réessaie.");
+              }
+            }
+          });
+        }
+        grid.appendChild(btn);
+      });
+    }
+    unsub = fs.onSnapshot(fs.doc(firestore, `game_sessions/${sessionId}`), snap => {
+      const data = snap.data();
+      if (!data) {
+        const grid = host.querySelector('#roster-grid');
+        if (grid) grid.innerHTML = '<p style="color:var(--muted)">En attente du professeur pour lancer la partie…</p>';
+        return;
+      }
+      const claimedNames = data.claimedNames || {};
+      // Auto-rejoin: if THIS device already claimed a name, proceed silently
+      const myEntry = Object.entries(claimedNames).find(([n, did]) => did === deviceId);
+      if (myEntry) {
+        if (unsub) unsub();
+        resolve(myEntry[0]);
+        return;
+      }
+      render(claimedNames);
+    });
+  });
+}
+
 async function renderStudentView(shell, classCode) {
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session');
@@ -6515,14 +6773,18 @@ async function renderStudentView(shell, classCode) {
     shell.innerHTML = `<h1>Lien invalide</h1><p>Le lien du jeu doit inclure un identifiant de session. Demande à ton professeur de te renvoyer le lien complet.</p>`;
     return;
   }
-  // Get/ask pseudonym
-  const data = lsGet();
-  let pseudo = data.pseudonym;
-  if (!pseudo) {
-    pseudo = prompt("Choisis un pseudonyme pour le jeu :", "");
-    if (!pseudo) { shell.innerHTML = `<h1>Pseudonyme requis</h1><p>Recharge la page pour réessayer.</p>`; return; }
-    lsPatch({ pseudonym: pseudo, classCode });
-  }
+  // Step 1: roster name pick (or auto-rejoin if this device already claimed)
+  shell.innerHTML = `
+    <p class="game-eyebrow">Mode jeu</p>
+    <div class="roster-picker">
+      <h2 class="roster-title">Choisis ton prénom</h2>
+      <p class="roster-hint">Une fois choisi, ton prénom est verrouillé pour cette partie. Si tu te trompes, demande au prof de le libérer.</p>
+      <div class="roster-grid" id="roster-grid"></div>
+    </div>
+  `;
+  const deviceId = getOrCreateDeviceId();
+  const pseudo = await pickNameFromRoster(shell, sessionId, deviceId);
+  // Step 2: render the regular game shell now that we have a confirmed name
   shell.innerHTML = `
     <p class="game-eyebrow">Mode jeu · ${pseudo}</p>
     <div class="game-phase-badge drawing" id="phase-badge">Attente du professeur…</div>
