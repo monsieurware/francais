@@ -1348,6 +1348,22 @@
     font-style: italic;
   }
 
+  /* Small "changer" escape hatch on the student page */
+  .change-name-link {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-family: var(--sans);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0 4px 0 8px;
+    margin-left: 4px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .change-name-link:hover { color: var(--sage); }
+
   /* ---------- Drawing canvas ---------- */
   .drawing-prompt {
     background: var(--surface);
@@ -6786,11 +6802,32 @@ async function renderStudentView(shell, classCode) {
   const pseudo = await pickNameFromRoster(shell, sessionId, deviceId);
   // Step 2: render the regular game shell now that we have a confirmed name
   shell.innerHTML = `
-    <p class="game-eyebrow">Mode jeu · ${pseudo}</p>
+    <p class="game-eyebrow">Mode jeu · ${pseudo}<button class="change-name-link" id="change-name-link" title="Libérer ton prénom et choisir à nouveau">(changer)</button></p>
     <div class="game-phase-badge drawing" id="phase-badge">Attente du professeur…</div>
     <div class="game-banner-sentence huge" id="sentence-display">— Le professeur va envoyer la première phrase —</div>
     <div id="student-stage"></div>
   `;
+  shell.querySelector('#change-name-link').addEventListener('click', async () => {
+    if (!confirm("Changer de prénom ? Tu vas libérer ton prénom et devras choisir à nouveau. Tes votes et dessins de cette partie seront perdus.")) return;
+    try {
+      const fs2 = await getFirestoreApi();
+      await fs2.runTransaction(firestore, async tx => {
+        const ref = fs2.doc(firestore, `game_sessions/${sessionId}`);
+        const snap = await tx.get(ref);
+        if (!snap.exists()) return;
+        const data = snap.data();
+        const cn = { ...(data.claimedNames || {}) };
+        Object.keys(cn).forEach(n => {
+          if (cn[n] === deviceId) delete cn[n];
+        });
+        tx.update(ref, { claimedNames: cn });
+      });
+      location.reload();
+    } catch (err) {
+      console.warn("release failed", err);
+      alert("Erreur. Réessaie.");
+    }
+  });
   const fs = await getFirestoreApi();
 
   let drawnForIdx = -1;
