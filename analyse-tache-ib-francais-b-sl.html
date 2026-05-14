@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analyse de la tâche — IB Français B SL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15233b; --blue:#1f4fd1; --blue-deep:#16348f; --blue-soft:#eaf0ff;
+    --paper:#ffffff; --line:#e3e7ef; --muted:#6b7689;
+    --green:#1f9d5b; --green-soft:#e7f6ee; --green-line:#bfe6cf;
+    --red:#d4373c; --red-soft:#fcebec; --red-line:#f0c3c5;
+    --amber:#bd8412; --amber-soft:#fbf2dd;
+    --shadow:0 1px 2px rgba(21,35,59,.04), 0 8px 28px rgba(21,35,59,.07);
+    --shadow-lg:0 2px 6px rgba(21,35,59,.06), 0 18px 50px rgba(21,35,59,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'DM Sans',-apple-system,sans-serif;
+    background:#f4f6fb;
+    color:var(--ink);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    padding:24px 18px 60px;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-1;
+    background:
+      radial-gradient(900px 500px at 12% -5%, #e9eefc 0%, transparent 60%),
+      radial-gradient(800px 460px at 100% 0%, #eef2fb 0%, transparent 55%);
+  }
+  #app{max-width:760px;margin:0 auto}
+  .screen{display:none;animation:rise .42s cubic-bezier(.2,.7,.2,1)}
+  .screen.on{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .stagger > *{animation:rise .5s cubic-bezier(.2,.7,.2,1) backwards}
+  .stagger > *:nth-child(1){animation-delay:.04s}
+  .stagger > *:nth-child(2){animation-delay:.10s}
+  .stagger > *:nth-child(3){animation-delay:.16s}
+  .stagger > *:nth-child(4){animation-delay:.22s}
+  .stagger > *:nth-child(5){animation-delay:.28s}
+
+  h1,h2,h3{font-family:'Playfair Display',Georgia,serif;line-height:1.12;letter-spacing:-.01em}
+  .eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+
+  /* ---- cards ---- */
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+  .pad{padding:26px 26px}
+  @media(max-width:540px){.pad{padding:20px 18px}}
+
+  /* ---- home ---- */
+  .hero{padding:34px 30px 30px}
+  .hero h1{font-size:2.5rem;font-weight:900;margin:.32em 0 .12em}
+  .hero h1 .accent{color:var(--blue)}
+  .hero p.lead{color:var(--muted);font-size:1.04rem;max-width:46ch}
+  @media(max-width:540px){.hero h1{font-size:1.95rem}}
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+  @media(max-width:540px){.modes{grid-template-columns:1fr}}
+  .mode{
+    text-align:left;cursor:pointer;border:1px solid var(--line);background:var(--paper);
+    border-radius:16px;padding:20px;transition:.18s;position:relative;overflow:hidden;
+  }
+  .mode:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:#c9d4ee}
+  .mode .tag{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--blue-soft);padding:4px 9px;border-radius:999px;display:inline-block}
+  .mode h3{font-size:1.22rem;margin:14px 0 6px}
+  .mode p{font-size:.9rem;color:var(--muted);min-height:3.1em}
+  .mode .go{margin-top:12px;font-weight:700;font-size:.9rem;color:var(--ink);display:flex;align-items:center;gap:6px}
+  .mode .go::after{content:"→";transition:.18s}
+  .mode:hover .go::after{transform:translateX(4px)}
+  .mode .stripe{position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--blue)}
+  .mode.green .stripe{background:var(--green)}
+  .mode.green .tag{color:var(--green);background:var(--green-soft)}
+  .mode.purple .stripe{background:var(--amber)}
+  .mode.purple .tag{color:var(--amber);background:var(--amber-soft)}
+
+  .scoreline{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px dashed var(--line);font-size:.88rem;color:var(--muted)}
+  .scoreline b{color:var(--ink);font-variant-numeric:tabular-nums}
+
+  /* ---- buttons ---- */
+  .btn{
+    font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;
+    border:1px solid var(--blue);background:var(--blue);color:#fff;
+    padding:13px 22px;border-radius:12px;transition:.16s;
+  }
+  .btn:hover{background:var(--blue-deep);border-color:var(--blue-deep);transform:translateY(-1px)}
+  .btn:active{transform:translateY(0)}
+  .btn.ghost{background:transparent;color:var(--blue);}
+  .btn.ghost:hover{background:var(--blue-soft);}
+  .btn.dark{background:var(--ink);border-color:var(--ink)}
+  .btn.dark:hover{background:#0c1626;border-color:#0c1626}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+  .btn.sm{padding:9px 15px;font-size:.85rem;border-radius:10px}
+  .linkback{background:none;border:none;color:var(--muted);font-family:inherit;font-size:.86rem;font-weight:600;cursor:pointer;padding:6px 2px}
+  .linkback:hover{color:var(--ink)}
+
+  /* ---- HUD ---- */
+  .hud{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+  .hud .pill{background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:.82rem;font-weight:700;display:flex;align-items:center;gap:7px;box-shadow:var(--shadow)}
+  .hud .pill .lab{color:var(--muted);font-weight:600}
+  .hud .pill b{font-variant-numeric:tabular-nums}
+  .streak{color:var(--amber)}
+  .streak.cold{color:var(--muted)}
+  .progresswrap{height:7px;background:#e6eaf2;border-radius:999px;overflow:hidden;margin-bottom:18px}
+  .progressbar{height:100%;background:var(--blue);width:0;transition:width .35s ease}
+  .timerwrap{height:6px;background:#e6eaf2;border-radius:999px;overflow:hidden;margin:16px 0 0}
+  .timerbar{height:100%;background:linear-gradient(90deg,var(--green),#7bcb6e);width:100%}
+  .timerbar.warn{background:linear-gradient(90deg,var(--amber),#e0b24a)}
+  .timerbar.danger{background:linear-gradient(90deg,var(--red),#e8696d)}
+
+  /* ---- question ---- */
+  .qkind{font-size:.74rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+  .qkind.coh{color:var(--amber)}
+  .promptbox{background:var(--blue-soft);border:1px solid #d6e0fb;border-radius:13px;padding:16px 18px;font-size:.96rem;margin:6px 0 4px}
+  .promptbox .theme{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-deep);display:block;margin-bottom:6px}
+  .qask{font-size:1.16rem;font-weight:700;margin:18px 0 4px;font-family:'Playfair Display',serif}
+  .ctx{font-size:.86rem;color:var(--muted);margin-bottom:4px}
+  .ctx b{color:var(--ink)}
+  .statement{font-size:1.16rem;line-height:1.4;margin:14px 0 4px;font-weight:500}
+  .statement .q{font-family:'Playfair Display',serif;color:var(--muted)}
+
+  .opts{display:grid;gap:10px;margin-top:18px}
+  .opt{
+    text-align:left;font-family:inherit;font-size:1rem;font-weight:600;cursor:pointer;
+    background:var(--paper);border:1.5px solid var(--line);border-radius:13px;
+    padding:15px 17px;transition:.14s;display:flex;align-items:center;gap:13px;color:var(--ink);
+  }
+  .opt:hover:not(:disabled){border-color:var(--blue);background:#fafbff;transform:translateX(3px)}
+  .opt:disabled{cursor:default}
+  .opt .key{
+    width:27px;height:27px;flex:none;border-radius:8px;background:var(--blue-soft);color:var(--blue-deep);
+    font-weight:800;font-size:.85rem;display:grid;place-items:center;
+  }
+  .opt.binary{justify-content:center;font-size:1.05rem;padding:18px}
+  .opt.binary .key{display:none}
+  .opt.correct{border-color:var(--green);background:var(--green-soft)}
+  .opt.correct .key{background:var(--green);color:#fff}
+  .opt.wrong{border-color:var(--red);background:var(--red-soft)}
+  .opt.wrong .key{background:var(--red);color:#fff}
+  .opt .mark{margin-left:auto;font-weight:800}
+  .opt.correct .mark{color:var(--green)}
+  .opt.wrong .mark{color:var(--red)}
+
+  .feedback{margin-top:16px;border-radius:13px;padding:15px 17px;font-size:.93rem;border:1px solid;display:none}
+  .feedback.show{display:block;animation:rise .3s ease}
+  .feedback.ok{background:var(--green-soft);border-color:var(--green-line)}
+  .feedback.no{background:var(--red-soft);border-color:var(--red-line)}
+  .feedback .verdict{font-weight:800;font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:3px}
+  .feedback.ok .verdict{color:var(--green)}
+  .feedback.no .verdict{color:var(--red)}
+  .feedback .why{color:#3a4660}
+  .feedback .gain{float:right;font-weight:800;font-variant-numeric:tabular-nums}
+  .feedback.ok .gain{color:var(--green)}
+  .nextrow{margin-top:16px;display:flex;justify-content:flex-end}
+
+  /* ---- chunks / drops ---- */
+  .dropstage{
+    background:var(--paper);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);padding:30px 22px;text-align:center;position:relative;overflow:hidden;
+  }
+  .chunkword{font-family:'Playfair Display',serif;font-weight:800;font-size:2rem;color:var(--ink);margin:10px 0 4px;min-height:1.3em;animation:dropin .34s cubic-bezier(.2,.8,.25,1)}
+  @keyframes dropin{from{opacity:0;transform:translateY(-26px) scale(.96)}to{opacity:1;transform:none}}
+  .chunksub{font-size:.82rem;color:var(--muted);letter-spacing:.04em}
+  .dropopts{display:grid;gap:9px;margin-top:20px}
+  .dropopt{
+    font-family:inherit;font-size:1rem;font-weight:600;cursor:pointer;color:var(--ink);
+    background:#fafbff;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;transition:.12s;
+  }
+  .dropopt:hover:not(:disabled){border-color:var(--blue);background:#fff}
+  .dropopt.right{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+  .dropopt.wrongpick{border-color:var(--red);background:var(--red-soft);color:var(--red)}
+  .dropopt:disabled{cursor:default}
+  .bigtimer{font-family:'Playfair Display',serif;font-weight:800;font-size:1.5rem;font-variant-numeric:tabular-nums}
+  .bigtimer.danger{color:var(--red)}
+  .floatpt{position:absolute;right:20px;top:18px;font-weight:800;color:var(--green);font-size:1.1rem;animation:floatup .8s ease forwards;pointer-events:none}
+  @keyframes floatup{from{opacity:0;transform:translateY(8px)}30%{opacity:1}to{opacity:0;transform:translateY(-22px)}}
+
+  /* ---- results ---- */
+  .resulthead{text-align:center;padding:32px 26px 22px}
+  .resulthead .eyebrow{display:block;margin-bottom:8px}
+  .bigscore{font-family:'Playfair Display',serif;font-weight:900;font-size:3.6rem;color:var(--blue);line-height:1;font-variant-numeric:tabular-nums}
+  .bigscore small{font-size:1rem;color:var(--muted);font-weight:600;font-family:'DM Sans'}
+  .statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+  .statbox{background:#fafbff;border:1px solid var(--line);border-radius:13px;padding:14px;text-align:center}
+  .statbox .n{font-family:'Playfair Display',serif;font-weight:800;font-size:1.5rem;font-variant-numeric:tabular-nums}
+  .statbox .l{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+  .newbest{display:inline-block;margin-top:10px;background:var(--amber-soft);color:var(--amber);font-weight:700;font-size:.8rem;padding:5px 12px;border-radius:999px}
+  .review{margin-top:6px}
+  .review h3{font-size:1.15rem;margin:24px 0 10px}
+  .revitem{border:1px solid var(--line);border-left:4px solid var(--red);border-radius:11px;padding:13px 15px;margin-bottom:9px;font-size:.9rem}
+  .revitem.ok{border-left-color:var(--green)}
+  .revitem .rq{font-weight:700;margin-bottom:3px}
+  .revitem .ra{color:var(--muted)}
+  .revitem .ra b{color:var(--ink)}
+  .endrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+
+  /* ---- multiplayer ---- */
+  .mp-choice{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+  @media(max-width:540px){.mp-choice{grid-template-columns:1fr}}
+  .field{margin-top:14px}
+  .field label{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:5px;letter-spacing:.03em}
+  .field input,.field select{
+    width:100%;font-family:inherit;font-size:1rem;padding:12px 14px;border:1.5px solid var(--line);
+    border-radius:11px;background:#fafbff;color:var(--ink);
+  }
+  .field input:focus,.field select:focus{outline:none;border-color:var(--blue);background:#fff}
+  .field input.code{text-transform:uppercase;letter-spacing:.34em;font-weight:800;font-family:'Playfair Display',serif;font-size:1.3rem;text-align:center}
+  .roomcode{font-family:'Playfair Display',serif;font-weight:900;font-size:2.8rem;letter-spacing:.22em;color:var(--blue);text-align:center;margin:6px 0}
+  .playerchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .chip{background:var(--blue-soft);color:var(--blue-deep);font-weight:700;font-size:.86rem;padding:7px 13px;border-radius:999px;animation:rise .3s ease}
+  .chip.me{background:var(--ink);color:#fff}
+  .lb{margin-top:8px}
+  .lbrow{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--line);border-radius:11px;margin-bottom:7px;background:var(--paper);animation:rise .35s ease}
+  .lbrow .rank{font-family:'Playfair Display',serif;font-weight:800;font-size:1.1rem;width:1.4em;color:var(--muted)}
+  .lbrow.top1{border-color:var(--amber);background:var(--amber-soft)}
+  .lbrow.top1 .rank{color:var(--amber)}
+  .lbrow .nm{font-weight:700;flex:1}
+  .lbrow .pts{font-weight:800;font-variant-numeric:tabular-nums}
+  .lbrow.me{box-shadow:0 0 0 2px var(--blue) inset}
+  .waitnote{text-align:center;color:var(--muted);font-size:.92rem;margin-top:18px;font-style:italic}
+  .answercount{text-align:center;font-size:.9rem;color:var(--muted);margin-top:14px}
+  .answercount b{color:var(--ink)}
+  .note{font-size:.85rem;color:var(--muted);background:#fafbff;border:1px solid var(--line);border-radius:11px;padding:13px 15px;margin-top:14px}
+  .note b{color:var(--ink)}
+  .err{background:var(--red-soft);border:1px solid var(--red-line);color:#9c2f33;border-radius:11px;padding:12px 14px;font-size:.88rem;margin-top:12px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px}
+  .credit{text-align:center;color:var(--muted);font-size:.78rem;margin-top:26px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ================= HOME ================= -->
+  <section class="screen on" data-screen="home">
+    <div class="card hero stagger">
+      <span class="eyebrow">IB Français B · Niveau Moyen · Épreuve 2</span>
+      <h1>Analyse de la tâche &<br><span class="accent">types de texte</span></h1>
+      <p class="lead">Lisez la consigne, repérez le destinataire, le but et le registre — puis choisissez le bon type de texte et jugez ce qui est cohérent. Un entraînement rapide, façon jeu.</p>
+      <div class="modes">
+        <button class="mode" onclick="startSolo()">
+          <span class="stripe"></span>
+          <span class="tag">Solo · ~12 questions</span>
+          <h3>Analyse de la tâche</h3>
+          <p>Quel type de texte ? Et cette convention est-elle cohérente avec la consigne ?</p>
+          <span class="go">Commencer</span>
+        </button>
+        <button class="mode green" onclick="startChunks()">
+          <span class="stripe"></span>
+          <span class="tag">Solo · 60 s</span>
+          <h3>Chunks — révision éclair</h3>
+          <p>Locutions et connecteurs utiles à l'écrit. Tapez vite, enchaînez les bonnes réponses.</p>
+          <span class="go">Lancer le chrono</span>
+        </button>
+        <button class="mode purple" onclick="go('mp_setup')" style="grid-column:1/-1">
+          <span class="stripe"></span>
+          <span class="tag">En groupe · salle en direct</span>
+          <h3>Jouer en classe — mode salle</h3>
+          <p>Hébergez une partie, projetez le code, vos élèves rejoignent depuis leur appareil. Classement en direct. (Connexion Firebase requise.)</p>
+          <span class="go">Ouvrir une salle</span>
+        </button>
+      </div>
+      <div class="scoreline">
+        <span>Meilleur score analyse : <b id="hsAnalyse">—</b></span>
+        <span>Meilleure série : <b id="hsStreak">—</b></span>
+        <span>Record chunks : <b id="hsChunks">—</b></span>
+      </div>
+    </div>
+    <p class="credit">clarté &amp; bienveillance · entraînement à l'épreuve 2</p>
+  </section>
+
+  <!-- ================= SOLO QUIZ ================= -->
+  <section class="screen" data-screen="quiz">
+    <div class="hud">
+      <button class="linkback" onclick="quitToHome()">← Quitter</button>
+      <div style="display:flex;gap:8px">
+        <span class="pill"><span class="lab">Score</span><b id="qScore">0</b></span>
+        <span class="pill streak cold" id="qStreakPill"><span class="lab">Série</span><b id="qStreak">0</b></span>
+      </div>
+    </div>
+    <div class="progresswrap"><div class="progressbar" id="qProgress"></div></div>
+    <div class="card pad">
+      <div id="qBody"></div>
+      <div class="timerwrap"><div class="timerbar" id="qTimer"></div></div>
+      <div class="feedback" id="qFeedback"></div>
+      <div class="nextrow hidden" id="qNextRow"><button class="btn" id="qNextBtn" onclick="nextQuestion()">Suivant →</button></div>
+    </div>
+  </section>
+
+  <!-- ================= CHUNKS ================= -->
+  <section class="screen" data-screen="chunks">
+    <div class="hud">
+      <button class="linkback" onclick="quitToHome()">← Quitter</button>
+      <div style="display:flex;gap:8px">
+        <span class="pill"><span class="lab">Score</span><b id="cScore">0</b></span>
+        <span class="pill streak cold" id="cStreakPill"><span class="lab">Série</span><b id="cStreak">0</b></span>
+        <span class="pill"><span class="bigtimer" id="cTimer">60</span></span>
+      </div>
+    </div>
+    <div class="dropstage" id="cStage">
+      <div class="chunksub">Quel est le sens de cette expression ?</div>
+      <div class="chunkword" id="cWord">—</div>
+      <div class="dropopts" id="cOpts"></div>
+    </div>
+    <p class="credit" id="cHint">Astuce : fiez-vous au sens global, pas à la traduction mot à mot.</p>
+  </section>
+
+  <!-- ================= RESULTS ================= -->
+  <section class="screen" data-screen="results">
+    <div class="card">
+      <div class="resulthead">
+        <span class="eyebrow" id="rKicker">Partie terminée</span>
+        <div class="bigscore"><span id="rScore">0</span> <small>points</small></div>
+        <div id="rBestWrap"></div>
+        <div class="statgrid">
+          <div class="statbox"><div class="n" id="rAcc">0%</div><div class="l">Précision</div></div>
+          <div class="statbox"><div class="n" id="rCorrect">0</div><div class="l" id="rCorrectL">Bonnes réponses</div></div>
+          <div class="statbox"><div class="n" id="rStreak">0</div><div class="l">Meilleure série</div></div>
+        </div>
+      </div>
+      <div class="pad" style="padding-top:0">
+        <div class="review" id="rReview"></div>
+        <div class="endrow">
+          <button class="btn" id="rAgain">Rejouer</button>
+          <button class="btn ghost" onclick="quitToHome()">Accueil</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MP SETUP ================= -->
+  <section class="screen" data-screen="mp_setup">
+    <button class="linkback" onclick="go('home')">← Accueil</button>
+    <div class="card pad stagger" style="margin-top:10px">
+      <span class="eyebrow">Mode salle — en direct</span>
+      <h2 style="font-size:1.7rem;margin:.3em 0 .2em">Jouer en classe</h2>
+      <p style="color:var(--muted);font-size:.95rem">Une personne héberge et projette l'écran ; les autres rejoignent avec le code. Tout le monde répond aux mêmes questions d'analyse de la tâche, classement en direct.</p>
+      <div class="mp-choice">
+        <button class="mode" onclick="hostRoom()" style="grid-column:auto">
+          <span class="stripe"></span>
+          <span class="tag">Enseignant·e / écran</span>
+          <h3>Héberger une salle</h3>
+          <p>Génère un code, gère le rythme des questions.</p>
+          <span class="go">Créer la salle</span>
+        </button>
+        <button class="mode green" onclick="showJoin()" style="grid-column:auto">
+          <span class="stripe"></span>
+          <span class="tag">Élève / appareil</span>
+          <h3>Rejoindre une salle</h3>
+          <p>Entrez le code affiché et votre prénom.</p>
+          <span class="go">Rejoindre</span>
+        </button>
+      </div>
+      <div id="joinForm" class="hidden">
+        <div class="field"><label>Code de la salle</label><input class="code" id="joinCode" maxlength="4" placeholder="ABCD" autocomplete="off"></div>
+        <div class="field"><label>Votre prénom</label><input id="joinName" maxlength="18" placeholder="Prénom" autocomplete="off"></div>
+        <div style="margin-top:14px"><button class="btn" onclick="joinRoom()">Entrer dans la salle →</button></div>
+      </div>
+      <div id="mpErr"></div>
+      <div class="note" id="fbNote">
+        <b>Configuration Firebase.</b> Le mode salle a besoin d'un projet Firebase (Realtime Database). Ouvrez le fichier, collez votre objet de configuration dans <b>FIREBASE_CONFIG</b> en haut du script, et publiez-le. Tant que ce n'est pas fait, utilisez les modes solo — entièrement fonctionnels.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MP LOBBY ================= -->
+  <section class="screen" data-screen="mp_lobby">
+    <div class="card pad stagger">
+      <div class="topbar">
+        <span class="eyebrow">Salle d'attente</span>
+        <button class="linkback" onclick="leaveRoom()">Quitter la salle</button>
+      </div>
+      <div id="lobbyHost">
+        <p style="color:var(--muted);font-size:.92rem">Projetez ce code. Les élèves le saisissent pour rejoindre.</p>
+        <div class="roomcode" id="lobbyCode">————</div>
+      </div>
+      <div id="lobbyPlayerInfo" class="hidden">
+        <p style="color:var(--muted);font-size:.92rem">Vous êtes dans la salle <b id="lobbyCodeP" style="color:var(--ink)"></b>. En attente du lancement…</p>
+      </div>
+      <div style="margin-top:16px;font-size:.82rem;font-weight:700;color:var(--muted);letter-spacing:.04em">
+        PARTICIPANT·E·S — <span id="lobbyCount">0</span>
+      </div>
+      <div class="playerchips" id="lobbyPlayers"></div>
+      <div id="lobbyHostControls" class="hidden" style="margin-top:22px">
+        <div class="field" style="margin-top:0">
+          <label>Nombre de questions</label>
+          <select id="mpLen"><option value="6">6 questions</option><option value="10" selected>10 questions</option><option value="14">14 questions</option></select>
+        </div>
+        <button class="btn dark" id="mpStartBtn" style="margin-top:14px" onclick="hostStart()">Démarrer la partie</button>
+        <p style="font-size:.82rem;color:var(--muted);margin-top:8px">Il faut au moins un·e participant·e.</p>
+      </div>
+      <p class="waitnote hidden" id="lobbyWait">L'hôte va bientôt lancer la partie…</p>
+    </div>
+  </section>
+
+  <!-- ================= MP GAME ================= -->
+  <section class="screen" data-screen="mp_game">
+    <div class="hud">
+      <span class="pill"><span class="lab">Question</span><b id="mpQNum">1</b><span class="lab">/</span><b id="mpQTot">10</b></span>
+      <span class="pill" id="mpScorePill"><span class="lab">Score</span><b id="mpScore">0</b></span>
+    </div>
+    <div class="card pad">
+      <div id="mpQBody"></div>
+      <div class="timerwrap"><div class="timerbar" id="mpTimer"></div></div>
+      <!-- player answers here -->
+      <div class="feedback" id="mpFeedback"></div>
+      <div class="answercount hidden" id="mpAnswerCount"></div>
+      <!-- host controls -->
+      <div class="nextrow hidden" id="mpHostNext"><button class="btn" id="mpNextBtn" onclick="hostNext()">Question suivante →</button></div>
+      <div class="lb hidden" id="mpMiniLb"></div>
+    </div>
+  </section>
+
+  <!-- ================= MP RESULTS ================= -->
+  <section class="screen" data-screen="mp_results">
+    <div class="card">
+      <div class="resulthead">
+        <span class="eyebrow">Classement final</span>
+        <h2 style="font-size:1.9rem;margin:.2em 0">Bravo à tous&nbsp;!</h2>
+      </div>
+      <div class="pad" style="padding-top:4px">
+        <div class="lb" id="mpFinalLb"></div>
+        <div class="endrow">
+          <button class="btn" onclick="leaveRoom()">Retour à l'accueil</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================================
+   FIREBASE — collez ici la configuration de VOTRE projet pour activer
+   le mode salle. Realtime Database doit être activée.
+   Laissez vide pour utiliser uniquement les modes solo.
+   ========================================================================= */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCNLIdE2p4fZSlTHUNzXy7ou5klLZ12-6U",
+  authDomain: "francais-ib-salle.firebaseapp.com",
+  databaseURL: "https://francais-ib-salle-default-rtdb.firebaseio.com",
+  projectId: "francais-ib-salle",
+  storageBucket: "francais-ib-salle.firebasestorage.app",
+  messagingSenderId: "282087713513",
+  appId: "1:282087713513:web:1f3c4488bfc025dc0a1e78"
+};
+
+/* ---------- stockage local sûr ---------- */
+const store = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+
+/* ===================== CONTENU PÉDAGOGIQUE ===================== */
+/* Tâches d'épreuve 2 — IB Français B SL. Chaque tâche : une question
+   "quel type de texte ?" + plusieurs jugements "cohérent / incohérent". */
+const TASKS = [
+{
+  theme:"Identités",
+  prompt:"Récemment, vous vous êtes inscrit·e à un cours de photographie et vous le trouvez très intéressant car c'est un moyen d'exprimer sa propre personnalité. Rédigez un texte à vos camarades dans lequel vous expliquez votre décision de suivre le cours et vous essayez de les encourager à faire de même.",
+  options:["Courriel","Critique","Message sur les réseaux sociaux"],
+  answer:0,
+  rationale:"Le texte vise des destinataires précis et connus — « vos camarades » — et cherche à les convaincre personnellement. Le courriel autorise une formule d'appel directe, un ton amical mais structuré et une clôture. La critique évaluerait une œuvre ; le message sur les réseaux s'adresse à un public large et anonyme, moins ciblé que « vos camarades ».",
+  analysis:[
+    {t:"Commencer par « Salut à toutes et à tous, »", c:true, w:"Formule d'appel adaptée à des camarades : registre courant, ton chaleureux."},
+    {t:"Terminer par « Veuillez agréer mes salutations distinguées. »", c:false, w:"Clôture du registre formel ; entre camarades on attend « À bientôt » ou « Amicalement »."},
+    {t:"Raconter une anecdote personnelle sur votre premier cours", c:true, w:"L'anecdote rend le témoignage vivant et appuie l'encouragement demandé."},
+    {t:"Adopter un registre soutenu et impersonnel du début à la fin", c:false, w:"Le destinataire et le but (encourager) appellent un registre courant et engageant."},
+    {t:"Indiquer une ligne d'objet, par exemple « Rejoignez le cours de photo ! »", c:true, w:"Le courriel comporte un objet qui annonce l'intention."},
+    {t:"Employer l'impératif pour inciter : « Inscris-toi, tu ne le regretteras pas ! »", c:true, w:"L'impératif sert directement le but persuasif de la tâche."}
+  ]
+},
+{
+  theme:"Partage de la planète",
+  prompt:"Avec des camarades, vous allez organiser une journée au centre-ville pour promouvoir l'idée de manger bio. Rédigez un texte aux habitant·e·s de votre ville dans lequel vous expliquez les avantages de manger bio et vous décrivez les activités que vous allez organiser pour cette journée.",
+  options:["Article","Brochure","Discours"],
+  answer:0,
+  rationale:"Le texte s'adresse à l'ensemble des « habitant·e·s de votre ville » et combine deux fonctions : expliquer des avantages et décrire un programme. L'article, publié dans un journal local, atteint ce large public et accueille titre, chapeau et intertitres. La brochure serait surtout promotionnelle et fragmentée ; le discours suppose un public rassemblé à l'oral.",
+  analysis:[
+    {t:"Donner un titre accrocheur suivi d'un chapeau d'introduction", c:true, w:"Conventions typiques de l'article de presse."},
+    {t:"Organiser le texte en courts paragraphes avec des intertitres", c:true, w:"Structure attendue d'un article informatif."},
+    {t:"Ouvrir par « Mesdames, Messieurs, » comme à l'oral", c:false, w:"Cette apostrophe appartient au discours ; un article ne s'ouvre pas ainsi."},
+    {t:"Citer un chiffre ou l'avis d'un·e spécialiste", c:true, w:"Les appuis factuels renforcent la crédibilité de l'article."},
+    {t:"N'employer que « je » et raconter ses sentiments intimes", c:false, w:"L'article informatif reste centré sur l'information, pas sur l'intime."},
+    {t:"Signer du nom de l'auteur·e à la fin", c:true, w:"L'article de presse est généralement signé."}
+  ]
+},
+{
+  theme:"Organisation sociale",
+  prompt:"Depuis un certain temps, vous vous rendez compte qu'il y a de plus en plus de sans-abris dans votre communauté et vous en êtes très préoccupé·e. Rédigez un texte dans lequel vous proposez une réflexion personnelle et vous pensez à des mesures que vous pourriez prendre pour améliorer cette situation grave.",
+  options:["Blog","Chronique d'opinion","Journal intime"],
+  answer:0,
+  rationale:"La tâche demande une « réflexion personnelle » destinée à être lue et des « mesures » concrètes : un texte à la fois intime et public, qui peut interpeller un lectorat. Le blog réunit ces traits — voix personnelle, adresse aux lecteurs, appel à l'action. Le journal intime resterait privé ; la chronique d'opinion, plus formelle, est défendable mais le « je » réflexif penche pour le blog.",
+  analysis:[
+    {t:"Dater l'entrée et lui donner un titre", c:true, w:"Un billet de blog est daté et titré."},
+    {t:"Écrire « Cher journal, » en ouverture", c:false, w:"Cette formule signale le journal intime, un texte privé sans lectorat."},
+    {t:"Interpeller les lecteurs : « Et vous, qu'en pensez-vous ? »", c:true, w:"Le blog s'adresse à un lectorat et invite à réagir."},
+    {t:"Terminer par un appel à l'action concret", c:true, w:"Cohérent avec la consigne : « mesures que vous pourriez prendre »."},
+    {t:"N'y consigner que des secrets que personne ne doit lire", c:false, w:"Contredit la nature publique du blog et la consigne de proposer des mesures."},
+    {t:"Mêler émotion personnelle et propositions argumentées", c:true, w:"Le blog autorise le registre personnel tout en développant un raisonnement."}
+  ]
+},
+{
+  theme:"Expériences",
+  prompt:"L'été dernier, vous avez participé à un projet de bénévolat à l'étranger qui vous a profondément marqué·e. La direction de votre école vous demande de partager votre expérience avec les autres élèves. Rédigez un texte pour le journal de votre école dans lequel vous racontez votre séjour et vous réfléchissez à ce que vous en avez appris.",
+  options:["Article","Journal intime","Lettre formelle"],
+  answer:0,
+  rationale:"Le texte est explicitement destiné au « journal de votre école » et à un lectorat d'élèves. L'article permet de raconter (récit) et de réfléchir (analyse) tout en restant public et structuré. Le journal intime serait privé ; la lettre formelle viserait un destinataire unique et un autre but.",
+  analysis:[
+    {t:"Choisir un titre évocateur et un chapeau", c:true, w:"Conventions de l'article."},
+    {t:"Écrire à la première personne pour raconter son vécu", c:true, w:"Le « je » du témoignage est attendu dans un article d'expérience."},
+    {t:"Ouvrir par « Madame la Directrice, »", c:false, w:"Formule de lettre formelle, inadaptée à un article destiné aux élèves."},
+    {t:"Structurer en deux temps : le séjour, puis les leçons apprises", c:true, w:"Suit les deux consignes de la tâche dans un ordre logique."},
+    {t:"Conclure par « Veuillez agréer l'expression de mes salutations. »", c:false, w:"Formule épistolaire formelle, étrangère à l'article."},
+    {t:"Adopter un ton vivant et accessible pour un lectorat de camarades", c:true, w:"Le registre s'accorde au public visé."}
+  ]
+},
+{
+  theme:"Ingéniosité humaine",
+  prompt:"La direction de votre école envisage d'interdire complètement les téléphones portables pendant la journée scolaire. Vous n'êtes pas d'accord avec cette décision. Rédigez un texte destiné à la direction dans lequel vous exposez votre point de vue et vous proposez une autre solution.",
+  options:["Lettre formelle","Critique","Brochure"],
+  answer:0,
+  rationale:"Le destinataire est précis et hiérarchique — « la direction » — et le but est de convaincre une autorité. La lettre formelle impose le registre soutenu, une formule d'appel et de politesse, et une argumentation ordonnée. La critique évalue une œuvre ; la brochure informe un large public.",
+  analysis:[
+    {t:"Ouvrir par « Madame, Monsieur, »", c:true, w:"Formule d'appel attendue d'une lettre formelle adressée à une autorité."},
+    {t:"Employer un registre soutenu et le vouvoiement", c:true, w:"Le destinataire hiérarchique impose ce registre."},
+    {t:"Utiliser des abréviations et un ton familier (« c'est nul »)", c:false, w:"Le registre familier nuit à la crédibilité d'une lettre formelle."},
+    {t:"Structurer les arguments avec des connecteurs logiques", c:true, w:"L'argumentation ordonnée sert le but persuasif."},
+    {t:"Terminer par « Bisous, à plus ! »", c:false, w:"Clôture familière incompatible avec la lettre formelle."},
+    {t:"Indiquer le lieu, la date et une formule de politesse finale", c:true, w:"Conventions de mise en page de la lettre formelle."}
+  ]
+},
+{
+  theme:"Organisation sociale",
+  prompt:"Un·e nouvel·le élève d'un pays francophone va rejoindre votre classe le mois prochain. Vous voulez l'aider à se sentir à l'aise. Rédigez un texte dans lequel vous lui présentez votre école et vous lui donnez des conseils pour bien s'intégrer.",
+  options:["Courriel","Discours","Rapport"],
+  answer:0,
+  rationale:"Le texte s'adresse à une personne précise — le ou la nouvel·le élève — dans un but d'accueil et de conseil. Le courriel permet une adresse directe, un ton amical et personnalisé. Le discours suppose un auditoire ; le rapport est impersonnel et factuel, sans destinataire individuel.",
+  analysis:[
+    {t:"Commencer par « Salut Camille, » et te présenter", c:true, w:"Adresse personnelle et registre amical adaptés au courriel."},
+    {t:"Tutoyer le ou la destinataire", c:true, w:"Entre camarades du même âge, le tutoiement est attendu."},
+    {t:"Rédiger des sections numérotées « 1. Constat / 2. Recommandations »", c:false, w:"Cette structure appartient au rapport, pas au courriel d'accueil."},
+    {t:"Donner des conseils concrets à l'impératif ou avec « tu peux »", c:true, w:"Sert directement la consigne : « donner des conseils »."},
+    {t:"Adopter un ton neutre et distant du début à la fin", c:false, w:"Le but d'accueil appelle un ton chaleureux, pas distant."},
+    {t:"Terminer par « À très bientôt, j'ai hâte de te rencontrer ! »", c:true, w:"Clôture amicale cohérente avec le courriel et le but visé."}
+  ]
+},
+{
+  theme:"Partage de la planète",
+  prompt:"Votre école organise une assemblée sur l'environnement et vous avez été choisi·e pour prendre la parole. Rédigez un texte dans lequel vous sensibilisez vos camarades au gaspillage et vous les invitez à changer leurs habitudes.",
+  options:["Discours","Brochure","Blog"],
+  answer:0,
+  rationale:"La tâche précise que vous allez « prendre la parole » lors d'une « assemblée » devant un auditoire rassemblé. Le discours est conçu pour l'oral : apostrophe au public, rythme, répétitions, appel final. La brochure et le blog sont des textes écrits, lus individuellement.",
+  analysis:[
+    {t:"Ouvrir par « Chères et chers camarades, »", c:true, w:"Apostrophe orale typique du discours."},
+    {t:"Poser des questions rhétoriques à l'auditoire", c:true, w:"Procédé oratoire qui capte l'attention de l'auditoire."},
+    {t:"Insérer une ligne d'objet et une signature en bas", c:false, w:"Objet et signature relèvent du courriel, pas du discours."},
+    {t:"Employer des répétitions et un rythme marqué", c:true, w:"Procédés rhétoriques propres à l'oral."},
+    {t:"Découper le texte en volets pliables remplis de puces", c:false, w:"La mise en page en volets caractérise la brochure."},
+    {t:"Terminer par un appel vibrant à l'action collective", c:true, w:"Clôture attendue d'un discours de sensibilisation."}
+  ]
+},
+{
+  theme:"Identités",
+  prompt:"La cantine de votre école a récemment changé de menu et de fonctionnement. Le journal des élèves vous demande de donner votre avis. Rédigez un texte dans lequel vous évaluez les nouveaux repas et le nouveau service, en signalant les points positifs et négatifs.",
+  options:["Critique","Courriel","Article informatif"],
+  answer:0,
+  rationale:"Le verbe clé est « évaluer » : la tâche demande un jugement argumenté sur les repas et le service, avec points positifs et négatifs. La critique est précisément le type de texte qui porte une appréciation appuyée sur des exemples. Le courriel viserait un destinataire précis ; l'article informatif resterait neutre, sans jugement.",
+  analysis:[
+    {t:"Donner une appréciation nuancée appuyée sur des exemples précis", c:true, w:"C'est le cœur de la critique : juger en justifiant."},
+    {t:"Rester strictement neutre et ne donner aucun avis", c:false, w:"La neutralité contredit la consigne « évaluer » et donner son avis."},
+    {t:"Organiser le texte en points forts puis points faibles", c:true, w:"Organisation claire et attendue d'une critique."},
+    {t:"Conclure par une recommandation ou une note globale", c:true, w:"La critique débouche sur un verdict."},
+    {t:"Ouvrir par « Cher journal, »", c:false, w:"Formule du journal intime, sans rapport avec la critique."},
+    {t:"Employer un vocabulaire évaluatif (« savoureux », « décevant »)", c:true, w:"Le lexique du jugement caractérise la critique."}
+  ]
+}
+];
+
+/* Chunks — locutions et connecteurs utiles à l'écrit IB */
+const CHUNKS = [
+  {fr:"d'une part… d'autre part", en:"d'un côté… de l'autre"},
+  {fr:"en revanche", en:"au contraire, par opposition"},
+  {fr:"par conséquent", en:"c'est pourquoi, donc"},
+  {fr:"il est essentiel de", en:"il est indispensable de"},
+  {fr:"à mon avis", en:"selon moi, d'après moi"},
+  {fr:"je suis convaincu·e que", en:"je suis tout à fait certain·e que"},
+  {fr:"force est de constater que", en:"on est bien obligé de reconnaître que"},
+  {fr:"dans un premier temps", en:"pour commencer, d'abord"},
+  {fr:"en fin de compte", en:"finalement, tout bien réfléchi"},
+  {fr:"cela dit", en:"ceci étant, malgré ce qui précède"},
+  {fr:"au fur et à mesure", en:"progressivement, peu à peu"},
+  {fr:"de nos jours", en:"à notre époque, aujourd'hui"},
+  {fr:"il n'en reste pas moins que", en:"cela n'empêche pas que"},
+  {fr:"mettre en lumière", en:"faire ressortir, souligner"},
+  {fr:"prendre conscience de", en:"se rendre compte de"},
+  {fr:"tirer parti de", en:"profiter de, exploiter"},
+  {fr:"avoir tendance à", en:"avoir l'habitude de, pencher vers"},
+  {fr:"faire face à", en:"affronter, gérer une difficulté"},
+  {fr:"remettre en question", en:"contester, réexaminer"},
+  {fr:"dans la mesure où", en:"étant donné que, puisque"},
+  {fr:"quoi qu'il en soit", en:"en tout cas, de toute façon"},
+  {fr:"non seulement… mais aussi", en:"à la fois… et également"},
+  {fr:"afin de", en:"dans le but de, pour"},
+  {fr:"à cet égard", en:"sur ce point, à ce sujet"},
+  {fr:"en ce qui concerne", en:"pour ce qui est de, à propos de"},
+  {fr:"somme toute", en:"en résumé, tout compte fait"},
+  {fr:"il va sans dire que", en:"il est évident que"},
+  {fr:"au lieu de", en:"à la place de, plutôt que"}
+];
+
+/* ===================== UTILITAIRES ===================== */
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function go(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  const el=document.querySelector('[data-screen="'+name+'"]');
+  if(el) el.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function refreshHomeScores(){
+  const a=store.get('ib_best_analyse'), st=store.get('ib_best_streak'), c=store.get('ib_best_chunks');
+  document.getElementById('hsAnalyse').textContent = a!=null?a:'—';
+  document.getElementById('hsStreak').textContent = st!=null?st:'—';
+  document.getElementById('hsChunks').textContent = c!=null?c:'—';
+}
+refreshHomeScores();
+
+/* ===================== SOLO — ANALYSE DE LA TÂCHE ===================== */
+let quiz=null;
+
+function buildQuestionPool(){
+  const pool=[];
+  TASKS.forEach((task,ti)=>{
+    pool.push({type:'choix', ti});
+    task.analysis.forEach((a,ai)=>pool.push({type:'coherence', ti, ai}));
+  });
+  return pool;
+}
+function startSolo(){
+  const pool=buildQuestionPool();
+  const choix=shuffle(pool.filter(q=>q.type==='choix')).slice(0,5);
+  const coh=shuffle(pool.filter(q=>q.type==='coherence')).slice(0,7);
+  quiz={ list:shuffle(choix.concat(coh)), i:0, score:0, streak:0, bestStreak:0, correct:0, log:[], answered:false, timer:null };
+  go('quiz');
+  renderQuestion();
+}
+function renderQuestion(){
+  clearInterval(quiz.timer);
+  quiz.answered=false;
+  const q=quiz.list[quiz.i];
+  const task=TASKS[q.ti];
+  document.getElementById('qScore').textContent=quiz.score;
+  document.getElementById('qStreak').textContent=quiz.streak;
+  document.getElementById('qStreakPill').classList.toggle('cold',quiz.streak<2);
+  document.getElementById('qProgress').style.width=((quiz.i)/quiz.list.length*100)+'%';
+  document.getElementById('qFeedback').className='feedback';
+  document.getElementById('qNextRow').classList.add('hidden');
+  const body=document.getElementById('qBody');
+
+  if(q.type==='choix'){
+    const opts=task.options.map((o,idx)=>
+      `<button class="opt" data-idx="${idx}" onclick="answerChoix(${idx})">
+         <span class="key">${'ABC'[idx]}</span><span>${o}</span><span class="mark"></span>
+       </button>`).join('');
+    body.innerHTML=`
+      <div class="qkind">Quel type de texte ?</div>
+      <div class="promptbox"><span class="theme">${task.theme}</span>${task.prompt}</div>
+      <div class="qask">Quel type de texte répond le mieux à cette consigne ?</div>
+      <div class="opts">${opts}</div>`;
+  } else {
+    const a=task.analysis[q.ai];
+    body.innerHTML=`
+      <div class="qkind coh">Cohérent ou incohérent ?</div>
+      <div class="promptbox"><span class="theme">${task.theme} · ${task.options[task.answer]}</span>${task.prompt}</div>
+      <p class="ctx">Type de texte retenu : <b>${task.options[task.answer]}</b></p>
+      <div class="statement"><span class="q">Dans cette copie, l'élève choisit de…</span><br>${a.t}</div>
+      <div class="opts">
+        <button class="opt binary" data-v="1" onclick="answerCoh(true)"><span class="key"></span><span>Cohérent</span></button>
+        <button class="opt binary" data-v="0" onclick="answerCoh(false)"><span class="key"></span><span>Incohérent</span></button>
+      </div>`;
+  }
+  startTimer(q.type==='choix'?25:18);
+}
+function startTimer(secs){
+  const bar=document.getElementById('qTimer');
+  bar.className='timerbar'; bar.style.transition='none'; bar.style.width='100%';
+  void bar.offsetWidth;
+  const total=secs*1000; let start=Date.now();
+  quiz.timeLeftFrac=1;
+  bar.style.transition='width .1s linear';
+  quiz.timer=setInterval(()=>{
+    const elapsed=Date.now()-start;
+    let frac=Math.max(0,1-elapsed/total);
+    quiz.timeLeftFrac=frac;
+    bar.style.width=(frac*100)+'%';
+    bar.classList.toggle('warn',frac<=.5&&frac>.2);
+    bar.classList.toggle('danger',frac<=.2);
+    if(frac<=0){ clearInterval(quiz.timer); if(!quiz.answered) timeUp(); }
+  },100);
+}
+function timeUp(){
+  const q=quiz.list[quiz.i];
+  if(q.type==='choix') resolveChoix(-1);
+  else resolveCoh(null);
+}
+function answerChoix(idx){ if(quiz.answered)return; resolveChoix(idx); }
+function resolveChoix(idx){
+  quiz.answered=true; clearInterval(quiz.timer);
+  const q=quiz.list[quiz.i], task=TASKS[q.ti], correctIdx=task.answer;
+  const correct = idx===correctIdx;
+  document.querySelectorAll('#qBody .opt').forEach(b=>{
+    b.disabled=true;
+    const bi=+b.dataset.idx;
+    if(bi===correctIdx){b.classList.add('correct');b.querySelector('.mark').textContent='✓ bon choix';}
+    if(bi===idx&&!correct){b.classList.add('wrong');b.querySelector('.mark').textContent='✗ votre réponse';}
+  });
+  finishQuestion(correct, task.rationale,
+    correct?`Le bon type de texte est « ${task.options[correctIdx]} ».`
+            :`Le bon type de texte était « ${task.options[correctIdx]} ».`,
+    `${task.theme} — choix du type de texte`);
+}
+function answerCoh(val){ if(quiz.answered)return; resolveCoh(val); }
+function resolveCoh(val){
+  quiz.answered=true; clearInterval(quiz.timer);
+  const q=quiz.list[quiz.i], a=TASKS[q.ti].analysis[q.ai];
+  const correct = val===a.c;
+  document.querySelectorAll('#qBody .opt').forEach(b=>{
+    b.disabled=true;
+    const bv=b.dataset.v==='1';
+    if(bv===a.c){b.classList.add('correct');}
+    if(val!==null&&bv===val&&!correct){b.classList.add('wrong');}
+  });
+  finishQuestion(correct, a.w,
+    `C'est ${a.c?'cohérent':'incohérent'} avec cette tâche.`,
+    `${TASKS[q.ti].theme} — ${a.t}`);
+}
+function finishQuestion(correct, why, verdictLine, logLabel){
+  let gain=0;
+  if(correct){
+    const base=100;
+    const speed=Math.round((quiz.timeLeftFrac||0)*100);
+    const streakBonus=Math.min(quiz.streak,5)*20;
+    gain=base+speed+streakBonus;
+    quiz.score+=gain; quiz.correct++; quiz.streak++;
+    quiz.bestStreak=Math.max(quiz.bestStreak,quiz.streak);
+  } else {
+    quiz.streak=0;
+  }
+  document.getElementById('qScore').textContent=quiz.score;
+  document.getElementById('qStreak').textContent=quiz.streak;
+  document.getElementById('qStreakPill').classList.toggle('cold',quiz.streak<2);
+  const fb=document.getElementById('qFeedback');
+  fb.className='feedback show '+(correct?'ok':'no');
+  fb.innerHTML=`${correct?`<span class="gain">+${gain}</span>`:''}
+    <div class="verdict">${correct?'Exact.':'Pas tout à fait.'} ${verdictLine}</div>
+    <div class="why">${why}</div>`;
+  quiz.log.push({label:logLabel, correct, why});
+  document.getElementById('qNextRow').classList.remove('hidden');
+  document.getElementById('qNextBtn').textContent = quiz.i>=quiz.list.length-1 ? 'Voir le résultat →' : 'Suivant →';
+}
+function nextQuestion(){
+  quiz.i++;
+  if(quiz.i>=quiz.list.length){ endSolo(); return; }
+  renderQuestion();
+}
+function endSolo(){
+  clearInterval(quiz.timer);
+  const total=quiz.list.length;
+  const acc=Math.round(quiz.correct/total*100);
+  const prevBest=store.get('ib_best_analyse')||0;
+  const prevStreak=store.get('ib_best_streak')||0;
+  const isBest=quiz.score>prevBest;
+  if(isBest) store.set('ib_best_analyse',quiz.score);
+  if(quiz.bestStreak>prevStreak) store.set('ib_best_streak',quiz.bestStreak);
+
+  document.getElementById('rKicker').textContent='Analyse de la tâche — terminée';
+  document.getElementById('rScore').textContent=quiz.score;
+  document.getElementById('rAcc').textContent=acc+'%';
+  document.getElementById('rCorrect').textContent=quiz.correct+'/'+total;
+  document.getElementById('rCorrectL').textContent='Bonnes réponses';
+  document.getElementById('rStreak').textContent=quiz.bestStreak;
+  document.getElementById('rBestWrap').innerHTML = isBest?'<div class="newbest">Nouveau meilleur score</div>':'';
+  const wrong=quiz.log.filter(l=>!l.correct);
+  const rev=document.getElementById('rReview');
+  if(wrong.length){
+    rev.innerHTML='<h3>À revoir</h3>'+wrong.map(l=>
+      `<div class="revitem"><div class="rq">${l.label}</div><div class="ra">${l.why}</div></div>`).join('');
+  } else {
+    rev.innerHTML='<h3>Sans faute</h3><div class="revitem ok"><div class="ra">Toutes les tâches analysées correctement. Le repérage destinataire / but / registre est solide.</div></div>';
+  }
+  document.getElementById('rAgain').textContent='Rejouer';
+  document.getElementById('rAgain').onclick=startSolo;
+  go('results');
+  refreshHomeScores();
+}
+
+/* ===================== SOLO — CHUNKS (drops) ===================== */
+let chunks=null;
+function startChunks(){
+  chunks={ deck:shuffle(CHUNKS), pos:0, score:0, streak:0, bestStreak:0, correct:0, attempts:0,
+           timeLeft:60, timer:null, answered:false, log:[] };
+  go('chunks');
+  document.getElementById('cScore').textContent='0';
+  document.getElementById('cStreak').textContent='0';
+  document.getElementById('cStreakPill').classList.add('cold');
+  document.getElementById('cTimer').textContent='60';
+  document.getElementById('cTimer').classList.remove('danger');
+  chunks.timer=setInterval(()=>{
+    chunks.timeLeft--;
+    const t=document.getElementById('cTimer');
+    t.textContent=chunks.timeLeft;
+    t.classList.toggle('danger',chunks.timeLeft<=10);
+    if(chunks.timeLeft<=0) endChunks();
+  },1000);
+  nextChunk();
+}
+function nextChunk(){
+  if(chunks.pos>=chunks.deck.length) chunks.deck=shuffle(CHUNKS).concat(chunks.deck), chunks.pos=0;
+  chunks.answered=false;
+  const item=chunks.deck[chunks.pos];
+  const distractors=shuffle(CHUNKS.filter(c=>c.fr!==item.fr)).slice(0,2).map(c=>c.en);
+  const opts=shuffle([item.en,...distractors]);
+  document.getElementById('cWord').textContent=item.fr;
+  // re-trigger drop animation
+  const w=document.getElementById('cWord');
+  w.style.animation='none'; void w.offsetWidth; w.style.animation='';
+  document.getElementById('cOpts').innerHTML=opts.map(o=>
+    `<button class="dropopt" onclick="answerChunk(this,'${o.replace(/'/g,"\\'")}','${item.en.replace(/'/g,"\\'")}')">${o}</button>`).join('');
+}
+function answerChunk(btn,picked,correctEn){
+  if(chunks.answered)return;
+  chunks.answered=true; chunks.attempts++;
+  const correct=picked===correctEn;
+  document.querySelectorAll('#cOpts .dropopt').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===correctEn) b.classList.add('right');
+    else if(b===btn&&!correct) b.classList.add('wrongpick');
+  });
+  if(correct){
+    chunks.correct++; chunks.streak++; chunks.bestStreak=Math.max(chunks.bestStreak,chunks.streak);
+    const gain=50+Math.min(chunks.streak,8)*10;
+    chunks.score+=gain;
+    const f=document.createElement('div'); f.className='floatpt'; f.textContent='+'+gain;
+    document.getElementById('cStage').appendChild(f);
+    setTimeout(()=>f.remove(),800);
+  } else {
+    chunks.streak=0;
+    chunks.log.push(chunks.deck[chunks.pos]);
+  }
+  document.getElementById('cScore').textContent=chunks.score;
+  document.getElementById('cStreak').textContent=chunks.streak;
+  document.getElementById('cStreakPill').classList.toggle('cold',chunks.streak<2);
+  chunks.pos++;
+  setTimeout(()=>{ if(chunks.timeLeft>0) nextChunk(); }, correct?420:900);
+}
+function endChunks(){
+  clearInterval(chunks.timer);
+  const acc=chunks.attempts?Math.round(chunks.correct/chunks.attempts*100):0;
+  const prev=store.get('ib_best_chunks')||0;
+  const isBest=chunks.score>prev;
+  if(isBest) store.set('ib_best_chunks',chunks.score);
+  const prevStreak=store.get('ib_best_streak')||0;
+  if(chunks.bestStreak>prevStreak) store.set('ib_best_streak',chunks.bestStreak);
+
+  document.getElementById('rKicker').textContent='Chunks — révision éclair';
+  document.getElementById('rScore').textContent=chunks.score;
+  document.getElementById('rAcc').textContent=acc+'%';
+  document.getElementById('rCorrect').textContent=chunks.correct;
+  document.getElementById('rCorrectL').textContent='Chunks validés';
+  document.getElementById('rStreak').textContent=chunks.bestStreak;
+  document.getElementById('rBestWrap').innerHTML=isBest?'<div class="newbest">Nouveau record</div>':'';
+  const missed=[...new Map(chunks.log.map(c=>[c.fr,c])).values()];
+  const rev=document.getElementById('rReview');
+  if(missed.length){
+    rev.innerHTML='<h3>Chunks à revoir</h3>'+missed.map(c=>
+      `<div class="revitem"><div class="rq">${c.fr}</div><div class="ra"><b>${c.en}</b></div></div>`).join('');
+  } else {
+    rev.innerHTML='<h3>Parfait</h3><div class="revitem ok"><div class="ra">Aucun chunk manqué — ces locutions sont prêtes à l\'emploi à l\'écrit.</div></div>';
+  }
+  document.getElementById('rAgain').textContent='Rejouer';
+  document.getElementById('rAgain').onclick=startChunks;
+  go('results');
+  refreshHomeScores();
+}
+
+function quitToHome(){
+  if(quiz&&quiz.timer)clearInterval(quiz.timer);
+  if(chunks&&chunks.timer)clearInterval(chunks.timer);
+  go('home'); refreshHomeScores();
+}
+
+/* ===================== MULTIJOUEUR — MODE SALLE (Firebase) ===================== */
+let FB=null;            // module firebase chargé dynamiquement
+let mp={ role:null, code:null, pid:null, name:null, roomRef:null, unsub:null,
+         room:null, qList:null, localTimer:null, answeredQ:-1, score:0 };
+
+function fbConfigured(){
+  return FIREBASE_CONFIG && FIREBASE_CONFIG.databaseURL && FIREBASE_CONFIG.apiKey;
+}
+async function loadFirebase(){
+  if(FB) return FB;
+  const appMod = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+  const dbMod  = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js');
+  const app = appMod.initializeApp(FIREBASE_CONFIG);
+  FB = { db: dbMod.getDatabase(app), ...dbMod };
+  return FB;
+}
+function mpError(msg){
+  document.getElementById('mpErr').innerHTML='<div class="err">'+msg+'</div>';
+}
+function clearMpError(){ document.getElementById('mpErr').innerHTML=''; }
+function randCode(){ const L='ABCDEFGHJKLMNPQRSTUVWXYZ'; let s=''; for(let i=0;i<4;i++)s+=L[Math.floor(Math.random()*L.length)]; return s; }
+function randId(){ return Math.random().toString(36).slice(2,10); }
+
+function showJoin(){
+  clearMpError();
+  document.getElementById('joinForm').classList.toggle('hidden');
+}
+
+function mpBuildQuestions(n){
+  // Mélange : un tiers de "choix de type de texte", reste en cohérence
+  const pool=[];
+  TASKS.forEach((task,ti)=>{
+    pool.push({kind:'choix',theme:task.theme,prompt:task.prompt,options:task.options,answer:task.answer,rationale:task.rationale});
+    task.analysis.forEach(a=>pool.push({kind:'coherence',theme:task.theme,prompt:task.prompt,
+      textType:task.options[task.answer],statement:a.t,coherent:a.c,why:a.w}));
+  });
+  const choix=shuffle(pool.filter(q=>q.kind==='choix'));
+  const coh=shuffle(pool.filter(q=>q.kind==='coherence'));
+  const nChoix=Math.max(2,Math.round(n*0.4));
+  const picked=shuffle(choix.slice(0,nChoix).concat(coh.slice(0,n-nChoix)));
+  return picked;
+}
+
+async function hostRoom(){
+  clearMpError();
+  if(!fbConfigured()){ mpError('Mode salle indisponible : ajoutez votre configuration Firebase dans le fichier (voir la note ci-dessous).'); return; }
+  try{
+    const fb=await loadFirebase();
+    mp.role='host'; mp.code=randCode(); mp.pid=randId();
+    mp.roomRef=fb.ref(fb.db,'rooms/'+mp.code);
+    await fb.set(mp.roomRef,{
+      status:'lobby', hostId:mp.pid, createdAt:Date.now(),
+      currentQ:0, phase:'question', players:{}, questions:{}
+    });
+    fb.onDisconnect(mp.roomRef).remove();
+    listenRoom();
+    document.getElementById('lobbyHost').classList.remove('hidden');
+    document.getElementById('lobbyPlayerInfo').classList.add('hidden');
+    document.getElementById('lobbyHostControls').classList.remove('hidden');
+    document.getElementById('lobbyWait').classList.add('hidden');
+    document.getElementById('lobbyCode').textContent=mp.code;
+    go('mp_lobby');
+  }catch(e){ mpError('Connexion à Firebase impossible. Vérifiez la configuration et les règles de la base. ('+e.message+')'); }
+}
+
+async function joinRoom(){
+  clearMpError();
+  if(!fbConfigured()){ mpError('Mode salle indisponible : configuration Firebase manquante dans le fichier.'); return; }
+  const code=document.getElementById('joinCode').value.trim().toUpperCase();
+  const name=document.getElementById('joinName').value.trim();
+  if(code.length!==4){ mpError('Le code comporte 4 lettres.'); return; }
+  if(!name){ mpError('Indiquez votre prénom.'); return; }
+  try{
+    const fb=await loadFirebase();
+    const snap=await fb.get(fb.ref(fb.db,'rooms/'+code));
+    if(!snap.exists()){ mpError('Aucune salle « '+code+' ». Vérifiez le code.'); return; }
+    if(snap.val().status!=='lobby'){ mpError('Cette partie a déjà commencé.'); return; }
+    mp.role='player'; mp.code=code; mp.pid=randId(); mp.name=name;
+    mp.roomRef=fb.ref(fb.db,'rooms/'+code);
+    const meRef=fb.ref(fb.db,'rooms/'+code+'/players/'+mp.pid);
+    await fb.set(meRef,{name:name,score:0});
+    fb.onDisconnect(meRef).remove();
+    listenRoom();
+    document.getElementById('lobbyHost').classList.add('hidden');
+    document.getElementById('lobbyPlayerInfo').classList.remove('hidden');
+    document.getElementById('lobbyHostControls').classList.add('hidden');
+    document.getElementById('lobbyWait').classList.remove('hidden');
+    document.getElementById('lobbyCodeP').textContent=code;
+    go('mp_lobby');
+  }catch(e){ mpError('Impossible de rejoindre la salle. ('+e.message+')'); }
+}
+
+function listenRoom(){
+  const fb=FB;
+  mp.unsub=fb.onValue(mp.roomRef,(snap)=>{
+    if(!snap.exists()){
+      if(mp.role==='player'){ alert("L'hôte a fermé la salle."); leaveRoom(); }
+      return;
+    }
+    mp.room=snap.val();
+    onRoomUpdate();
+  });
+}
+
+function onRoomUpdate(){
+  const r=mp.room;
+  const players=r.players?Object.entries(r.players):[];
+  // --- LOBBY ---
+  if(r.status==='lobby'){
+    document.getElementById('lobbyCount').textContent=players.length;
+    document.getElementById('lobbyPlayers').innerHTML = players.length
+      ? players.map(([pid,p])=>`<span class="chip ${pid===mp.pid?'me':''}">${p.name}</span>`).join('')
+      : '<span style="color:var(--muted);font-size:.88rem">En attente de participant·e·s…</span>';
+    if(mp.role==='host'){
+      document.getElementById('mpStartBtn').disabled = players.length<1;
+    }
+    return;
+  }
+  // --- PLAYING ---
+  if(r.status==='playing'){
+    if(!isScreen('mp_game')) {
+      mp.qList = r.questions ? Object.values(r.questions) : [];
+      go('mp_game');
+    }
+    if(!mp.qList || !mp.qList.length){ mp.qList = r.questions?Object.values(r.questions):[]; }
+    renderMpQuestion();
+    return;
+  }
+  // --- ENDED ---
+  if(r.status==='ended'){
+    if(!isScreen('mp_results')){ renderMpFinal(); go('mp_results'); }
+    return;
+  }
+}
+function isScreen(name){ return document.querySelector('[data-screen="'+name+'"]').classList.contains('on'); }
+
+async function hostStart(){
+  const n=parseInt(document.getElementById('mpLen').value,10);
+  const qs=mpBuildQuestions(n);
+  const fb=FB;
+  const qObj={}; qs.forEach((q,i)=>qObj['q'+String(i).padStart(2,'0')]=q);
+  await fb.update(mp.roomRef,{ questions:qObj, currentQ:0, phase:'question', status:'playing' });
+}
+
+let mpLastRenderKey='';
+function renderMpQuestion(){
+  const r=mp.room;
+  const qi=r.currentQ||0;
+  const q=mp.qList[qi];
+  if(!q) return;
+  const renderKey=qi+'|'+r.phase;
+  document.getElementById('mpQNum').textContent=qi+1;
+  document.getElementById('mpQTot').textContent=mp.qList.length;
+
+  // update own score display
+  if(mp.role==='player' && r.players && r.players[mp.pid]){
+    mp.score=r.players[mp.pid].score||0;
+  }
+  document.getElementById('mpScore').textContent=mp.score;
+  document.getElementById('mpScorePill').style.display = mp.role==='host'?'none':'flex';
+
+  if(renderKey===mpLastRenderKey){
+    // same state — just refresh dynamic bits (answer count / leaderboard)
+    updateMpDynamic();
+    return;
+  }
+  mpLastRenderKey=renderKey;
+
+  const body=document.getElementById('mpQBody');
+  const fb=document.getElementById('mpFeedback');
+  fb.className='feedback';
+  document.getElementById('mpHostNext').classList.add('hidden');
+  document.getElementById('mpMiniLb').classList.add('hidden');
+  document.getElementById('mpAnswerCount').classList.add('hidden');
+  clearInterval(mp.localTimer);
+
+  // ---- build the question body ----
+  if(q.kind==='choix'){
+    body.innerHTML=`
+      <div class="qkind">Quel type de texte ?</div>
+      <div class="promptbox"><span class="theme">${q.theme}</span>${q.prompt}</div>
+      <div class="qask">Quel type de texte répond le mieux à cette consigne ?</div>
+      <div class="opts" id="mpOpts">${
+        q.options.map((o,idx)=>`<button class="opt" data-idx="${idx}"><span class="key">${'ABC'[idx]}</span><span>${o}</span><span class="mark"></span></button>`).join('')
+      }</div>`;
+  } else {
+    body.innerHTML=`
+      <div class="qkind coh">Cohérent ou incohérent ?</div>
+      <div class="promptbox"><span class="theme">${q.theme} · ${q.textType}</span>${q.prompt}</div>
+      <p class="ctx">Type de texte retenu : <b>${q.textType}</b></p>
+      <div class="statement"><span class="q">L'élève choisit de…</span><br>${q.statement}</div>
+      <div class="opts" id="mpOpts">
+        <button class="opt binary" data-v="1"><span class="key"></span><span>Cohérent</span></button>
+        <button class="opt binary" data-v="0"><span class="key"></span><span>Incohérent</span></button>
+      </div>`;
+  }
+
+  if(r.phase==='question'){
+    if(mp.role==='player'){
+      mp.answeredQ=-1; mp.qStartLeft=1;
+      const opts=document.querySelectorAll('#mpOpts .opt');
+      opts.forEach(b=>b.addEventListener('click',()=>playerAnswer(qi,q,b)));
+      startMpTimer();
+    } else {
+      // host: no answering, just watch + show count
+      document.getElementById('mpAnswerCount').classList.remove('hidden');
+      startMpTimer(true);
+      updateMpDynamic();
+    }
+  } else { // reveal
+    revealMpQuestion(qi,q);
+  }
+}
+
+function startMpTimer(hostView){
+  const bar=document.getElementById('mpTimer');
+  bar.className='timerbar'; bar.style.transition='none'; bar.style.width='100%';
+  void bar.offsetWidth; bar.style.transition='width .1s linear';
+  const total=22000; const start=Date.now();
+  clearInterval(mp.localTimer);
+  mp.localTimer=setInterval(()=>{
+    let frac=Math.max(0,1-(Date.now()-start)/total);
+    bar.style.width=(frac*100)+'%';
+    bar.classList.toggle('warn',frac<=.5&&frac>.2);
+    bar.classList.toggle('danger',frac<=.2);
+    if(!hostView) mp.qStartLeft=frac;
+    if(frac<=0){
+      clearInterval(mp.localTimer);
+      if(!hostView && mp.answeredQ!==mp.room.currentQ){
+        // time out — register a non-answer
+        playerTimeout();
+      }
+    }
+  },100);
+}
+
+async function playerAnswer(qi,q,btn){
+  if(mp.answeredQ===qi) return;
+  mp.answeredQ=qi;
+  clearInterval(mp.localTimer);
+  const fb=FB;
+  let correct=false, choice=null;
+  if(q.kind==='choix'){ choice=+btn.dataset.idx; correct=choice===q.answer; }
+  else { const v=btn.dataset.v==='1'; choice=v; correct=v===q.coherent; }
+  const speed=Math.round((mp.qStartLeft||0)*100);
+  const points=correct?(100+speed):0;
+  // disable + mark own pick
+  document.querySelectorAll('#mpOpts .opt').forEach(b=>b.disabled=true);
+  btn.style.borderColor='var(--blue)'; btn.style.background='#eef2ff';
+  // write answer
+  await fb.set(fb.ref(fb.db,'rooms/'+mp.code+'/answers/'+qi+'/'+mp.pid),{choice,correct,points});
+  if(correct){
+    const cur=(mp.room.players[mp.pid]&&mp.room.players[mp.pid].score)||0;
+    await fb.update(fb.ref(fb.db,'rooms/'+mp.code+'/players/'+mp.pid),{score:cur+points});
+  }
+  // feedback (await reveal for full explanation)
+  const fbEl=document.getElementById('mpFeedback');
+  fbEl.className='feedback show '+(correct?'ok':'no');
+  fbEl.innerHTML=`<div class="verdict">${correct?'Réponse envoyée — exact !':'Réponse envoyée.'}</div>
+    <div class="why">En attente des autres participant·e·s…</div>`;
+}
+async function playerTimeout(){
+  if(mp.answeredQ===mp.room.currentQ) return;
+  mp.answeredQ=mp.room.currentQ;
+  const fb=FB;
+  document.querySelectorAll('#mpOpts .opt').forEach(b=>b.disabled=true);
+  await fb.set(fb.ref(fb.db,'rooms/'+mp.code+'/answers/'+mp.room.currentQ+'/'+mp.pid),{choice:null,correct:false,points:0});
+  const fbEl=document.getElementById('mpFeedback');
+  fbEl.className='feedback show no';
+  fbEl.innerHTML='<div class="verdict">Temps écoulé</div><div class="why">En attente de la correction…</div>';
+}
+
+function updateMpDynamic(){
+  const r=mp.room;
+  const qi=r.currentQ||0;
+  const players=r.players?Object.keys(r.players):[];
+  const answers=r.answers&&r.answers[qi]?Object.keys(r.answers[qi]):[];
+  if(mp.role==='host' && r.phase==='question'){
+    document.getElementById('mpAnswerCount').classList.remove('hidden');
+    document.getElementById('mpAnswerCount').innerHTML=`<b>${answers.length}</b> / ${players.length} ont répondu`;
+    // auto-advance to reveal when everyone answered
+    if(players.length>0 && answers.length>=players.length){
+      hostSetPhase('reveal');
+    }
+  }
+}
+
+async function hostSetPhase(phase){
+  if(mp.role!=='host') return;
+  await FB.update(mp.roomRef,{phase});
+}
+// host: also reveal after a max wait
+let hostRevealTimer=null;
+function scheduleHostReveal(){
+  clearTimeout(hostRevealTimer);
+  hostRevealTimer=setTimeout(()=>{
+    if(mp.role==='host'&&mp.room&&mp.room.status==='playing'&&mp.room.phase==='question'){
+      hostSetPhase('reveal');
+    }
+  },24000);
+}
+
+function revealMpQuestion(qi,q){
+  clearInterval(mp.localTimer);
+  clearTimeout(hostRevealTimer);
+  const r=mp.room;
+  const answers=(r.answers&&r.answers[qi])||{};
+  // mark options
+  if(q.kind==='choix'){
+    document.querySelectorAll('#mpOpts .opt').forEach(b=>{
+      b.disabled=true;
+      const bi=+b.dataset.idx;
+      if(bi===q.answer){b.classList.add('correct');b.querySelector('.mark').textContent='✓';}
+      if(mp.role==='player'){
+        const mine=answers[mp.pid];
+        if(mine&&mine.choice===bi&&bi!==q.answer){b.classList.add('wrong');b.querySelector('.mark').textContent='✗';}
+      }
+    });
+  } else {
+    document.querySelectorAll('#mpOpts .opt').forEach(b=>{
+      b.disabled=true;
+      const bv=b.dataset.v==='1';
+      if(bv===q.coherent) b.classList.add('correct');
+      if(mp.role==='player'){
+        const mine=answers[mp.pid];
+        if(mine&&mine.choice===bv&&bv!==q.coherent) b.classList.add('wrong');
+      }
+    });
+  }
+  // feedback / explanation
+  const fbEl=document.getElementById('mpFeedback');
+  if(mp.role==='player'){
+    const mine=answers[mp.pid];
+    const correct=mine&&mine.correct;
+    fbEl.className='feedback show '+(correct?'ok':'no');
+    const why = q.kind==='choix'? q.rationale : q.why;
+    const line = q.kind==='choix'
+      ? `Le bon type de texte : « ${q.options[q.answer]} ».`
+      : `C'est ${q.coherent?'cohérent':'incohérent'} avec cette tâche.`;
+    fbEl.innerHTML=`${correct?`<span class="gain">+${mine.points}</span>`:''}
+      <div class="verdict">${correct?'Exact.':'Pas tout à fait.'} ${line}</div>
+      <div class="why">${why}</div>`;
+  } else {
+    fbEl.className='feedback show ok';
+    const why = q.kind==='choix'? q.rationale : q.why;
+    fbEl.innerHTML=`<div class="verdict">Correction</div><div class="why">${why}</div>`;
+    document.getElementById('mpAnswerCount').classList.add('hidden');
+  }
+  // leaderboard
+  const lb=document.getElementById('mpMiniLb');
+  lb.classList.remove('hidden');
+  lb.innerHTML='<div style="font-size:.8rem;font-weight:700;color:var(--muted);letter-spacing:.05em;margin:4px 0 8px">CLASSEMENT</div>'+leaderboardHTML();
+  // host controls
+  if(mp.role==='host'){
+    const next=document.getElementById('mpHostNext');
+    next.classList.remove('hidden');
+    document.getElementById('mpNextBtn').textContent =
+      (qi>=mp.qList.length-1)?'Voir le classement final →':'Question suivante →';
+  }
+}
+
+function leaderboardHTML(){
+  const r=mp.room;
+  const players=r.players?Object.entries(r.players):[];
+  players.sort((a,b)=>(b[1].score||0)-(a[1].score||0));
+  return players.map(([pid,p],i)=>
+    `<div class="lbrow ${i===0?'top1':''} ${pid===mp.pid?'me':''}">
+       <span class="rank">${i+1}</span>
+       <span class="nm">${p.name}</span>
+       <span class="pts">${p.score||0}</span>
+     </div>`).join('') || '<div style="color:var(--muted);font-size:.88rem">Aucun score.</div>';
+}
+
+async function hostNext(){
+  const qi=mp.room.currentQ||0;
+  if(qi>=mp.qList.length-1){
+    await FB.update(mp.roomRef,{status:'ended'});
+  } else {
+    await FB.update(mp.roomRef,{currentQ:qi+1,phase:'question'});
+    setTimeout(scheduleHostReveal,300);
+  }
+}
+
+function renderMpFinal(){
+  document.getElementById('mpFinalLb').innerHTML=leaderboardHTML();
+}
+
+async function leaveRoom(){
+  try{
+    if(mp.unsub) mp.unsub();
+    if(FB&&mp.roomRef){
+      if(mp.role==='host') await FB.remove(mp.roomRef);
+      else if(mp.role==='player'&&mp.pid) await FB.remove(FB.ref(FB.db,'rooms/'+mp.code+'/players/'+mp.pid));
+    }
+  }catch(e){/* ignore */}
+  clearInterval(mp.localTimer); clearTimeout(hostRevealTimer);
+  mp={ role:null, code:null, pid:null, name:null, roomRef:null, unsub:null, room:null, qList:null, localTimer:null, answeredQ:-1, score:0 };
+  mpLastRenderKey='';
+  go('home'); refreshHomeScores();
+}
+
+// host schedules first reveal once playing starts
+const _origOnRoomUpdate=onRoomUpdate;
+onRoomUpdate=function(){
+  _origOnRoomUpdate();
+  if(mp.role==='host'&&mp.room&&mp.room.status==='playing'&&mp.room.phase==='question'){
+    scheduleHostReveal();
+  }
+};
+
+// hide the Firebase note if a config is present
+if(fbConfigured()){
+  const n=document.getElementById('fbNote'); if(n) n.classList.add('hidden');
+}
+
+// uppercase the join code field as the user types
+document.addEventListener('input',e=>{
+  if(e.target&&e.target.id==='joinCode'){ e.target.value=e.target.value.toUpperCase(); }
+});
+</script>
+</body>
+</html>
