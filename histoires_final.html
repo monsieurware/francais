@@ -6748,6 +6748,7 @@ async function renderTeacherView(shell, classCode) {
           <select id="draw-seconds" style="padding:8px 12px; border-radius:6px; border:1px solid var(--border-strong); font-size:0.95rem; color:var(--text)">
             <option value="0">Illimité</option>
             <option value="30">30 secondes</option>
+            <option value="45">45 secondes</option>
             <option value="60" selected>60 secondes</option>
             <option value="90">90 secondes</option>
             <option value="120">2 minutes</option>
@@ -8713,6 +8714,22 @@ async function renderStudentVoting(host, sessionId, pseudo, sentenceIdx, phase, 
 
     if (phase === 'voting' && votingOpen && !isMine) {
       card.addEventListener('click', async () => {
+        // Hard stop: re-check voting state at the moment of click. Handlers were
+        // attached when votingOpen was true at render time, but the timer may
+        // have expired since (or the teacher may have closed voting).
+        const liveSession = gameSession;
+        if (!liveSession || liveSession.phase !== 'voting') return;
+        if (liveSession.voteMode === 'spam') {
+          const startMs = tsToMs(liveSession.voteStartedAt);
+          if (startMs) {
+            const elapsedSec = (Date.now() - startMs) / 1000;
+            if (elapsedSec >= (liveSession.voteSeconds || 20)) {
+              // Time's up — visual nudge to indicate it's locked
+              card.classList.add('locked');
+              return;
+            }
+          }
+        }
         if (isSpam) {
           // Spam mode: every tap = +1, no unstar, no limit (still no self-vote)
           const countEl = card.querySelector('.vote-star-count');
