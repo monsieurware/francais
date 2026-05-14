@@ -7619,7 +7619,9 @@ async function pickNameFromRoster(host, sessionId, deviceId) {
                 alert("La session n'existe plus. Recharge la page.");
               } else {
                 console.warn("claim failed", err);
-                alert("Erreur. Réessaie.");
+                const code = err.code || err.name || 'inconnu';
+                const msg = err.message || String(err);
+                alert(`Erreur en sélectionnant "${name}".\n\nCode Firebase : ${code}\n\nDétail : ${msg}\n\n(Montre ce message au prof.)`);
               }
             }
           });
