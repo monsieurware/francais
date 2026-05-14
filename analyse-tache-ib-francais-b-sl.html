@@ -114,6 +114,7 @@
   /* ---- question ---- */
   .qkind{font-size:.74rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
   .qkind.coh{color:var(--amber)}
+  .qkind.ana{color:var(--green)}
   .promptbox{background:var(--blue-soft);border:1px solid #d6e0fb;border-radius:13px;padding:16px 18px;font-size:.96rem;margin:6px 0 4px}
   .promptbox .theme{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-deep);display:block;margin-bottom:6px}
   .qask{font-size:1.16rem;font-weight:700;margin:18px 0 4px;font-family:'Playfair Display',serif}
@@ -154,7 +155,23 @@
   .feedback .why{color:#3a4660}
   .feedback .gain{float:right;font-weight:800;font-variant-numeric:tabular-nums}
   .feedback.ok .gain{color:var(--green)}
+  .feedback .optnotes{margin-top:11px;border-top:1px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+  .feedback .optnote{font-size:.86rem;color:#52607a;line-height:1.4}
+  .feedback .optnote b{color:var(--ink)}
+  .feedback .optnote.picked{background:var(--red-soft);border:1px solid var(--red-line);border-radius:8px;padding:6px 9px;color:#7a2f33}
+  .feedback .optnote.picked b{color:var(--red)}
   .nextrow{margin-top:16px;display:flex;justify-content:flex-end}
+
+  /* guided-mode toggle on home */
+  .guidetoggle{display:flex;align-items:flex-start;gap:11px;margin-top:14px;padding:13px 15px;background:#fafbff;border:1px solid var(--line);border-radius:13px;cursor:pointer;transition:.15s}
+  .guidetoggle:hover{border-color:#c9d4ee}
+  .guidetoggle .box{width:22px;height:22px;flex:none;border:1.5px solid #c2cbe0;border-radius:6px;background:#fff;display:grid;place-items:center;margin-top:1px;transition:.15s}
+  .guidetoggle .box::after{content:"✓";color:#fff;font-size:.8rem;font-weight:800;opacity:0;transform:scale(.6);transition:.15s}
+  .guidetoggle.on .box{background:var(--blue);border-color:var(--blue)}
+  .guidetoggle.on .box::after{opacity:1;transform:scale(1)}
+  .guidetoggle .gt-txt{font-size:.88rem}
+  .guidetoggle .gt-txt b{display:block;color:var(--ink);font-weight:700;margin-bottom:1px}
+  .guidetoggle .gt-txt span{color:var(--muted)}
 
   /* ---- chunks / drops ---- */
   .dropstage{
@@ -263,6 +280,10 @@
           <span class="go">Ouvrir une salle</span>
         </button>
       </div>
+      <div class="guidetoggle" id="guideToggle" onclick="toggleGuided()">
+        <span class="box"></span>
+        <span class="gt-txt"><b>Mode guidé — analyse de la tâche</b><span>Avant de choisir le type de texte, deux étapes : repérer le destinataire, puis le but. Comme à l'examen.</span></span>
+      </div>
       <div class="scoreline">
         <span>Meilleur score analyse : <b id="hsAnalyse">—</b></span>
         <span>Meilleure série : <b id="hsStreak">—</b></span>
@@ -325,6 +346,7 @@
         <div class="review" id="rReview"></div>
         <div class="endrow">
           <button class="btn" id="rAgain">Rejouer</button>
+          <button class="btn dark" id="rReplayMistakes" style="display:none">Rejouer mes erreurs</button>
           <button class="btn ghost" onclick="quitToHome()">Accueil</button>
         </div>
       </div>
@@ -464,6 +486,9 @@ const TASKS = [
   options:["Courriel","Critique","Message sur les réseaux sociaux"],
   answer:0,
   rationale:"Le texte vise des destinataires précis et connus — « vos camarades » — et cherche à les convaincre personnellement. Le courriel autorise une formule d'appel directe, un ton amical mais structuré et une clôture. La critique évaluerait une œuvre ; le message sur les réseaux s'adresse à un public large et anonyme, moins ciblé que « vos camarades ».",
+  optWhy:["","Une critique évalue une œuvre ou un produit ; or la consigne demande de convaincre des camarades, pas de juger quelque chose.","Le message publié vise un public large et anonyme ; ici le destinataire est précis et connu — « vos camarades »."],
+  audience:{ q:"Qui est le destinataire de ce texte ?", options:["Vos camarades de classe","Le grand public d'un journal","Le professeur de photographie"], answer:0, why:"La consigne dit explicitement « à vos camarades » : un groupe précis et connu." },
+  purpose:{ q:"Quel est le but principal ?", options:["Encourager les camarades à s'inscrire aussi","Évaluer la qualité du cours","Raconter une journée pour soi-même"], answer:0, why:"Le texte « essaie de les encourager à faire de même » : l'intention est persuasive." },
   analysis:[
     {t:"Commencer par « Salut à toutes et à tous, »", c:true, w:"Formule d'appel adaptée à des camarades : registre courant, ton chaleureux."},
     {t:"Terminer par « Veuillez agréer mes salutations distinguées. »", c:false, w:"Clôture du registre formel ; entre camarades on attend « À bientôt » ou « Amicalement »."},
@@ -479,6 +504,9 @@ const TASKS = [
   options:["Article","Brochure","Discours"],
   answer:0,
   rationale:"Le texte s'adresse à l'ensemble des « habitant·e·s de votre ville » et combine deux fonctions : expliquer des avantages et décrire un programme. L'article, publié dans un journal local, atteint ce large public et accueille titre, chapeau et intertitres. La brochure serait surtout promotionnelle et fragmentée ; le discours suppose un public rassemblé à l'oral.",
+  optWhy:["","La brochure fragmente l'information en volets promotionnels ; elle se prête mal au double objectif « expliquer » puis « décrire » de façon suivie.","Le discours suppose un auditoire rassemblé à l'oral ; or le texte s'adresse à des habitant·e·s, lecteurs dispersés."],
+  audience:{ q:"Qui est le destinataire de ce texte ?", options:["Les habitant·e·s de votre ville","Vos camarades d'organisation","Les commerçants du centre-ville"], answer:0, why:"La consigne précise « aux habitant·e·s de votre ville » : un large lectorat." },
+  purpose:{ q:"Quel est le but principal ?", options:["Informer et faire connaître une journée d'action","Régler un différend personnel","Donner des instructions techniques"], answer:0, why:"Il s'agit d'« expliquer les avantages » et de « décrire les activités » : un but informatif." },
   analysis:[
     {t:"Donner un titre accrocheur suivi d'un chapeau d'introduction", c:true, w:"Conventions typiques de l'article de presse."},
     {t:"Organiser le texte en courts paragraphes avec des intertitres", c:true, w:"Structure attendue d'un article informatif."},
@@ -494,6 +522,9 @@ const TASKS = [
   options:["Blog","Chronique d'opinion","Journal intime"],
   answer:0,
   rationale:"La tâche demande une « réflexion personnelle » destinée à être lue et des « mesures » concrètes : un texte à la fois intime et public, qui peut interpeller un lectorat. Le blog réunit ces traits — voix personnelle, adresse aux lecteurs, appel à l'action. Le journal intime resterait privé ; la chronique d'opinion, plus formelle, est défendable mais le « je » réflexif penche pour le blog.",
+  optWhy:["","La chronique d'opinion conviendrait, mais son registre plus formel s'accorde moins bien à la « réflexion personnelle » explicitement demandée.","Le journal intime est privé et sans lectorat ; il ne permet pas d'adresser des « mesures » à qui que ce soit."],
+  audience:{ q:"Qui est le destinataire de ce texte ?", options:["Un lectorat en ligne, sensible au sujet","Une autorité municipale précise","Personne — un texte gardé pour soi"], answer:0, why:"C'est une réflexion destinée à être lue : elle suppose un lectorat, sans viser une autorité." },
+  purpose:{ q:"Quel est le but principal ?", options:["Réfléchir et proposer des pistes d'action","Déposer une plainte officielle","Décrire un fait divers de façon neutre"], answer:0, why:"La consigne demande « une réflexion personnelle » et des « mesures » : réfléchir puis agir." },
   analysis:[
     {t:"Dater l'entrée et lui donner un titre", c:true, w:"Un billet de blog est daté et titré."},
     {t:"Écrire « Cher journal, » en ouverture", c:false, w:"Cette formule signale le journal intime, un texte privé sans lectorat."},
@@ -509,6 +540,9 @@ const TASKS = [
   options:["Article","Journal intime","Lettre formelle"],
   answer:0,
   rationale:"Le texte est explicitement destiné au « journal de votre école » et à un lectorat d'élèves. L'article permet de raconter (récit) et de réfléchir (analyse) tout en restant public et structuré. Le journal intime serait privé ; la lettre formelle viserait un destinataire unique et un autre but.",
+  optWhy:["","Le journal intime resterait privé ; or la direction demande de « partager » l'expérience avec les autres élèves.","La lettre formelle viserait un destinataire unique ; le « journal de votre école » suppose un lectorat collectif."],
+  audience:{ q:"Qui est le destinataire de ce texte ?", options:["Les élèves, lecteurs du journal scolaire","La directrice de l'école seule","Votre famille proche"], answer:0, why:"Le texte est destiné au « journal de votre école » : il s'adresse à l'ensemble des élèves." },
+  purpose:{ q:"Quel est le but principal ?", options:["Raconter une expérience et en tirer des leçons","Demander une autorisation","Comparer deux destinations de voyage"], answer:0, why:"La consigne demande de « raconter » le séjour et de « réfléchir » à ce qu'on en a appris." },
   analysis:[
     {t:"Choisir un titre évocateur et un chapeau", c:true, w:"Conventions de l'article."},
     {t:"Écrire à la première personne pour raconter son vécu", c:true, w:"Le « je » du témoignage est attendu dans un article d'expérience."},
@@ -524,6 +558,9 @@ const TASKS = [
   options:["Lettre formelle","Critique","Brochure"],
   answer:0,
   rationale:"Le destinataire est précis et hiérarchique — « la direction » — et le but est de convaincre une autorité. La lettre formelle impose le registre soutenu, une formule d'appel et de politesse, et une argumentation ordonnée. La critique évalue une œuvre ; la brochure informe un large public.",
+  optWhy:["","Une critique évalue une œuvre ou un produit ; ici il s'agit de convaincre une autorité de revenir sur une décision.","La brochure informe un large public ; elle ne s'adresse pas à un destinataire hiérarchique précis comme « la direction »."],
+  audience:{ q:"Qui est le destinataire de ce texte ?", options:["La direction de l'école","Les autres élèves","Les parents d'élèves"], answer:0, why:"La consigne dit « destiné à la direction » : un destinataire unique et hiérarchique." },
+  purpose:{ q:"Quel est le but principal ?", options:["Convaincre de renoncer à une décision et proposer une alternative","Informer d'un événement à venir","Remercier pour une décision prise"], answer:0, why:"Vous « n'êtes pas d'accord » et vous « proposez une autre solution » : le but est de persuader." },
   analysis:[
     {t:"Ouvrir par « Madame, Monsieur, »", c:true, w:"Formule d'appel attendue d'une lettre formelle adressée à une autorité."},
     {t:"Employer un registre soutenu et le vouvoiement", c:true, w:"Le destinataire hiérarchique impose ce registre."},
@@ -539,6 +576,9 @@ const TASKS = [
   options:["Courriel","Discours","Rapport"],
   answer:0,
   rationale:"Le texte s'adresse à une personne précise — le ou la nouvel·le élève — dans un but d'accueil et de conseil. Le courriel permet une adresse directe, un ton amical et personnalisé. Le discours suppose un auditoire ; le rapport est impersonnel et factuel, sans destinataire individuel.",
+  optWhy:["","Le discours suppose un auditoire ; or le texte s'adresse à une seule personne, le ou la nouvel·le élève.","Le rapport est impersonnel et factuel, sans destinataire individuel ni intention d'accueil chaleureux."],
+  audience:{ q:"Qui est le destinataire de ce texte ?", options:["Le ou la nouvel·le élève","Toute la classe réunie","L'administration de l'école"], answer:0, why:"Le texte s'adresse à une personne précise : « lui présenter », « lui donner des conseils »." },
+  purpose:{ q:"Quel est le but principal ?", options:["Accueillir et conseiller pour faciliter l'intégration","Évaluer le niveau du nouvel élève","Établir un règlement officiel"], answer:0, why:"Vous voulez « l'aider à se sentir à l'aise » : un but d'accueil et de conseil." },
   analysis:[
     {t:"Commencer par « Salut Camille, » et te présenter", c:true, w:"Adresse personnelle et registre amical adaptés au courriel."},
     {t:"Tutoyer le ou la destinataire", c:true, w:"Entre camarades du même âge, le tutoiement est attendu."},
@@ -554,6 +594,9 @@ const TASKS = [
   options:["Discours","Brochure","Blog"],
   answer:0,
   rationale:"La tâche précise que vous allez « prendre la parole » lors d'une « assemblée » devant un auditoire rassemblé. Le discours est conçu pour l'oral : apostrophe au public, rythme, répétitions, appel final. La brochure et le blog sont des textes écrits, lus individuellement.",
+  optWhy:["","La brochure est un écrit lu individuellement ; or la consigne précise que vous allez « prendre la parole » devant l'assemblée.","Le blog est un texte écrit et différé ; il ne rend pas la situation orale d'une prise de parole en assemblée."],
+  audience:{ q:"Qui est le destinataire de ce texte ?", options:["Vos camarades réuni·e·s en assemblée","Les lecteurs d'un site web","Le comité d'organisation"], answer:0, why:"Vous prenez la parole « lors d'une assemblée » : l'auditoire est rassemblé devant vous." },
+  purpose:{ q:"Quel est le but principal ?", options:["Sensibiliser et inciter à changer d'habitudes","Décrire un programme d'activités","Rendre compte de résultats chiffrés"], answer:0, why:"La consigne demande de « sensibiliser » et d'« inviter à changer » : un but de mobilisation." },
   analysis:[
     {t:"Ouvrir par « Chères et chers camarades, »", c:true, w:"Apostrophe orale typique du discours."},
     {t:"Poser des questions rhétoriques à l'auditoire", c:true, w:"Procédé oratoire qui capte l'attention de l'auditoire."},
@@ -569,6 +612,9 @@ const TASKS = [
   options:["Critique","Courriel","Article informatif"],
   answer:0,
   rationale:"Le verbe clé est « évaluer » : la tâche demande un jugement argumenté sur les repas et le service, avec points positifs et négatifs. La critique est précisément le type de texte qui porte une appréciation appuyée sur des exemples. Le courriel viserait un destinataire précis ; l'article informatif resterait neutre, sans jugement.",
+  optWhy:["","Le courriel viserait un destinataire précis ; or le texte est destiné au journal des élèves, un lectorat collectif.","L'article informatif reste neutre ; la consigne demande explicitement d'« évaluer », donc de porter un jugement."],
+  audience:{ q:"Qui est le destinataire de ce texte ?", options:["Les élèves, lecteurs du journal","Le personnel de la cantine","Le chef d'établissement"], answer:0, why:"Le « journal des élèves » publie le texte : il s'adresse à l'ensemble des élèves." },
+  purpose:{ q:"Quel est le but principal ?", options:["Évaluer en signalant points forts et points faibles","Informer sans prendre position","Demander un changement de menu"], answer:0, why:"Le verbe clé est « évaluer » : il faut porter un jugement argumenté, positif et négatif." },
   analysis:[
     {t:"Donner une appréciation nuancée appuyée sur des exemples précis", c:true, w:"C'est le cœur de la critique : juger en justifiant."},
     {t:"Rester strictement neutre et ne donner aucun avis", c:false, w:"La neutralité contredit la consigne « évaluer » et donner son avis."},
@@ -580,36 +626,105 @@ const TASKS = [
 }
 ];
 
-/* Chunks — locutions et connecteurs utiles à l'écrit IB */
+/* Chunks — locutions et connecteurs utiles à l'écrit IB.
+   `cat` regroupe les chunks par fonction : les distracteurs du jeu sont
+   tirés de la MÊME catégorie, pour forcer une vraie discrimination.
+   Les gloses sont rédigées pour rester distinctes au sein d'une catégorie. */
 const CHUNKS = [
-  {fr:"d'une part… d'autre part", en:"d'un côté… de l'autre"},
-  {fr:"en revanche", en:"au contraire, par opposition"},
-  {fr:"par conséquent", en:"c'est pourquoi, donc"},
-  {fr:"il est essentiel de", en:"il est indispensable de"},
-  {fr:"à mon avis", en:"selon moi, d'après moi"},
-  {fr:"je suis convaincu·e que", en:"je suis tout à fait certain·e que"},
-  {fr:"force est de constater que", en:"on est bien obligé de reconnaître que"},
-  {fr:"dans un premier temps", en:"pour commencer, d'abord"},
-  {fr:"en fin de compte", en:"finalement, tout bien réfléchi"},
-  {fr:"cela dit", en:"ceci étant, malgré ce qui précède"},
-  {fr:"au fur et à mesure", en:"progressivement, peu à peu"},
-  {fr:"de nos jours", en:"à notre époque, aujourd'hui"},
-  {fr:"il n'en reste pas moins que", en:"cela n'empêche pas que"},
-  {fr:"mettre en lumière", en:"faire ressortir, souligner"},
-  {fr:"prendre conscience de", en:"se rendre compte de"},
-  {fr:"tirer parti de", en:"profiter de, exploiter"},
-  {fr:"avoir tendance à", en:"avoir l'habitude de, pencher vers"},
-  {fr:"faire face à", en:"affronter, gérer une difficulté"},
-  {fr:"remettre en question", en:"contester, réexaminer"},
-  {fr:"dans la mesure où", en:"étant donné que, puisque"},
-  {fr:"quoi qu'il en soit", en:"en tout cas, de toute façon"},
-  {fr:"non seulement… mais aussi", en:"à la fois… et également"},
-  {fr:"afin de", en:"dans le but de, pour"},
-  {fr:"à cet égard", en:"sur ce point, à ce sujet"},
-  {fr:"en ce qui concerne", en:"pour ce qui est de, à propos de"},
-  {fr:"somme toute", en:"en résumé, tout compte fait"},
-  {fr:"il va sans dire que", en:"il est évident que"},
-  {fr:"au lieu de", en:"à la place de, plutôt que"}
+  /* opposition / concession */
+  {cat:"opposition", fr:"en revanche", en:"à l'inverse, en comparaison"},
+  {cat:"opposition", fr:"cela dit", en:"ceci admis, je nuance malgré tout"},
+  {cat:"opposition", fr:"néanmoins", en:"malgré ce qui vient d'être dit"},
+  {cat:"opposition", fr:"toutefois", en:"cependant, avec une réserve"},
+  {cat:"opposition", fr:"même si", en:"bien que, en admettant que"},
+  {cat:"opposition", fr:"il n'en reste pas moins que", en:"cela ne change rien au fait que"},
+  {cat:"opposition", fr:"quoi qu'il en soit", en:"peu importe, on revient à l'essentiel"},
+  {cat:"opposition", fr:"au lieu de", en:"à la place de, plutôt que"},
+  {cat:"opposition", fr:"or", en:"et voici l'élément qui fait basculer le raisonnement"},
+  {cat:"opposition", fr:"en dépit de", en:"sans se laisser arrêter par"},
+  {cat:"opposition", fr:"contrairement à", en:"à l'opposé de ce que fait autre chose"},
+  {cat:"opposition", fr:"certes… mais", en:"je l'admets, pourtant je maintiens mon point"},
+  {cat:"opposition", fr:"malgré tout", en:"quand même, en dépit de tous les obstacles"},
+  /* lien logique : cause, conséquence, condition, but */
+  {cat:"lien", fr:"par conséquent", en:"il en résulte donc que"},
+  {cat:"lien", fr:"c'est pourquoi", en:"voilà la raison de ce qui suit"},
+  {cat:"lien", fr:"dans la mesure où", en:"étant donné que, vu que"},
+  {cat:"lien", fr:"grâce à", en:"avec l'aide bénéfique de"},
+  {cat:"lien", fr:"en raison de", en:"à cause de, du fait de"},
+  {cat:"lien", fr:"afin de", en:"dans le but de, pour"},
+  {cat:"lien", fr:"donner lieu à", en:"déclencher, avoir pour conséquence"},
+  {cat:"lien", fr:"en effet", en:"et c'est confirmé par ce qui suit"},
+  {cat:"lien", fr:"à condition que", en:"uniquement si, à supposer que"},
+  {cat:"lien", fr:"ainsi", en:"de cette façon, ce qui aboutit à"},
+  {cat:"lien", fr:"de ce fait", en:"pour cette raison qui précède directement"},
+  {cat:"lien", fr:"à force de", en:"à cause d'une action répétée avec insistance"},
+  {cat:"lien", fr:"faute de", en:"par manque de, en l'absence de"},
+  {cat:"lien", fr:"de sorte que", en:"si bien que, avec pour résultat que"},
+  /* prise de position / opinion */
+  {cat:"opinion", fr:"à mon avis", en:"selon moi, personnellement"},
+  {cat:"opinion", fr:"je suis convaincu·e que", en:"je suis certain·e, sans aucun doute"},
+  {cat:"opinion", fr:"il me semble que", en:"j'ai l'impression, sans certitude"},
+  {cat:"opinion", fr:"il est vrai que", en:"je le reconnais, c'est exact"},
+  {cat:"opinion", fr:"force est de constater que", en:"on doit bien admettre, qu'on le veuille ou non"},
+  {cat:"opinion", fr:"il va sans dire que", en:"c'est évident, inutile de le préciser"},
+  {cat:"opinion", fr:"il est essentiel de", en:"il est indispensable, primordial de"},
+  {cat:"opinion", fr:"je dois avouer que", en:"je le confesse, même si c'est gênant"},
+  {cat:"opinion", fr:"on ne peut nier que", en:"il est impossible de contester que"},
+  {cat:"opinion", fr:"je doute que", en:"j'ai des réserves, je ne suis pas convaincu·e"},
+  {cat:"opinion", fr:"il est regrettable que", en:"c'est dommage, je le déplore"},
+  /* structuration / organisation du texte */
+  {cat:"structuration", fr:"d'une part… d'autre part", en:"premier point… second point"},
+  {cat:"structuration", fr:"dans un premier temps", en:"pour la première étape"},
+  {cat:"structuration", fr:"tout d'abord", en:"avant tout, pour ouvrir"},
+  {cat:"structuration", fr:"par ailleurs", en:"sur un autre aspect du sujet"},
+  {cat:"structuration", fr:"en outre", en:"et de plus, dans le même sens"},
+  {cat:"structuration", fr:"pour conclure", en:"pour terminer, en dernier lieu"},
+  {cat:"structuration", fr:"en fin de compte", en:"au final, après réflexion"},
+  {cat:"structuration", fr:"somme toute", en:"en résumé, tout bien pesé"},
+  {cat:"structuration", fr:"non seulement… mais aussi", en:"à la fois ceci et cela"},
+  {cat:"structuration", fr:"ensuite", en:"après cela, au moment suivant du texte"},
+  {cat:"structuration", fr:"enfin", en:"en tout dernier lieu, pour clore"},
+  {cat:"structuration", fr:"premièrement", en:"comme premier élément d'une énumération"},
+  {cat:"structuration", fr:"passons à", en:"abordons maintenant l'aspect suivant"},
+  /* temps et durée */
+  {cat:"temps", fr:"au fur et à mesure", en:"progressivement, étape par étape"},
+  {cat:"temps", fr:"de nos jours", en:"à notre époque, par rapport au passé"},
+  {cat:"temps", fr:"à l'heure actuelle", en:"pour l'instant, dans la situation présente"},
+  {cat:"temps", fr:"à long terme", en:"sur une longue durée, dans l'avenir"},
+  {cat:"temps", fr:"de plus en plus", en:"toujours davantage, de façon croissante"},
+  {cat:"temps", fr:"désormais", en:"à partir de maintenant, pour l'avenir"},
+  {cat:"temps", fr:"autrefois", en:"dans le passé lointain, jadis"},
+  {cat:"temps", fr:"dès que", en:"immédiatement au moment où"},
+  {cat:"temps", fr:"tant que", en:"aussi longtemps que dure une situation"},
+  {cat:"temps", fr:"tôt ou tard", en:"un jour ou l'autre, inévitablement"},
+  /* expressions verbales */
+  {cat:"verbe", fr:"mettre en lumière", en:"faire ressortir, rendre visible"},
+  {cat:"verbe", fr:"prendre conscience de", en:"réaliser, se rendre compte de"},
+  {cat:"verbe", fr:"tirer parti de", en:"exploiter à son avantage"},
+  {cat:"verbe", fr:"avoir tendance à", en:"être souvent porté à, pencher vers"},
+  {cat:"verbe", fr:"faire face à", en:"affronter, gérer une difficulté"},
+  {cat:"verbe", fr:"remettre en question", en:"contester, réexaminer le bien-fondé de"},
+  {cat:"verbe", fr:"jouer un rôle", en:"contribuer, avoir une influence"},
+  {cat:"verbe", fr:"mettre l'accent sur", en:"insister particulièrement sur"},
+  {cat:"verbe", fr:"tenir compte de", en:"prendre en considération"},
+  {cat:"verbe", fr:"avoir du mal à", en:"éprouver des difficultés à"},
+  {cat:"verbe", fr:"faire preuve de", en:"manifester, montrer une qualité"},
+  {cat:"verbe", fr:"aller de pair avec", en:"être indissociable de, accompagner"},
+  {cat:"verbe", fr:"valoir la peine", en:"mériter l'effort qu'on y consacre"},
+  {cat:"verbe", fr:"avoir recours à", en:"faire appel à comme solution"},
+  {cat:"verbe", fr:"porter sur", en:"avoir pour sujet, concerner"},
+  {cat:"verbe", fr:"mettre en œuvre", en:"appliquer concrètement, réaliser"},
+  {cat:"verbe", fr:"se traduire par", en:"se manifester concrètement sous la forme de"},
+  {cat:"verbe", fr:"découler de", en:"être la conséquence de, provenir de"},
+  /* cadrer le sujet */
+  {cat:"cadrage", fr:"à cet égard", en:"sur ce point précis qu'on vient d'évoquer"},
+  {cat:"cadrage", fr:"en ce qui concerne", en:"pour ce qui est de, au sujet de"},
+  {cat:"cadrage", fr:"en matière de", en:"dans le domaine de"},
+  {cat:"cadrage", fr:"il s'agit de", en:"le sujet en question est, il est question de"},
+  {cat:"cadrage", fr:"au cœur de", en:"au centre même de"},
+  {cat:"cadrage", fr:"quant à", en:"pour ce qui est de, en venant à"},
+  {cat:"cadrage", fr:"du point de vue de", en:"si l'on adopte l'angle de"},
+  {cat:"cadrage", fr:"sur le plan de", en:"dans le domaine précis de"}
 ];
 
 /* ===================== UTILITAIRES ===================== */
@@ -631,6 +746,16 @@ refreshHomeScores();
 /* ===================== SOLO — ANALYSE DE LA TÂCHE ===================== */
 let quiz=null;
 
+/* Mode guidé : insère deux micro-étapes (destinataire, but) avant chaque
+   question « quel type de texte ? ». Préférence mémorisée localement. */
+let GUIDED = store.get('ib_guided')===true;
+function toggleGuided(){
+  GUIDED=!GUIDED;
+  store.set('ib_guided',GUIDED);
+  document.getElementById('guideToggle').classList.toggle('on',GUIDED);
+}
+document.getElementById('guideToggle').classList.toggle('on',GUIDED);
+
 function buildQuestionPool(){
   const pool=[];
   TASKS.forEach((task,ti)=>{
@@ -641,11 +766,52 @@ function buildQuestionPool(){
 }
 function startSolo(){
   const pool=buildQuestionPool();
-  const choix=shuffle(pool.filter(q=>q.type==='choix')).slice(0,5);
-  const coh=shuffle(pool.filter(q=>q.type==='coherence')).slice(0,7);
-  quiz={ list:shuffle(choix.concat(coh)), i:0, score:0, streak:0, bestStreak:0, correct:0, log:[], answered:false, timer:null };
+  let list;
+  if(GUIDED){
+    // chaque tâche « choix » devient un bloc ordonné : destinataire → but → type de texte
+    const choix=shuffle(pool.filter(q=>q.type==='choix')).slice(0,4);
+    const coh=shuffle(pool.filter(q=>q.type==='coherence')).slice(0,6);
+    const blocks=choix.map(c=>[
+      {type:'audience',ti:c.ti},{type:'purpose',ti:c.ti},{type:'choix',ti:c.ti}
+    ]);
+    const cohBlocks=coh.map(c=>[c]);
+    list=shuffle(blocks.concat(cohBlocks)).flat();
+  } else {
+    const choix=shuffle(pool.filter(q=>q.type==='choix')).slice(0,5);
+    const coh=shuffle(pool.filter(q=>q.type==='coherence')).slice(0,7);
+    list=shuffle(choix.concat(coh));
+  }
+  quiz={ list, i:0, score:0, streak:0, bestStreak:0, correct:0, log:[], answered:false, timer:null, review:false };
   go('quiz');
   renderQuestion();
+}
+function startSoloReview(qs){
+  quiz={ list:shuffle(qs.slice()), i:0, score:0, streak:0, bestStreak:0, correct:0, log:[], answered:false, timer:null, review:true };
+  go('quiz');
+  renderQuestion();
+}
+/* métadonnées communes aux trois questions à choix : type de texte, destinataire, but */
+function mcqMeta(q){
+  const task=TASKS[q.ti];
+  if(q.type==='audience') return {
+    kindLabel:"Étape 1 · le destinataire", kindClass:"ana", themeLabel:task.theme,
+    ask:task.audience.q, options:task.audience.options, answer:task.audience.answer,
+    why:task.audience.why, optWhy:null,
+    logLabel:task.theme+" — destinataire", rightWord:"Destinataire", secs:18
+  };
+  if(q.type==='purpose') return {
+    kindLabel:"Étape 2 · le but", kindClass:"ana", themeLabel:task.theme,
+    ask:task.purpose.q, options:task.purpose.options, answer:task.purpose.answer,
+    why:task.purpose.why, optWhy:null,
+    logLabel:task.theme+" — but du texte", rightWord:"But", secs:18
+  };
+  return {
+    kindLabel:"Quel type de texte ?", kindClass:"", themeLabel:task.theme,
+    ask:"Quel type de texte répond le mieux à cette consigne ?",
+    options:task.options, answer:task.answer,
+    why:task.rationale, optWhy:task.optWhy,
+    logLabel:task.theme+" — choix du type de texte", rightWord:"Type de texte", secs:25
+  };
 }
 function renderQuestion(){
   clearInterval(quiz.timer);
@@ -660,17 +826,7 @@ function renderQuestion(){
   document.getElementById('qNextRow').classList.add('hidden');
   const body=document.getElementById('qBody');
 
-  if(q.type==='choix'){
-    const opts=task.options.map((o,idx)=>
-      `<button class="opt" data-idx="${idx}" onclick="answerChoix(${idx})">
-         <span class="key">${'ABC'[idx]}</span><span>${o}</span><span class="mark"></span>
-       </button>`).join('');
-    body.innerHTML=`
-      <div class="qkind">Quel type de texte ?</div>
-      <div class="promptbox"><span class="theme">${task.theme}</span>${task.prompt}</div>
-      <div class="qask">Quel type de texte répond le mieux à cette consigne ?</div>
-      <div class="opts">${opts}</div>`;
-  } else {
+  if(q.type==='coherence'){
     const a=task.analysis[q.ai];
     body.innerHTML=`
       <div class="qkind coh">Cohérent ou incohérent ?</div>
@@ -681,8 +837,24 @@ function renderQuestion(){
         <button class="opt binary" data-v="1" onclick="answerCoh(true)"><span class="key"></span><span>Cohérent</span></button>
         <button class="opt binary" data-v="0" onclick="answerCoh(false)"><span class="key"></span><span>Incohérent</span></button>
       </div>`;
+    startTimer(18);
+    return;
   }
-  startTimer(q.type==='choix'?25:18);
+  // questions à choix : type de texte / destinataire / but
+  const m=mcqMeta(q);
+  const opts=m.options.map((o,idx)=>
+    `<button class="opt" data-idx="${idx}" onclick="answerMcq(${idx})">
+       <span class="key">${'ABC'[idx]}</span><span>${o}</span><span class="mark"></span>
+     </button>`).join('');
+  const stepHint=(q.type==='audience'||q.type==='purpose')
+    ? `<p class="ctx">Mode guidé — repérez ceci <b>avant</b> de choisir le type de texte.</p>` : '';
+  body.innerHTML=`
+    <div class="qkind ${m.kindClass}">${m.kindLabel}</div>
+    <div class="promptbox"><span class="theme">${m.themeLabel}</span>${task.prompt}</div>
+    ${stepHint}
+    <div class="qask">${m.ask}</div>
+    <div class="opts">${opts}</div>`;
+  startTimer(m.secs);
 }
 function startTimer(secs){
   const bar=document.getElementById('qTimer');
@@ -703,24 +875,34 @@ function startTimer(secs){
 }
 function timeUp(){
   const q=quiz.list[quiz.i];
-  if(q.type==='choix') resolveChoix(-1);
-  else resolveCoh(null);
+  if(q.type==='coherence') resolveCoh(null);
+  else resolveMcq(-1);
 }
-function answerChoix(idx){ if(quiz.answered)return; resolveChoix(idx); }
-function resolveChoix(idx){
+function answerMcq(idx){ if(quiz.answered)return; resolveMcq(idx); }
+function resolveMcq(idx){
   quiz.answered=true; clearInterval(quiz.timer);
-  const q=quiz.list[quiz.i], task=TASKS[q.ti], correctIdx=task.answer;
-  const correct = idx===correctIdx;
+  const q=quiz.list[quiz.i], m=mcqMeta(q);
+  const correct = idx===m.answer;
   document.querySelectorAll('#qBody .opt').forEach(b=>{
     b.disabled=true;
     const bi=+b.dataset.idx;
-    if(bi===correctIdx){b.classList.add('correct');b.querySelector('.mark').textContent='✓ bon choix';}
+    if(bi===m.answer){b.classList.add('correct');b.querySelector('.mark').textContent='✓ bonne réponse';}
     if(bi===idx&&!correct){b.classList.add('wrong');b.querySelector('.mark').textContent='✗ votre réponse';}
   });
-  finishQuestion(correct, task.rationale,
-    correct?`Le bon type de texte est « ${task.options[correctIdx]} ».`
-            :`Le bon type de texte était « ${task.options[correctIdx]} ».`,
-    `${task.theme} — choix du type de texte`);
+  // feedback par distracteur (questions « type de texte » uniquement)
+  let extra='';
+  if(m.optWhy){
+    const notes=m.options.map((o,oi)=>{
+      if(oi===m.answer) return '';
+      const picked = oi===idx ? ' picked' : '';
+      return `<div class="optnote${picked}"><b>${o}</b> — ${m.optWhy[oi]}</div>`;
+    }).filter(Boolean).join('');
+    if(notes) extra=`<div class="optnotes">${notes}</div>`;
+  }
+  const verdict = correct
+    ? `${m.rightWord} : « ${m.options[m.answer]} ».`
+    : `${m.rightWord} attendu : « ${m.options[m.answer]} ».`;
+  finishQuestion(correct, m.why, verdict, m.logLabel, extra);
 }
 function answerCoh(val){ if(quiz.answered)return; resolveCoh(val); }
 function resolveCoh(val){
@@ -735,9 +917,10 @@ function resolveCoh(val){
   });
   finishQuestion(correct, a.w,
     `C'est ${a.c?'cohérent':'incohérent'} avec cette tâche.`,
-    `${TASKS[q.ti].theme} — ${a.t}`);
+    `${TASKS[q.ti].theme} — ${a.t}`, '');
 }
-function finishQuestion(correct, why, verdictLine, logLabel){
+function finishQuestion(correct, why, verdictLine, logLabel, extra){
+  extra=extra||'';
   let gain=0;
   if(correct){
     const base=100;
@@ -756,8 +939,8 @@ function finishQuestion(correct, why, verdictLine, logLabel){
   fb.className='feedback show '+(correct?'ok':'no');
   fb.innerHTML=`${correct?`<span class="gain">+${gain}</span>`:''}
     <div class="verdict">${correct?'Exact.':'Pas tout à fait.'} ${verdictLine}</div>
-    <div class="why">${why}</div>`;
-  quiz.log.push({label:logLabel, correct, why});
+    <div class="why">${why}</div>${extra}`;
+  quiz.log.push({label:logLabel, correct, why, q:quiz.list[quiz.i]});
   document.getElementById('qNextRow').classList.remove('hidden');
   document.getElementById('qNextBtn').textContent = quiz.i>=quiz.list.length-1 ? 'Voir le résultat →' : 'Suivant →';
 }
@@ -769,14 +952,15 @@ function nextQuestion(){
 function endSolo(){
   clearInterval(quiz.timer);
   const total=quiz.list.length;
-  const acc=Math.round(quiz.correct/total*100);
+  const acc=total?Math.round(quiz.correct/total*100):0;
   const prevBest=store.get('ib_best_analyse')||0;
   const prevStreak=store.get('ib_best_streak')||0;
-  const isBest=quiz.score>prevBest;
+  // un tour de révision ne met pas à jour le meilleur score
+  const isBest = !quiz.review && quiz.score>prevBest;
   if(isBest) store.set('ib_best_analyse',quiz.score);
   if(quiz.bestStreak>prevStreak) store.set('ib_best_streak',quiz.bestStreak);
 
-  document.getElementById('rKicker').textContent='Analyse de la tâche — terminée';
+  document.getElementById('rKicker').textContent = quiz.review ? 'Analyse — révision des erreurs' : 'Analyse de la tâche — terminée';
   document.getElementById('rScore').textContent=quiz.score;
   document.getElementById('rAcc').textContent=acc+'%';
   document.getElementById('rCorrect').textContent=quiz.correct+'/'+total;
@@ -789,19 +973,30 @@ function endSolo(){
     rev.innerHTML='<h3>À revoir</h3>'+wrong.map(l=>
       `<div class="revitem"><div class="rq">${l.label}</div><div class="ra">${l.why}</div></div>`).join('');
   } else {
-    rev.innerHTML='<h3>Sans faute</h3><div class="revitem ok"><div class="ra">Toutes les tâches analysées correctement. Le repérage destinataire / but / registre est solide.</div></div>';
+    rev.innerHTML='<h3>Sans faute</h3><div class="revitem ok"><div class="ra">'+
+      (quiz.review?'Erreurs corrigées — ces tâches sont maîtrisées.':'Toutes les tâches analysées correctement. Le repérage destinataire / but / registre est solide.')+'</div></div>';
   }
   document.getElementById('rAgain').textContent='Rejouer';
   document.getElementById('rAgain').onclick=startSolo;
+  const reBtn=document.getElementById('rReplayMistakes');
+  if(wrong.length){
+    const missedQs=wrong.map(l=>l.q);
+    reBtn.style.display='';
+    reBtn.textContent='Rejouer mes erreurs ('+wrong.length+')';
+    reBtn.onclick=()=>startSoloReview(missedQs);
+  } else {
+    reBtn.style.display='none';
+  }
   go('results');
   refreshHomeScores();
 }
 
 /* ===================== SOLO — CHUNKS (drops) ===================== */
 let chunks=null;
-function startChunks(){
-  chunks={ deck:shuffle(CHUNKS), pos:0, score:0, streak:0, bestStreak:0, correct:0, attempts:0,
-           timeLeft:60, timer:null, answered:false, log:[] };
+function runChunks(deckSource, isReview){
+  chunks={ deck:shuffle(deckSource), reviewSet:isReview?deckSource.slice():null,
+           pos:0, score:0, streak:0, bestStreak:0, correct:0, attempts:0,
+           timeLeft:60, timer:null, answered:false, log:[], review:!!isReview };
   go('chunks');
   document.getElementById('cScore').textContent='0';
   document.getElementById('cStreak').textContent='0';
@@ -817,11 +1012,19 @@ function startChunks(){
   },1000);
   nextChunk();
 }
+function startChunks(){ runChunks(CHUNKS, false); }
+function startChunksReview(items){ runChunks(items, true); }
 function nextChunk(){
-  if(chunks.pos>=chunks.deck.length) chunks.deck=shuffle(CHUNKS).concat(chunks.deck), chunks.pos=0;
+  if(chunks.pos>=chunks.deck.length){
+    chunks.deck=shuffle(chunks.reviewSet||CHUNKS).concat(chunks.deck);
+    chunks.pos=0;
+  }
   chunks.answered=false;
   const item=chunks.deck[chunks.pos];
-  const distractors=shuffle(CHUNKS.filter(c=>c.fr!==item.fr)).slice(0,2).map(c=>c.en);
+  // distracteurs tirés de la MÊME catégorie : il faut vraiment discriminer
+  let pool=CHUNKS.filter(c=>c.cat===item.cat && c.fr!==item.fr);
+  if(pool.length<2) pool=CHUNKS.filter(c=>c.fr!==item.fr); // filet de sécurité
+  const distractors=shuffle(pool).slice(0,2).map(c=>c.en);
   const opts=shuffle([item.en,...distractors]);
   document.getElementById('cWord').textContent=item.fr;
   // re-trigger drop animation
@@ -860,12 +1063,12 @@ function endChunks(){
   clearInterval(chunks.timer);
   const acc=chunks.attempts?Math.round(chunks.correct/chunks.attempts*100):0;
   const prev=store.get('ib_best_chunks')||0;
-  const isBest=chunks.score>prev;
+  const isBest = !chunks.review && chunks.score>prev;
   if(isBest) store.set('ib_best_chunks',chunks.score);
   const prevStreak=store.get('ib_best_streak')||0;
   if(chunks.bestStreak>prevStreak) store.set('ib_best_streak',chunks.bestStreak);
 
-  document.getElementById('rKicker').textContent='Chunks — révision éclair';
+  document.getElementById('rKicker').textContent = chunks.review ? 'Chunks — révision des erreurs' : 'Chunks — révision éclair';
   document.getElementById('rScore').textContent=chunks.score;
   document.getElementById('rAcc').textContent=acc+'%';
   document.getElementById('rCorrect').textContent=chunks.correct;
@@ -882,6 +1085,14 @@ function endChunks(){
   }
   document.getElementById('rAgain').textContent='Rejouer';
   document.getElementById('rAgain').onclick=startChunks;
+  const reBtn=document.getElementById('rReplayMistakes');
+  if(missed.length){
+    reBtn.style.display='';
+    reBtn.textContent='Rejouer mes erreurs ('+missed.length+')';
+    reBtn.onclick=()=>startChunksReview(missed);
+  } else {
+    reBtn.style.display='none';
+  }
   go('results');
   refreshHomeScores();
 }
@@ -924,7 +1135,7 @@ function mpBuildQuestions(n){
   // Mélange : un tiers de "choix de type de texte", reste en cohérence
   const pool=[];
   TASKS.forEach((task,ti)=>{
-    pool.push({kind:'choix',theme:task.theme,prompt:task.prompt,options:task.options,answer:task.answer,rationale:task.rationale});
+    pool.push({kind:'choix',theme:task.theme,prompt:task.prompt,options:task.options,answer:task.answer,rationale:task.rationale,optWhy:task.optWhy});
     task.analysis.forEach(a=>pool.push({kind:'coherence',theme:task.theme,prompt:task.prompt,
       textType:task.options[task.answer],statement:a.t,coherent:a.c,why:a.w}));
   });
@@ -1223,6 +1434,17 @@ function revealMpQuestion(qi,q){
   }
   // feedback / explanation
   const fbEl=document.getElementById('mpFeedback');
+  // notes par distracteur (questions « type de texte »)
+  let mpExtra='';
+  if(q.kind==='choix' && q.optWhy){
+    const pickedIdx = (mp.role==='player' && answers[mp.pid]) ? answers[mp.pid].choice : null;
+    const notes=q.options.map((o,oi)=>{
+      if(oi===q.answer) return '';
+      const picked = oi===pickedIdx ? ' picked' : '';
+      return `<div class="optnote${picked}"><b>${o}</b> — ${q.optWhy[oi]}</div>`;
+    }).filter(Boolean).join('');
+    if(notes) mpExtra=`<div class="optnotes">${notes}</div>`;
+  }
   if(mp.role==='player'){
     const mine=answers[mp.pid];
     const correct=mine&&mine.correct;
@@ -1233,11 +1455,11 @@ function revealMpQuestion(qi,q){
       : `C'est ${q.coherent?'cohérent':'incohérent'} avec cette tâche.`;
     fbEl.innerHTML=`${correct?`<span class="gain">+${mine.points}</span>`:''}
       <div class="verdict">${correct?'Exact.':'Pas tout à fait.'} ${line}</div>
-      <div class="why">${why}</div>`;
+      <div class="why">${why}</div>${mpExtra}`;
   } else {
     fbEl.className='feedback show ok';
     const why = q.kind==='choix'? q.rationale : q.why;
-    fbEl.innerHTML=`<div class="verdict">Correction</div><div class="why">${why}</div>`;
+    fbEl.innerHTML=`<div class="verdict">Correction</div><div class="why">${why}</div>${mpExtra}`;
     document.getElementById('mpAnswerCount').classList.add('hidden');
   }
   // leaderboard
