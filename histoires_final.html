@@ -7468,8 +7468,9 @@ async function renderStudentView(shell, classCode) {
         hideTimer();
       }
       if (drawnForIdx !== data.currentIdx) {
+        drawnForIdx = data.currentIdx; // set BEFORE building so concurrent session updates don't rebuild & wipe in-progress canvas
         stage.innerHTML = '';
-        stage.appendChild(buildStudentCanvas(sessionId, pseudo, data.currentIdx, () => { drawnForIdx = data.currentIdx; }));
+        stage.appendChild(buildStudentCanvas(sessionId, pseudo, data.currentIdx, () => {}));
       }
     } else if (data.phase === 'voting' || data.phase === 'results') {
       if (data.phase === 'voting' && data.voteMode === 'spam' && data.voteSeconds > 0) {
@@ -7489,6 +7490,7 @@ async function renderStudentView(shell, classCode) {
         });
       }
       if (jammedForIdx !== data.currentIdx) {
+        jammedForIdx = data.currentIdx; // set BEFORE building (same fix as drawing)
         stage.innerHTML = '';
         stage.appendChild(renderStudentJam(stage, sessionId, pseudo, data.currentIdx, data, jamData));
       }
@@ -7499,6 +7501,7 @@ async function renderStudentView(shell, classCode) {
         });
       }
       if (droppedForIdx !== data.currentIdx) {
+        droppedForIdx = data.currentIdx; // set BEFORE building (same fix)
         stage.innerHTML = '';
         renderStudentDrops(stage, sessionId, pseudo, data.currentIdx, data);
       }
