@@ -1364,6 +1364,102 @@
   }
   .change-name-link:hover { color: var(--sage); }
 
+  /* ---------- Drops Review ---------- */
+  .drops-panel {
+    background: linear-gradient(180deg, #eef5ff 0%, #e3edff 100%);
+    border: 1px solid #c9d6f0;
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow-card);
+    text-align: center;
+  }
+  .drops-eyebrow {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #3d5db5;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .drops-score {
+    font-size: 1.05rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 14px;
+  }
+  .drops-score span { font-weight: 700; color: var(--text); margin: 0 4px; }
+  .drops-chunk {
+    font-family: var(--serif);
+    font-size: 2.2rem;
+    color: var(--text);
+    background: white;
+    padding: 24px 18px;
+    border-radius: var(--radius-md);
+    margin-bottom: 18px;
+    border: 2px solid #c9d6f0;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .drops-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .drops-option {
+    background: white;
+    border: 2px solid #c9d6f0;
+    color: var(--text);
+    border-radius: 10px;
+    padding: 14px 12px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: all 120ms;
+  }
+  .drops-option:hover:not(:disabled) {
+    background: #eef5ff;
+    border-color: #3d5db5;
+    color: #3d5db5;
+  }
+  .drops-option:disabled { cursor: not-allowed; }
+  .drops-option.correct {
+    background: var(--success);
+    color: white;
+    border-color: var(--success);
+    animation: pop 220ms ease-out;
+  }
+  .drops-option.wrong {
+    background: var(--error);
+    color: white;
+    border-color: var(--error);
+    animation: shake 220ms ease-out;
+  }
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+  @media (max-width: 600px) {
+    .drops-chunk { font-size: 1.6rem; padding: 18px 12px; }
+    .drops-options { grid-template-columns: 1fr; }
+  }
+
+  /* Lobby phase badge styling */
+  .game-phase-badge.lobby { background: var(--surface); color: var(--muted); border: 1px dashed var(--border-strong); }
+
   /* ---------- Drawing canvas ---------- */
   .drawing-prompt {
     background: var(--surface);
@@ -1855,6 +1951,12 @@ service cloud.firestore {
     }
     // Sentence Jam submissions (one per student per round, immutable)
     match /game_sessions/{sessionId}/jam_submissions/{submissionId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if false;
+    }
+    // Drops Review submissions (one per student per round, immutable)
+    match /game_sessions/{sessionId}/drops_submissions/{submissionId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null;
       allow update, delete: if false;
@@ -4785,6 +4887,270 @@ function scoreSentence(sentence) {
   return score;
 }
 
+// ============================================================
+// Drops Review — 20s vocabulary blitz. Hand-authored chunk
+// glosses with grammatical category tags so distractors stay
+// in the same category (verbs vs nouns vs prep phrases).
+// ============================================================
+const DROPS_CHUNKS = [
+  // Adeline
+  { fr: "a ouvert", en: "opened", cat: "verb_pc" },
+  { fr: "le placard", en: "the closet", cat: "noun_def" },
+  { fr: "de son prof", en: "of her teacher", cat: "prep_phrase" },
+  { fr: "a voyagé", en: "traveled", cat: "verb_pc" },
+  { fr: "dans le temps", en: "through time", cat: "prep_phrase" },
+  { fr: "est retournée", en: "returned", cat: "verb_pc" },
+  { fr: "au présent", en: "to the present", cat: "prep_phrase" },
+  { fr: "aimait beaucoup", en: "really liked", cat: "verb_imp" },
+  { fr: "jouer", en: "to play", cat: "verb_inf" },
+  { fr: "au basket", en: "basketball", cat: "noun_def" },
+  { fr: "était", en: "was", cat: "verb_imp" },
+  { fr: "l'inventeur", en: "the inventor", cat: "noun_def" },
+  { fr: "du basket", en: "of basketball", cat: "prep_phrase" },
+  { fr: "la star", en: "the star", cat: "noun_def" },
+  { fr: "de l'équipe", en: "of the team", cat: "prep_phrase" },
+  { fr: "tous les jours", en: "every day", cat: "time" },
+  { fr: "s'entraînait", en: "trained", cat: "verb_imp" },
+  { fr: "après l'école", en: "after school", cat: "prep_phrase" },
+  { fr: "son lycée", en: "her high school", cat: "noun_poss" },
+  // Lillian
+  { fr: "veut manger", en: "wants to eat", cat: "verb_present" },
+  { fr: "un steak parfait", en: "a perfect steak", cat: "noun_indef" },
+  { fr: "mi-saignant", en: "medium-rare", cat: "adj" },
+  { fr: "un jour", en: "one day", cat: "time" },
+  { fr: "va", en: "goes", cat: "verb_present" },
+  { fr: "chez sa grand-mère", en: "to her grandmother's", cat: "prep_phrase" },
+  { fr: "maintenant", en: "now", cat: "time" },
+  { fr: "sent", en: "smells", cat: "verb_present" },
+  { fr: "l'odeur", en: "the smell", cat: "noun_def" },
+  { fr: "d'un steak", en: "of a steak", cat: "prep_phrase" },
+  { fr: "commence", en: "begins", cat: "verb_present" },
+  { fr: "à chanter", en: "to sing", cat: "verb_inf" },
+  { fr: "une chanson", en: "a song", cat: "noun_indef" },
+  { fr: "douce", en: "gentle", cat: "adj" },
+  { fr: "le chef", en: "the chef", cat: "noun_def" },
+  { fr: "donne", en: "gives", cat: "verb_present" },
+  { fr: "une assiette", en: "a plate", cat: "noun_indef" },
+  { fr: "aime manger", en: "likes to eat", cat: "verb_present" },
+  // Chiens
+  { fr: "sont allés", en: "went", cat: "verb_pc" },
+  { fr: "dans le jardin", en: "into the garden", cat: "prep_phrase" },
+  { fr: "à minuit", en: "at midnight", cat: "prep_phrase" },
+  { fr: "est sortie", en: "went out", cat: "verb_pc" },
+  { fr: "rapidement", en: "quickly", cat: "adv" },
+  { fr: "sont montés", en: "climbed", cat: "verb_pc" },
+  { fr: "dans le vaisseau spatial", en: "into the spaceship", cat: "prep_phrase" },
+  { fr: "les extraterrestres", en: "the aliens", cat: "noun_def" },
+  { fr: "sont retournés", en: "returned", cat: "verb_pc" },
+  { fr: "à leur planète", en: "to their planet", cat: "prep_phrase" },
+  { fr: "a préparé", en: "prepared", cat: "verb_pc" },
+  { fr: "des arepas", en: "arepas", cat: "noun_indef" },
+  { fr: "ses chiens", en: "her dogs", cat: "noun_poss" },
+  { fr: "a vu", en: "saw", cat: "verb_pc" },
+  { fr: "soudain", en: "suddenly", cat: "time" },
+  { fr: "simples", en: "simple", cat: "adj" },
+  // Hampton
+  { fr: "chante", en: "sings", cat: "verb_present" },
+  { fr: "sur la grande scène", en: "on the big stage", cat: "prep_phrase" },
+  { fr: "voit", en: "sees", cat: "verb_present" },
+  { fr: "une asperge", en: "an asparagus", cat: "noun_indef" },
+  { fr: "jette", en: "throws", cat: "verb_present" },
+  { fr: "une carotte", en: "a carrot", cat: "noun_indef" },
+  { fr: "sur une asperge", en: "at an asparagus", cat: "prep_phrase" },
+  { fr: "tout le monde", en: "everyone", cat: "qty" },
+  { fr: "des légumes", en: "vegetables", cat: "noun_indef" },
+  { fr: "sourit", en: "smiles", cat: "verb_present" },
+  { fr: "et mange", en: "and eats", cat: "verb_present" },
+  { fr: "au Légumefest", en: "at the Vegfest", cat: "prep_phrase" },
+  { fr: "pour Hampton", en: "for Hampton", cat: "prep_phrase" },
+  { fr: "géante", en: "giant", cat: "adj" },
+  { fr: "danse", en: "dances", cat: "verb_present" },
+  { fr: "sur scène", en: "on stage", cat: "prep_phrase" },
+  // Rhys
+  { fr: "prend", en: "takes", cat: "verb_present" },
+  { fr: "les ingrédients", en: "the ingredients", cat: "noun_def" },
+  { fr: "du chocolat noir", en: "dark chocolate", cat: "noun_indef" },
+  { fr: "du beurre", en: "butter", cat: "noun_indef" },
+  { fr: "des œufs", en: "eggs", cat: "noun_indef" },
+  { fr: "du sucre", en: "sugar", cat: "noun_indef" },
+  { fr: "de la farine", en: "flour", cat: "noun_indef" },
+  { fr: "le chocolat", en: "the chocolate", cat: "noun_def" },
+  { fr: "coule", en: "flows", cat: "verb_present" },
+  { fr: "travaille", en: "works", cat: "verb_present" },
+  { fr: "les parents", en: "the parents", cat: "noun_def" },
+  { fr: "arrivent", en: "arrive", cat: "verb_present" },
+  { fr: "moins de chocolat", en: "less chocolate", cat: "qty" },
+  { fr: "la prochaine fois", en: "next time", cat: "time" },
+  { fr: "pendant deux heures", en: "for two hours", cat: "time" },
+  { fr: "commande", en: "orders", cat: "verb_present" },
+  // Marguerite
+  { fr: "dort", en: "sleeps", cat: "verb_present" },
+  { fr: "profondément", en: "deeply", cat: "adv" },
+  { fr: "dans son lit", en: "in her bed", cat: "prep_phrase" },
+  { fr: "conduit", en: "drives", cat: "verb_present" },
+  { fr: "très vite", en: "very fast", cat: "adv" },
+  { fr: "porte", en: "wears", cat: "verb_present" },
+  { fr: "une casquette", en: "a cap", cat: "noun_indef" },
+  { fr: "rose", en: "pink", cat: "adj" },
+  { fr: "finalement", en: "finally", cat: "time" },
+  { fr: "gagne", en: "wins", cat: "verb_present" },
+  { fr: "parfois", en: "sometimes", cat: "time" },
+  { fr: "les rêves", en: "dreams", cat: "noun_def" },
+  { fr: "deviennent", en: "become", cat: "verb_present" },
+  { fr: "réalité", en: "reality", cat: "noun" },
+  { fr: "une raquette", en: "a racket", cat: "noun_indef" },
+  { fr: "une balle", en: "a ball", cat: "noun_indef" },
+  { fr: "frappe", en: "hits", cat: "verb_present" },
+  // Rowan
+  { fr: "monte", en: "goes up", cat: "verb_present" },
+  { fr: "sur la scène", en: "on stage", cat: "prep_phrase" },
+  { fr: "et chante", en: "and sings", cat: "verb_present" },
+  { fr: "une pizza", en: "a pizza", cat: "noun_indef" },
+  { fr: "et mutante", en: "and mutant", cat: "adj" },
+  { fr: "entre", en: "enters", cat: "verb_present" },
+  { fr: "dans le stade", en: "into the stadium", cat: "prep_phrase" },
+  { fr: "la coiffeuse", en: "the hairstylist", cat: "noun_def" },
+  { fr: "lave", en: "washes", cat: "verb_present" },
+  { fr: "les cheveux", en: "the hair", cat: "noun_def" },
+  { fr: "avec un shampoing", en: "with shampoo", cat: "prep_phrase" },
+  { fr: "parfumé", en: "scented", cat: "adj" },
+  { fr: "est très contente", en: "is very happy", cat: "verb_present" },
+  { fr: "joue", en: "plays", cat: "verb_present" },
+  { fr: "au volleyball", en: "volleyball", cat: "prep_phrase" },
+  { fr: "sur la plage", en: "on the beach", cat: "prep_phrase" },
+  { fr: "ensemble", en: "together", cat: "adv" },
+  // Mateo
+  { fr: "le ballon", en: "the ball", cat: "noun_def" },
+  { fr: "brille", en: "shines", cat: "verb_present" },
+  { fr: "comme le soleil", en: "like the sun", cat: "prep_phrase" },
+  { fr: "plus chaud", en: "hotter", cat: "qty" },
+  { fr: "qu'un four", en: "than an oven", cat: "prep_phrase" },
+  { fr: "plus froid", en: "colder", cat: "qty" },
+  { fr: "que la neige", en: "than snow", cat: "prep_phrase" },
+  { fr: "court", en: "runs", cat: "verb_present" },
+  { fr: "vers le but", en: "toward the goal", cat: "prep_phrase" },
+  { fr: "ont gagné", en: "won", cat: "verb_pc" },
+  { fr: "le Super Défi", en: "the Super Challenge", cat: "noun_def" },
+  { fr: "shoote", en: "shoots", cat: "verb_present" },
+  { fr: "dans le but", en: "into the goal", cat: "prep_phrase" },
+  { fr: "très chaud", en: "very hot", cat: "adj" },
+  { fr: "très froid", en: "very cold", cat: "adj" },
+  { fr: "marque un but", en: "scores a goal", cat: "verb_present" },
+  // Elijah
+  { fr: "arrive", en: "arrives", cat: "verb_present" },
+  { fr: "à l'école", en: "at school", cat: "prep_phrase" },
+  { fr: "crie", en: "shouts", cat: "verb_present" },
+  { fr: "quelqu'un", en: "someone", cat: "noun" },
+  { fr: "a volé", en: "stole", cat: "verb_pc" },
+  { fr: "mon saumon", en: "my salmon", cat: "noun_poss" },
+  { fr: "aujourd'hui", en: "today", cat: "time" },
+  { fr: "a une tache", en: "has a stain", cat: "verb_present" },
+  { fr: "orange", en: "orange", cat: "adj" },
+  { fr: "sur sa chemise", en: "on his shirt", cat: "prep_phrase" },
+  { fr: "il y a", en: "there is", cat: "verb_present" },
+  { fr: "une ligne", en: "a line", cat: "noun_indef" },
+  { fr: "de grains de riz", en: "of rice grains", cat: "prep_phrase" },
+  { fr: "sur le sol", en: "on the floor", cat: "prep_phrase" },
+  { fr: "mange", en: "eats", cat: "verb_present" },
+  { fr: "du saumon", en: "salmon", cat: "noun_indef" },
+  { fr: "avec du riz", en: "with rice", cat: "prep_phrase" },
+  // Anna
+  { fr: "son chat", en: "her cat", cat: "noun_poss" },
+  { fr: "s'appelle", en: "is named", cat: "verb_present" },
+  { fr: "a pris", en: "took", cat: "verb_pc" },
+  { fr: "dans ses bras", en: "in her arms", cat: "prep_phrase" },
+  { fr: "la fille", en: "the girl", cat: "noun_def" },
+  { fr: "la peau", en: "the skin", cat: "noun_def" },
+  { fr: "verte", en: "green", cat: "adj" },
+  { fr: "ont marché", en: "walked", cat: "verb_pc" },
+  { fr: "a claqué", en: "clicked", cat: "verb_pc" },
+  { fr: "les talons", en: "the heels", cat: "noun_def" },
+  { fr: "un lion", en: "a lion", cat: "noun_indef" },
+  { fr: "le château", en: "the castle", cat: "noun_def" },
+  { fr: "un trône", en: "a throne", cat: "noun_indef" },
+  { fr: "a peur", en: "is afraid", cat: "verb_present" },
+  { fr: "rentre", en: "goes back", cat: "verb_present" },
+  { fr: "chez elle", en: "to her home", cat: "prep_phrase" },
+  // Henri
+  { fr: "au tournoi", en: "at the tournament", cat: "prep_phrase" },
+  { fr: "il a faim", en: "he is hungry", cat: "verb_present" },
+  { fr: "prend son club", en: "takes his club", cat: "verb_present" },
+  { fr: "ses yeux", en: "his eyes", cat: "noun_poss" },
+  { fr: "brillent", en: "shine", cat: "verb_present" },
+  { fr: "avec une lumière bleue", en: "with a blue light", cat: "prep_phrase" },
+  { fr: "les arroseurs", en: "the sprinklers", cat: "noun_def" },
+  { fr: "s'activent", en: "turn on", cat: "verb_present" },
+  { fr: "de l'eau", en: "water", cat: "noun_indef" },
+  { fr: "partout", en: "everywhere", cat: "adv" },
+  { fr: "est trempé", en: "is soaked", cat: "verb_present" },
+  { fr: "mais il sourit", en: "but he smiles", cat: "verb_present" },
+  { fr: "Pas de problème", en: "No problem", cat: "excl" },
+  { fr: "ses cheveux", en: "his hair", cat: "noun_poss" },
+  { fr: "mouillés", en: "wet", cat: "adj" },
+  { fr: "le golf", en: "golf", cat: "noun_def" },
+  { fr: "très calme", en: "very calm", cat: "adj" },
+  // Maggie
+  { fr: "le public", en: "the audience", cat: "noun_def" },
+  { fr: "est énorme", en: "is huge", cat: "verb_present" },
+  { fr: "son cerveau", en: "her brain", cat: "noun_poss" },
+  { fr: "est vide", en: "is empty", cat: "verb_present" },
+  { fr: "appuie", en: "presses", cat: "verb_present" },
+  { fr: "sur le bouton rouge", en: "on the red button", cat: "prep_phrase" },
+  { fr: "dans sa poche", en: "in her pocket", cat: "prep_phrase" },
+  { fr: "elle trouve", en: "she finds", cat: "verb_present" },
+  { fr: "un petit papier", en: "a small paper", cat: "noun_indef" },
+  { fr: "fait des erreurs", en: "makes mistakes", cat: "verb_present" },
+  { fr: "ce n'est pas", en: "it's not", cat: "verb_present" },
+  { fr: "la fin du monde", en: "the end of the world", cat: "noun_def" },
+  { fr: "rit doucement", en: "laughs softly", cat: "verb_present" },
+  { fr: "littéralement", en: "literally", cat: "adv" },
+  { fr: "dans les coulisses", en: "backstage", cat: "prep_phrase" },
+  { fr: "elle sourit", en: "she smiles", cat: "verb_present" },
+  { fr: "oublie", en: "forgets", cat: "verb_present" },
+  { fr: "sa réplique", en: "her line", cat: "noun_poss" },
+  // Kate
+  { fr: "adore", en: "loves", cat: "verb_present" },
+  { fr: "le foot", en: "soccer", cat: "noun_def" },
+  { fr: "est tombé", en: "fell", cat: "verb_pc" },
+  { fr: "dans l'eau", en: "into the water", cat: "prep_phrase" },
+  { fr: "le bébé", en: "the baby", cat: "noun_def" },
+  { fr: "doucement", en: "gently", cat: "adv" },
+  { fr: "six mois", en: "six months", cat: "time" },
+  { fr: "ont passé", en: "passed", cat: "verb_pc" },
+  { fr: "a dribblé", en: "dribbled", cat: "verb_pc" },
+  { fr: "entre eux", en: "between them", cat: "prep_phrase" },
+  { fr: "a shooté", en: "shot", cat: "verb_pc" },
+  { fr: "ses parents", en: "her parents", cat: "noun_poss" },
+  { fr: "très fiers", en: "very proud", cat: "adj" },
+  { fr: "court vite", en: "runs fast", cat: "verb_present" },
+  { fr: "gagne le match", en: "wins the match", cat: "verb_present" },
+];
+
+// Dedupe by French chunk
+const DROPS_BY_FR = new Map();
+DROPS_CHUNKS.forEach(c => { if (!DROPS_BY_FR.has(c.fr)) DROPS_BY_FR.set(c.fr, c); });
+const DROPS_POOL = Array.from(DROPS_BY_FR.values());
+
+// Pick a chunk + 3 distractors. Distractors prefer same grammatical category.
+function pickDropsRound(excludeFr) {
+  let candidates = DROPS_POOL;
+  if (excludeFr) candidates = DROPS_POOL.filter(c => c.fr !== excludeFr);
+  const chunk = candidates[Math.floor(Math.random() * candidates.length)];
+  const sameCat = DROPS_POOL.filter(c => c.cat === chunk.cat && c.en !== chunk.en);
+  const distractors = [];
+  while (distractors.length < 3 && sameCat.length > 0) {
+    const idx = Math.floor(Math.random() * sameCat.length);
+    const cand = sameCat.splice(idx, 1)[0];
+    if (!distractors.find(d => d.en === cand.en)) distractors.push(cand);
+  }
+  // Pad with random chunks if same-category pool wasn't enough
+  while (distractors.length < 3) {
+    const cand = DROPS_POOL[Math.floor(Math.random() * DROPS_POOL.length)];
+    if (cand.en !== chunk.en && !distractors.find(d => d.en === cand.en)) distractors.push(cand);
+  }
+  return { chunk, options: shuffleArray([chunk, ...distractors]) };
+}
+
 function shuffleArray(arr) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -6024,10 +6390,12 @@ let gameSessionUnsub = null;
 let gameDrawingsUnsub = null;
 let gameVotesUnsub = null;
 let gameJamUnsub = null;
+let gameDropsUnsub = null;
 let gameSession = null;
 let gameDrawings = [];
 let gameVotes = [];
 let gameJamSubmissions = [];
+let gameDropsSubmissions = [];
 
 async function bootGameMode(route) {
   // Hide the regular app shell
@@ -6150,10 +6518,11 @@ async function renderTeacherView(shell, classCode) {
           </select>
         </label>
         <label style="display:flex; flex-direction:column; gap:4px; font-size:0.85rem; color:var(--muted)">
-          Sentence Jam ⚡
-          <select id="jam-enabled" style="padding:8px 12px; border-radius:6px; border:1px solid var(--border-strong); font-size:0.95rem; color:var(--text)">
-            <option value="1" selected>Activé (30s après résultats)</option>
-            <option value="0">Désactivé</option>
+          Bonus après chaque manche
+          <select id="bonus-type" style="padding:8px 12px; border-radius:6px; border:1px solid var(--border-strong); font-size:0.95rem; color:var(--text)">
+            <option value="jam" selected>Sentence Jam ⚡</option>
+            <option value="drops">Drops Review 🔁</option>
+            <option value="none">Aucun</option>
           </select>
         </label>
       </div>
@@ -6166,10 +6535,11 @@ async function renderTeacherView(shell, classCode) {
       </div>
       <div class="game-controls">
         <button class="btn btn-primary" id="btn-start">Lancer le jeu</button>
+        <button class="btn btn-primary" id="btn-begin-first" disabled style="display:none">Commencer la première phrase</button>
         <button class="btn btn-secondary" id="btn-next" disabled>Phrase suivante</button>
         <button class="btn btn-secondary" id="btn-vote" disabled>Ouvrir le vote</button>
         <button class="btn btn-secondary" id="btn-results" disabled>Voir les résultats</button>
-        <button class="btn btn-secondary" id="btn-jam" disabled style="background:#d4a574; color:white; border-color:#d4a574">⚡ Lancer Sentence Jam</button>
+        <button class="btn btn-secondary" id="btn-jam" disabled style="background:#d4a574; color:white; border-color:#d4a574">⚡ Lancer le bonus</button>
         <button class="btn btn-secondary" id="btn-add-story" disabled>+ Ajouter une histoire</button>
         <button class="btn btn-secondary" id="btn-mode-toggle">👁 Phrase visible</button>
         <button class="btn btn-ghost" id="btn-end" disabled>Fin du jeu</button>
@@ -6307,16 +6677,16 @@ async function renderTeacherView(shell, classCode) {
 
   jamBtn.addEventListener('click', async () => {
     if (!sessionId || !gameSession) return;
-    if (!findJamData(gameSession.sentences[gameSession.currentIdx])) {
-      alert("Pas de données Sentence Jam pour cette phrase.");
-      return;
-    }
+    const btype = gameSession.bonusType || 'jam';
+    if (btype === 'none') return;
     if (pendingJamTimeout) { clearTimeout(pendingJamTimeout); pendingJamTimeout = null; }
-    await fs.updateDoc(fs.doc(firestore, `game_sessions/${sessionId}`), {
-      phase: 'jam',
-      jamStartedAt: fs.serverTimestamp(),
+    const updates = {
+      phase: btype, // 'jam' or 'drops'
       updatedAt: fs.serverTimestamp()
-    });
+    };
+    if (btype === 'jam') updates.jamStartedAt = fs.serverTimestamp();
+    if (btype === 'drops') updates.dropsStartedAt = fs.serverTimestamp();
+    await fs.updateDoc(fs.doc(firestore, `game_sessions/${sessionId}`), updates);
     jamBtn.disabled = true;
   });
 
@@ -6511,23 +6881,26 @@ async function renderTeacherView(shell, classCode) {
     const drawingSeconds = parseInt(shell.querySelector('#draw-seconds').value, 10) || 0;
     const voteMode = shell.querySelector('#vote-mode').value || 'top3';
     const voteSeconds = voteMode === 'spam' ? 20 : 0;
-    const jamEnabled = shell.querySelector('#jam-enabled').value === '1';
+    const bonusType = shell.querySelector('#bonus-type').value || 'jam';
     const jamSeconds = 30;
+    const dropsSeconds = 20;
     const docRef = fs.doc(firestore, `game_sessions/${sessionId}`);
     await fs.setDoc(docRef, {
       classCode,
       sentences: selectedSentences,
       currentIdx: 0,
-      phase: 'drawing',
+      phase: 'lobby',
       drawingSeconds,
       voteMode,
       voteSeconds,
-      jamEnabled,
+      bonusType,
       jamSeconds,
+      dropsSeconds,
       sentenceVisible: shell.querySelector('#btn-mode-toggle').dataset.mode !== 'listen',
-      roundStartedAt: fs.serverTimestamp(),
+      roundStartedAt: null,
       voteStartedAt: null,
       jamStartedAt: null,
+      dropsStartedAt: null,
       createdAt: fs.serverTimestamp(),
       updatedAt: fs.serverTimestamp()
     });
@@ -6535,22 +6908,38 @@ async function renderTeacherView(shell, classCode) {
     // Lock settings once the game is running
     shell.querySelector('#draw-seconds').disabled = true;
     shell.querySelector('#vote-mode').disabled = true;
-    shell.querySelector('#jam-enabled').disabled = true;
+    shell.querySelector('#bonus-type').disabled = true;
+    // Show "Commencer" button so teacher controls when round 1 actually starts
+    beginFirstBtn.style.display = '';
+    beginFirstBtn.disabled = false;
     // Fire-and-forget: pre-translate all auto-generated jam sentences so English
     // is in cache by the time students reach the jam phase
     selectedSentences.forEach(s => {
       const handAuthored = JAM_SENTENCES.find(j => j.fr === s || s.includes(j.fr) || j.fr.includes(s));
       if (!handAuthored) translateFrToEn(s);
     });
-    nextBtn.disabled = false;
-    voteBtn.disabled = false;
     endBtn.disabled = false;
     addStoryBtn.disabled = false;
-    phaseBadge.textContent = 'Phase : dessin';
-    phaseBadge.className = 'game-phase-badge drawing';
+    phaseBadge.textContent = 'Phase : lobby — élèves rejoignent';
+    phaseBadge.className = 'game-phase-badge lobby';
     currentSentenceEl.textContent = selectedSentences[0];
     studentLinkEl.textContent = studentURL(classCode, sessionId);
     listenSession(sessionId);
+  });
+
+  // Begin first round — transitions from lobby to drawing with a fresh timer
+  const beginFirstBtn = shell.querySelector('#btn-begin-first');
+  beginFirstBtn.addEventListener('click', async () => {
+    if (!sessionId) return;
+    await fs.updateDoc(fs.doc(firestore, `game_sessions/${sessionId}`), {
+      phase: 'drawing',
+      roundStartedAt: fs.serverTimestamp(),
+      updatedAt: fs.serverTimestamp()
+    });
+    beginFirstBtn.disabled = true;
+    beginFirstBtn.style.display = 'none';
+    nextBtn.disabled = false;
+    voteBtn.disabled = false;
   });
 
   async function listenSession(sid) {
@@ -6558,31 +6947,40 @@ async function renderTeacherView(shell, classCode) {
     if (gameDrawingsUnsub) gameDrawingsUnsub();
     if (gameVotesUnsub) gameVotesUnsub();
     if (gameJamUnsub) gameJamUnsub();
+    if (gameDropsUnsub) gameDropsUnsub();
     gameSessionUnsub = fs.onSnapshot(fs.doc(firestore, `game_sessions/${sid}`), snap => {
       const data = snap.data();
       if (!data) return;
       gameSession = data;
       currentSentenceEl.textContent = data.sentences[data.currentIdx] || '—';
       shell.querySelector('#stat-idx').textContent = `${data.currentIdx + 1} / ${data.sentences.length}`;
-      const phaseLabel = data.phase === 'drawing' ? 'dessin' : data.phase === 'voting' ? 'vote' : data.phase === 'jam' ? 'sentence jam ⚡' : data.phase === 'results' ? 'résultats' : 'terminé';
+      const phaseLabel = data.phase === 'lobby' ? 'lobby — élèves rejoignent'
+        : data.phase === 'drawing' ? 'dessin'
+        : data.phase === 'voting' ? 'vote'
+        : data.phase === 'jam' ? 'sentence jam ⚡'
+        : data.phase === 'drops' ? 'drops review 🔁'
+        : data.phase === 'results' ? 'résultats'
+        : 'terminé';
       phaseBadge.textContent = `Phase : ${phaseLabel}`;
       phaseBadge.className = `game-phase-badge ${data.phase}`;
       // Drive the timer
-      if (data.phase === 'drawing' && data.drawingSeconds > 0) {
+      if (data.phase === 'drawing' && data.drawingSeconds > 0 && data.roundStartedAt) {
         showTimer(tsToMs(data.roundStartedAt), data.drawingSeconds, null);
       } else if (data.phase === 'voting' && data.voteMode === 'spam' && data.voteSeconds > 0) {
         showTimer(tsToMs(data.voteStartedAt), data.voteSeconds, null);
       } else if (data.phase === 'jam' && data.jamSeconds > 0) {
         showTimer(tsToMs(data.jamStartedAt), data.jamSeconds, null);
+      } else if (data.phase === 'drops' && data.dropsSeconds > 0) {
+        showTimer(tsToMs(data.dropsStartedAt), data.dropsSeconds, null);
       } else {
         hideTimer();
       }
-      // Enable jam button when in results phase and jam is enabled and data exists for current sentence
-      const canJam = data.phase === 'results'
-                  && data.jamEnabled
-                  && findJamData(data.sentences[data.currentIdx]) !== null;
-      jamBtn.disabled = !canJam;
-      jamBtn.style.opacity = canJam ? '1' : '0.5';
+      // Enable manual bonus button in results phase if bonus is set
+      const btype = data.bonusType || 'jam';
+      const canBonus = data.phase === 'results' && btype !== 'none';
+      jamBtn.disabled = !canBonus;
+      jamBtn.style.opacity = canBonus ? '1' : '0.5';
+      jamBtn.textContent = btype === 'drops' ? '🔁 Lancer le bonus' : '⚡ Lancer le bonus';
       // Sync mode toggle button label with session state
       applyModeLabel(data.sentenceVisible !== false);
       // Render attendance chips
@@ -6601,6 +6999,10 @@ async function renderTeacherView(shell, classCode) {
     });
     gameJamUnsub = fs.onSnapshot(fs.collection(firestore, `game_sessions/${sid}/jam_submissions`), snap => {
       gameJamSubmissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderTeacherGallery(galleryEl, gameSession);
+    });
+    gameDropsUnsub = fs.onSnapshot(fs.collection(firestore, `game_sessions/${sid}/drops_submissions`), snap => {
+      gameDropsSubmissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderTeacherGallery(galleryEl, gameSession);
     });
   }
@@ -6623,18 +7025,21 @@ async function renderTeacherView(shell, classCode) {
       updatedAt: fs.serverTimestamp()
     });
     resultsBtn.disabled = true;
-    // Auto-fire jam after a short pause if jam is enabled and data exists for this sentence
-    if (gameSession && gameSession.jamEnabled && findJamData(gameSession.sentences[gameSession.currentIdx])) {
+    // Auto-fire the bonus round after a short pause
+    const btype = gameSession?.bonusType || 'jam';
+    if (gameSession && btype !== 'none') {
       if (pendingJamTimeout) clearTimeout(pendingJamTimeout);
       pendingJamTimeout = setTimeout(async () => {
         pendingJamTimeout = null;
         try {
-          await fs.updateDoc(fs.doc(firestore, `game_sessions/${sessionId}`), {
-            phase: 'jam',
-            jamStartedAt: fs.serverTimestamp(),
+          const updates = {
+            phase: btype,
             updatedAt: fs.serverTimestamp()
-          });
-        } catch (err) { console.warn("auto-jam transition failed", err); }
+          };
+          if (btype === 'jam') updates.jamStartedAt = fs.serverTimestamp();
+          if (btype === 'drops') updates.dropsStartedAt = fs.serverTimestamp();
+          await fs.updateDoc(fs.doc(firestore, `game_sessions/${sessionId}`), updates);
+        } catch (err) { console.warn("auto-bonus transition failed", err); }
       }, 5000);
     }
   });
@@ -6653,6 +7058,7 @@ async function renderTeacherView(shell, classCode) {
       roundStartedAt: fs.serverTimestamp(),
       voteStartedAt: null,
       jamStartedAt: null,
+      dropsStartedAt: null,
       updatedAt: fs.serverTimestamp()
     });
     voteBtn.disabled = false;
@@ -6672,6 +7078,7 @@ async function renderTeacherView(shell, classCode) {
     if (gameDrawingsUnsub) gameDrawingsUnsub();
     if (gameVotesUnsub) gameVotesUnsub();
     if (gameJamUnsub) gameJamUnsub();
+    if (gameDropsUnsub) gameDropsUnsub();
     hideTimer();
     // Stop music
     audioEl.pause();
@@ -6725,6 +7132,46 @@ function renderTeacherGallery(host, session) {
   const idx = session.currentIdx;
   const phase = session.phase;
   const drawingsForRound = gameDrawings.filter(d => d.sentenceIdx === idx);
+
+  // Lobby: show roster waiting status
+  if (phase === 'lobby') {
+    const claimedCount = Object.keys(session.claimedNames || {}).length;
+    host.innerHTML = `
+      <div class="game-panel" style="text-align:center; padding:32px">
+        <h3 style="margin-top:0; font-family:var(--serif)">Lobby — en attente des élèves</h3>
+        <p style="color:var(--muted)">${claimedCount} élève${claimedCount !== 1 ? 's' : ''} a/ont choisi leur prénom.</p>
+        <p style="margin-top:18px; font-size:0.9rem; color:var(--muted)">Clique sur <b>« Commencer la première phrase »</b> quand tu es prêt à démarrer le timer.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Drops phase: live leaderboard of correctCount per student
+  if (phase === 'drops') {
+    const submissionsForRound = gameDropsSubmissions.filter(s => s.sentenceIdx === idx);
+    const ranked = [...submissionsForRound].sort((a, b) => b.correctCount - a.correctCount);
+    host.innerHTML = `
+      <div class="jam-panel" style="background:linear-gradient(180deg,#eef5ff 0%,#e3edff 100%); border-color:#c9d6f0">
+        <p class="jam-eyebrow" style="color:#3d5db5">🔁 Drops Review — Manche ${idx + 1}</p>
+        <p class="jam-instructions">Les élèves répondent à des chunks aléatoires pendant ${session.dropsSeconds || 20}s.</p>
+        <div class="jam-leaderboard">
+          <h4>🔁 Classement de cette manche</h4>
+          ${ranked.length === 0
+            ? '<p style="color:var(--muted)">En attente de soumissions…</p>'
+            : ranked.slice(0, 10).map((s, i) => {
+                const cls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                return `<div class="lb-row ${cls}">
+                  <span class="lb-rank">${i + 1}</span>
+                  <span class="lb-pseudo">${s.studentPseudonym}</span>
+                  <span class="lb-time">${s.correctCount} / ${s.totalAttempts} ✓</span>
+                </div>`;
+              }).join('')
+          }
+        </div>
+      </div>
+    `;
+    return;
+  }
 
   // Special case: jam phase shows the jam leaderboard prominently
   if (phase === 'jam') {
@@ -6986,12 +7433,16 @@ async function renderStudentView(shell, classCode) {
     let bannerText = sentence;
     const banner = shell.querySelector('#sentence-display');
     banner.classList.remove('listening-banner');
-    if (data.phase === 'drawing' && data.sentenceVisible === false) {
+    if (data.phase === 'lobby') {
+      bannerText = '⏳ En attente du professeur — prépare-toi !';
+    } else if (data.phase === 'drawing' && data.sentenceVisible === false) {
       bannerText = '🔊 Écoute attentivement le professeur';
       banner.classList.add('listening-banner');
     } else if (data.phase === 'jam') {
       const jd = findJamData(sentence);
       bannerText = (jd && jd.en) ? jd.en : '⚡ Sentence Jam — reconstruis la phrase de mémoire';
+    } else if (data.phase === 'drops') {
+      bannerText = '🔁 Drops Review — réponds vite !';
     }
     banner.textContent = bannerText;
     const badge = shell.querySelector('#phase-badge');
@@ -6999,11 +7450,16 @@ async function renderStudentView(shell, classCode) {
     badge.textContent = data.phase === 'drawing' ? `Phase ${data.currentIdx + 1} : dessine !`
       : data.phase === 'voting' ? `Phase ${data.currentIdx + 1} : vote pour tes préférés`
       : data.phase === 'jam' ? `Phase ${data.currentIdx + 1} : ⚡ Sentence Jam !`
+      : data.phase === 'drops' ? `Phase ${data.currentIdx + 1} : 🔁 Drops Review !`
+      : data.phase === 'lobby' ? `En attente du professeur…`
       : data.phase === 'results' ? `Phase ${data.currentIdx + 1} : résultats`
       : 'Le jeu est terminé.';
     const stage = shell.querySelector('#student-stage');
-    if (data.phase === 'drawing') {
-      if (data.drawingSeconds > 0) {
+    if (data.phase === 'lobby') {
+      hideTimer();
+      stage.innerHTML = `<div class="game-panel" style="text-align:center; padding:32px"><h3 style="margin-top:0; font-family:var(--serif)">Salut ${pseudo} !</h3><p style="color:var(--muted)">En attente du professeur pour commencer la première phrase…</p></div>`;
+    } else if (data.phase === 'drawing') {
+      if (data.drawingSeconds > 0 && data.roundStartedAt) {
         showTimer(tsToMs(data.roundStartedAt), data.drawingSeconds, () => {
           const btn = document.querySelector('#submit-game-drawing');
           if (btn && !btn.disabled) btn.click();
@@ -7035,6 +7491,16 @@ async function renderStudentView(shell, classCode) {
       if (jammedForIdx !== data.currentIdx) {
         stage.innerHTML = '';
         stage.appendChild(renderStudentJam(stage, sessionId, pseudo, data.currentIdx, data, jamData));
+      }
+    } else if (data.phase === 'drops') {
+      if (data.dropsSeconds > 0) {
+        showTimer(tsToMs(data.dropsStartedAt), data.dropsSeconds, () => {
+          renderStudentDrops(shell.querySelector('#student-stage'), sessionId, pseudo, data.currentIdx, data);
+        });
+      }
+      if (droppedForIdx !== data.currentIdx) {
+        stage.innerHTML = '';
+        renderStudentDrops(stage, sessionId, pseudo, data.currentIdx, data);
       }
     } else if (data.phase === 'ended') {
       hideTimer();
@@ -7088,10 +7554,21 @@ async function renderStudentView(shell, classCode) {
       renderStudentCumulative(shell.querySelector('#student-stage'), gameSession, pseudo);
     }
   });
+
+  gameDropsUnsub = fs.onSnapshot(fs.collection(firestore, `game_sessions/${sessionId}/drops_submissions`), snap => {
+    gameDropsSubmissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (gameSession && gameSession.phase === 'drops') {
+      // Update the per-round leaderboard if the student is in the results view
+      paintDropsLeaderboard(shell.querySelector('#student-stage'), gameSession.currentIdx, pseudo);
+    } else if (gameSession && gameSession.phase === 'ended') {
+      renderStudentCumulative(shell.querySelector('#student-stage'), gameSession, pseudo);
+    }
+  });
 }
 
 // Student-side jam UI
 let jammedForIdx = -1;
+let droppedForIdx = -1;
 function renderStudentJam(host, sessionId, pseudo, sentenceIdx, session, jamData) {
   if (!jamData) {
     host.innerHTML = `<div class="game-panel" style="text-align:center">Pas de Sentence Jam pour cette phrase.</div>`;
@@ -7321,6 +7798,128 @@ function renderStudentJam(host, sessionId, pseudo, sentenceIdx, session, jamData
   return host;
 }
 
+// Student-side Drops Review UI. 20s of random chunks; tap correct English.
+async function renderStudentDrops(host, sessionId, pseudo, sentenceIdx, session) {
+  const startMs = tsToMs(session.dropsStartedAt);
+  const totalSec = session.dropsSeconds || 20;
+  const expireMs = startMs ? startMs + totalSec * 1000 : Date.now() + totalSec * 1000;
+  const remainingMs = Math.max(0, expireMs - Date.now());
+  // Has this student already submitted? (handles re-renders mid-round)
+  const alreadySubmitted = gameDropsSubmissions.find(s => s.sentenceIdx === sentenceIdx && s.studentPseudonym === pseudo);
+  if (alreadySubmitted || remainingMs <= 0) {
+    host.innerHTML = `
+      <div class="drops-panel">
+        <p class="drops-eyebrow">🔁 Drops Review — Manche ${sentenceIdx + 1}</p>
+        ${alreadySubmitted
+          ? `<p style="font-size:1.4rem; font-weight:600; color:var(--success); text-align:center; margin:18px 0">Tu as eu ${alreadySubmitted.correctCount} bonne${alreadySubmitted.correctCount > 1 ? 's' : ''} réponse${alreadySubmitted.correctCount > 1 ? 's' : ''} sur ${alreadySubmitted.totalAttempts} !</p>`
+          : `<p style="color:var(--muted); text-align:center; margin:18px 0">⏱ Temps écoulé.</p>`
+        }
+        <div id="drops-lb-mount"></div>
+      </div>
+    `;
+    droppedForIdx = sentenceIdx;
+    paintDropsLeaderboard(host, sentenceIdx, pseudo);
+    return host;
+  }
+
+  host.innerHTML = `
+    <div class="drops-panel">
+      <p class="drops-eyebrow">🔁 Drops Review — vocabulaire rapide</p>
+      <div class="drops-score">
+        ✓ <span id="drops-correct">0</span>
+        · ✗ <span id="drops-wrong">0</span>
+      </div>
+      <div class="drops-chunk" id="drops-chunk">—</div>
+      <div class="drops-options" id="drops-options"></div>
+    </div>
+  `;
+
+  let correctCount = 0, wrongCount = 0, totalAttempts = 0;
+  let currentChunkFr = null;
+  let busy = false;
+  let lastFr = null; // avoid showing the same chunk back-to-back
+
+  function nextChunk() {
+    busy = false;
+    const { chunk, options } = pickDropsRound(lastFr);
+    currentChunkFr = chunk.fr;
+    lastFr = chunk.fr;
+    host.querySelector('#drops-chunk').textContent = chunk.fr;
+    const optsEl = host.querySelector('#drops-options');
+    optsEl.innerHTML = '';
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'drops-option';
+      btn.textContent = opt.en;
+      btn.addEventListener('click', () => handleAnswer(opt, btn));
+      optsEl.appendChild(btn);
+    });
+  }
+  function handleAnswer(picked, btn) {
+    if (busy) return;
+    busy = true;
+    totalAttempts++;
+    const isCorrect = picked.fr === currentChunkFr || picked.en === DROPS_BY_FR.get(currentChunkFr)?.en;
+    if (isCorrect) {
+      correctCount++;
+      btn.classList.add('correct');
+      host.querySelector('#drops-correct').textContent = correctCount;
+    } else {
+      wrongCount++;
+      btn.classList.add('wrong');
+      host.querySelector('#drops-wrong').textContent = wrongCount;
+    }
+    host.querySelectorAll('.drops-option').forEach(b => b.disabled = true);
+    setTimeout(() => nextChunk(), 350);
+  }
+
+  nextChunk();
+  droppedForIdx = sentenceIdx;
+
+  // Submit final score when timer expires
+  setTimeout(async () => {
+    try {
+      const fs = await getFirestoreApi();
+      await fs.addDoc(fs.collection(firestore, `game_sessions/${sessionId}/drops_submissions`), {
+        studentPseudonym: pseudo,
+        sentenceIdx,
+        correctCount,
+        totalAttempts,
+        createdAt: fs.serverTimestamp()
+      });
+    } catch (err) {
+      console.warn("drops submit failed", err);
+    }
+  }, remainingMs);
+
+  return host;
+}
+
+function paintDropsLeaderboard(host, sentenceIdx, pseudo) {
+  const mount = host?.querySelector('#drops-lb-mount');
+  if (!mount) return;
+  const subs = gameDropsSubmissions.filter(s => s.sentenceIdx === sentenceIdx);
+  if (subs.length === 0) {
+    mount.innerHTML = '';
+    return;
+  }
+  const ranked = [...subs].sort((a, b) => b.correctCount - a.correctCount);
+  mount.innerHTML = `
+    <div class="jam-leaderboard">
+      <h4>🔁 Classement de cette manche</h4>
+      ${ranked.slice(0, 5).map((s, i) => {
+        const cls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+        const me = s.studentPseudonym === pseudo ? ' <span style="color:var(--sage); font-weight:600;">(toi)</span>' : '';
+        return `<div class="lb-row ${cls}">
+          <span class="lb-rank">${i + 1}</span>
+          <span class="lb-pseudo">${s.studentPseudonym}${me}</span>
+          <span class="lb-time">${s.correctCount} ✓</span>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
 function paintJamLeaderboard(host, sentenceIdx, pseudo) {
   const mount = host?.querySelector('#jam-lb-mount');
   if (!mount) return;
@@ -7347,14 +7946,12 @@ function paintJamLeaderboard(host, sentenceIdx, pseudo) {
   `;
 }
 
-// End-of-game cumulative leaderboards (votes + jam totals)
+// End-of-game cumulative leaderboards (votes + jam totals + drops totals)
 function renderCumulativeLeaderboards(host) {
   if (!host) return;
   // Votes received per pseudonym (across all sentences)
   const drawingsByPseudo = {};
-  gameDrawings.forEach(d => {
-    drawingsByPseudo[d.id] = d.studentPseudonym;
-  });
+  gameDrawings.forEach(d => { drawingsByPseudo[d.id] = d.studentPseudonym; });
   const votesByPseudo = {};
   gameVotes.forEach(v => {
     const author = drawingsByPseudo[v.drawingId];
@@ -7364,12 +7961,10 @@ function renderCumulativeLeaderboards(host) {
     .map(([pseudo, votes]) => ({ pseudo, votes }))
     .sort((a, b) => b.votes - a.votes);
 
-  // Jam: sum of correct submission times per pseudonym; rank by lowest total + most correct
+  // Jam: sum of correct submission times per pseudonym
   const jamByPseudo = {};
   gameJamSubmissions.forEach(s => {
-    if (!jamByPseudo[s.studentPseudonym]) {
-      jamByPseudo[s.studentPseudonym] = { correctCount: 0, totalMs: 0 };
-    }
+    if (!jamByPseudo[s.studentPseudonym]) jamByPseudo[s.studentPseudonym] = { correctCount: 0, totalMs: 0 };
     if (s.correct) {
       jamByPseudo[s.studentPseudonym].correctCount++;
       jamByPseudo[s.studentPseudonym].totalMs += s.elapsedMs;
@@ -7383,36 +7978,56 @@ function renderCumulativeLeaderboards(host) {
       return a.totalMs - b.totalMs;
     });
 
+  // Drops: total correct count across all rounds
+  const dropsByPseudo = {};
+  gameDropsSubmissions.forEach(s => {
+    if (!dropsByPseudo[s.studentPseudonym]) dropsByPseudo[s.studentPseudonym] = { totalCorrect: 0, totalAttempts: 0 };
+    dropsByPseudo[s.studentPseudonym].totalCorrect += s.correctCount || 0;
+    dropsByPseudo[s.studentPseudonym].totalAttempts += s.totalAttempts || 0;
+  });
+  const dropsLB = Object.entries(dropsByPseudo)
+    .map(([pseudo, v]) => ({ pseudo, ...v }))
+    .filter(e => e.totalAttempts > 0)
+    .sort((a, b) => b.totalCorrect - a.totalCorrect);
+
+  // Decide which columns to show: always artists, plus jam/drops if any data
+  const cols = [];
+  cols.push({
+    title: '🎨 Artistes les plus aimés',
+    rows: votesLB.slice(0, 10).map((r, i) => ({ rank: i + 1, name: r.pseudo, detail: `${r.votes} vote${r.votes > 1 ? 's' : ''}` })),
+    emptyText: 'Aucun vote.'
+  });
+  if (jamLB.length > 0) {
+    cols.push({
+      title: '⚡ Sentence Jammers les plus rapides',
+      rows: jamLB.slice(0, 10).map((r, i) => ({ rank: i + 1, name: r.pseudo, detail: `${r.correctCount} bon${r.correctCount > 1 ? 's' : ''} · ${(r.totalMs / 1000).toFixed(1)}s` })),
+      emptyText: ''
+    });
+  }
+  if (dropsLB.length > 0) {
+    cols.push({
+      title: '🔁 Drops champions',
+      rows: dropsLB.slice(0, 10).map((r, i) => ({ rank: i + 1, name: r.pseudo, detail: `${r.totalCorrect} bonnes réponses` })),
+      emptyText: ''
+    });
+  }
+  const gridCols = cols.length === 1 ? '1fr' : cols.length === 2 ? '1fr 1fr' : '1fr 1fr 1fr';
   host.innerHTML = `
     <div class="game-panel">
       <h3 style="margin-top:0">🎉 Fin du jeu — classement final</h3>
-      <div class="cumulative-leaderboards">
-        <div class="jam-leaderboard" style="margin-top:0">
-          <h4>🎨 Artistes les plus aimés (total des votes)</h4>
-          ${votesLB.length === 0 ? '<p style="color:var(--muted)">Aucun vote.</p>' :
-            votesLB.slice(0, 10).map((row, i) => {
-              const cls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-              return `<div class="lb-row ${cls}">
-                <span class="lb-rank">${i + 1}</span>
-                <span class="lb-pseudo">${row.pseudo}</span>
-                <span class="lb-time">${row.votes} vote${row.votes > 1 ? 's' : ''}</span>
-              </div>`;
-            }).join('')
-          }
-        </div>
-        <div class="jam-leaderboard" style="margin-top:0">
-          <h4>⚡ Sentence Jammers les plus rapides</h4>
-          ${jamLB.length === 0 ? '<p style="color:var(--muted)">Pas de jam dans cette partie.</p>' :
-            jamLB.slice(0, 10).map((row, i) => {
-              const cls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-              return `<div class="lb-row ${cls}">
-                <span class="lb-rank">${i + 1}</span>
-                <span class="lb-pseudo">${row.pseudo}</span>
-                <span class="lb-time">${row.correctCount} bon${row.correctCount > 1 ? 's' : ''} · ${(row.totalMs / 1000).toFixed(1)}s</span>
-              </div>`;
-            }).join('')
-          }
-        </div>
+      <div class="cumulative-leaderboards" style="grid-template-columns:${gridCols}">
+        ${cols.map(col => `
+          <div class="jam-leaderboard" style="margin-top:0">
+            <h4>${col.title}</h4>
+            ${col.rows.length === 0
+              ? `<p style="color:var(--muted)">${col.emptyText}</p>`
+              : col.rows.map(r => {
+                  const cls = r.rank === 1 ? 'gold' : r.rank === 2 ? 'silver' : r.rank === 3 ? 'bronze' : '';
+                  return `<div class="lb-row ${cls}"><span class="lb-rank">${r.rank}</span><span class="lb-pseudo">${r.name}</span><span class="lb-time">${r.detail}</span></div>`;
+                }).join('')
+            }
+          </div>
+        `).join('')}
       </div>
     </div>
   `;
