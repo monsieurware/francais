@@ -1460,6 +1460,171 @@
   /* Lobby phase badge styling */
   .game-phase-badge.lobby { background: var(--surface); color: var(--muted); border: 1px dashed var(--border-strong); }
 
+  /* ---------- Blocked drawings (teacher side only) ---------- */
+  .vote-card.blocked {
+    position: relative;
+    opacity: 0.45;
+    filter: grayscale(0.8);
+  }
+  .vote-card.blocked::after {
+    content: "BLOQUÉ";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-12deg);
+    background: var(--error);
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    padding: 6px 16px;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    pointer-events: none;
+  }
+  .vote-card { position: relative; }
+  .block-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--border-strong);
+    color: var(--muted);
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-family: var(--sans);
+    padding: 3px 8px;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 120ms;
+  }
+  .block-btn:hover {
+    background: var(--error);
+    color: white;
+    border-color: var(--error);
+  }
+  .vote-card.blocked .block-btn {
+    background: var(--success);
+    color: white;
+    border-color: var(--success);
+    opacity: 1;
+  }
+  .vote-card.blocked .block-btn:hover {
+    background: var(--success);
+    filter: brightness(1.1);
+  }
+
+  /* ---------- Walkthrough modal ---------- */
+  dialog.walkthrough-modal {
+    border: none;
+    padding: 0;
+    background: #1a1a1a;
+    color: white;
+    width: min(96vw, 1100px);
+    max-height: 92vh;
+    border-radius: 12px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  }
+  dialog.walkthrough-modal::backdrop { background: rgba(0,0,0,0.85); }
+  .walkthrough-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 22px;
+    border-bottom: 1px solid #333;
+  }
+  .walkthrough-counter {
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: #ccc;
+    font-variant-numeric: tabular-nums;
+  }
+  .walkthrough-close {
+    background: none;
+    border: 1px solid #555;
+    color: white;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.9rem;
+    font-family: var(--sans);
+    cursor: pointer;
+  }
+  .walkthrough-close:hover { background: #333; }
+  .walkthrough-body {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 22px;
+  }
+  .walkthrough-stage {
+    flex: 1;
+    text-align: center;
+  }
+  .walkthrough-stage img {
+    max-width: 100%;
+    max-height: 60vh;
+    background: white;
+    border-radius: 8px;
+    object-fit: contain;
+  }
+  .walkthrough-meta {
+    margin-top: 16px;
+  }
+  .walkthrough-pseudo {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    color: white;
+    font-weight: 600;
+  }
+  .walkthrough-stars {
+    font-size: 1.3rem;
+    color: #d4a574;
+    margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .walkthrough-nav {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid #444;
+    color: white;
+    font-size: 2.5rem;
+    width: 56px;
+    height: 80px;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: var(--serif);
+    line-height: 1;
+  }
+  .walkthrough-nav:hover:not(:disabled) {
+    background: rgba(255,255,255,0.18);
+    border-color: #888;
+  }
+  .walkthrough-nav:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+  @media (max-width: 600px) {
+    .walkthrough-body { padding: 12px; gap: 6px; }
+    .walkthrough-nav { width: 40px; height: 60px; font-size: 1.8rem; }
+    .walkthrough-pseudo { font-size: 1.3rem; }
+  }
+
+  /* "Promenade" button on the gallery panel */
+  .walkthrough-launch-btn {
+    background: var(--sage);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    font-family: var(--sans);
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 12px;
+  }
+  .walkthrough-launch-btn:hover { background: var(--sage-dark, #3d6849); }
+  .walkthrough-launch-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
   /* ---------- Drawing canvas ---------- */
   .drawing-prompt {
     background: var(--surface);
@@ -1901,6 +2066,24 @@
   </div>
 </dialog>
 
+<dialog class="walkthrough-modal" id="walkthrough-modal">
+  <div class="walkthrough-header">
+    <span class="walkthrough-counter" id="walkthrough-counter">1 / 1</span>
+    <button class="walkthrough-close" id="walkthrough-close" aria-label="Fermer">× Fermer</button>
+  </div>
+  <div class="walkthrough-body">
+    <button class="walkthrough-nav prev" id="walkthrough-prev" aria-label="Précédent">‹</button>
+    <div class="walkthrough-stage">
+      <img id="walkthrough-img" alt="">
+      <div class="walkthrough-meta">
+        <div class="walkthrough-pseudo" id="walkthrough-pseudo"></div>
+        <div class="walkthrough-stars" id="walkthrough-stars"></div>
+      </div>
+    </div>
+    <button class="walkthrough-nav next" id="walkthrough-next" aria-label="Suivant">›</button>
+  </div>
+</dialog>
+
 <!-- ============================================================
      SCRIPT
      ============================================================ -->
@@ -1942,7 +2125,8 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow create: if request.auth != null
                     && request.resource.data.imageDataUrl.size() < 600000;
-      allow update, delete: if false;
+      allow update: if request.auth != null;  // teacher can toggle `blocked` field
+      allow delete: if false;
     }
     // Votes (one per student per drawing; deletable for top-3 unstar)
     match /game_sessions/{sessionId}/votes/{voteId} {
@@ -6327,6 +6511,65 @@ document.getElementById('lightbox').addEventListener('click', e => {
 });
 
 // ============================================================
+// Gallery walkthrough modal (teacher presentation mode)
+// ============================================================
+let walkthroughDrawings = [];
+let walkthroughVoteCounts = {};
+let walkthroughIdx = 0;
+let walkthroughShowStars = false;
+
+function openWalkthrough(drawings, voteCounts, showStars) {
+  if (!drawings || drawings.length === 0) return;
+  walkthroughDrawings = drawings;
+  walkthroughVoteCounts = voteCounts || {};
+  walkthroughShowStars = showStars !== false;
+  walkthroughIdx = 0;
+  paintWalkthrough();
+  document.getElementById('walkthrough-modal').showModal();
+}
+function paintWalkthrough() {
+  if (walkthroughDrawings.length === 0) return;
+  const d = walkthroughDrawings[walkthroughIdx];
+  document.getElementById('walkthrough-img').src = d.imageDataUrl;
+  document.getElementById('walkthrough-pseudo').textContent = d.studentPseudonym || '—';
+  const stars = walkthroughVoteCounts[d.id] || 0;
+  document.getElementById('walkthrough-stars').textContent = (walkthroughShowStars && stars > 0) ? `★ ${stars}` : '';
+  document.getElementById('walkthrough-counter').textContent = `${walkthroughIdx + 1} / ${walkthroughDrawings.length}`;
+  document.getElementById('walkthrough-prev').disabled = walkthroughIdx === 0;
+  document.getElementById('walkthrough-next').disabled = walkthroughIdx === walkthroughDrawings.length - 1;
+}
+document.getElementById('walkthrough-prev').addEventListener('click', () => {
+  if (walkthroughIdx > 0) { walkthroughIdx--; paintWalkthrough(); }
+});
+document.getElementById('walkthrough-next').addEventListener('click', () => {
+  if (walkthroughIdx < walkthroughDrawings.length - 1) { walkthroughIdx++; paintWalkthrough(); }
+});
+document.getElementById('walkthrough-close').addEventListener('click', () => {
+  document.getElementById('walkthrough-modal').close();
+});
+document.addEventListener('keydown', e => {
+  const dlg = document.getElementById('walkthrough-modal');
+  if (!dlg || !dlg.open) return;
+  if (e.key === 'ArrowLeft' && walkthroughIdx > 0) { walkthroughIdx--; paintWalkthrough(); e.preventDefault(); }
+  else if (e.key === 'ArrowRight' && walkthroughIdx < walkthroughDrawings.length - 1) { walkthroughIdx++; paintWalkthrough(); e.preventDefault(); }
+});
+
+// Toggle the "blocked" flag on a game drawing (teacher-only control)
+async function toggleBlockDrawing(sessionId, drawingId, currentlyBlocked) {
+  if (!sessionId || !drawingId) return;
+  try {
+    const fs = await getFirestoreApi();
+    await fs.updateDoc(
+      fs.doc(firestore, `game_sessions/${sessionId}/game_drawings/${drawingId}`),
+      { blocked: !currentlyBlocked }
+    );
+  } catch (err) {
+    console.warn("toggle block failed", err);
+    alert("Erreur — impossible de bloquer le dessin. (Vérifie les règles Firestore : autorise update sur game_drawings.)");
+  }
+}
+
+// ============================================================
 // Welcome gate
 // ============================================================
 function showWelcome() {
@@ -6985,25 +7228,25 @@ async function renderTeacherView(shell, classCode) {
       applyModeLabel(data.sentenceVisible !== false);
       // Render attendance chips
       renderAttendance(shell, data.claimedNames || {}, sessionId, fs);
-      renderTeacherGallery(galleryEl, data);
+      renderTeacherGallery(galleryEl, data, sessionId);
     });
     gameDrawingsUnsub = fs.onSnapshot(fs.collection(firestore, `game_sessions/${sid}/game_drawings`), snap => {
       gameDrawings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       const forCurrent = gameDrawings.filter(d => d.sentenceIdx === (gameSession?.currentIdx ?? -1));
       shell.querySelector('#stat-submitted').textContent = forCurrent.length;
-      renderTeacherGallery(galleryEl, gameSession);
+      renderTeacherGallery(galleryEl, gameSession, sessionId);
     });
     gameVotesUnsub = fs.onSnapshot(fs.collection(firestore, `game_sessions/${sid}/votes`), snap => {
       gameVotes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderTeacherGallery(galleryEl, gameSession);
+      renderTeacherGallery(galleryEl, gameSession, sessionId);
     });
     gameJamUnsub = fs.onSnapshot(fs.collection(firestore, `game_sessions/${sid}/jam_submissions`), snap => {
       gameJamSubmissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderTeacherGallery(galleryEl, gameSession);
+      renderTeacherGallery(galleryEl, gameSession, sessionId);
     });
     gameDropsUnsub = fs.onSnapshot(fs.collection(firestore, `game_sessions/${sid}/drops_submissions`), snap => {
       gameDropsSubmissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderTeacherGallery(galleryEl, gameSession);
+      renderTeacherGallery(galleryEl, gameSession, sessionId);
     });
   }
 
@@ -7127,7 +7370,7 @@ function renderAttendance(shell, claimedNames, sessionId, fs) {
   });
 }
 
-function renderTeacherGallery(host, session) {
+function renderTeacherGallery(host, session, sessionId) {
   if (!host || !session) return;
   const idx = session.currentIdx;
   const phase = session.phase;
@@ -7224,25 +7467,31 @@ function renderTeacherGallery(host, session) {
   const isSpam = session.voteMode === 'spam';
   const voteCounts = {};
   const allVotesForRound = gameVotes.filter(v => v.sentenceIdx === idx);
+  // Only count votes targeting non-blocked drawings (so totals reflect what students see)
+  const blockedIds = new Set(drawingsForRound.filter(d => d.blocked).map(d => d.id));
   allVotesForRound.forEach(v => {
+    if (blockedIds.has(v.drawingId)) return;
     voteCounts[v.drawingId] = (voteCounts[v.drawingId] || 0) + 1;
   });
-  const totalTaps = allVotesForRound.length;
+  const totalTaps = allVotesForRound.filter(v => !blockedIds.has(v.drawingId)).length;
   const cards = drawingsForRound.map(d => {
     const stars = voteCounts[d.id] || 0;
+    const isBlocked = !!d.blocked;
     return `
-      <div class="vote-card ${showStars ? 'show-stars' : ''}">
+      <div class="vote-card ${showStars ? 'show-stars' : ''} ${isBlocked ? 'blocked' : ''}" data-drawing-id="${d.id}">
+        <button class="block-btn" data-block-toggle="${d.id}" data-currently-blocked="${isBlocked ? '1' : '0'}" title="${isBlocked ? 'Débloquer ce dessin' : 'Bloquer ce dessin (le retire des votes)'}">${isBlocked ? '↺ Débloquer' : '🚫 Bloquer'}</button>
         <img src="${d.imageDataUrl}" alt="">
         <div class="vote-star-count">★ ${stars}</div>
         <div class="pseudo-row ${showPseudo ? '' : 'hidden'}">${showPseudo ? d.studentPseudonym : '·'}</div>
       </div>
     `;
   }).join('');
-  // Winner callout in results phase
+  // Winner callout in results phase — must exclude blocked drawings
   let winnerHTML = '';
   if (phase === 'results') {
-    const winner = [...drawingsForRound].map(d => ({...d, stars: voteCounts[d.id] || 0}))
-                                        .sort((a, b) => b.stars - a.stars)[0];
+    const candidates = drawingsForRound.filter(d => !d.blocked);
+    const winner = [...candidates].map(d => ({...d, stars: voteCounts[d.id] || 0}))
+                                  .sort((a, b) => b.stars - a.stars)[0];
     if (winner && winner.stars > 0) {
       winnerHTML = `
         <div class="winner-callout">
@@ -7253,10 +7502,17 @@ function renderTeacherGallery(host, session) {
       `;
     }
   }
+  // Walkthrough button shown in voting + results phases
+  const walkBtnHTML = (phase === 'voting' || phase === 'results') && drawingsForRound.length > 0
+    ? `<button class="walkthrough-launch-btn" id="walkthrough-launch">🖼 Promenade galerie</button>`
+    : '';
   host.innerHTML = `
     ${winnerHTML}
     <div class="game-panel">
-      <h3 style="margin-top:0">Dessins (${drawingsForRound.length})</h3>
+      <h3 style="margin-top:0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px">
+        <span>Dessins (${drawingsForRound.length})</span>
+        ${walkBtnHTML}
+      </h3>
       ${isSpam && (phase === 'voting' || phase === 'results') ? `
         <div class="spam-total-banner">
           <span>⚡</span>
@@ -7267,6 +7523,26 @@ function renderTeacherGallery(host, session) {
       <div class="vote-grid ${isSpam ? 'spam-mode' : ''}">${cards}</div>
     </div>
   `;
+  // Event delegation: block toggles + walkthrough launch
+  host.querySelectorAll('[data-block-toggle]').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const drawingId = btn.dataset.blockToggle;
+      const currentlyBlocked = btn.dataset.currentlyBlocked === '1';
+      if (!currentlyBlocked && !confirm("Bloquer ce dessin ? Il sera retiré du vote et ne comptera pas dans le classement.")) return;
+      btn.disabled = true;
+      await toggleBlockDrawing(sessionId, drawingId, currentlyBlocked);
+      // Don't re-enable; the next render will recreate the button
+    });
+  });
+  const walkBtn = host.querySelector('#walkthrough-launch');
+  if (walkBtn) {
+    walkBtn.addEventListener('click', () => {
+      // Walkthrough shows ALL drawings (including blocked, so teacher can review) with their vote counts
+      const visibleDrawings = drawingsForRound;
+      openWalkthrough(visibleDrawings, voteCounts, phase === 'results');
+    });
+  }
 }
 
 // ---------------- STUDENT VIEW ----------------
@@ -7952,11 +8228,16 @@ function paintJamLeaderboard(host, sentenceIdx, pseudo) {
 // End-of-game cumulative leaderboards (votes + jam totals + drops totals)
 function renderCumulativeLeaderboards(host) {
   if (!host) return;
-  // Votes received per pseudonym (across all sentences)
+  // Votes received per pseudonym (across all sentences) — exclude blocked drawings
   const drawingsByPseudo = {};
-  gameDrawings.forEach(d => { drawingsByPseudo[d.id] = d.studentPseudonym; });
+  const blockedDrawingIds = new Set();
+  gameDrawings.forEach(d => {
+    drawingsByPseudo[d.id] = d.studentPseudonym;
+    if (d.blocked) blockedDrawingIds.add(d.id);
+  });
   const votesByPseudo = {};
   gameVotes.forEach(v => {
+    if (blockedDrawingIds.has(v.drawingId)) return;
     const author = drawingsByPseudo[v.drawingId];
     if (author) votesByPseudo[author] = (votesByPseudo[author] || 0) + 1;
   });
@@ -8368,11 +8649,18 @@ async function renderStudentVoting(host, sessionId, pseudo, sentenceIdx, phase, 
   // Full rebuild
   host.dataset.renderedFor = renderKey;
 
-  const drawings = gameDrawings.filter(d => d.sentenceIdx === sentenceIdx);
+  const drawings = gameDrawings.filter(d => d.sentenceIdx === sentenceIdx && !d.blocked);
   const allVotesForRound = gameVotes.filter(v => v.sentenceIdx === sentenceIdx);
-  const myVotes = allVotesForRound.filter(v => v.voterId === pseudo);
+  // Filter votes targeting blocked drawings — they shouldn't count toward visible totals
+  const blockedIds = new Set(
+    gameDrawings.filter(d => d.sentenceIdx === sentenceIdx && d.blocked).map(d => d.id)
+  );
+  const myVotes = allVotesForRound.filter(v => v.voterId === pseudo && !blockedIds.has(v.drawingId));
   const voteCounts = {};
-  allVotesForRound.forEach(v => { voteCounts[v.drawingId] = (voteCounts[v.drawingId] || 0) + 1; });
+  allVotesForRound.forEach(v => {
+    if (blockedIds.has(v.drawingId)) return;
+    voteCounts[v.drawingId] = (voteCounts[v.drawingId] || 0) + 1;
+  });
   const showStars = phase === 'voting' || phase === 'results';
   const showPseudo = phase === 'results';
   const maxStars = 3;
