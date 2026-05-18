@@ -1457,6 +1457,155 @@
     .drops-options { grid-template-columns: 1fr; }
   }
 
+  /* ---------- Écho (English text → French audio matching) ---------- */
+  .echo-panel {
+    background: linear-gradient(180deg, #f3edff 0%, #ebe2ff 100%);
+    border: 1px solid #cdbef0;
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow-card);
+    text-align: center;
+  }
+  .echo-eyebrow {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #6b3dc0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .echo-score {
+    font-size: 1.05rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 16px;
+  }
+  .echo-score span { font-weight: 700; color: var(--text); margin: 0 4px; }
+  .echo-english {
+    font-family: var(--serif);
+    font-size: 1.7rem;
+    color: var(--text);
+    background: white;
+    padding: 22px 18px;
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
+    border: 2px solid #cdbef0;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.4;
+  }
+  .echo-help {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0 0 18px;
+  }
+  .echo-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .echo-option {
+    background: white;
+    border: 2px solid #cdbef0;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .echo-option.correct {
+    background: var(--success);
+    border-color: var(--success);
+    animation: pop 220ms ease-out;
+  }
+  .echo-option.correct .echo-listen-label,
+  .echo-option.correct .echo-speaker { color: white; }
+  .echo-option.correct .echo-choose-btn { background: white; color: var(--success); border-color: white; }
+  .echo-option.wrong {
+    background: var(--error);
+    border-color: var(--error);
+    animation: shake 220ms ease-out;
+  }
+  .echo-option.wrong .echo-listen-label,
+  .echo-option.wrong .echo-speaker { color: white; }
+  .echo-option.wrong .echo-choose-btn { background: white; color: var(--error); border-color: white; }
+  .echo-listen-btn {
+    background: white;
+    border: 2px solid #6b3dc0;
+    color: #6b3dc0;
+    border-radius: 8px;
+    padding: 14px 10px;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-weight: 600;
+    transition: all 120ms;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .echo-speaker {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+  .echo-listen-label {
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+  }
+  .echo-listen-btn:hover:not(:disabled) {
+    background: #6b3dc0;
+    color: white;
+  }
+  .echo-listen-btn:hover:not(:disabled) .echo-speaker,
+  .echo-listen-btn:hover:not(:disabled) .echo-listen-label { color: white; }
+  .echo-listen-btn.played {
+    background: #ebe2ff;
+    border-color: #6b3dc0;
+  }
+  .echo-listen-btn.speaking {
+    background: #6b3dc0;
+    color: white;
+    animation: pulse 700ms ease-in-out infinite;
+  }
+  .echo-listen-btn.speaking .echo-speaker,
+  .echo-listen-btn.speaking .echo-listen-label { color: white; }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+  }
+  .echo-choose-btn {
+    background: #6b3dc0;
+    color: white;
+    border: 1px solid #6b3dc0;
+    border-radius: 6px;
+    padding: 9px 8px;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 120ms;
+  }
+  .echo-choose-btn:disabled {
+    background: var(--surface);
+    color: var(--muted);
+    border-color: var(--border);
+    cursor: not-allowed;
+  }
+  .echo-choose-btn:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+  @media (max-width: 600px) {
+    .echo-english { font-size: 1.25rem; padding: 16px 12px; }
+    .echo-options { grid-template-columns: 1fr; }
+  }
+
   /* Lobby phase badge styling */
   .game-phase-badge.lobby { background: var(--surface); color: var(--muted); border: 1px dashed var(--border-strong); }
 
@@ -2239,6 +2388,12 @@ service cloud.firestore {
     }
     // Drops Review submissions (one per student per round, immutable)
     match /game_sessions/{sessionId}/drops_submissions/{submissionId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if false;
+    }
+    // Écho submissions (one per student per round, immutable)
+    match /game_sessions/{sessionId}/echo_submissions/{submissionId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null;
       allow update, delete: if false;
@@ -5446,6 +5601,38 @@ function pickDropsRound(excludeFr) {
   return { chunk, options: shuffleArray([chunk, ...distractors]) };
 }
 
+// Pick a target sentence + 3 distractor sentences for Écho mode.
+// Distractors prefer sentences sharing a character with the target — so
+// students can't win by spotting character names; they have to actually
+// discriminate the audio.
+function pickEchoRound(excludeFr) {
+  let pool = JAM_SENTENCES.filter(s => s.en && s.fr);
+  if (excludeFr) pool = pool.filter(s => s.fr !== excludeFr);
+  const target = pool[Math.floor(Math.random() * pool.length)];
+  const targetChars = DRAWABLE_CHARACTERS.filter(name => target.fr.includes(name));
+  // Build distractor pool, preferring same-character sentences
+  let distractorPool = JAM_SENTENCES.filter(s => s.en && s.fr && s.fr !== target.fr);
+  if (targetChars.length > 0) {
+    const sameCharPool = distractorPool.filter(s => targetChars.some(c => s.fr.includes(c)));
+    if (sameCharPool.length >= 3) distractorPool = sameCharPool;
+  }
+  const distractors = [];
+  const remaining = [...distractorPool];
+  while (distractors.length < 3 && remaining.length > 0) {
+    const idx = Math.floor(Math.random() * remaining.length);
+    const pick = remaining.splice(idx, 1)[0];
+    if (!distractors.find(d => d.fr === pick.fr)) distractors.push(pick);
+  }
+  // Pad with random hand-authored sentences if same-character pool wasn't enough
+  while (distractors.length < 3) {
+    const pick = JAM_SENTENCES[Math.floor(Math.random() * JAM_SENTENCES.length)];
+    if (pick.en && pick.fr && pick.fr !== target.fr && !distractors.find(d => d.fr === pick.fr)) {
+      distractors.push(pick);
+    }
+  }
+  return { target, options: shuffleArray([target, ...distractors]) };
+}
+
 function shuffleArray(arr) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -6745,11 +6932,13 @@ let gameDrawingsUnsub = null;
 let gameVotesUnsub = null;
 let gameJamUnsub = null;
 let gameDropsUnsub = null;
+let gameEchoUnsub = null;
 let gameSession = null;
 let gameDrawings = [];
 let gameVotes = [];
 let gameJamSubmissions = [];
 let gameDropsSubmissions = [];
+let gameEchoSubmissions = [];
 
 async function bootGameMode(route) {
   // Hide the regular app shell
@@ -6923,6 +7112,7 @@ async function renderTeacherView(shell, classCode) {
           <select id="bonus-type" style="padding:8px 12px; border-radius:6px; border:1px solid var(--border-strong); font-size:0.95rem; color:var(--text)">
             <option value="jam" selected>Sentence Jam ⚡</option>
             <option value="drops">Drops Review 🔁</option>
+            <option value="echo">Écho 🎧</option>
             <option value="none">Aucun</option>
           </select>
         </label>
@@ -7088,11 +7278,12 @@ async function renderTeacherView(shell, classCode) {
     if (btype === 'none') return;
     if (pendingJamTimeout) { clearTimeout(pendingJamTimeout); pendingJamTimeout = null; }
     const updates = {
-      phase: btype, // 'jam' or 'drops'
+      phase: btype, // 'jam' or 'drops' or 'echo'
       updatedAt: fs.serverTimestamp()
     };
     if (btype === 'jam') updates.jamStartedAt = fs.serverTimestamp();
     if (btype === 'drops') updates.dropsStartedAt = fs.serverTimestamp();
+    if (btype === 'echo') updates.echoStartedAt = fs.serverTimestamp();
     await fs.updateDoc(fs.doc(firestore, `game_sessions/${sessionId}`), updates);
     jamBtn.disabled = true;
   });
@@ -7291,6 +7482,7 @@ async function renderTeacherView(shell, classCode) {
     const bonusType = shell.querySelector('#bonus-type').value || 'jam';
     const jamSeconds = 30;
     const dropsSeconds = 20;
+    const echoSeconds = 60;
     const docRef = fs.doc(firestore, `game_sessions/${sessionId}`);
     await fs.setDoc(docRef, {
       classCode,
@@ -7303,11 +7495,13 @@ async function renderTeacherView(shell, classCode) {
       bonusType,
       jamSeconds,
       dropsSeconds,
+      echoSeconds,
       sentenceVisible: shell.querySelector('#btn-mode-toggle').dataset.mode !== 'listen',
       roundStartedAt: null,
       voteStartedAt: null,
       jamStartedAt: null,
       dropsStartedAt: null,
+      echoStartedAt: null,
       createdAt: fs.serverTimestamp(),
       updatedAt: fs.serverTimestamp()
     });
@@ -7368,6 +7562,7 @@ async function renderTeacherView(shell, classCode) {
     if (gameVotesUnsub) gameVotesUnsub();
     if (gameJamUnsub) gameJamUnsub();
     if (gameDropsUnsub) gameDropsUnsub();
+    if (gameEchoUnsub) gameEchoUnsub();
     gameSessionUnsub = fs.onSnapshot(fs.doc(firestore, `game_sessions/${sid}`), snap => {
       const data = snap.data();
       if (!data) return;
@@ -7379,6 +7574,7 @@ async function renderTeacherView(shell, classCode) {
         : data.phase === 'voting' ? 'vote'
         : data.phase === 'jam' ? 'sentence jam ⚡'
         : data.phase === 'drops' ? 'drops review 🔁'
+        : data.phase === 'echo' ? 'écho 🎧'
         : data.phase === 'results' ? 'résultats'
         : 'terminé';
       phaseBadge.textContent = `Phase : ${phaseLabel}`;
@@ -7392,6 +7588,8 @@ async function renderTeacherView(shell, classCode) {
         showTimer(tsToMs(data.jamStartedAt), data.jamSeconds, null);
       } else if (data.phase === 'drops' && data.dropsSeconds > 0) {
         showTimer(tsToMs(data.dropsStartedAt), data.dropsSeconds, null);
+      } else if (data.phase === 'echo' && data.echoSeconds > 0) {
+        showTimer(tsToMs(data.echoStartedAt), data.echoSeconds, null);
       } else {
         hideTimer();
       }
@@ -7400,7 +7598,9 @@ async function renderTeacherView(shell, classCode) {
       const canBonus = data.phase === 'results' && btype !== 'none';
       jamBtn.disabled = !canBonus;
       jamBtn.style.opacity = canBonus ? '1' : '0.5';
-      jamBtn.textContent = btype === 'drops' ? '🔁 Lancer le bonus' : '⚡ Lancer le bonus';
+      jamBtn.textContent = btype === 'drops' ? '🔁 Lancer le bonus'
+        : btype === 'echo' ? '🎧 Lancer le bonus'
+        : '⚡ Lancer le bonus';
       // Sync mode toggle button label with session state
       applyModeLabel(data.sentenceVisible !== false);
       // Render attendance chips
@@ -7423,6 +7623,10 @@ async function renderTeacherView(shell, classCode) {
     });
     gameDropsUnsub = fs.onSnapshot(fs.collection(firestore, `game_sessions/${sid}/drops_submissions`), snap => {
       gameDropsSubmissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderTeacherGallery(galleryEl, gameSession, sessionId);
+    });
+    gameEchoUnsub = fs.onSnapshot(fs.collection(firestore, `game_sessions/${sid}/echo_submissions`), snap => {
+      gameEchoSubmissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderTeacherGallery(galleryEl, gameSession, sessionId);
     });
   }
@@ -7458,6 +7662,7 @@ async function renderTeacherView(shell, classCode) {
           };
           if (btype === 'jam') updates.jamStartedAt = fs.serverTimestamp();
           if (btype === 'drops') updates.dropsStartedAt = fs.serverTimestamp();
+          if (btype === 'echo') updates.echoStartedAt = fs.serverTimestamp();
           await fs.updateDoc(fs.doc(firestore, `game_sessions/${sessionId}`), updates);
         } catch (err) { console.warn("auto-bonus transition failed", err); }
       }, 5000);
@@ -7479,6 +7684,7 @@ async function renderTeacherView(shell, classCode) {
       voteStartedAt: null,
       jamStartedAt: null,
       dropsStartedAt: null,
+      echoStartedAt: null,
       updatedAt: fs.serverTimestamp()
     });
     voteBtn.disabled = false;
@@ -7499,6 +7705,7 @@ async function renderTeacherView(shell, classCode) {
     if (gameVotesUnsub) gameVotesUnsub();
     if (gameJamUnsub) gameJamUnsub();
     if (gameDropsUnsub) gameDropsUnsub();
+    if (gameEchoUnsub) gameEchoUnsub();
     hideTimer();
     // Stop music
     audioEl.pause();
@@ -7583,6 +7790,33 @@ function renderTeacherGallery(host, session, sessionId) {
         <p class="jam-instructions">Les élèves répondent à des chunks aléatoires pendant ${session.dropsSeconds || 20}s.</p>
         <div class="jam-leaderboard">
           <h4>🔁 Classement de cette manche</h4>
+          ${ranked.length === 0
+            ? '<p style="color:var(--muted)">En attente de soumissions…</p>'
+            : ranked.slice(0, 10).map((s, i) => {
+                const cls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                return `<div class="lb-row ${cls}">
+                  <span class="lb-rank">${i + 1}</span>
+                  <span class="lb-pseudo">${s.studentPseudonym}</span>
+                  <span class="lb-time">${s.correctCount} / ${s.totalAttempts} ✓</span>
+                </div>`;
+              }).join('')
+          }
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Écho phase: live leaderboard of correct picks per student
+  if (phase === 'echo') {
+    const submissionsForRound = gameEchoSubmissions.filter(s => s.sentenceIdx === idx);
+    const ranked = [...submissionsForRound].sort((a, b) => b.correctCount - a.correctCount);
+    host.innerHTML = `
+      <div class="jam-panel" style="background:linear-gradient(180deg,#f3edff 0%,#ebe2ff 100%); border-color:#cdbef0">
+        <p class="jam-eyebrow" style="color:#6b3dc0">🎧 Écho — Manche ${idx + 1}</p>
+        <p class="jam-instructions">Les élèves écoutent 4 phrases en français et choisissent celle qui correspond à l'anglais. ${session.echoSeconds || 60}s.</p>
+        <div class="jam-leaderboard">
+          <h4>🎧 Classement de cette manche</h4>
           ${ranked.length === 0
             ? '<p style="color:var(--muted)">En attente de soumissions…</p>'
             : ranked.slice(0, 10).map((s, i) => {
@@ -7976,6 +8210,8 @@ async function enterStudentSession(shell, classCode, sessionId) {
       bannerText = (jd && jd.en) ? jd.en : '⚡ Sentence Jam — reconstruis la phrase de mémoire';
     } else if (data.phase === 'drops') {
       bannerText = '🔁 Drops Review — réponds vite !';
+    } else if (data.phase === 'echo') {
+      bannerText = '🎧 Écho — écoute et choisis !';
     }
     banner.textContent = bannerText;
     const badge = shell.querySelector('#phase-badge');
@@ -7984,6 +8220,7 @@ async function enterStudentSession(shell, classCode, sessionId) {
       : data.phase === 'voting' ? `Phase ${data.currentIdx + 1} : vote pour tes préférés`
       : data.phase === 'jam' ? `Phase ${data.currentIdx + 1} : ⚡ Sentence Jam !`
       : data.phase === 'drops' ? `Phase ${data.currentIdx + 1} : 🔁 Drops Review !`
+      : data.phase === 'echo' ? `Phase ${data.currentIdx + 1} : 🎧 Écho !`
       : data.phase === 'lobby' ? `En attente du professeur…`
       : data.phase === 'results' ? `Phase ${data.currentIdx + 1} : résultats`
       : 'Le jeu est terminé.';
@@ -8037,6 +8274,17 @@ async function enterStudentSession(shell, classCode, sessionId) {
         droppedForIdx = data.currentIdx; // set BEFORE building (same fix)
         stage.innerHTML = '';
         renderStudentDrops(stage, sessionId, pseudo, data.currentIdx, data);
+      }
+    } else if (data.phase === 'echo') {
+      if (data.echoSeconds > 0) {
+        showTimer(tsToMs(data.echoStartedAt), data.echoSeconds, () => {
+          renderStudentEcho(shell.querySelector('#student-stage'), sessionId, pseudo, data.currentIdx, data);
+        });
+      }
+      if (echoedForIdx !== data.currentIdx) {
+        echoedForIdx = data.currentIdx;
+        stage.innerHTML = '';
+        renderStudentEcho(stage, sessionId, pseudo, data.currentIdx, data);
       }
     } else if (data.phase === 'ended') {
       hideTimer();
@@ -8096,6 +8344,15 @@ async function enterStudentSession(shell, classCode, sessionId) {
     if (gameSession && gameSession.phase === 'drops') {
       // Update the per-round leaderboard if the student is in the results view
       paintDropsLeaderboard(shell.querySelector('#student-stage'), gameSession.currentIdx, pseudo);
+    } else if (gameSession && gameSession.phase === 'ended') {
+      renderStudentCumulative(shell.querySelector('#student-stage'), gameSession, pseudo);
+    }
+  });
+
+  gameEchoUnsub = fs.onSnapshot(fs.collection(firestore, `game_sessions/${sessionId}/echo_submissions`), snap => {
+    gameEchoSubmissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (gameSession && gameSession.phase === 'echo') {
+      paintEchoLeaderboard(shell.querySelector('#student-stage'), gameSession.currentIdx, pseudo);
     } else if (gameSession && gameSession.phase === 'ended') {
       renderStudentCumulative(shell.querySelector('#student-stage'), gameSession, pseudo);
     }
@@ -8456,6 +8713,141 @@ function paintDropsLeaderboard(host, sentenceIdx, pseudo) {
   `;
 }
 
+// Student-side Écho UI. 60s blitz: English sentence on top, 4 audio-only
+// French options below. Tap 🔊 to hear, then ✓ Choisir to lock in.
+let echoedForIdx = -1;
+async function renderStudentEcho(host, sessionId, pseudo, sentenceIdx, session) {
+  const startMs = tsToMs(session.echoStartedAt);
+  const totalSec = session.echoSeconds || 60;
+  const expireMs = startMs ? startMs + totalSec * 1000 : Date.now() + totalSec * 1000;
+  const remainingMs = Math.max(0, expireMs - Date.now());
+  const alreadySubmitted = gameEchoSubmissions.find(s => s.sentenceIdx === sentenceIdx && s.studentPseudonym === pseudo);
+  if (alreadySubmitted || remainingMs <= 0) {
+    host.innerHTML = `
+      <div class="echo-panel">
+        <p class="echo-eyebrow">🎧 Écho — Manche ${sentenceIdx + 1}</p>
+        ${alreadySubmitted
+          ? `<p style="font-size:1.4rem; font-weight:600; color:var(--success); text-align:center; margin:18px 0">Tu as eu ${alreadySubmitted.correctCount} bonne${alreadySubmitted.correctCount > 1 ? 's' : ''} réponse${alreadySubmitted.correctCount > 1 ? 's' : ''} sur ${alreadySubmitted.totalAttempts} !</p>`
+          : `<p style="color:var(--muted); text-align:center; margin:18px 0">⏱ Temps écoulé.</p>`
+        }
+        <div id="echo-lb-mount"></div>
+      </div>
+    `;
+    echoedForIdx = sentenceIdx;
+    paintEchoLeaderboard(host, sentenceIdx, pseudo);
+    return host;
+  }
+  host.innerHTML = `
+    <div class="echo-panel">
+      <p class="echo-eyebrow">🎧 Écho — quelle voix correspond à la phrase ?</p>
+      <div class="echo-score">
+        ✓ <span id="echo-correct">0</span>
+        · ✗ <span id="echo-wrong">0</span>
+      </div>
+      <div class="echo-english" id="echo-english">—</div>
+      <p class="echo-help">Tape 🔊 pour écouter chaque option, puis ✓ pour la bonne.</p>
+      <div class="echo-options" id="echo-options"></div>
+    </div>
+  `;
+  let correctCount = 0, wrongCount = 0, totalAttempts = 0;
+  let currentTargetFr = null;
+  let lastFr = null;
+  let busy = false;
+  function nextRound() {
+    busy = false;
+    const { target, options } = pickEchoRound(lastFr);
+    currentTargetFr = target.fr;
+    lastFr = target.fr;
+    host.querySelector('#echo-english').textContent = target.en;
+    const optsEl = host.querySelector('#echo-options');
+    optsEl.innerHTML = '';
+    options.forEach((opt, i) => {
+      const card = document.createElement('div');
+      card.className = 'echo-option';
+      card.innerHTML = `
+        <button class="echo-listen-btn" type="button" aria-label="Écouter l'option ${i + 1}">
+          <span class="echo-speaker">🔊</span>
+          <span class="echo-listen-label">Option ${i + 1}</span>
+        </button>
+        <button class="echo-choose-btn" type="button" disabled>✓ Choisir</button>
+      `;
+      const listenBtn = card.querySelector('.echo-listen-btn');
+      const chooseBtn = card.querySelector('.echo-choose-btn');
+      let played = false;
+      listenBtn.addEventListener('click', () => {
+        if (busy) return;
+        speak(opt.fr, listenBtn);
+        played = true;
+        chooseBtn.disabled = false;
+        listenBtn.classList.add('played');
+      });
+      chooseBtn.addEventListener('click', () => {
+        if (busy || !played) return;
+        handleAnswer(opt, card);
+      });
+      optsEl.appendChild(card);
+    });
+  }
+  function handleAnswer(picked, card) {
+    busy = true;
+    totalAttempts++;
+    const isCorrect = picked.fr === currentTargetFr;
+    if (isCorrect) {
+      correctCount++;
+      card.classList.add('correct');
+      host.querySelector('#echo-correct').textContent = correctCount;
+    } else {
+      wrongCount++;
+      card.classList.add('wrong');
+      host.querySelector('#echo-wrong').textContent = wrongCount;
+    }
+    host.querySelectorAll('.echo-option button').forEach(b => b.disabled = true);
+    setTimeout(() => nextRound(), 600);
+  }
+  nextRound();
+  echoedForIdx = sentenceIdx;
+  setTimeout(async () => {
+    try {
+      const fs = await getFirestoreApi();
+      await fs.addDoc(fs.collection(firestore, `game_sessions/${sessionId}/echo_submissions`), {
+        studentPseudonym: pseudo,
+        sentenceIdx,
+        correctCount,
+        totalAttempts,
+        createdAt: fs.serverTimestamp()
+      });
+    } catch (err) {
+      console.warn("echo submit failed", err);
+    }
+  }, remainingMs);
+  return host;
+}
+
+function paintEchoLeaderboard(host, sentenceIdx, pseudo) {
+  const mount = host?.querySelector('#echo-lb-mount');
+  if (!mount) return;
+  const subs = gameEchoSubmissions.filter(s => s.sentenceIdx === sentenceIdx);
+  if (subs.length === 0) {
+    mount.innerHTML = '';
+    return;
+  }
+  const ranked = [...subs].sort((a, b) => b.correctCount - a.correctCount);
+  mount.innerHTML = `
+    <div class="jam-leaderboard">
+      <h4>🎧 Classement de cette manche</h4>
+      ${ranked.slice(0, 5).map((s, i) => {
+        const cls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+        const me = s.studentPseudonym === pseudo ? ' <span style="color:var(--sage); font-weight:600;">(toi)</span>' : '';
+        return `<div class="lb-row ${cls}">
+          <span class="lb-rank">${i + 1}</span>
+          <span class="lb-pseudo">${s.studentPseudonym}${me}</span>
+          <span class="lb-time">${s.correctCount} ✓</span>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
 function paintJamLeaderboard(host, sentenceIdx, pseudo) {
   const mount = host?.querySelector('#jam-lb-mount');
   if (!mount) return;
@@ -8531,7 +8923,19 @@ function renderCumulativeLeaderboards(host) {
     .filter(e => e.totalAttempts > 0)
     .sort((a, b) => b.totalCorrect - a.totalCorrect);
 
-  // Decide which columns to show: always artists, plus jam/drops if any data
+  // Écho: total correct count across all rounds
+  const echoByPseudo = {};
+  gameEchoSubmissions.forEach(s => {
+    if (!echoByPseudo[s.studentPseudonym]) echoByPseudo[s.studentPseudonym] = { totalCorrect: 0, totalAttempts: 0 };
+    echoByPseudo[s.studentPseudonym].totalCorrect += s.correctCount || 0;
+    echoByPseudo[s.studentPseudonym].totalAttempts += s.totalAttempts || 0;
+  });
+  const echoLB = Object.entries(echoByPseudo)
+    .map(([pseudo, v]) => ({ pseudo, ...v }))
+    .filter(e => e.totalAttempts > 0)
+    .sort((a, b) => b.totalCorrect - a.totalCorrect);
+
+  // Decide which columns to show: always artists, plus jam/drops/echo if any data
   const cols = [];
   cols.push({
     title: '🎨 Artistes les plus aimés',
@@ -8552,7 +8956,17 @@ function renderCumulativeLeaderboards(host) {
       emptyText: ''
     });
   }
-  const gridCols = cols.length === 1 ? '1fr' : cols.length === 2 ? '1fr 1fr' : '1fr 1fr 1fr';
+  if (echoLB.length > 0) {
+    cols.push({
+      title: '🎧 Top oreilles',
+      rows: echoLB.slice(0, 10).map((r, i) => ({ rank: i + 1, name: r.pseudo, detail: `${r.totalCorrect} bonnes réponses` })),
+      emptyText: ''
+    });
+  }
+  const gridCols = cols.length === 1 ? '1fr'
+    : cols.length === 2 ? '1fr 1fr'
+    : cols.length === 3 ? '1fr 1fr 1fr'
+    : 'repeat(auto-fit, minmax(220px, 1fr))';
   host.innerHTML = `
     <div class="game-panel">
       <h3 style="margin-top:0">🎉 Fin du jeu — classement final</h3>
