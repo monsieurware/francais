@@ -763,6 +763,89 @@
     word-break: break-all;
     border: 1px dashed var(--border-strong);
   }
+  /* ---------- Access code (teacher displays) ---------- */
+  .game-code-display {
+    background: linear-gradient(135deg, var(--cream) 0%, var(--surface) 100%);
+    border: 3px solid var(--accent);
+    border-radius: var(--radius-md);
+    padding: 24px 28px;
+    margin: 14px 0;
+    text-align: center;
+  }
+  .game-code-label {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .game-code-value {
+    font-family: var(--serif);
+    font-size: 4.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    user-select: all;
+    cursor: text;
+  }
+  .game-code-help {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  /* ---------- Access code entry (student types it) ---------- */
+  .code-entry {
+    max-width: 480px;
+    margin: 40px auto;
+    text-align: center;
+    padding: 40px 28px;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+  }
+  .code-entry-title {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+  }
+  .code-entry-hint {
+    color: var(--muted);
+    margin-bottom: 28px;
+    font-size: 0.95rem;
+  }
+  .code-input {
+    font-family: var(--serif);
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.4em;
+    padding: 14px 16px;
+    width: 220px;
+    border: 2px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    margin-bottom: 20px;
+  }
+  .code-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .code-submit-btn {
+    display: block;
+    margin: 0 auto;
+    min-width: 200px;
+  }
+  .code-error {
+    color: #b91c1c;
+    margin-top: 16px;
+    font-size: 0.95rem;
+  }
+  @media (max-width: 768px) {
+    .game-code-value { font-size: 3.5rem; }
+    .code-input { font-size: 2.4rem; width: 180px; letter-spacing: 0.3em; }
+  }
   @media (max-width: 768px) {
     .vote-grid { grid-template-columns: 1fr 1fr; }
     .game-banner-sentence.huge { font-size: 1.5rem; padding: 24px; }
@@ -2144,6 +2227,14 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow create: if request.auth != null;
       allow update, delete: if false;
+    }
+    // Room codes — 4-digit access codes that map to game sessions.
+    // Any authenticated student can read to join; any auth user can
+    // create (teachers) or delete (cleanup on session end).
+    match /room_codes/{code} {
+      allow read: if request.auth != null;
+      allow create, delete: if request.auth != null;
+      allow update: if false;
     }
   }
 }
@@ -6309,12 +6400,19 @@ document.getElementById('sidebar-backdrop').addEventListener('click', () => {
 // GAME MODE — teacher-led collaborative drawing game
 // ============================================================
 // URL routes:
-//   ?mode=game-teacher&class=CODE   → teacher controls
-//   ?mode=game-student&class=CODE   → student joins
+//   ?mode=game-teacher&class=CODE        → teacher controls
+//   ?mode=game-student                   → student enters access code
+//   ?mode=game-student&session=ID        → legacy direct link (still works)
+//
+// Access codes: when a teacher starts a session, a 4-digit code is
+// generated and stored in room_codes/{code} → {sessionId, classCode,
+// expiresAt}. Students bookmark the simple student URL and type the
+// code each new session. Codes auto-expire after 24h and are deleted
+// when the teacher ends the session.
 //
 // Firestore schema (under game_sessions/{sessionId}):
 //   { classCode, currentSentence, phase, sentences:[], currentIdx,
-//     createdAt, updatedAt }
+//     createdAt, updatedAt, roomCode }
 //   subcollection game_drawings: { studentPseudonym, imageDataUrl, sentenceIdx, createdAt }
 //   subcollection votes: { voterId, drawingId, sentenceIdx }
 // ============================================================
@@ -6425,6 +6523,60 @@ function tsToMs(serverTs) {
   return null;
 }
 
+// ---------------- ACCESS CODES ----------------
+// Generate a unique 4-digit code (1000–9999) and write the mapping
+// to room_codes/{code}. Uses a transaction to avoid race collisions.
+// Codes expire after 24h and are deleted on session end.
+async function generateRoomCode(sessionId, classCode) {
+  const fs = await getFirestoreApi();
+  const MAX_ATTEMPTS = 10;
+  const EXPIRES_MS = 24 * 60 * 60 * 1000; // 24h
+  for (let i = 0; i < MAX_ATTEMPTS; i++) {
+    const code = String(1000 + Math.floor(Math.random() * 9000));
+    const ref = fs.doc(firestore, `room_codes/${code}`);
+    try {
+      const ok = await fs.runTransaction(firestore, async tx => {
+        const snap = await tx.get(ref);
+        if (snap.exists()) return false;
+        tx.set(ref, {
+          sessionId,
+          classCode: classCode || '',
+          createdAt: fs.serverTimestamp(),
+          expiresAt: Date.now() + EXPIRES_MS
+        });
+        return true;
+      });
+      if (ok) return code;
+    } catch (e) {
+      console.warn("Room code attempt failed:", e);
+    }
+  }
+  throw new Error("Couldn't generate a unique access code");
+}
+
+// Look up a code → returns {sessionId, classCode} or null if invalid/expired.
+async function lookupRoomCode(code) {
+  if (!/^\d{4}$/.test(code)) return null;
+  const fs = await getFirestoreApi();
+  const ref = fs.doc(firestore, `room_codes/${code}`);
+  const snap = await fs.getDoc(ref);
+  if (!snap.exists()) return null;
+  const data = snap.data();
+  if (data.expiresAt && data.expiresAt < Date.now()) return null;
+  return { sessionId: data.sessionId, classCode: data.classCode || '' };
+}
+
+// Delete a code (called when teacher ends the session).
+async function deleteRoomCode(code) {
+  if (!code) return;
+  try {
+    const fs = await getFirestoreApi();
+    await fs.deleteDoc(fs.doc(firestore, `room_codes/${code}`));
+  } catch (e) {
+    console.warn("Failed to delete room code:", e);
+  }
+}
+
 // ---------------- TEACHER VIEW ----------------
 async function renderTeacherView(shell, classCode) {
   shell.innerHTML = `
@@ -6517,6 +6669,11 @@ async function renderTeacherView(shell, classCode) {
           <span class="attendance-empty">Personne n'a encore rejoint la partie.</span>
         </div>
       </div>
+      <div class="game-code-display" id="game-code-display" hidden>
+        <div class="game-code-label">Code de la partie</div>
+        <div class="game-code-value" id="game-code-value">----</div>
+        <div class="game-code-help">Les élèves ouvrent le lien ci-dessous et saisissent ce code.</div>
+      </div>
       <div class="game-link-box" id="student-link">Le lien élève apparaîtra ici quand le jeu sera lancé.</div>
     </div>
     <div id="teacher-gallery"></div>
@@ -6605,17 +6762,21 @@ async function renderTeacherView(shell, classCode) {
   const phaseBadge = shell.querySelector('#phase-badge');
   const currentSentenceEl = shell.querySelector('#current-sentence');
   const studentLinkEl = shell.querySelector('#student-link');
+  const codeDisplayEl = shell.querySelector('#game-code-display');
+  const codeValueEl = shell.querySelector('#game-code-value');
   const galleryEl = shell.querySelector('#teacher-gallery');
 
   let sessionId = null;
+  let roomCode = null;
   let pendingJamTimeout = null;
   const fs = await getFirestoreApi();
 
-  function studentURL(code, sid) {
+  // Simple, bookmarkable student URL — no session ID in it.
+  // Students type the 4-digit code on the landing screen.
+  function studentURL() {
     const u = new URL(window.location.href);
+    u.search = '';
     u.searchParams.set('mode', 'game-student');
-    u.searchParams.set('class', code);
-    u.searchParams.set('session', sid);
     return u.toString();
   }
 
@@ -6867,7 +7028,21 @@ async function renderTeacherView(shell, classCode) {
     phaseBadge.textContent = 'Phase : lobby — élèves rejoignent';
     phaseBadge.className = 'game-phase-badge lobby';
     currentSentenceEl.textContent = selectedSentences[0];
-    studentLinkEl.textContent = studentURL(classCode, sessionId);
+    studentLinkEl.textContent = studentURL();
+    // Generate access code, save the code on the session doc, and show it big
+    try {
+      roomCode = await generateRoomCode(sessionId, classCode);
+      codeValueEl.textContent = roomCode;
+      codeDisplayEl.hidden = false;
+      await fs.updateDoc(fs.doc(firestore, `game_sessions/${sessionId}`), {
+        roomCode,
+        updatedAt: fs.serverTimestamp()
+      });
+    } catch (e) {
+      console.warn("Couldn't generate access code:", e);
+      codeValueEl.textContent = "ERR";
+      codeDisplayEl.hidden = false;
+    }
     listenSession(sessionId);
   });
 
@@ -7018,6 +7193,12 @@ async function renderTeacherView(shell, classCode) {
       phase: 'ended',
       updatedAt: fs.serverTimestamp()
     });
+    // Free up the access code so it can be reused by a future session
+    if (roomCode) {
+      await deleteRoomCode(roomCode);
+      roomCode = null;
+      codeDisplayEl.hidden = true;
+    }
     if (gameSessionUnsub) gameSessionUnsub();
     if (gameDrawingsUnsub) gameDrawingsUnsub();
     if (gameVotesUnsub) gameVotesUnsub();
@@ -7350,12 +7531,75 @@ async function pickNameFromRoster(host, sessionId, deviceId) {
   });
 }
 
+// Ask the student for a 4-digit access code, look it up, and resolve to
+// { sessionId, classCode }. Loops until a valid code is entered.
+async function promptForAccessCode(shell) {
+  return new Promise(resolve => {
+    shell.innerHTML = `
+      <p class="game-eyebrow">Mode jeu</p>
+      <div class="code-entry">
+        <h2 class="code-entry-title">Code de la partie ?</h2>
+        <p class="code-entry-hint">Saisis le code à 4 chiffres affiché à l'écran par ton professeur.</p>
+        <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="4" id="code-input" class="code-input" placeholder="0000" autocomplete="off" />
+        <button class="btn btn-primary code-submit-btn" id="code-submit">Rejoindre</button>
+        <div class="code-error" id="code-error" hidden></div>
+      </div>
+    `;
+    const input = shell.querySelector('#code-input');
+    const submit = shell.querySelector('#code-submit');
+    const errorEl = shell.querySelector('#code-error');
+    input.focus();
+    // Strip non-digits as user types
+    input.addEventListener('input', () => {
+      const cleaned = input.value.replace(/\D/g, '').slice(0, 4);
+      if (cleaned !== input.value) input.value = cleaned;
+      errorEl.hidden = true;
+    });
+    async function attempt() {
+      const code = input.value.trim();
+      if (!/^\d{4}$/.test(code)) {
+        errorEl.textContent = "Saisis les 4 chiffres du code.";
+        errorEl.hidden = false;
+        input.focus();
+        return;
+      }
+      submit.disabled = true;
+      submit.textContent = "Vérification…";
+      try {
+        const result = await lookupRoomCode(code);
+        if (!result) {
+          errorEl.textContent = "Code invalide ou expiré. Demande au prof de le vérifier.";
+          errorEl.hidden = false;
+          submit.disabled = false;
+          submit.textContent = "Rejoindre";
+          input.select();
+          return;
+        }
+        resolve(result);
+      } catch (e) {
+        console.warn("code lookup error", e);
+        errorEl.textContent = "Erreur de connexion. Réessaie dans un instant.";
+        errorEl.hidden = false;
+        submit.disabled = false;
+        submit.textContent = "Rejoindre";
+      }
+    }
+    submit.addEventListener('click', attempt);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') attempt();
+    });
+  });
+}
+
 async function renderStudentView(shell, classCode) {
   const params = new URLSearchParams(window.location.search);
-  const sessionId = params.get('session');
+  let sessionId = params.get('session');
+  // No session in the URL → prompt for the 4-digit access code
   if (!sessionId) {
-    shell.innerHTML = `<h1>Lien invalide</h1><p>Le lien du jeu doit inclure un identifiant de session. Demande à ton professeur de te renvoyer le lien complet.</p>`;
-    return;
+    const resolved = await promptForAccessCode(shell);
+    if (!resolved) return; // shouldn't happen — prompt loops until success
+    sessionId = resolved.sessionId;
+    if (resolved.classCode && !classCode) classCode = resolved.classCode;
   }
   // Step 1: roster name pick (or auto-rejoin if this device already claimed)
   shell.innerHTML = `
