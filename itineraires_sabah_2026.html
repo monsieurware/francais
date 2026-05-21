@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Itinéraires Sabah, juin 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #FDFCF8;
+  --ink: #0F172A;
+  --ink-mid: #475569;
+  --ink-low: #94A3B8;
+  --ink-faint: #CBD5E1;
+  --line: #E2E8F0;
+  --line-soft: #EFF2F7;
+
+  --bleu: #2C4A7A;
+  --bleu-mid: #5C7BA8;
+  --bleu-tint: #F0F4FA;
+
+  --vert: #4A7C3E;
+  --vert-tint: #F1F6EE;
+
+  --ambre: #B8761F;
+  --ambre-tint: #FBF4E8;
+
+  --rouge: #9F3B3E;
+  --rouge-tint: #FAEEEE;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+}
+
+.page {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 64px 72px 80px;
+  background: var(--paper);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 40px;
+  margin-bottom: 56px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: 18px;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+
+h1 .accent {
+  color: var(--bleu);
+  font-weight: 500;
+}
+
+.meta {
+  text-align: right;
+  padding-top: 4px;
+}
+
+.meta-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: 6px;
+}
+
+.meta-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+
+.meta-value .small {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-mid);
+  margin-top: 2px;
+}
+
+.start-row {
+  display: flex;
+  justify-content: center;
+}
+
+.start-node {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 14px 28px;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.start-node .dot {
+  width: 5px;
+  height: 5px;
+  background: var(--paper);
+  border-radius: 50%;
+}
+
+.start-node .code {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-low);
+}
+
+.trunk {
+  width: 1px;
+  height: 28px;
+  background: var(--ink-faint);
+  margin: 0 auto;
+}
+
+.decision {
+  display: flex;
+  justify-content: center;
+}
+
+.decision-node {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  padding: 12px 24px;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+}
+
+.decision-node::before {
+  content: "?";
+  font-weight: 600;
+  color: var(--bleu);
+  margin-right: 10px;
+}
+
+.distributor {
+  height: 56px;
+  position: relative;
+}
+
+.distributor svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 56px;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.col::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.col.iad::before { background: var(--vert); }
+.col.roa::before { background: var(--ambre); }
+.col.train::before { background: var(--rouge); }
+
+.col-header {
+  padding: 22px 0 24px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.col-header .id {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.col-header .code {
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.col-header .label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-mid);
+  letter-spacing: -0.005em;
+}
+
+.col-header .status {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 2px;
+}
+
+.col.iad .status { background: var(--vert-tint); color: var(--vert); }
+.col.roa .status { background: var(--ambre-tint); color: var(--ambre); }
+.col.train .status { background: var(--rouge-tint); color: var(--rouge); }
+
+.steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.step {
+  padding: 14px 0 14px 26px;
+  position: relative;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.step:last-of-type {
+  border-bottom: none;
+}
+
+.step-num {
+  position: absolute;
+  left: 0;
+  top: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-low);
+  letter-spacing: 0.02em;
+  font-feature-settings: "tnum";
+}
+
+.step-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin-bottom: 3px;
+  line-height: 1.35;
+}
+
+.step-detail {
+  font-size: 12px;
+  color: var(--ink-mid);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.mini-decision {
+  margin: 14px 0;
+  padding: 14px 16px;
+  background: var(--ambre-tint);
+  border-left: 2px solid var(--ambre);
+  font-size: 12px;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.mini-decision .mini-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ambre);
+  margin-bottom: 4px;
+}
+
+.mini-decision .mini-q {
+  font-weight: 500;
+}
+
+.verdict {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.verdict-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: 8px;
+}
+
+.verdict-text {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+
+.synthesis {
+  padding-top: 48px;
+  border-top: 1px solid var(--ink);
+}
+
+.synthesis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+}
+
+.synthesis-title {
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.synthesis-title .accent {
+  color: var(--bleu);
+  font-weight: 500;
+}
+
+.synthesis-sub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+.scenarios {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+}
+
+.scenario {
+  padding: 24px 26px 28px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  position: relative;
+}
+
+.scenario.recommended {
+  background: var(--bleu);
+  color: var(--paper);
+  border-color: var(--bleu);
+}
+
+.scenario-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 18px;
+}
+
+.scenario .letter {
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+}
+
+.scenario.recommended .letter {
+  color: var(--paper);
+}
+
+.scenario-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+.scenario.recommended .scenario-tag {
+  color: var(--paper);
+  opacity: 0.7;
+}
+
+.scenario-title {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.scenario.recommended .scenario-title {
+  color: var(--paper);
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.timeline .day {
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--bleu);
+  letter-spacing: -0.005em;
+  font-feature-settings: "tnum";
+  white-space: nowrap;
+}
+
+.scenario.recommended .timeline .day {
+  color: var(--paper);
+  opacity: 0.8;
+}
+
+.timeline .event {
+  color: var(--ink-mid);
+  font-weight: 400;
+}
+
+.scenario.recommended .timeline .event {
+  color: var(--paper);
+  opacity: 0.95;
+}
+
+.timeline .event.arrive {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.scenario.recommended .timeline .event.arrive {
+  color: var(--paper);
+  opacity: 1;
+}
+
+footer {
+  margin-top: 64px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink-low);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media print {
+  body { background: white; }
+  .page { padding: 36px 44px; max-width: none; }
+  header { page-break-after: avoid; }
+  .columns { page-break-inside: avoid; }
+  .synthesis { page-break-inside: avoid; }
+}
+
+@page {
+  size: A3 landscape;
+  margin: 0;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div>
+    <div class="eyebrow">Académie Française · VGWLA 2026</div>
+    <h1>Itinéraires <span class="accent">Sabah</span><br>de Casablanca à Lexington</h1>
+  </div>
+  <div class="meta">
+    <div class="meta-label">Fenêtre d'arrivée</div>
+    <div class="meta-value">
+      15 juin (après 10h) au 17 juin (midi)
+      <span class="small">Cible idéale : 16 juin</span>
+    </div>
+  </div>
+</header>
+
+<div class="start-row">
+  <div class="start-node">
+    <span class="dot"></span>
+    Sabah à Casablanca
+    <span class="code">CMN · Mohammed V</span>
+  </div>
+</div>
+
+<div class="trunk"></div>
+
+<div class="decision">
+  <div class="decision-node">Quel point d'entrée aux États-Unis</div>
+</div>
+
+<div class="distributor">
+  <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
+    <path d="M 600 0 L 600 22 L 200 22 L 200 56" stroke="#0F172A" stroke-width="1" fill="none"/>
+    <path d="M 600 0 L 600 56" stroke="#0F172A" stroke-width="1" fill="none"/>
+    <path d="M 600 0 L 600 22 L 1000 22 L 1000 56" stroke="#0F172A" stroke-width="1" fill="none"/>
+    <polygon points="200,56 197,49 203,49" fill="#0F172A"/>
+    <polygon points="600,56 597,49 603,49" fill="#0F172A"/>
+    <polygon points="1000,56 997,49 1003,49" fill="#0F172A"/>
+  </svg>
+</div>
+
+<div class="columns">
+
+  <div class="col iad">
+    <div class="col-header">
+      <div class="id">
+        <div class="code">IAD</div>
+        <div class="label">Washington Dulles</div>
+      </div>
+      <div class="status">Recommandé</div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <div class="step-title">Vol direct AT218</div>
+        <div class="step-detail">Royal Air Maroc, Boeing 787, 8h20 de vol. Aucune correspondance.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <div class="step-title">CMN 15h25 vers IAD 19h45</div>
+        <div class="step-detail">Arrivée en soirée, trop tard pour le bus le jour même.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <div class="step-title">Nuit à Dulles</div>
+        <div class="step-detail">Hôtels avec navette gratuite depuis l'aéroport (Hilton Garden Inn, Hyatt Place, Embassy Suites).</div>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <div class="step-title">Virginia Breeze 10h45 vers 14h15</div>
+        <div class="step-detail">Bus unique quotidien, 3h30 de trajet, environ 36 USD. Réservation à l'avance.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">05</span>
+        <div class="step-title">Arrêt Food Lion, Lexington</div>
+        <div class="step-detail">84 East Midland Trail. Prise en charge W&amp;L sur 5 minutes de trajet.</div>
+      </div>
+    </div>
+    <div class="verdict">
+      <div class="verdict-label">Verdict</div>
+      <div class="verdict-text">Le plus fiable. Une seule connexion aérienne, un seul mode de transport au sol, un seul partenaire.</div>
+    </div>
+  </div>
+
+  <div class="col roa">
+    <div class="col-header">
+      <div class="id">
+        <div class="code">ROA</div>
+        <div class="label">Roanoke Regional</div>
+      </div>
+      <div class="status">Conditionnel</div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <div class="step-title">Aéroport régional, vols domestiques uniquement</div>
+        <div class="step-detail">Aucun vol international direct. Correspondance obligatoire via IAD ou hub européen.</div>
+      </div>
+      <div class="mini-decision">
+        <span class="mini-label">Décision préalable</span>
+        <span class="mini-q">Dick peut-il récupérer Sabah à ROA ?</span>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <div class="step-title">Si oui, routage CMN-IAD-ROA</div>
+        <div class="step-detail">AT218 direct, nuit Dulles, puis United IAD vers ROA en matinée. Pickup Dick à l'arrivée.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <div class="step-title">Surcoût de 200 à 400 USD</div>
+        <div class="step-detail">Correspondance domestique additionnelle au-delà du scénario IAD seul.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <div class="step-title">Aucun transport public ROA vers Lexington</div>
+        <div class="step-detail">1h de route. Sans pickup, taxi ou Uber à 80-100 USD.</div>
+      </div>
+    </div>
+    <div class="verdict">
+      <div class="verdict-label">Verdict</div>
+      <div class="verdict-text">À retenir uniquement si Dick confirme un pickup à ROA. Sinon, IAD reste préférable.</div>
+    </div>
+  </div>
+
+  <div class="col train">
+    <div class="col-header">
+      <div class="id">
+        <div class="code">Train</div>
+        <div class="label">Amtrak Cardinal</div>
+      </div>
+      <div class="status">Non viable</div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <div class="step-title">Pas de gare à Lexington</div>
+        <div class="step-detail">Stations les plus proches : Staunton et Clifton Forge, chacune à 45 minutes de route.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <div class="step-title">Service limité à 3 jours par semaine</div>
+        <div class="step-detail">Cardinal westbound : dimanche, mercredi, vendredi uniquement.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <div class="step-title">Fenêtre d'arrivée incompatible</div>
+        <div class="step-detail">15 juin (lundi) et 16 juin (mardi) : pas de service. 17 juin (mercredi) : arrivée Lexington en milieu d'après-midi, après la cible de midi.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <div class="step-title">Cascade de transitions</div>
+        <div class="step-detail">IAD, Metro Silver Line, Union Station, Cardinal, Staunton, pickup vers Lexington. Multiplie les risques de retard.</div>
+      </div>
+    </div>
+    <div class="verdict">
+      <div class="verdict-label">Verdict</div>
+      <div class="verdict-text">Géographie et calendrier incompatibles avec la fenêtre d'arrivée. Option à écarter.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="synthesis">
+  <div class="synthesis-header">
+    <div class="synthesis-sub">Trois scénarios via IAD</div>
+    <div class="synthesis-title">Selon la date de départ <span class="accent">de Casablanca</span></div>
+  </div>
+
+  <div class="scenarios">
+    <div class="scenario">
+      <div class="scenario-head">
+        <div class="letter">B</div>
+        <div class="scenario-tag">Plus tôt</div>
+      </div>
+      <div class="scenario-title">Arrivée au plus tôt</div>
+      <div class="timeline">
+        <span class="day">14 juin</span><span class="event">Départ CMN sur AT218</span>
+        <span class="day">14 juin</span><span class="event">Arrivée IAD 19h45, nuit Dulles</span>
+        <span class="day">15 juin</span><span class="event">Bus Virginia Breeze 10h45</span>
+        <span class="day">15 juin</span><span class="event arrive">Lexington 14h15</span>
+      </div>
+    </div>
+
+    <div class="scenario recommended">
+      <div class="scenario-head">
+        <div class="letter">A</div>
+        <div class="scenario-tag">Recommandé</div>
+      </div>
+      <div class="scenario-title">Équilibre confort et marge</div>
+      <div class="timeline">
+        <span class="day">15 juin</span><span class="event">Départ CMN sur AT218</span>
+        <span class="day">15 juin</span><span class="event">Arrivée IAD 19h45, nuit Dulles</span>
+        <span class="day">16 juin</span><span class="event">Bus Virginia Breeze 10h45</span>
+        <span class="day">16 juin</span><span class="event arrive">Lexington 14h15</span>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-head">
+        <div class="letter">C</div>
+        <div class="scenario-tag">Plus tard</div>
+      </div>
+      <div class="scenario-title">Arrivée à la limite</div>
+      <div class="timeline">
+        <span class="day">16 juin</span><span class="event">Départ CMN sur AT218</span>
+        <span class="day">16 juin</span><span class="event">Arrivée IAD 19h45, nuit Dulles</span>
+        <span class="day">17 juin</span><span class="event">Bus Virginia Breeze 10h45</span>
+        <span class="day">17 juin</span><span class="event arrive">Lexington 14h15</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>VGWLA Académie Française 2026</span>
+  <span>Préparé pour Sabah · Mai 2026</span>
+</footer>
+
+</div>
+</body>
+</html>
