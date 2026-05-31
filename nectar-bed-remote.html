@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Nectar Remote</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #faf8f4;
+    --surface-2: #f3efe8;
+    --ink: #1b1714;
+    --muted: #7c746a;
+    --border: #e9e3d9;
+    --accent: #b07d39;
+    --accent-soft: #f5ecdc;
+    --stop: #b23b3b;
+    --stop-soft: #f8e9e9;
+    --ok: #4f7a4f;
+    --shadow: 0 1px 2px rgba(27,23,20,.05), 0 8px 24px rgba(27,23,20,.06);
+    --radius: 15px;
+  }
+  [data-theme="dark"] {
+    --bg: #14110d;
+    --surface: #1e1a14;
+    --surface-2: #272118;
+    --ink: #f2ede4;
+    --muted: #9a9082;
+    --border: #2e271d;
+    --accent: #d6a35c;
+    --accent-soft: #2c2418;
+    --stop: #d06464;
+    --stop-soft: #2e1c1c;
+    --ok: #82ad82;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "DM Sans", sans-serif;
+    line-height: 1.45;
+    min-height: 100dvh;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    transition: background .25s ease, color .25s ease;
+  }
+  .wrap { max-width: 460px; margin: 0 auto; padding: 22px 18px 48px; }
+
+  header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  .title { margin: 0; font-family: "Playfair Display", serif; font-weight: 700; font-size: 30px; letter-spacing: -.01em; }
+  .subtitle { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; }
+  .theme-btn {
+    flex: none; width: 42px; height: 42px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink);
+    font-size: 17px; cursor: pointer; display: grid; place-items: center; transition: background .2s, transform .1s;
+  }
+  .theme-btn:active { transform: scale(.94); }
+
+  /* Connection bar */
+  .conn { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; box-shadow: var(--shadow); margin-bottom: 22px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; transition: background .2s; }
+  .dot.on { background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 18%, transparent); }
+  .dot.busy { background: var(--accent); animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: .4; } 50% { opacity: 1; } }
+  .conn-text { flex: 1; min-width: 0; }
+  .conn-text strong { display: block; font-size: 14.5px; font-weight: 600; }
+  .conn-text span { display: block; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .connect-btn {
+    flex: none; border: none; border-radius: 11px; padding: 11px 18px; font-family: inherit; font-size: 14px; font-weight: 600;
+    background: var(--accent); color: #fff; cursor: pointer; transition: transform .1s, opacity .2s; letter-spacing: .01em;
+  }
+  [data-theme="dark"] .connect-btn { color: #1a140a; }
+  .connect-btn:active { transform: scale(.96); }
+  .connect-btn.connected { background: var(--surface-2); color: var(--ink); border: 1px solid var(--border); }
+
+  section { margin-bottom: 22px; }
+  .label { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px 3px; display: flex; align-items: center; gap: 8px; }
+  .label .pill { font-size: 10.5px; padding: 2px 8px; border-radius: 20px; background: var(--surface-2); color: var(--muted); letter-spacing: .03em; text-transform: none; font-weight: 600; }
+  .label .pill.live { background: var(--accent-soft); color: var(--accent); }
+
+  /* Position rows */
+  .row { display: grid; grid-template-columns: 64px 1fr 1fr; align-items: stretch; gap: 8px; margin-bottom: 8px; }
+  .row-name { display: flex; align-items: center; font-size: 14px; font-weight: 600; padding-left: 4px; color: var(--ink); }
+  .ctrl {
+    appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--ink);
+    border-radius: var(--radius); padding: 16px 10px; font-family: inherit; font-size: 14.5px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
+    touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+    transition: transform .08s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease; box-shadow: var(--shadow);
+  }
+  .ctrl .arw { font-size: 12px; opacity: .65; line-height: 1; }
+  .ctrl:not(:disabled):active,
+  .ctrl.holding { transform: scale(.97); background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .ctrl.holding .arw { opacity: 1; }
+  .ctrl:disabled { opacity: .42; cursor: not-allowed; box-shadow: none; }
+
+  /* Stop */
+  .stop {
+    width: 100%; border: 1px solid color-mix(in srgb, var(--stop) 30%, var(--border)); background: var(--stop-soft); color: var(--stop);
+    border-radius: var(--radius); padding: 18px; font-family: inherit; font-size: 16px; font-weight: 700; letter-spacing: .03em;
+    cursor: pointer; transition: transform .08s, background .15s; box-shadow: var(--shadow);
+  }
+  .stop:not(:disabled):active { transform: scale(.98); background: color-mix(in srgb, var(--stop) 16%, var(--stop-soft)); }
+  .stop:disabled { opacity: .42; cursor: not-allowed; box-shadow: none; }
+
+  /* Grids of taps */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tap {
+    appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--ink);
+    border-radius: var(--radius); padding: 15px 12px; font-family: inherit; font-size: 14.5px; font-weight: 600;
+    cursor: pointer; transition: transform .08s, background .15s, border-color .15s; box-shadow: var(--shadow); user-select: none;
+  }
+  .tap:not(:disabled):active { transform: scale(.97); background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .tap.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .tap:disabled { opacity: .42; cursor: not-allowed; box-shadow: none; }
+
+  /* Massage timer */
+  .timer { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin-top: 8px; box-shadow: var(--shadow); }
+  .timer label { font-size: 13.5px; font-weight: 500; color: var(--ink); }
+  .timer input { width: 62px; border: 1px solid var(--border); border-radius: 9px; padding: 8px 9px; font-family: inherit; font-size: 14px; font-weight: 600; background: var(--bg); color: var(--ink); text-align: center; }
+  .timer .unit { font-size: 13px; color: var(--muted); }
+  .timer .count { margin-left: auto; font-variant-numeric: tabular-nums; font-size: 15px; font-weight: 700; color: var(--accent); min-width: 52px; text-align: right; }
+
+  /* Diagnostics */
+  details.diag { margin-top: 28px; border-top: 1px solid var(--border); padding-top: 14px; }
+  details.diag summary { cursor: pointer; font-size: 12px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); list-style: none; display: flex; align-items: center; gap: 7px; }
+  details.diag summary::-webkit-details-marker { display: none; }
+  details.diag summary::before { content: "+"; font-size: 15px; color: var(--accent); }
+  details.diag[open] summary::before { content: "\2212"; }
+  .diag-body { padding-top: 14px; }
+  .diag-note { font-size: 12.5px; color: var(--muted); margin: 0 0 12px; line-height: 1.5; }
+  .field { display: flex; gap: 8px; margin-bottom: 10px; }
+  .field input[type=text] { flex: 1; border: 1px solid var(--border); border-radius: 9px; padding: 10px 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; background: var(--bg); color: var(--ink); }
+  .field button { border: 1px solid var(--border); background: var(--surface-2); color: var(--ink); border-radius: 9px; padding: 0 14px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .field button:active { transform: scale(.97); }
+  .field .hint { font-size: 11.5px; color: var(--muted); align-self: center; }
+  .offrow { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; font-size: 13px; }
+  .offrow input { width: 78px; border: 1px solid var(--border); border-radius: 9px; padding: 8px 9px; font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: var(--bg); color: var(--ink); text-align: center; }
+  .log { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 11px 12px; height: 168px; overflow-y: auto; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11.5px; line-height: 1.6; }
+  .log .l { white-space: pre-wrap; word-break: break-all; }
+  .log .tx { color: var(--accent); }
+  .log .rx { color: var(--ok); }
+  .log .err { color: var(--stop); }
+  .log .info { color: var(--muted); }
+
+  .note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 26px; line-height: 1.55; }
+  .unsupported { display: none; background: var(--stop-soft); color: var(--stop); border: 1px solid color-mix(in srgb, var(--stop) 30%, var(--border)); border-radius: var(--radius); padding: 13px 14px; font-size: 13px; margin-bottom: 18px; line-height: 1.5; }
+  .unsupported.show { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1 class="title">Nectar Remote</h1>
+      <p class="subtitle">OKIN CB3332</p>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">&#9789;</button>
+  </header>
+
+  <div class="unsupported" id="unsupported">
+    This browser does not support Web Bluetooth. Use Chrome or Edge on Android, macOS, or Windows. On iPhone or iPad, the Bluefy browser works.
+  </div>
+
+  <div class="conn">
+    <span class="dot" id="dot"></span>
+    <div class="conn-text">
+      <strong id="connTitle">Disconnected</strong>
+      <span id="connSub">Tap connect, then pick OKIN-061399</span>
+    </div>
+    <button class="connect-btn" id="connectBtn">Connect</button>
+  </div>
+
+  <section>
+    <p class="label">Position</p>
+    <div class="row">
+      <div class="row-name">Head</div>
+      <button class="ctrl" data-hold="0x00" disabled><span class="arw">&#9650;</span> Up</button>
+      <button class="ctrl" data-hold="0x01" disabled><span class="arw">&#9660;</span> Down</button>
+    </div>
+    <div class="row">
+      <div class="row-name">Lumbar</div>
+      <button class="ctrl" data-hold="0x04" disabled><span class="arw">&#9650;</span> Up</button>
+      <button class="ctrl" data-hold="0x07" disabled><span class="arw">&#9660;</span> Down</button>
+    </div>
+    <div class="row">
+      <div class="row-name">Foot</div>
+      <button class="ctrl" data-hold="0x02" disabled><span class="arw">&#9650;</span> Up</button>
+      <button class="ctrl" data-hold="0x03" disabled><span class="arw">&#9660;</span> Down</button>
+    </div>
+  </section>
+
+  <section>
+    <button class="stop" id="stopBtn" disabled>STOP</button>
+  </section>
+
+  <section>
+    <p class="label">Presets</p>
+    <div class="grid2">
+      <button class="tap" data-preset="0x10" disabled>Flat</button>
+      <button class="tap" data-preset="0x13" disabled>Zero Gravity</button>
+      <button class="tap" data-preset="0x11" disabled>Lounge</button>
+      <button class="tap" data-preset="0x16" disabled>Anti-Snore</button>
+    </div>
+  </section>
+
+  <section>
+    <p class="label">Massage <span class="pill" id="massagePill">Off</span></p>
+    <div class="grid2">
+      <button class="tap" id="massageOnBtn" disabled>Massage On</button>
+      <button class="tap" id="massageOffBtn" disabled>Massage Off</button>
+    </div>
+    <div class="timer">
+      <label for="timerInput">Auto-off</label>
+      <input type="number" id="timerInput" value="30" min="0" max="180" inputmode="numeric" />
+      <span class="unit">min (0 = unlimited)</span>
+      <span class="count" id="timerCount">&#8212;</span>
+    </div>
+  </section>
+
+  <section>
+    <p class="label">Under-bed Light</p>
+    <div class="grid2">
+      <button class="tap" data-light="0x73" disabled>Light On</button>
+      <button class="tap" data-light="0x74" disabled>Light Off</button>
+    </div>
+  </section>
+
+  <details class="diag">
+    <summary>Diagnostics</summary>
+    <div class="diag-body">
+      <p class="diag-note">Every packet is logged below. Confirmed commands are baked in. Two things were not captured from the original app and may need finding here: the massage-off byte and the massage wave patterns.</p>
+
+      <div class="field">
+        <input type="text" id="hexInput" placeholder="5A 01 03 10 30 00 A5" />
+        <button id="hexSend">Send</button>
+      </div>
+      <p class="diag-note" style="margin-top:-4px;">Raw hex sender. Space or comma separated. A bare action byte like <code>00</code> is auto-wrapped in the 5A...A5 frame.</p>
+
+      <div class="offrow">
+        <label for="offByte">Massage-off byte</label>
+        <input type="text" id="offByte" value="0x5F" />
+        <button class="field" style="display:inline-block;padding:8px 12px;" id="discoverOff">Find it</button>
+      </div>
+      <p class="diag-note" style="margin-top:-4px;">Turn massage on, then tap Find it. It steps through likely off codes with a pause between each. Watch the bed, note which one stops the motors, then type that value above and it will be used by the Off button and the timer.</p>
+
+      <div class="log" id="log"></div>
+    </div>
+  </details>
+
+  <p class="note">Reverse-engineered, unofficial. Do not run motor controls with someone in the bed during testing.</p>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  // ============================================================
+  // Nectar / OKIN CB3332 remote
+  // Protocol confirmed from a decompiled + packet-captured Nectar
+  // Luxe foundation (com.okin.bedding.luxe). 7-byte frame:
+  //   5A 01 03 10 30 [action] A5
+  // Write char: 62741525 (OKIN). Fallback: Nordic UART 6E400002.
+  // ============================================================
+
+  const OKIN = {
+    svc:    "62741523-52f9-8864-b1ab-3b3a8d65950b",
+    write:  "62741525-52f9-8864-b1ab-3b3a8d65950b",
+    notify: "62741625-52f9-8864-b1ab-3b3a8d65950b"
+  };
+  const NUS = {
+    svc:    "6e400001-b5a3-f393-e0a9-e50e24dcca9e",
+    write:  "6e400002-b5a3-f393-e0a9-e50e24dcca9e",
+    notify: "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
+  };
+  const EXTRA = ["00001000-0000-1000-8000-00805f9b34fb", "0000ffe0-0000-1000-8000-00805f9b34fb"];
+
+  const STOP = 0x0f;
+  const MASSAGE_ON = 0x58;
+  const HOLD_MS = 110;        // matches ~9 packets/sec seen when a button is held
+  const SAFETY_MS = 30000;    // auto-stop a held button after 30s
+
+  // ---- state ----
+  let device = null, server = null, writeChar = null, notifyChar = null;
+  let connected = false, proto = "";
+  let holdTimer = null, holdSafety = null;
+  let massageTimer = null, massageEndsAt = 0;
+
+  // ---- elements ----
+  const $ = id => document.getElementById(id);
+  const dot = $("dot"), connTitle = $("connTitle"), connSub = $("connSub"), connectBtn = $("connectBtn");
+  const stopBtn = $("stopBtn"), logEl = $("log");
+  const massagePill = $("massagePill"), massageOnBtn = $("massageOnBtn"), massageOffBtn = $("massageOffBtn");
+  const timerInput = $("timerInput"), timerCount = $("timerCount");
+  const offByteInput = $("offByte"), themeBtn = $("themeBtn");
+  const ctrlButtons = Array.from(document.querySelectorAll(".ctrl, .tap, #stopBtn"));
+
+  // ---- helpers ----
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const toHex = u8 => Array.from(u8).map(b => b.toString(16).padStart(2, "0")).join(" ");
+  function frame(action) { return new Uint8Array([0x5a, 0x01, 0x03, 0x10, 0x30, action & 0xff, 0xa5]); }
+  function parseByte(s) { const n = parseInt(String(s).trim().replace(/^0x/i, ""), 16); return isNaN(n) ? null : (n & 0xff); }
+  function withTimeout(promise, ms, msg) {
+    return Promise.race([promise, new Promise((_, rej) => setTimeout(() => rej(new Error(msg)), ms))]);
+  }
+
+  function log(msg, cls) {
+    const div = document.createElement("div");
+    div.className = "l " + (cls || "info");
+    const t = new Date().toLocaleTimeString([], { hour12: false });
+    div.textContent = t + "  " + msg;
+    logEl.appendChild(div);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  // ---- BLE write ----
+  async function sendBytes(bytes) {
+    if (!writeChar) { log("Not connected", "err"); return; }
+    const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+    try {
+      if (writeChar.properties.write && writeChar.writeValueWithResponse) {
+        await writeChar.writeValueWithResponse(u8);
+      } else if (writeChar.properties.writeWithoutResponse && writeChar.writeValueWithoutResponse) {
+        await writeChar.writeValueWithoutResponse(u8);
+      } else {
+        await writeChar.writeValue(u8);
+      }
+      log("TX  " + toHex(u8), "tx");
+    } catch (e) {
+      try { await writeChar.writeValueWithoutResponse(u8); log("TX  " + toHex(u8) + "  (no-response)", "tx"); }
+      catch (e2) { log("Write failed: " + e2.message, "err"); }
+    }
+  }
+  const sendCmd = action => sendBytes(frame(action));
+
+  // ---- connection ----
+  async function connect() {
+    if (!navigator.bluetooth) return;
+    try {
+      setBusy("Requesting device");
+      device = await navigator.bluetooth.requestDevice({
+        filters: [{ namePrefix: "OKIN" }, { namePrefix: "Nectar" }, { namePrefix: "RIZE" }],
+        optionalServices: [OKIN.svc, NUS.svc, ...EXTRA]
+      });
+      device.addEventListener("gattserverdisconnected", onDisconnect);
+
+      setBusy("Connecting to " + (device.name || "bed"));
+      const slowNote = setTimeout(() => log("Still connecting. macOS can take 15 to 30 seconds on the first attempt, hold on.", "info"), 8000);
+      try {
+        server = await withTimeout(device.gatt.connect(), 30000,
+          "Connection timed out after 30s. The link will not open, see the steps below the remote.");
+      } finally {
+        clearTimeout(slowNote);
+      }
+
+      // Prime service discovery (this alone clears some macOS hangs), then locate the control service
+      setBusy("Finding controls");
+      await withTimeout(server.getPrimaryServices(), 20000, "Service discovery timed out").catch(() => {});
+
+      let chosen = null;
+      try {
+        const s = await server.getPrimaryService(OKIN.svc);
+        writeChar = await s.getCharacteristic(OKIN.write);
+        notifyChar = await s.getCharacteristic(OKIN.notify).catch(() => null);
+        chosen = "OKIN"; proto = "OKIN 62741525";
+      } catch (_) {
+        try {
+          const s = await server.getPrimaryService(NUS.svc);
+          writeChar = await s.getCharacteristic(NUS.write);
+          notifyChar = await s.getCharacteristic(NUS.notify).catch(() => null);
+          chosen = "NUS"; proto = "Nordic UART 6E400002";
+        } catch (e) {
+          throw new Error("No known control service found on this device.");
+        }
+      }
+
+      const p = writeChar.properties;
+      log("Connected. Service " + chosen + ". Write supports: " +
+        ["write", "writeWithoutResponse"].filter(k => p[k]).join(", "), "info");
+
+      if (notifyChar && notifyChar.properties.notify) {
+        try {
+          await notifyChar.startNotifications();
+          notifyChar.addEventListener("characteristicvaluechanged", e => {
+            log("RX  " + toHex(new Uint8Array(e.target.value.buffer)), "rx");
+          });
+          log("Notifications enabled on status channel", "info");
+        } catch (_) { /* notify optional */ }
+      }
+
+      connected = true;
+      setConnectedUI(true);
+    } catch (e) {
+      log("Connection error: " + e.message, "err");
+      setConnectedUI(false);
+      if (device && device.gatt && device.gatt.connected) device.gatt.disconnect();
+    }
+  }
+
+  function disconnect() {
+    if (device && device.gatt && device.gatt.connected) device.gatt.disconnect();
+    else onDisconnect();
+  }
+
+  function onDisconnect() {
+    connected = false;
+    stopHold();
+    cancelMassageTimer();
+    setMassageActive(false);
+    writeChar = null; notifyChar = null;
+    setConnectedUI(false);
+    log("Disconnected", "info");
+  }
+
+  // ---- hold-to-move ----
+  function startHold(action) {
+    if (!connected) return;
+    sendCmd(action);
+    clearInterval(holdTimer);
+    holdTimer = setInterval(() => sendCmd(action), HOLD_MS);
+    clearTimeout(holdSafety);
+    holdSafety = setTimeout(() => { log("Safety stop (held 30s)", "info"); stopHold(); }, SAFETY_MS);
+  }
+  function stopHold() {
+    if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
+    if (holdSafety) { clearTimeout(holdSafety); holdSafety = null; }
+    document.querySelectorAll(".ctrl.holding").forEach(b => b.classList.remove("holding"));
+    if (connected && writeChar) sendCmd(STOP);
+  }
+
+  // ---- presets (sent twice, matching the captured app) ----
+  async function preset(action) {
+    if (!connected) return;
+    await sendCmd(action);
+    setTimeout(() => sendCmd(action), 160);
+  }
+
+  // ---- massage ----
+  function setMassageActive(on) {
+    massagePill.textContent = on ? "On" : "Off";
+    massagePill.classList.toggle("live", on);
+    massageOnBtn.classList.toggle("active", on);
+  }
+  function massageOn() {
+    if (!connected) return;
+    sendCmd(MASSAGE_ON);
+    setMassageActive(true);
+    startMassageTimer();
+  }
+  function massageOff() {
+    const b = parseByte(offByteInput.value);
+    if (b === null) { log("Massage-off byte is not valid hex", "err"); return; }
+    if (connected) sendBytes(frame(b));
+    setMassageActive(false);
+    cancelMassageTimer();
+  }
+  function startMassageTimer() {
+    cancelMassageTimer();
+    const mins = parseInt(timerInput.value, 10);
+    if (!mins || mins <= 0) { timerCount.textContent = "\u221E"; return; }
+    massageEndsAt = Date.now() + mins * 60000;
+    tickMassage();
+    massageTimer = setInterval(tickMassage, 1000);
+  }
+  function tickMassage() {
+    const left = Math.max(0, massageEndsAt - Date.now());
+    const m = Math.floor(left / 60000), s = Math.floor((left % 60000) / 1000);
+    timerCount.textContent = m + ":" + String(s).padStart(2, "0");
+    if (left <= 0) { log("Massage auto-off", "info"); massageOff(); }
+  }
+  function cancelMassageTimer() {
+    if (massageTimer) { clearInterval(massageTimer); massageTimer = null; }
+    timerCount.textContent = "\u2014";
+  }
+
+  // ---- massage-off discovery ----
+  async function discoverOff() {
+    if (!connected) { log("Connect first, then turn massage on", "err"); return; }
+    const candidates = [0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f, 0x60, 0x61, 0x62];
+    log("Off discovery: watch the bed and note which value stops the massage", "info");
+    for (const c of candidates) {
+      log("Trying 0x" + c.toString(16).padStart(2, "0"), "info");
+      await sendBytes(frame(c));
+      await sleep(1800);
+    }
+    log("Done. Type the working value into the Massage-off byte field.", "info");
+  }
+
+  // ---- UI state ----
+  function setBusy(text) {
+    dot.className = "dot busy";
+    connTitle.textContent = "Working";
+    connSub.textContent = text;
+  }
+  function setConnectedUI(on) {
+    dot.className = "dot " + (on ? "on" : "");
+    connTitle.textContent = on ? "Connected" : "Disconnected";
+    connSub.textContent = on ? ((device && device.name ? device.name : "bed") + "  \u00b7  " + proto) : "Tap connect, then pick OKIN-061399";
+    connectBtn.textContent = on ? "Disconnect" : "Connect";
+    connectBtn.classList.toggle("connected", on);
+    ctrlButtons.forEach(b => { b.disabled = !on; });
+  }
+
+  // ---- wire up ----
+  document.querySelectorAll("[data-hold]").forEach(btn => {
+    const action = parseByte(btn.dataset.hold);
+    btn.addEventListener("pointerdown", e => { e.preventDefault(); if (!connected) return; btn.classList.add("holding"); startHold(action); });
+  });
+  // Release anywhere stops movement
+  ["pointerup", "pointercancel"].forEach(ev => window.addEventListener(ev, () => { if (holdTimer) stopHold(); }));
+
+  document.querySelectorAll("[data-preset]").forEach(btn =>
+    btn.addEventListener("click", () => preset(parseByte(btn.dataset.preset))));
+  document.querySelectorAll("[data-light]").forEach(btn =>
+    btn.addEventListener("click", () => sendCmd(parseByte(btn.dataset.light))));
+
+  stopBtn.addEventListener("click", () => { stopHold(); if (connected) sendCmd(STOP); });
+  massageOnBtn.addEventListener("click", massageOn);
+  massageOffBtn.addEventListener("click", massageOff);
+  connectBtn.addEventListener("click", () => connected ? disconnect() : connect());
+
+  $("hexSend").addEventListener("click", () => {
+    const raw = $("hexInput").value.trim();
+    if (!raw) return;
+    const parts = raw.split(/[\s,]+/).filter(Boolean);
+    let bytes;
+    if (parts.length === 1) { const b = parseByte(parts[0]); if (b === null) { log("Bad hex", "err"); return; } bytes = frame(b); }
+    else { bytes = parts.map(parseByte); if (bytes.some(b => b === null)) { log("Bad hex", "err"); return; } bytes = new Uint8Array(bytes); }
+    sendBytes(bytes);
+  });
+  $("discoverOff").addEventListener("click", discoverOff);
+
+  // ---- persistence ----
+  function load(key, def) { try { const v = localStorage.getItem(key); return v === null ? def : v; } catch (_) { return def; } }
+  function save(key, val) { try { localStorage.setItem(key, val); } catch (_) {} }
+
+  timerInput.value = load("nbr_timer", "30");
+  offByteInput.value = load("nbr_offbyte", "0x5F");
+  timerInput.addEventListener("change", () => save("nbr_timer", timerInput.value));
+  offByteInput.addEventListener("change", () => save("nbr_offbyte", offByteInput.value));
+
+  // ---- theme ----
+  function applyTheme(t) { document.documentElement.setAttribute("data-theme", t); themeBtn.innerHTML = t === "dark" ? "&#9728;" : "&#9789;"; }
+  applyTheme(load("nbr_theme", "light"));
+  themeBtn.addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    applyTheme(next); save("nbr_theme", next);
+  });
+
+  // ---- init ----
+  if (!navigator.bluetooth) { $("unsupported").classList.add("show"); connectBtn.disabled = true; }
+  log("Remote ready. Tap Connect.", "info");
+})();
+</script>
+</body>
+</html>
