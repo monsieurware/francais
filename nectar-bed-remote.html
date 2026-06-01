@@ -183,18 +183,18 @@
     <p class="label">Position</p>
     <div class="row">
       <div class="row-name">Head</div>
-      <button class="ctrl" data-hold="0x00" disabled><span class="arw">&#9650;</span> Up</button>
-      <button class="ctrl" data-hold="0x01" disabled><span class="arw">&#9660;</span> Down</button>
+      <button class="ctrl" data-hold="headUp" disabled><span class="arw">&#9650;</span> Up</button>
+      <button class="ctrl" data-hold="headDown" disabled><span class="arw">&#9660;</span> Down</button>
     </div>
     <div class="row">
       <div class="row-name">Lumbar</div>
-      <button class="ctrl" data-hold="0x04" disabled><span class="arw">&#9650;</span> Up</button>
-      <button class="ctrl" data-hold="0x07" disabled><span class="arw">&#9660;</span> Down</button>
+      <button class="ctrl" data-hold="lumbarUp" disabled><span class="arw">&#9650;</span> Up</button>
+      <button class="ctrl" data-hold="lumbarDown" disabled><span class="arw">&#9660;</span> Down</button>
     </div>
     <div class="row">
       <div class="row-name">Foot</div>
-      <button class="ctrl" data-hold="0x02" disabled><span class="arw">&#9650;</span> Up</button>
-      <button class="ctrl" data-hold="0x03" disabled><span class="arw">&#9660;</span> Down</button>
+      <button class="ctrl" data-hold="footUp" disabled><span class="arw">&#9650;</span> Up</button>
+      <button class="ctrl" data-hold="footDown" disabled><span class="arw">&#9660;</span> Down</button>
     </div>
   </section>
 
@@ -205,10 +205,10 @@
   <section>
     <p class="label">Presets</p>
     <div class="grid2">
-      <button class="tap" data-preset="0x10" disabled>Flat</button>
-      <button class="tap" data-preset="0x13" disabled>Zero Gravity</button>
-      <button class="tap" data-preset="0x11" disabled>Lounge</button>
-      <button class="tap" data-preset="0x16" disabled>Anti-Snore</button>
+      <button class="tap" data-cmd="flat" disabled>Flat</button>
+      <button class="tap" data-cmd="zeroG" disabled>Zero Gravity</button>
+      <button class="tap" data-cmd="lounge" disabled>Lounge</button>
+      <button class="tap" data-cmd="antiSnore" disabled>Anti-Snore</button>
     </div>
   </section>
 
@@ -229,15 +229,21 @@
   <section>
     <p class="label">Under-bed Light</p>
     <div class="grid2">
-      <button class="tap" data-light="0x73" disabled>Light On</button>
-      <button class="tap" data-light="0x74" disabled>Light Off</button>
+      <button class="tap" data-cmd="lightOn" disabled>Light On</button>
+      <button class="tap" data-cmd="lightOff" disabled>Light Off</button>
     </div>
   </section>
 
   <details class="diag">
     <summary>Diagnostics</summary>
     <div class="diag-body">
-      <p class="diag-note">Every packet is logged below. Confirmed commands are baked in. Two things were not captured from the original app and may need finding here: the massage-off byte and the massage wave patterns.</p>
+      <p class="diag-note">Every packet is logged below. On connect the app reads the bed's characteristics to enable control, then sends commands in the selected protocol. Default is DewertOkin, the family your CB3332 belongs to.</p>
+
+      <div class="offrow" id="protoRow">
+        <label>Protocol</label>
+        <button class="pipe-btn" data-proto="dewertokin">DewertOkin</button>
+        <button class="pipe-btn" data-proto="luxe">Luxe 5A</button>
+      </div>
 
       <div class="offrow" id="pipeRow" style="display:none;">
         <label>Command pipe</label>
@@ -290,10 +296,29 @@
   };
   const EXTRA = ["00001000-0000-1000-8000-00805f9b34fb", "0000ffe0-0000-1000-8000-00805f9b34fb"];
 
-  const STOP = 0x0f;
-  const MASSAGE_ON = 0x58;
-  const HOLD_MS = 110;        // matches ~9 packets/sec seen when a button is held
+  const HOLD_MS = 110;        // repeat interval while a motor button is held
   const SAFETY_MS = 30000;    // auto-stop a held button after 30s
+  const KEEPALIVE_MS = 9000;  // DewertOkin boxes drop idle links; send a NOOP periodically
+
+  // Command sets per protocol. DewertOkin commands are 6-byte bitmask hex strings
+  // (reverse-engineered from the Comfort Plus app). Luxe is the 5A..A5 frame.
+  const COMMANDS = {
+    dewertokin: {
+      headUp: "040200000001", headDown: "040200000002",
+      footUp: "040200000004", footDown: "040200000008",
+      lumbarUp: null, lumbarDown: null,                 // not captured for this family
+      stop: "040200000000",                             // all bits clear = no motion
+      flat: "040210000000", zeroG: "040200004000", lounge: "040200003000", antiSnore: "040200008000",
+      massageOn: "040280000000", massageOff: "040202000000",
+      lightOn: "040200020000", lightOff: "040200020000" // single under-light toggle
+    },
+    luxe: {
+      headUp: "00", headDown: "01", footUp: "02", footDown: "03",
+      lumbarUp: "04", lumbarDown: "07", stop: "0f",
+      flat: "10", zeroG: "13", lounge: "11", antiSnore: "16",
+      massageOn: "58", massageOff: null, lightOn: "73", lightOff: "74"
+    }
+  };
 
   // ---- state ----
   let device = null, server = null, writeChar = null, notifyChar = null;
@@ -301,6 +326,7 @@
   let holdTimer = null, holdSafety = null;
   let massageTimer = null, massageEndsAt = 0;
   let pipes = { okin: null, nus: null }, activePipe = null;
+  let protoKey = "dewertokin", keepaliveTimer = null;
 
   // ---- elements ----
   const $ = id => document.getElementById(id);
@@ -310,12 +336,13 @@
   const timerInput = $("timerInput"), timerCount = $("timerCount");
   const offByteInput = $("offByte"), themeBtn = $("themeBtn");
   const ctrlButtons = Array.from(document.querySelectorAll(".ctrl, .tap, #stopBtn"));
-  const pipeRow = $("pipeRow"), pipeNote = $("pipeNote");
+  const pipeRow = $("pipeRow"), pipeNote = $("pipeNote"), protoRow = $("protoRow");
 
   // ---- helpers ----
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const toHex = u8 => Array.from(u8).map(b => b.toString(16).padStart(2, "0")).join(" ");
   function frame(action) { return new Uint8Array([0x5a, 0x01, 0x03, 0x10, 0x30, action & 0xff, 0xa5]); }
+  function hexToBytes(hex) { const h = String(hex).replace(/\s+/g, ""); const a = []; for (let i = 0; i + 1 < h.length; i += 2) a.push(parseInt(h.substr(i, 2), 16)); return new Uint8Array(a); }
   function parseByte(s) { const n = parseInt(String(s).trim().replace(/^0x/i, ""), 16); return isNaN(n) ? null : (n & 0xff); }
   function withTimeout(promise, ms, msg) {
     return Promise.race([promise, new Promise((_, rej) => setTimeout(() => rej(new Error(msg)), ms))]);
@@ -331,8 +358,8 @@
   }
 
   // ---- BLE write ----
-  async function sendBytes(bytes) {
-    if (!writeChar) { log("Not connected", "err"); return; }
+  async function sendBytes(bytes, quiet) {
+    if (!writeChar) { if (!quiet) log("Not connected", "err"); return; }
     const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
     try {
       if (writeChar.properties.write && writeChar.writeValueWithResponse) {
@@ -342,13 +369,28 @@
       } else {
         await writeChar.writeValue(u8);
       }
-      log("TX  " + toHex(u8), "tx");
+      if (!quiet) log("TX  " + toHex(u8), "tx");
     } catch (e) {
-      try { await writeChar.writeValueWithoutResponse(u8); log("TX  " + toHex(u8) + "  (no-response)", "tx"); }
-      catch (e2) { log("Write failed: " + e2.message, "err"); }
+      try { await writeChar.writeValueWithoutResponse(u8); if (!quiet) log("TX  " + toHex(u8) + "  (no-response)", "tx"); }
+      catch (e2) { if (!quiet) log("Write failed: " + e2.message, "err"); }
     }
   }
-  const sendCmd = action => sendBytes(frame(action));
+
+  // Resolve a semantic command name to bytes for the active protocol.
+  function cmdBytes(name) {
+    if (name === "massageOff" && protoKey === "luxe") {
+      const b = parseByte(offByteInput.value); return b == null ? null : frame(b);
+    }
+    const set = COMMANDS[protoKey];
+    const v = set ? set[name] : null;
+    if (v == null) return null;
+    return protoKey === "luxe" ? frame(parseInt(v, 16)) : hexToBytes(v);
+  }
+  function sendNamed(name) {
+    const b = cmdBytes(name);
+    if (!b) { log(name + " is not mapped for the " + protoKey + " protocol", "info"); return Promise.resolve(); }
+    return sendBytes(b);
+  }
 
   // ---- connection ----
   async function connect() {
@@ -392,11 +434,15 @@
       if (!pipes.okin && !pipes.nus) throw new Error("No known control service found on this device.");
 
       buildPipeSelector();
-      // Default to Nordic UART: the 5A..A5 framing is a serial protocol, which usually rides the UART pipe
-      await setPipe(pipes.nus ? "nus" : "okin");
+      // Default to the OKIN proprietary characteristic: DewertOkin commands target it, not the UART
+      await setPipe(pipes.okin ? "okin" : "nus");
+
+      // DewertOkin boxes ignore commands until control is enabled by reading characteristics
+      await enableControl();
 
       connected = true;
       setConnectedUI(true);
+      startKeepalive();
     } catch (e) {
       log("Connection error: " + e.message, "err");
       setConnectedUI(false);
@@ -412,6 +458,7 @@
   function onDisconnect() {
     connected = false;
     stopHold();
+    stopKeepalive();
     cancelMassageTimer();
     setMassageActive(false);
     writeChar = null; notifyChar = null;
@@ -419,6 +466,35 @@
     pipeRow.style.display = "none"; pipeNote.style.display = "none";
     setConnectedUI(false);
     log("Disconnected", "info");
+  }
+
+  // Reading the bed's characteristics unlocks command processing on DewertOkin boxes.
+  async function enableControl() {
+    let n = 0;
+    try {
+      for (const svc of await server.getPrimaryServices()) {
+        for (const ch of await svc.getCharacteristics()) {
+          if (ch.properties.read) { try { await ch.readValue(); n++; } catch (_) {} }
+        }
+      }
+    } catch (_) {}
+    log("Enable sequence: read " + n + " characteristics to unlock control", "info");
+  }
+
+  function startKeepalive() {
+    stopKeepalive();
+    keepaliveTimer = setInterval(() => {
+      if (connected && writeChar && !holdTimer) { const b = cmdBytes("stop"); if (b) sendBytes(b, true); }
+    }, KEEPALIVE_MS);
+  }
+  function stopKeepalive() { if (keepaliveTimer) { clearInterval(keepaliveTimer); keepaliveTimer = null; } }
+
+  function setProtocol(key) {
+    if (!COMMANDS[key]) return;
+    protoKey = key;
+    protoRow.querySelectorAll(".pipe-btn").forEach(b => b.classList.toggle("active", b.dataset.proto === key));
+    save("nbr_proto", key);
+    log("Protocol set to " + key, "info");
   }
 
   function buildPipeSelector() {
@@ -453,11 +529,11 @@
   }
 
   // ---- hold-to-move ----
-  function startHold(action) {
+  function startHold(name) {
     if (!connected) return;
-    sendCmd(action);
+    sendNamed(name);
     clearInterval(holdTimer);
-    holdTimer = setInterval(() => sendCmd(action), HOLD_MS);
+    holdTimer = setInterval(() => sendNamed(name), HOLD_MS);
     clearTimeout(holdSafety);
     holdSafety = setTimeout(() => { log("Safety stop (held 30s)", "info"); stopHold(); }, SAFETY_MS);
   }
@@ -465,14 +541,7 @@
     if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
     if (holdSafety) { clearTimeout(holdSafety); holdSafety = null; }
     document.querySelectorAll(".ctrl.holding").forEach(b => b.classList.remove("holding"));
-    if (connected && writeChar) sendCmd(STOP);
-  }
-
-  // ---- presets (sent twice, matching the captured app) ----
-  async function preset(action) {
-    if (!connected) return;
-    await sendCmd(action);
-    setTimeout(() => sendCmd(action), 160);
+    if (connected && writeChar) sendNamed("stop");
   }
 
   // ---- massage ----
@@ -483,14 +552,12 @@
   }
   function massageOn() {
     if (!connected) return;
-    sendCmd(MASSAGE_ON);
+    sendNamed("massageOn");
     setMassageActive(true);
     startMassageTimer();
   }
   function massageOff() {
-    const b = parseByte(offByteInput.value);
-    if (b === null) { log("Massage-off byte is not valid hex", "err"); return; }
-    if (connected) sendBytes(frame(b));
+    if (connected) sendNamed("massageOff");
     setMassageActive(false);
     cancelMassageTimer();
   }
@@ -543,22 +610,21 @@
 
   // ---- wire up ----
   document.querySelectorAll("[data-hold]").forEach(btn => {
-    const action = parseByte(btn.dataset.hold);
-    btn.addEventListener("pointerdown", e => { e.preventDefault(); if (!connected) return; btn.classList.add("holding"); startHold(action); });
+    const name = btn.dataset.hold;
+    btn.addEventListener("pointerdown", e => { e.preventDefault(); if (!connected) return; btn.classList.add("holding"); startHold(name); });
   });
   // Release anywhere stops movement
   ["pointerup", "pointercancel"].forEach(ev => window.addEventListener(ev, () => { if (holdTimer) stopHold(); }));
 
-  document.querySelectorAll("[data-preset]").forEach(btn =>
-    btn.addEventListener("click", () => preset(parseByte(btn.dataset.preset))));
-  document.querySelectorAll("[data-light]").forEach(btn =>
-    btn.addEventListener("click", () => sendCmd(parseByte(btn.dataset.light))));
+  document.querySelectorAll("[data-cmd]").forEach(btn =>
+    btn.addEventListener("click", () => { if (connected) sendNamed(btn.dataset.cmd); }));
 
-  stopBtn.addEventListener("click", () => { stopHold(); if (connected) sendCmd(STOP); });
+  stopBtn.addEventListener("click", () => { stopHold(); if (connected) sendNamed("stop"); });
   massageOnBtn.addEventListener("click", massageOn);
   massageOffBtn.addEventListener("click", massageOff);
   connectBtn.addEventListener("click", () => connected ? disconnect() : connect());
   pipeRow.querySelectorAll(".pipe-btn").forEach(b => b.addEventListener("click", () => { if (connected) setPipe(b.dataset.pipe); }));
+  protoRow.querySelectorAll(".pipe-btn").forEach(b => b.addEventListener("click", () => setProtocol(b.dataset.proto)));
 
   $("hexSend").addEventListener("click", () => {
     const raw = $("hexInput").value.trim();
@@ -579,6 +645,7 @@
   offByteInput.value = load("nbr_offbyte", "0x5F");
   timerInput.addEventListener("change", () => save("nbr_timer", timerInput.value));
   offByteInput.addEventListener("change", () => save("nbr_offbyte", offByteInput.value));
+  setProtocol(load("nbr_proto", "dewertokin"));
 
   // ---- theme ----
   function applyTheme(t) { document.documentElement.setAttribute("data-theme", t); themeBtn.innerHTML = t === "dark" ? "&#9728;" : "&#9789;"; }
