@@ -154,6 +154,10 @@
   .pipe-btn { border: 1px solid var(--border); background: var(--surface-2); color: var(--ink); border-radius: 9px; padding: 8px 14px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .pipe-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
   [data-theme="dark"] .pipe-btn.active { color: #1a140a; }
+  .cal-row { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+  .cal-row .cal-hex { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--muted); flex: none; width: 96px; }
+  .cal-row select { flex: 1; min-width: 0; border: 1px solid var(--border); border-radius: 9px; padding: 9px; font-family: inherit; font-size: 13px; font-weight: 600; background: var(--bg); color: var(--ink); }
+  .cal-row .pipe-btn { flex: none; }
 </style>
 </head>
 <body>
@@ -233,6 +237,19 @@
       <button class="tap" data-cmd="lightOff" disabled>Light Off</button>
     </div>
   </section>
+
+  <details class="diag" id="calSection">
+    <summary>Calibrate buttons</summary>
+    <div class="diag-body">
+      <p class="diag-note">Your bed maps these codes to functions differently than the defaults. Connect first, then tap Test on a code and watch the bed. Set each dropdown to what it actually does, then Save. Motion codes run for about a second so you can see them. Leave a code Unassigned if nothing happens.</p>
+      <div id="calRows"></div>
+      <div class="field" style="margin-top:12px;">
+        <button id="calSave">Save mapping</button>
+        <button id="calReset">Reset to default</button>
+        <span class="hint" id="calStatus"></span>
+      </div>
+    </div>
+  </details>
 
   <details class="diag">
     <summary>Diagnostics</summary>
@@ -317,8 +334,27 @@
       lumbarUp: "04", lumbarDown: "07", stop: "0f",
       flat: "10", zeroG: "13", lounge: "11", antiSnore: "16",
       massageOn: "58", massageOff: null, lightOn: "73", lightOff: "74"
-    }
+    },
+    custom: {}
   };
+
+  // Codes offered in the calibration panel, with their default (DewertOkin) guess.
+  const CAL_CODES = [
+    ["040200000001", "headUp"], ["040200000002", "headDown"],
+    ["040200000004", "footUp"], ["040200000008", "footDown"],
+    ["040200000010", ""], ["040200000020", ""], ["040200000040", ""], ["040200000080", ""],
+    ["040210000000", "flat"], ["040200004000", "zeroG"], ["040200003000", "lounge"], ["040200008000", "antiSnore"],
+    ["040200020000", "lightOn"], ["040280000000", "massageOn"], ["040202000000", "massageOff"]
+  ];
+  const CAL_FUNCS = [
+    ["", "Unassigned"],
+    ["headUp", "Head Up"], ["headDown", "Head Down"],
+    ["lumbarUp", "Lumbar Up"], ["lumbarDown", "Lumbar Down"],
+    ["footUp", "Foot Up"], ["footDown", "Foot Down"],
+    ["flat", "Flat"], ["zeroG", "Zero Gravity"], ["lounge", "Lounge"], ["antiSnore", "Anti-Snore"],
+    ["lightOn", "Light On"], ["lightOff", "Light Off"],
+    ["massageOn", "Massage On"], ["massageOff", "Massage Off"]
+  ];
 
   // ---- state ----
   let device = null, server = null, writeChar = null, notifyChar = null;
@@ -337,6 +373,7 @@
   const offByteInput = $("offByte"), themeBtn = $("themeBtn");
   const ctrlButtons = Array.from(document.querySelectorAll(".ctrl, .tap, #stopBtn"));
   const pipeRow = $("pipeRow"), pipeNote = $("pipeNote"), protoRow = $("protoRow");
+  const calRows = $("calRows"), calSave = $("calSave"), calReset = $("calReset"), calStatus = $("calStatus");
 
   // ---- helpers ----
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -381,8 +418,10 @@
     if (name === "massageOff" && protoKey === "luxe") {
       const b = parseByte(offByteInput.value); return b == null ? null : frame(b);
     }
-    const set = COMMANDS[protoKey];
-    const v = set ? set[name] : null;
+    const set = COMMANDS[protoKey] || {};
+    let v = set[name];
+    if (v == null && name === "lightOff") v = set.lightOn;          // light is a single toggle on bitmask beds
+    if (v == null && name === "stop" && protoKey !== "luxe") v = "040200000000"; // all-clear NOOP
     if (v == null) return null;
     return protoKey === "luxe" ? frame(parseInt(v, 16)) : hexToBytes(v);
   }
@@ -593,6 +632,62 @@
     log("Done. Type the working value into the Massage-off byte field.", "info");
   }
 
+  // ---- calibration (map raw codes to functions for this specific bed) ----
+  function loadJSON(key) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch (_) { return null; } }
+  function saveJSON(key, obj) { try { localStorage.setItem(key, JSON.stringify(obj)); } catch (_) {} }
+
+  function pulseTest(hex) {
+    if (!connected) { log("Connect first, then test", "err"); return; }
+    log("Testing " + hex, "info");
+    const b = hexToBytes(hex);
+    let i = 0;
+    const iv = setInterval(() => {
+      sendBytes(b, true);
+      if (++i >= 11) { clearInterval(iv); sendBytes(hexToBytes("040200000000"), true); }
+    }, HOLD_MS);
+  }
+
+  function renderCal() {
+    const saved = loadJSON("nbr_custom");
+    calRows.innerHTML = "";
+    CAL_CODES.forEach(([hex, def]) => {
+      const row = document.createElement("div");
+      row.className = "cal-row";
+      const test = document.createElement("button");
+      test.className = "pipe-btn"; test.type = "button"; test.textContent = "Test";
+      test.addEventListener("click", () => pulseTest(hex));
+      const code = document.createElement("code"); code.className = "cal-hex"; code.textContent = hex;
+      const sel = document.createElement("select"); sel.dataset.hex = hex;
+      CAL_FUNCS.forEach(([val, label]) => {
+        const o = document.createElement("option"); o.value = val; o.textContent = label; sel.appendChild(o);
+      });
+      let chosen = def;
+      if (saved) { const fn = Object.keys(saved).find(k => saved[k] === hex); chosen = fn || ""; }
+      sel.value = chosen;
+      row.append(test, code, sel);
+      calRows.appendChild(row);
+    });
+  }
+
+  function saveCal() {
+    const map = {};
+    calRows.querySelectorAll("select").forEach(sel => { if (sel.value) map[sel.value] = sel.dataset.hex; });
+    map.stop = "040200000000";
+    COMMANDS.custom = map;
+    saveJSON("nbr_custom", map);
+    setProtocol("custom");
+    calStatus.textContent = "Saved. The remote now uses your mapping.";
+    log("Custom mapping saved (" + (Object.keys(map).length - 1) + " functions)", "info");
+  }
+
+  function resetCal() {
+    try { localStorage.removeItem("nbr_custom"); } catch (_) {}
+    COMMANDS.custom = {};
+    renderCal();
+    setProtocol("dewertokin");
+    calStatus.textContent = "Reset to DewertOkin defaults.";
+  }
+
   // ---- UI state ----
   function setBusy(text) {
     dot.className = "dot busy";
@@ -625,6 +720,8 @@
   connectBtn.addEventListener("click", () => connected ? disconnect() : connect());
   pipeRow.querySelectorAll(".pipe-btn").forEach(b => b.addEventListener("click", () => { if (connected) setPipe(b.dataset.pipe); }));
   protoRow.querySelectorAll(".pipe-btn").forEach(b => b.addEventListener("click", () => setProtocol(b.dataset.proto)));
+  calSave.addEventListener("click", saveCal);
+  calReset.addEventListener("click", resetCal);
 
   $("hexSend").addEventListener("click", () => {
     const raw = $("hexInput").value.trim();
@@ -645,7 +742,10 @@
   offByteInput.value = load("nbr_offbyte", "0x5F");
   timerInput.addEventListener("change", () => save("nbr_timer", timerInput.value));
   offByteInput.addEventListener("change", () => save("nbr_offbyte", offByteInput.value));
-  setProtocol(load("nbr_proto", "dewertokin"));
+  const savedCustom = loadJSON("nbr_custom");
+  if (savedCustom) COMMANDS.custom = savedCustom;
+  renderCal();
+  setProtocol(savedCustom ? "custom" : load("nbr_proto", "dewertokin"));
 
   // ---- theme ----
   function applyTheme(t) { document.documentElement.setAttribute("data-theme", t); themeBtn.innerHTML = t === "dark" ? "&#9728;" : "&#9789;"; }
