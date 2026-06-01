@@ -151,6 +151,9 @@
   .note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 26px; line-height: 1.55; }
   .unsupported { display: none; background: var(--stop-soft); color: var(--stop); border: 1px solid color-mix(in srgb, var(--stop) 30%, var(--border)); border-radius: var(--radius); padding: 13px 14px; font-size: 13px; margin-bottom: 18px; line-height: 1.5; }
   .unsupported.show { display: block; }
+  .pipe-btn { border: 1px solid var(--border); background: var(--surface-2); color: var(--ink); border-radius: 9px; padding: 8px 14px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .pipe-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  [data-theme="dark"] .pipe-btn.active { color: #1a140a; }
 </style>
 </head>
 <body>
@@ -236,6 +239,13 @@
     <div class="diag-body">
       <p class="diag-note">Every packet is logged below. Confirmed commands are baked in. Two things were not captured from the original app and may need finding here: the massage-off byte and the massage wave patterns.</p>
 
+      <div class="offrow" id="pipeRow" style="display:none;">
+        <label>Command pipe</label>
+        <button class="pipe-btn" data-pipe="nus">Nordic UART</button>
+        <button class="pipe-btn" data-pipe="okin">OKIN</button>
+      </div>
+      <p class="diag-note" id="pipeNote" style="margin-top:-4px;display:none;">If writes show as TX but the bed does not move, switch the pipe and re-test a preset. Default is Nordic UART because the 5A...A5 framing looks like a serial protocol.</p>
+
       <div class="field">
         <input type="text" id="hexInput" placeholder="5A 01 03 10 30 00 A5" />
         <button id="hexSend">Send</button>
@@ -290,6 +300,7 @@
   let connected = false, proto = "";
   let holdTimer = null, holdSafety = null;
   let massageTimer = null, massageEndsAt = 0;
+  let pipes = { okin: null, nus: null }, activePipe = null;
 
   // ---- elements ----
   const $ = id => document.getElementById(id);
@@ -299,6 +310,7 @@
   const timerInput = $("timerInput"), timerCount = $("timerCount");
   const offByteInput = $("offByte"), themeBtn = $("themeBtn");
   const ctrlButtons = Array.from(document.querySelectorAll(".ctrl, .tap, #stopBtn"));
+  const pipeRow = $("pipeRow"), pipeNote = $("pipeNote");
 
   // ---- helpers ----
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -362,36 +374,26 @@
       setBusy("Finding controls");
       await withTimeout(server.getPrimaryServices(), 20000, "Service discovery timed out").catch(() => {});
 
-      let chosen = null;
+      // Grab whichever control pipes exist. The bed exposes both an OKIN custom
+      // characteristic and a Nordic UART pipe; keep both and let the user switch.
       try {
         const s = await server.getPrimaryService(OKIN.svc);
-        writeChar = await s.getCharacteristic(OKIN.write);
-        notifyChar = await s.getCharacteristic(OKIN.notify).catch(() => null);
-        chosen = "OKIN"; proto = "OKIN 62741525";
-      } catch (_) {
-        try {
-          const s = await server.getPrimaryService(NUS.svc);
-          writeChar = await s.getCharacteristic(NUS.write);
-          notifyChar = await s.getCharacteristic(NUS.notify).catch(() => null);
-          chosen = "NUS"; proto = "Nordic UART 6E400002";
-        } catch (e) {
-          throw new Error("No known control service found on this device.");
-        }
-      }
+        const w = await s.getCharacteristic(OKIN.write).catch(() => null);
+        const n = await s.getCharacteristic(OKIN.notify).catch(() => null);
+        if (w) pipes.okin = { write: w, notify: n, label: "OKIN 62741525" };
+      } catch (_) {}
+      try {
+        const s = await server.getPrimaryService(NUS.svc);
+        const w = await s.getCharacteristic(NUS.write).catch(() => null);
+        const n = await s.getCharacteristic(NUS.notify).catch(() => null);
+        if (w) pipes.nus = { write: w, notify: n, label: "Nordic UART 6E400002" };
+      } catch (_) {}
 
-      const p = writeChar.properties;
-      log("Connected. Service " + chosen + ". Write supports: " +
-        ["write", "writeWithoutResponse"].filter(k => p[k]).join(", "), "info");
+      if (!pipes.okin && !pipes.nus) throw new Error("No known control service found on this device.");
 
-      if (notifyChar && notifyChar.properties.notify) {
-        try {
-          await notifyChar.startNotifications();
-          notifyChar.addEventListener("characteristicvaluechanged", e => {
-            log("RX  " + toHex(new Uint8Array(e.target.value.buffer)), "rx");
-          });
-          log("Notifications enabled on status channel", "info");
-        } catch (_) { /* notify optional */ }
-      }
+      buildPipeSelector();
+      // Default to Nordic UART: the 5A..A5 framing is a serial protocol, which usually rides the UART pipe
+      await setPipe(pipes.nus ? "nus" : "okin");
 
       connected = true;
       setConnectedUI(true);
@@ -413,8 +415,41 @@
     cancelMassageTimer();
     setMassageActive(false);
     writeChar = null; notifyChar = null;
+    pipes = { okin: null, nus: null }; activePipe = null;
+    pipeRow.style.display = "none"; pipeNote.style.display = "none";
     setConnectedUI(false);
     log("Disconnected", "info");
+  }
+
+  function buildPipeSelector() {
+    const avail = ["nus", "okin"].filter(k => pipes[k]);
+    if (avail.length > 1) { pipeRow.style.display = ""; pipeNote.style.display = ""; }
+    pipeRow.querySelectorAll(".pipe-btn").forEach(b => { b.style.display = pipes[b.dataset.pipe] ? "" : "none"; });
+  }
+
+  async function setPipe(key) {
+    if (!pipes[key]) return;
+    activePipe = key;
+    writeChar = pipes[key].write;
+    notifyChar = pipes[key].notify;
+    proto = pipes[key].label;
+    pipeRow.querySelectorAll(".pipe-btn").forEach(b => b.classList.toggle("active", b.dataset.pipe === key));
+    const p = writeChar.properties;
+    log("Pipe set to " + proto + ". Write supports: " + ["write", "writeWithoutResponse"].filter(k => p[k]).join(", "), "info");
+    await startNotify();
+    if (connected) setConnectedUI(true);
+  }
+
+  async function startNotify() {
+    if (!notifyChar || !notifyChar.properties.notify) { log("No notify channel on this pipe", "info"); return; }
+    try {
+      await notifyChar.startNotifications();
+      if (!notifyChar._wired) {
+        notifyChar.addEventListener("characteristicvaluechanged", e => log("RX  " + toHex(new Uint8Array(e.target.value.buffer)), "rx"));
+        notifyChar._wired = true;
+      }
+      log("Notifications enabled on " + proto.split(" ")[0] + " channel", "info");
+    } catch (_) { log("Could not enable notifications on this pipe", "info"); }
   }
 
   // ---- hold-to-move ----
@@ -523,6 +558,7 @@
   massageOnBtn.addEventListener("click", massageOn);
   massageOffBtn.addEventListener("click", massageOff);
   connectBtn.addEventListener("click", () => connected ? disconnect() : connect());
+  pipeRow.querySelectorAll(".pipe-btn").forEach(b => b.addEventListener("click", () => { if (connected) setPipe(b.dataset.pipe); }));
 
   $("hexSend").addEventListener("click", () => {
     const raw = $("hexInput").value.trim();
