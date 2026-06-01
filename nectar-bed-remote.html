@@ -9,59 +9,28 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #ffffff;
-    --surface: #faf8f4;
-    --surface-2: #f3efe8;
-    --ink: #1b1714;
-    --muted: #7c746a;
-    --border: #e9e3d9;
-    --accent: #b07d39;
-    --accent-soft: #f5ecdc;
-    --stop: #b23b3b;
-    --stop-soft: #f8e9e9;
-    --ok: #4f7a4f;
-    --shadow: 0 1px 2px rgba(27,23,20,.05), 0 8px 24px rgba(27,23,20,.06);
-    --radius: 15px;
+    --bg: #ffffff; --surface: #faf8f4; --surface-2: #f3efe8; --ink: #1b1714; --muted: #7c746a;
+    --border: #e9e3d9; --accent: #b07d39; --accent-soft: #f5ecdc; --stop: #b23b3b; --stop-soft: #f8e9e9;
+    --ok: #4f7a4f; --shadow: 0 1px 2px rgba(27,23,20,.05), 0 8px 24px rgba(27,23,20,.06); --radius: 15px;
   }
   [data-theme="dark"] {
-    --bg: #14110d;
-    --surface: #1e1a14;
-    --surface-2: #272118;
-    --ink: #f2ede4;
-    --muted: #9a9082;
-    --border: #2e271d;
-    --accent: #d6a35c;
-    --accent-soft: #2c2418;
-    --stop: #d06464;
-    --stop-soft: #2e1c1c;
-    --ok: #82ad82;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    --bg: #14110d; --surface: #1e1a14; --surface-2: #272118; --ink: #f2ede4; --muted: #9a9082;
+    --border: #2e271d; --accent: #d6a35c; --accent-soft: #2c2418; --stop: #d06464; --stop-soft: #2e1c1c;
+    --ok: #82ad82; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
   }
-
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; }
   body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: "DM Sans", sans-serif;
-    line-height: 1.45;
-    min-height: 100dvh;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background: var(--bg); color: var(--ink); font-family: "DM Sans", sans-serif; line-height: 1.45;
+    min-height: 100dvh; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     transition: background .25s ease, color .25s ease;
   }
   .wrap { max-width: 460px; margin: 0 auto; padding: 22px 18px 48px; }
-
   header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
   .title { margin: 0; font-family: "Playfair Display", serif; font-weight: 700; font-size: 30px; letter-spacing: -.01em; }
   .subtitle { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; }
-  .theme-btn {
-    flex: none; width: 42px; height: 42px; border-radius: 50%;
-    border: 1px solid var(--border); background: var(--surface); color: var(--ink);
-    font-size: 17px; cursor: pointer; display: grid; place-items: center; transition: background .2s, transform .1s;
-  }
+  .theme-btn { flex: none; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--ink); font-size: 17px; cursor: pointer; display: grid; place-items: center; transition: background .2s, transform .1s; }
   .theme-btn:active { transform: scale(.94); }
-
-  /* Connection bar */
   .conn { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; box-shadow: var(--shadow); margin-bottom: 22px; }
   .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; transition: background .2s; }
   .dot.on { background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 18%, transparent); }
@@ -70,64 +39,37 @@
   .conn-text { flex: 1; min-width: 0; }
   .conn-text strong { display: block; font-size: 14.5px; font-weight: 600; }
   .conn-text span { display: block; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .connect-btn {
-    flex: none; border: none; border-radius: 11px; padding: 11px 18px; font-family: inherit; font-size: 14px; font-weight: 600;
-    background: var(--accent); color: #fff; cursor: pointer; transition: transform .1s, opacity .2s; letter-spacing: .01em;
-  }
+  .connect-btn { flex: none; border: none; border-radius: 11px; padding: 11px 18px; font-family: inherit; font-size: 14px; font-weight: 600; background: var(--accent); color: #fff; cursor: pointer; transition: transform .1s, opacity .2s; }
   [data-theme="dark"] .connect-btn { color: #1a140a; }
   .connect-btn:active { transform: scale(.96); }
   .connect-btn.connected { background: var(--surface-2); color: var(--ink); border: 1px solid var(--border); }
-
   section { margin-bottom: 22px; }
   .label { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px 3px; display: flex; align-items: center; gap: 8px; }
   .label .pill { font-size: 10.5px; padding: 2px 8px; border-radius: 20px; background: var(--surface-2); color: var(--muted); letter-spacing: .03em; text-transform: none; font-weight: 600; }
   .label .pill.live { background: var(--accent-soft); color: var(--accent); }
-
-  /* Position rows */
   .row { display: grid; grid-template-columns: 64px 1fr 1fr; align-items: stretch; gap: 8px; margin-bottom: 8px; }
-  .row-name { display: flex; align-items: center; font-size: 14px; font-weight: 600; padding-left: 4px; color: var(--ink); }
-  .ctrl {
-    appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--ink);
-    border-radius: var(--radius); padding: 16px 10px; font-family: inherit; font-size: 14.5px; font-weight: 600;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
-    touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
-    transition: transform .08s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease; box-shadow: var(--shadow);
-  }
+  .row-name { display: flex; align-items: center; font-size: 14px; font-weight: 600; padding-left: 4px; }
+  .ctrl { appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--ink); border-radius: var(--radius); padding: 16px 10px; font-family: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; transition: transform .08s ease, background .15s ease, border-color .15s ease; box-shadow: var(--shadow); }
   .ctrl .arw { font-size: 12px; opacity: .65; line-height: 1; }
-  .ctrl:not(:disabled):active,
-  .ctrl.holding { transform: scale(.97); background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .ctrl:not(:disabled):active, .ctrl.holding { transform: scale(.97); background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
   .ctrl.holding .arw { opacity: 1; }
   .ctrl:disabled { opacity: .42; cursor: not-allowed; box-shadow: none; }
-
-  /* Stop */
-  .stop {
-    width: 100%; border: 1px solid color-mix(in srgb, var(--stop) 30%, var(--border)); background: var(--stop-soft); color: var(--stop);
-    border-radius: var(--radius); padding: 18px; font-family: inherit; font-size: 16px; font-weight: 700; letter-spacing: .03em;
-    cursor: pointer; transition: transform .08s, background .15s; box-shadow: var(--shadow);
-  }
+  .stop { width: 100%; border: 1px solid color-mix(in srgb, var(--stop) 30%, var(--border)); background: var(--stop-soft); color: var(--stop); border-radius: var(--radius); padding: 18px; font-family: inherit; font-size: 16px; font-weight: 700; letter-spacing: .03em; cursor: pointer; transition: transform .08s, background .15s; box-shadow: var(--shadow); }
   .stop:not(:disabled):active { transform: scale(.98); background: color-mix(in srgb, var(--stop) 16%, var(--stop-soft)); }
   .stop:disabled { opacity: .42; cursor: not-allowed; box-shadow: none; }
-
-  /* Grids of taps */
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .tap {
-    appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--ink);
-    border-radius: var(--radius); padding: 15px 12px; font-family: inherit; font-size: 14.5px; font-weight: 600;
-    cursor: pointer; transition: transform .08s, background .15s, border-color .15s; box-shadow: var(--shadow); user-select: none;
-  }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .tap { appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--ink); border-radius: var(--radius); padding: 15px 10px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: transform .08s, background .15s, border-color .15s; box-shadow: var(--shadow); user-select: none; }
   .tap:not(:disabled):active { transform: scale(.97); background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
   .tap.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
   .tap:disabled { opacity: .42; cursor: not-allowed; box-shadow: none; }
-
-  /* Massage timer */
+  .tap.wide { width: 100%; margin-top: 8px; }
   .timer { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin-top: 8px; box-shadow: var(--shadow); }
-  .timer label { font-size: 13.5px; font-weight: 500; color: var(--ink); }
+  .timer label { font-size: 13.5px; font-weight: 500; }
   .timer input { width: 62px; border: 1px solid var(--border); border-radius: 9px; padding: 8px 9px; font-family: inherit; font-size: 14px; font-weight: 600; background: var(--bg); color: var(--ink); text-align: center; }
   .timer .unit { font-size: 13px; color: var(--muted); }
   .timer .count { margin-left: auto; font-variant-numeric: tabular-nums; font-size: 15px; font-weight: 700; color: var(--accent); min-width: 52px; text-align: right; }
-
-  /* Diagnostics */
-  details.diag { margin-top: 28px; border-top: 1px solid var(--border); padding-top: 14px; }
+  details.diag { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 14px; }
   details.diag summary { cursor: pointer; font-size: 12px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); list-style: none; display: flex; align-items: center; gap: 7px; }
   details.diag summary::-webkit-details-marker { display: none; }
   details.diag summary::before { content: "+"; font-size: 15px; color: var(--accent); }
@@ -135,22 +77,11 @@
   .diag-body { padding-top: 14px; }
   .diag-note { font-size: 12.5px; color: var(--muted); margin: 0 0 12px; line-height: 1.5; }
   .field { display: flex; gap: 8px; margin-bottom: 10px; }
-  .field input[type=text] { flex: 1; border: 1px solid var(--border); border-radius: 9px; padding: 10px 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; background: var(--bg); color: var(--ink); }
+  .field input[type=text] { flex: 1; border: 1px solid var(--border); border-radius: 9px; padding: 10px 11px; font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: var(--bg); color: var(--ink); }
   .field button { border: 1px solid var(--border); background: var(--surface-2); color: var(--ink); border-radius: 9px; padding: 0 14px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
   .field button:active { transform: scale(.97); }
   .field .hint { font-size: 11.5px; color: var(--muted); align-self: center; }
   .offrow { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; font-size: 13px; }
-  .offrow input { width: 78px; border: 1px solid var(--border); border-radius: 9px; padding: 8px 9px; font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: var(--bg); color: var(--ink); text-align: center; }
-  .log { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 11px 12px; height: 168px; overflow-y: auto; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11.5px; line-height: 1.6; }
-  .log .l { white-space: pre-wrap; word-break: break-all; }
-  .log .tx { color: var(--accent); }
-  .log .rx { color: var(--ok); }
-  .log .err { color: var(--stop); }
-  .log .info { color: var(--muted); }
-
-  .note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 26px; line-height: 1.55; }
-  .unsupported { display: none; background: var(--stop-soft); color: var(--stop); border: 1px solid color-mix(in srgb, var(--stop) 30%, var(--border)); border-radius: var(--radius); padding: 13px 14px; font-size: 13px; margin-bottom: 18px; line-height: 1.5; }
-  .unsupported.show { display: block; }
   .pipe-btn { border: 1px solid var(--border); background: var(--surface-2); color: var(--ink); border-radius: 9px; padding: 8px 14px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .pipe-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
   [data-theme="dark"] .pipe-btn.active { color: #1a140a; }
@@ -158,6 +89,12 @@
   .cal-row .cal-hex { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--muted); flex: none; width: 96px; }
   .cal-row select { flex: 1; min-width: 0; border: 1px solid var(--border); border-radius: 9px; padding: 9px; font-family: inherit; font-size: 13px; font-weight: 600; background: var(--bg); color: var(--ink); }
   .cal-row .pipe-btn { flex: none; }
+  .log { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 11px 12px; height: 168px; overflow-y: auto; font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; line-height: 1.6; }
+  .log .l { white-space: pre-wrap; word-break: break-all; }
+  .log .tx { color: var(--accent); } .log .rx { color: var(--ok); } .log .err { color: var(--stop); } .log .info { color: var(--muted); }
+  .note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 26px; line-height: 1.55; }
+  .unsupported { display: none; background: var(--stop-soft); color: var(--stop); border: 1px solid color-mix(in srgb, var(--stop) 30%, var(--border)); border-radius: var(--radius); padding: 13px 14px; font-size: 13px; margin-bottom: 18px; line-height: 1.5; }
+  .unsupported.show { display: block; }
 </style>
 </head>
 <body>
@@ -165,7 +102,7 @@
   <header>
     <div>
       <h1 class="title">Nectar Remote</h1>
-      <p class="subtitle">OKIN CB3332</p>
+      <p class="subtitle">Resident &middot; OKIN CB3332</p>
     </div>
     <button class="theme-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">&#9789;</button>
   </header>
@@ -191,11 +128,6 @@
       <button class="ctrl" data-hold="headDown" disabled><span class="arw">&#9660;</span> Down</button>
     </div>
     <div class="row">
-      <div class="row-name">Lumbar</div>
-      <button class="ctrl" data-hold="lumbarUp" disabled><span class="arw">&#9650;</span> Up</button>
-      <button class="ctrl" data-hold="lumbarDown" disabled><span class="arw">&#9660;</span> Down</button>
-    </div>
-    <div class="row">
       <div class="row-name">Foot</div>
       <button class="ctrl" data-hold="footUp" disabled><span class="arw">&#9650;</span> Up</button>
       <button class="ctrl" data-hold="footDown" disabled><span class="arw">&#9660;</span> Down</button>
@@ -208,20 +140,30 @@
 
   <section>
     <p class="label">Presets</p>
-    <div class="grid2">
+    <div class="grid3">
       <button class="tap" data-cmd="flat" disabled>Flat</button>
-      <button class="tap" data-cmd="zeroG" disabled>Zero Gravity</button>
-      <button class="tap" data-cmd="lounge" disabled>Lounge</button>
+      <button class="tap" data-cmd="zeroG" disabled>Zero G</button>
+      <button class="tap" data-cmd="tv" disabled>TV</button>
       <button class="tap" data-cmd="antiSnore" disabled>Anti-Snore</button>
+      <button class="tap" data-cmd="reading" disabled>Reading</button>
+      <button class="tap" data-cmd="memory" disabled>Memory</button>
     </div>
+  </section>
+
+  <section>
+    <p class="label">Under-bed Light</p>
+    <button class="tap wide" data-cmd="light" disabled style="margin-top:0;">Light</button>
   </section>
 
   <section>
     <p class="label">Massage <span class="pill" id="massagePill">Off</span></p>
     <div class="grid2">
-      <button class="tap" id="massageOnBtn" disabled>Massage On</button>
-      <button class="tap" id="massageOffBtn" disabled>Massage Off</button>
+      <button class="tap" data-zone="massageHead" disabled>Head</button>
+      <button class="tap" data-zone="massageFoot" disabled>Foot</button>
+      <button class="tap" data-zone="massageBoth" disabled>Head + Foot</button>
+      <button class="tap" data-cmd="massageMode" disabled>Mode</button>
     </div>
+    <button class="tap wide" id="massageOffBtn" disabled>Massage Off</button>
     <div class="timer">
       <label for="timerInput">Auto-off</label>
       <input type="number" id="timerInput" value="30" min="0" max="180" inputmode="numeric" />
@@ -230,18 +172,10 @@
     </div>
   </section>
 
-  <section>
-    <p class="label">Under-bed Light</p>
-    <div class="grid2">
-      <button class="tap" data-cmd="lightOn" disabled>Light On</button>
-      <button class="tap" data-cmd="lightOff" disabled>Light Off</button>
-    </div>
-  </section>
-
   <details class="diag" id="calSection">
     <summary>Calibrate buttons</summary>
     <div class="diag-body">
-      <p class="diag-note">Your bed maps these codes to functions differently than the defaults. Connect first, then tap Test on a code and watch the bed. Set each dropdown to what it actually does, then Save. Motion codes run for about a second so you can see them. Leave a code Unassigned if nothing happens.</p>
+      <p class="diag-note">Tap Test on a code, watch the bed, then set the dropdown to what it actually did. Motion runs about a second so you can see it. Save when done. It is stored permanently. Codes left Unassigned do nothing.</p>
       <div id="calRows"></div>
       <div class="field" style="margin-top:12px;">
         <button id="calSave">Save mapping</button>
@@ -254,34 +188,17 @@
   <details class="diag">
     <summary>Diagnostics</summary>
     <div class="diag-body">
-      <p class="diag-note">Every packet is logged below. On connect the app reads the bed's characteristics to enable control, then sends commands in the selected protocol. Default is DewertOkin, the family your CB3332 belongs to.</p>
-
-      <div class="offrow" id="protoRow">
-        <label>Protocol</label>
-        <button class="pipe-btn" data-proto="dewertokin">DewertOkin</button>
-        <button class="pipe-btn" data-proto="luxe">Luxe 5A</button>
-      </div>
-
+      <p class="diag-note">Live packet log. On connect the app reads the bed's characteristics to unlock control, then sends DewertOkin bitmask commands over the OKIN channel.</p>
       <div class="offrow" id="pipeRow" style="display:none;">
         <label>Command pipe</label>
-        <button class="pipe-btn" data-pipe="nus">Nordic UART</button>
         <button class="pipe-btn" data-pipe="okin">OKIN</button>
+        <button class="pipe-btn" data-pipe="nus">Nordic UART</button>
       </div>
-      <p class="diag-note" id="pipeNote" style="margin-top:-4px;display:none;">If writes show as TX but the bed does not move, switch the pipe and re-test a preset. Default is Nordic UART because the 5A...A5 framing looks like a serial protocol.</p>
-
       <div class="field">
-        <input type="text" id="hexInput" placeholder="5A 01 03 10 30 00 A5" />
+        <input type="text" id="hexInput" placeholder="040200000001" />
         <button id="hexSend">Send</button>
       </div>
-      <p class="diag-note" style="margin-top:-4px;">Raw hex sender. Space or comma separated. A bare action byte like <code>00</code> is auto-wrapped in the 5A...A5 frame.</p>
-
-      <div class="offrow">
-        <label for="offByte">Massage-off byte</label>
-        <input type="text" id="offByte" value="0x5F" />
-        <button class="field" style="display:inline-block;padding:8px 12px;" id="discoverOff">Find it</button>
-      </div>
-      <p class="diag-note" style="margin-top:-4px;">Turn massage on, then tap Find it. It steps through likely off codes with a pause between each. Watch the bed, note which one stops the motors, then type that value above and it will be used by the Off button and the timer.</p>
-
+      <p class="diag-note" style="margin-top:-4px;">Raw hex sender for hunting unknown codes (for example Reading or Mode). Enter the full 6-byte command.</p>
       <div class="log" id="log"></div>
     </div>
   </details>
@@ -293,105 +210,77 @@
 (() => {
   "use strict";
 
-  // ============================================================
-  // Nectar / OKIN CB3332 remote
-  // Protocol confirmed from a decompiled + packet-captured Nectar
-  // Luxe foundation (com.okin.bedding.luxe). 7-byte frame:
-  //   5A 01 03 10 30 [action] A5
-  // Write char: 62741525 (OKIN). Fallback: Nordic UART 6E400002.
-  // ============================================================
+  // OKIN CB3332 (Resident / Nectar). DewertOkin 6-byte bitmask protocol:
+  //   04 02 [b3] [b2] [b1] [b0]   written to the OKIN characteristic.
+  // Control must be unlocked on connect by reading the bed's characteristics.
 
-  const OKIN = {
-    svc:    "62741523-52f9-8864-b1ab-3b3a8d65950b",
-    write:  "62741525-52f9-8864-b1ab-3b3a8d65950b",
-    notify: "62741625-52f9-8864-b1ab-3b3a8d65950b"
-  };
-  const NUS = {
-    svc:    "6e400001-b5a3-f393-e0a9-e50e24dcca9e",
-    write:  "6e400002-b5a3-f393-e0a9-e50e24dcca9e",
-    notify: "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
-  };
+  const OKIN = { svc: "62741523-52f9-8864-b1ab-3b3a8d65950b", write: "62741525-52f9-8864-b1ab-3b3a8d65950b", notify: "62741625-52f9-8864-b1ab-3b3a8d65950b" };
+  const NUS  = { svc: "6e400001-b5a3-f393-e0a9-e50e24dcca9e", write: "6e400002-b5a3-f393-e0a9-e50e24dcca9e", notify: "6e400003-b5a3-f393-e0a9-e50e24dcca9e" };
   const EXTRA = ["00001000-0000-1000-8000-00805f9b34fb", "0000ffe0-0000-1000-8000-00805f9b34fb"];
 
-  const HOLD_MS = 110;        // repeat interval while a motor button is held
-  const SAFETY_MS = 30000;    // auto-stop a held button after 30s
-  const KEEPALIVE_MS = 9000;  // DewertOkin boxes drop idle links; send a NOOP periodically
+  const HOLD_MS = 110, SAFETY_MS = 30000, KEEPALIVE_MS = 9000, NOOP = "040200000000";
 
-  // Command sets per protocol. DewertOkin commands are 6-byte bitmask hex strings
-  // (reverse-engineered from the Comfort Plus app). Luxe is the 5A..A5 frame.
+  // Default (DewertOkin reference) guesses. Calibration overrides these per bed.
   const COMMANDS = {
     dewertokin: {
-      headUp: "040200000001", headDown: "040200000002",
-      footUp: "040200000004", footDown: "040200000008",
-      lumbarUp: null, lumbarDown: null,                 // not captured for this family
-      stop: "040200000000",                             // all bits clear = no motion
-      flat: "040210000000", zeroG: "040200004000", lounge: "040200003000", antiSnore: "040200008000",
-      massageOn: "040280000000", massageOff: "040202000000",
-      lightOn: "040200020000", lightOff: "040200020000" // single under-light toggle
-    },
-    luxe: {
-      headUp: "00", headDown: "01", footUp: "02", footDown: "03",
-      lumbarUp: "04", lumbarDown: "07", stop: "0f",
-      flat: "10", zeroG: "13", lounge: "11", antiSnore: "16",
-      massageOn: "58", massageOff: null, lightOn: "73", lightOff: "74"
+      headUp: "040200000001", headDown: "040200000002", footUp: "040200000004", footDown: "040200000008",
+      stop: NOOP, flat: "040210000000", zeroG: "040200004000", tv: "040200003000", antiSnore: "040200008000",
+      reading: null, memory: "040200001000", light: "040200020000",
+      massageHead: "040200000800", massageFoot: "040200400000", massageBoth: "040280000000",
+      massageMode: null, massageOff: "040202000000"
     },
     custom: {}
   };
 
-  // Codes offered in the calibration panel, with their default (DewertOkin) guess.
   const CAL_CODES = [
-    ["040200000001", "headUp"], ["040200000002", "headDown"],
-    ["040200000004", "footUp"], ["040200000008", "footDown"],
+    ["040200000001", "headUp"], ["040200000002", "headDown"], ["040200000004", "footUp"], ["040200000008", "footDown"],
     ["040200000010", ""], ["040200000020", ""], ["040200000040", ""], ["040200000080", ""],
-    ["040210000000", "flat"], ["040200004000", "zeroG"], ["040200003000", "lounge"], ["040200008000", "antiSnore"],
-    ["040200020000", "lightOn"], ["040280000000", "massageOn"], ["040202000000", "massageOff"]
+    ["040210000000", "flat"], ["040200004000", "zeroG"], ["040200003000", "tv"], ["040200008000", "antiSnore"],
+    ["040200001000", "memory"], ["040200002000", ""],
+    ["040200020000", "light"],
+    ["040200000800", "massageHead"], ["040200400000", "massageFoot"], ["040280000000", "massageBoth"], ["040202000000", "massageOff"],
+    ["040200005000", ""], ["040200006000", ""], ["040200009000", ""], ["040201000000", ""]
   ];
   const CAL_FUNCS = [
     ["", "Unassigned"],
-    ["headUp", "Head Up"], ["headDown", "Head Down"],
-    ["lumbarUp", "Lumbar Up"], ["lumbarDown", "Lumbar Down"],
-    ["footUp", "Foot Up"], ["footDown", "Foot Down"],
-    ["flat", "Flat"], ["zeroG", "Zero Gravity"], ["lounge", "Lounge"], ["antiSnore", "Anti-Snore"],
-    ["lightOn", "Light On"], ["lightOff", "Light Off"],
-    ["massageOn", "Massage On"], ["massageOff", "Massage Off"]
+    ["headUp", "Head Up"], ["headDown", "Head Down"], ["footUp", "Foot Up"], ["footDown", "Foot Down"],
+    ["flat", "Flat"], ["zeroG", "Zero Gravity"], ["tv", "TV"], ["antiSnore", "Anti-Snore"], ["reading", "Reading"], ["memory", "Memory"],
+    ["light", "Light"],
+    ["massageHead", "Massage Head"], ["massageFoot", "Massage Foot"], ["massageBoth", "Massage Both"], ["massageMode", "Massage Mode"], ["massageOff", "Massage Off"]
   ];
 
   // ---- state ----
   let device = null, server = null, writeChar = null, notifyChar = null;
-  let connected = false, proto = "";
-  let holdTimer = null, holdSafety = null;
+  let connected = false, proto = "", protoKey = "dewertokin";
+  let holdTimer = null, holdSafety = null, keepaliveTimer = null;
   let massageTimer = null, massageEndsAt = 0;
   let pipes = { okin: null, nus: null }, activePipe = null;
-  let protoKey = "dewertokin", keepaliveTimer = null;
 
   // ---- elements ----
   const $ = id => document.getElementById(id);
   const dot = $("dot"), connTitle = $("connTitle"), connSub = $("connSub"), connectBtn = $("connectBtn");
-  const stopBtn = $("stopBtn"), logEl = $("log");
-  const massagePill = $("massagePill"), massageOnBtn = $("massageOnBtn"), massageOffBtn = $("massageOffBtn");
+  const stopBtn = $("stopBtn"), logEl = $("log"), themeBtn = $("themeBtn");
+  const massagePill = $("massagePill"), massageOffBtn = $("massageOffBtn");
   const timerInput = $("timerInput"), timerCount = $("timerCount");
-  const offByteInput = $("offByte"), themeBtn = $("themeBtn");
-  const ctrlButtons = Array.from(document.querySelectorAll(".ctrl, .tap, #stopBtn"));
-  const pipeRow = $("pipeRow"), pipeNote = $("pipeNote"), protoRow = $("protoRow");
+  const pipeRow = $("pipeRow");
   const calRows = $("calRows"), calSave = $("calSave"), calReset = $("calReset"), calStatus = $("calStatus");
+  const ctrlButtons = Array.from(document.querySelectorAll(".ctrl, .tap, #stopBtn"));
 
   // ---- helpers ----
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const toHex = u8 => Array.from(u8).map(b => b.toString(16).padStart(2, "0")).join(" ");
-  function frame(action) { return new Uint8Array([0x5a, 0x01, 0x03, 0x10, 0x30, action & 0xff, 0xa5]); }
   function hexToBytes(hex) { const h = String(hex).replace(/\s+/g, ""); const a = []; for (let i = 0; i + 1 < h.length; i += 2) a.push(parseInt(h.substr(i, 2), 16)); return new Uint8Array(a); }
-  function parseByte(s) { const n = parseInt(String(s).trim().replace(/^0x/i, ""), 16); return isNaN(n) ? null : (n & 0xff); }
-  function withTimeout(promise, ms, msg) {
-    return Promise.race([promise, new Promise((_, rej) => setTimeout(() => rej(new Error(msg)), ms))]);
-  }
+  function withTimeout(p, ms, msg) { return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(msg)), ms))]); }
+  function load(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (_) { return d; } }
+  function save(k, v) { try { localStorage.setItem(k, v); } catch (_) {} }
+  function loadJSON(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (_) { return null; } }
+  function saveJSON(k, o) { try { localStorage.setItem(k, JSON.stringify(o)); } catch (_) {} }
 
   function log(msg, cls) {
     const div = document.createElement("div");
     div.className = "l " + (cls || "info");
-    const t = new Date().toLocaleTimeString([], { hour12: false });
-    div.textContent = t + "  " + msg;
-    logEl.appendChild(div);
-    logEl.scrollTop = logEl.scrollHeight;
+    div.textContent = new Date().toLocaleTimeString([], { hour12: false }) + "  " + msg;
+    logEl.appendChild(div); logEl.scrollTop = logEl.scrollHeight;
   }
 
   // ---- BLE write ----
@@ -399,35 +288,24 @@
     if (!writeChar) { if (!quiet) log("Not connected", "err"); return; }
     const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
     try {
-      if (writeChar.properties.write && writeChar.writeValueWithResponse) {
-        await writeChar.writeValueWithResponse(u8);
-      } else if (writeChar.properties.writeWithoutResponse && writeChar.writeValueWithoutResponse) {
-        await writeChar.writeValueWithoutResponse(u8);
-      } else {
-        await writeChar.writeValue(u8);
-      }
+      if (writeChar.properties.write && writeChar.writeValueWithResponse) await writeChar.writeValueWithResponse(u8);
+      else if (writeChar.properties.writeWithoutResponse && writeChar.writeValueWithoutResponse) await writeChar.writeValueWithoutResponse(u8);
+      else await writeChar.writeValue(u8);
       if (!quiet) log("TX  " + toHex(u8), "tx");
     } catch (e) {
       try { await writeChar.writeValueWithoutResponse(u8); if (!quiet) log("TX  " + toHex(u8) + "  (no-response)", "tx"); }
       catch (e2) { if (!quiet) log("Write failed: " + e2.message, "err"); }
     }
   }
-
-  // Resolve a semantic command name to bytes for the active protocol.
   function cmdBytes(name) {
-    if (name === "massageOff" && protoKey === "luxe") {
-      const b = parseByte(offByteInput.value); return b == null ? null : frame(b);
-    }
-    const set = COMMANDS[protoKey] || {};
+    const set = COMMANDS[protoKey] || COMMANDS.dewertokin;
     let v = set[name];
-    if (v == null && name === "lightOff") v = set.lightOn;          // light is a single toggle on bitmask beds
-    if (v == null && name === "stop" && protoKey !== "luxe") v = "040200000000"; // all-clear NOOP
-    if (v == null) return null;
-    return protoKey === "luxe" ? frame(parseInt(v, 16)) : hexToBytes(v);
+    if (v == null && name === "stop") v = NOOP;
+    return v == null ? null : hexToBytes(v);
   }
   function sendNamed(name) {
     const b = cmdBytes(name);
-    if (!b) { log(name + " is not mapped for the " + protoKey + " protocol", "info"); return Promise.resolve(); }
+    if (!b) { log(name + " is not mapped. Use Calibrate to assign it.", "info"); return Promise.resolve(); }
     return sendBytes(b);
   }
 
@@ -437,26 +315,19 @@
     try {
       setBusy("Requesting device");
       device = await navigator.bluetooth.requestDevice({
-        filters: [{ namePrefix: "OKIN" }, { namePrefix: "Nectar" }, { namePrefix: "RIZE" }],
+        filters: [{ namePrefix: "OKIN" }, { namePrefix: "Nectar" }, { namePrefix: "RIZE" }, { namePrefix: "Resident" }],
         optionalServices: [OKIN.svc, NUS.svc, ...EXTRA]
       });
       device.addEventListener("gattserverdisconnected", onDisconnect);
 
       setBusy("Connecting to " + (device.name || "bed"));
-      const slowNote = setTimeout(() => log("Still connecting. macOS can take 15 to 30 seconds on the first attempt, hold on.", "info"), 8000);
-      try {
-        server = await withTimeout(device.gatt.connect(), 30000,
-          "Connection timed out after 30s. The link will not open, see the steps below the remote.");
-      } finally {
-        clearTimeout(slowNote);
-      }
+      const slowNote = setTimeout(() => log("Still connecting. macOS can take 15 to 30 seconds, hold on.", "info"), 8000);
+      try { server = await withTimeout(device.gatt.connect(), 30000, "Connection timed out after 30s."); }
+      finally { clearTimeout(slowNote); }
 
-      // Prime service discovery (this alone clears some macOS hangs), then locate the control service
       setBusy("Finding controls");
       await withTimeout(server.getPrimaryServices(), 20000, "Service discovery timed out").catch(() => {});
 
-      // Grab whichever control pipes exist. The bed exposes both an OKIN custom
-      // characteristic and a Nordic UART pipe; keep both and let the user switch.
       try {
         const s = await server.getPrimaryService(OKIN.svc);
         const w = await s.getCharacteristic(OKIN.write).catch(() => null);
@@ -469,14 +340,10 @@
         const n = await s.getCharacteristic(NUS.notify).catch(() => null);
         if (w) pipes.nus = { write: w, notify: n, label: "Nordic UART 6E400002" };
       } catch (_) {}
-
       if (!pipes.okin && !pipes.nus) throw new Error("No known control service found on this device.");
 
       buildPipeSelector();
-      // Default to the OKIN proprietary characteristic: DewertOkin commands target it, not the UART
       await setPipe(pipes.okin ? "okin" : "nus");
-
-      // DewertOkin boxes ignore commands until control is enabled by reading characteristics
       await enableControl();
 
       connected = true;
@@ -488,93 +355,54 @@
       if (device && device.gatt && device.gatt.connected) device.gatt.disconnect();
     }
   }
-
-  function disconnect() {
-    if (device && device.gatt && device.gatt.connected) device.gatt.disconnect();
-    else onDisconnect();
-  }
-
+  function disconnect() { if (device && device.gatt && device.gatt.connected) device.gatt.disconnect(); else onDisconnect(); }
   function onDisconnect() {
-    connected = false;
-    stopHold();
-    stopKeepalive();
-    cancelMassageTimer();
-    setMassageActive(false);
-    writeChar = null; notifyChar = null;
-    pipes = { okin: null, nus: null }; activePipe = null;
-    pipeRow.style.display = "none"; pipeNote.style.display = "none";
-    setConnectedUI(false);
-    log("Disconnected", "info");
-  }
-
-  // Reading the bed's characteristics unlocks command processing on DewertOkin boxes.
-  async function enableControl() {
-    let n = 0;
-    try {
-      for (const svc of await server.getPrimaryServices()) {
-        for (const ch of await svc.getCharacteristics()) {
-          if (ch.properties.read) { try { await ch.readValue(); n++; } catch (_) {} }
-        }
-      }
-    } catch (_) {}
-    log("Enable sequence: read " + n + " characteristics to unlock control", "info");
-  }
-
-  function startKeepalive() {
-    stopKeepalive();
-    keepaliveTimer = setInterval(() => {
-      if (connected && writeChar && !holdTimer) { const b = cmdBytes("stop"); if (b) sendBytes(b, true); }
-    }, KEEPALIVE_MS);
-  }
-  function stopKeepalive() { if (keepaliveTimer) { clearInterval(keepaliveTimer); keepaliveTimer = null; } }
-
-  function setProtocol(key) {
-    if (!COMMANDS[key]) return;
-    protoKey = key;
-    protoRow.querySelectorAll(".pipe-btn").forEach(b => b.classList.toggle("active", b.dataset.proto === key));
-    save("nbr_proto", key);
-    log("Protocol set to " + key, "info");
+    connected = false; stopHold(); stopKeepalive(); cancelMassageTimer(); setMassageActive(false);
+    writeChar = null; notifyChar = null; pipes = { okin: null, nus: null }; activePipe = null;
+    pipeRow.style.display = "none";
+    setConnectedUI(false); log("Disconnected", "info");
   }
 
   function buildPipeSelector() {
-    const avail = ["nus", "okin"].filter(k => pipes[k]);
-    if (avail.length > 1) { pipeRow.style.display = ""; pipeNote.style.display = ""; }
+    const avail = ["okin", "nus"].filter(k => pipes[k]);
+    if (avail.length > 1) pipeRow.style.display = "";
     pipeRow.querySelectorAll(".pipe-btn").forEach(b => { b.style.display = pipes[b.dataset.pipe] ? "" : "none"; });
   }
-
   async function setPipe(key) {
     if (!pipes[key]) return;
-    activePipe = key;
-    writeChar = pipes[key].write;
-    notifyChar = pipes[key].notify;
-    proto = pipes[key].label;
+    activePipe = key; writeChar = pipes[key].write; notifyChar = pipes[key].notify; proto = pipes[key].label;
     pipeRow.querySelectorAll(".pipe-btn").forEach(b => b.classList.toggle("active", b.dataset.pipe === key));
     const p = writeChar.properties;
-    log("Pipe set to " + proto + ". Write supports: " + ["write", "writeWithoutResponse"].filter(k => p[k]).join(", "), "info");
+    log("Pipe: " + proto + ". Write supports: " + ["write", "writeWithoutResponse"].filter(k => p[k]).join(", "), "info");
     await startNotify();
     if (connected) setConnectedUI(true);
   }
-
   async function startNotify() {
-    if (!notifyChar || !notifyChar.properties.notify) { log("No notify channel on this pipe", "info"); return; }
+    if (!notifyChar || !notifyChar.properties.notify) return;
     try {
       await notifyChar.startNotifications();
-      if (!notifyChar._wired) {
-        notifyChar.addEventListener("characteristicvaluechanged", e => log("RX  " + toHex(new Uint8Array(e.target.value.buffer)), "rx"));
-        notifyChar._wired = true;
-      }
-      log("Notifications enabled on " + proto.split(" ")[0] + " channel", "info");
-    } catch (_) { log("Could not enable notifications on this pipe", "info"); }
+      if (!notifyChar._wired) { notifyChar.addEventListener("characteristicvaluechanged", e => log("RX  " + toHex(new Uint8Array(e.target.value.buffer)), "rx")); notifyChar._wired = true; }
+      log("Notifications enabled", "info");
+    } catch (_) {}
   }
+  async function enableControl() {
+    let n = 0;
+    try {
+      for (const svc of await server.getPrimaryServices())
+        for (const ch of await svc.getCharacteristics())
+          if (ch.properties.read) { try { await ch.readValue(); n++; } catch (_) {} }
+    } catch (_) {}
+    log("Enable sequence: read " + n + " characteristics to unlock control", "info");
+  }
+  function startKeepalive() { stopKeepalive(); keepaliveTimer = setInterval(() => { if (connected && writeChar && !holdTimer) sendBytes(hexToBytes(NOOP), true); }, KEEPALIVE_MS); }
+  function stopKeepalive() { if (keepaliveTimer) { clearInterval(keepaliveTimer); keepaliveTimer = null; } }
 
   // ---- hold-to-move ----
   function startHold(name) {
     if (!connected) return;
     sendNamed(name);
-    clearInterval(holdTimer);
-    holdTimer = setInterval(() => sendNamed(name), HOLD_MS);
-    clearTimeout(holdSafety);
-    holdSafety = setTimeout(() => { log("Safety stop (held 30s)", "info"); stopHold(); }, SAFETY_MS);
+    clearInterval(holdTimer); holdTimer = setInterval(() => sendNamed(name), HOLD_MS);
+    clearTimeout(holdSafety); holdSafety = setTimeout(() => { log("Safety stop (held 30s)", "info"); stopHold(); }, SAFETY_MS);
   }
   function stopHold() {
     if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
@@ -584,29 +412,14 @@
   }
 
   // ---- massage ----
-  function setMassageActive(on) {
-    massagePill.textContent = on ? "On" : "Off";
-    massagePill.classList.toggle("live", on);
-    massageOnBtn.classList.toggle("active", on);
-  }
-  function massageOn() {
-    if (!connected) return;
-    sendNamed("massageOn");
-    setMassageActive(true);
-    startMassageTimer();
-  }
-  function massageOff() {
-    if (connected) sendNamed("massageOff");
-    setMassageActive(false);
-    cancelMassageTimer();
-  }
+  function setMassageActive(on) { massagePill.textContent = on ? "On" : "Off"; massagePill.classList.toggle("live", on); }
+  function massageZone(name) { if (!connected) return; sendNamed(name); setMassageActive(true); startMassageTimer(); }
+  function massageOff() { if (connected) sendNamed("massageOff"); setMassageActive(false); cancelMassageTimer(); }
   function startMassageTimer() {
     cancelMassageTimer();
     const mins = parseInt(timerInput.value, 10);
     if (!mins || mins <= 0) { timerCount.textContent = "\u221E"; return; }
-    massageEndsAt = Date.now() + mins * 60000;
-    tickMassage();
-    massageTimer = setInterval(tickMassage, 1000);
+    massageEndsAt = Date.now() + mins * 60000; tickMassage(); massageTimer = setInterval(tickMassage, 1000);
   }
   function tickMassage() {
     const left = Math.max(0, massageEndsAt - Date.now());
@@ -614,86 +427,47 @@
     timerCount.textContent = m + ":" + String(s).padStart(2, "0");
     if (left <= 0) { log("Massage auto-off", "info"); massageOff(); }
   }
-  function cancelMassageTimer() {
-    if (massageTimer) { clearInterval(massageTimer); massageTimer = null; }
-    timerCount.textContent = "\u2014";
-  }
+  function cancelMassageTimer() { if (massageTimer) { clearInterval(massageTimer); massageTimer = null; } timerCount.textContent = "\u2014"; }
 
-  // ---- massage-off discovery ----
-  async function discoverOff() {
-    if (!connected) { log("Connect first, then turn massage on", "err"); return; }
-    const candidates = [0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f, 0x60, 0x61, 0x62];
-    log("Off discovery: watch the bed and note which value stops the massage", "info");
-    for (const c of candidates) {
-      log("Trying 0x" + c.toString(16).padStart(2, "0"), "info");
-      await sendBytes(frame(c));
-      await sleep(1800);
-    }
-    log("Done. Type the working value into the Massage-off byte field.", "info");
-  }
-
-  // ---- calibration (map raw codes to functions for this specific bed) ----
-  function loadJSON(key) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch (_) { return null; } }
-  function saveJSON(key, obj) { try { localStorage.setItem(key, JSON.stringify(obj)); } catch (_) {} }
-
+  // ---- calibration ----
   function pulseTest(hex) {
     if (!connected) { log("Connect first, then test", "err"); return; }
     log("Testing " + hex, "info");
-    const b = hexToBytes(hex);
-    let i = 0;
-    const iv = setInterval(() => {
-      sendBytes(b, true);
-      if (++i >= 11) { clearInterval(iv); sendBytes(hexToBytes("040200000000"), true); }
-    }, HOLD_MS);
+    const b = hexToBytes(hex); let i = 0;
+    const iv = setInterval(() => { sendBytes(b, true); if (++i >= 11) { clearInterval(iv); sendBytes(hexToBytes(NOOP), true); } }, HOLD_MS);
   }
-
   function renderCal() {
     const saved = loadJSON("nbr_custom");
     calRows.innerHTML = "";
     CAL_CODES.forEach(([hex, def]) => {
-      const row = document.createElement("div");
-      row.className = "cal-row";
-      const test = document.createElement("button");
-      test.className = "pipe-btn"; test.type = "button"; test.textContent = "Test";
+      const row = document.createElement("div"); row.className = "cal-row";
+      const test = document.createElement("button"); test.className = "pipe-btn"; test.type = "button"; test.textContent = "Test";
       test.addEventListener("click", () => pulseTest(hex));
       const code = document.createElement("code"); code.className = "cal-hex"; code.textContent = hex;
       const sel = document.createElement("select"); sel.dataset.hex = hex;
-      CAL_FUNCS.forEach(([val, label]) => {
-        const o = document.createElement("option"); o.value = val; o.textContent = label; sel.appendChild(o);
-      });
+      CAL_FUNCS.forEach(([val, label]) => { const o = document.createElement("option"); o.value = val; o.textContent = label; sel.appendChild(o); });
       let chosen = def;
       if (saved) { const fn = Object.keys(saved).find(k => saved[k] === hex); chosen = fn || ""; }
       sel.value = chosen;
-      row.append(test, code, sel);
-      calRows.appendChild(row);
+      row.append(test, code, sel); calRows.appendChild(row);
     });
   }
-
   function saveCal() {
     const map = {};
     calRows.querySelectorAll("select").forEach(sel => { if (sel.value) map[sel.value] = sel.dataset.hex; });
-    map.stop = "040200000000";
-    COMMANDS.custom = map;
-    saveJSON("nbr_custom", map);
-    setProtocol("custom");
+    map.stop = NOOP;
+    COMMANDS.custom = map; saveJSON("nbr_custom", map); protoKey = "custom"; save("nbr_proto", "custom");
     calStatus.textContent = "Saved. The remote now uses your mapping.";
     log("Custom mapping saved (" + (Object.keys(map).length - 1) + " functions)", "info");
   }
-
   function resetCal() {
-    try { localStorage.removeItem("nbr_custom"); } catch (_) {}
-    COMMANDS.custom = {};
-    renderCal();
-    setProtocol("dewertokin");
-    calStatus.textContent = "Reset to DewertOkin defaults.";
+    try { localStorage.removeItem("nbr_custom"); localStorage.removeItem("nbr_proto"); } catch (_) {}
+    COMMANDS.custom = {}; protoKey = "dewertokin"; renderCal();
+    calStatus.textContent = "Reset to defaults.";
   }
 
   // ---- UI state ----
-  function setBusy(text) {
-    dot.className = "dot busy";
-    connTitle.textContent = "Working";
-    connSub.textContent = text;
-  }
+  function setBusy(t) { dot.className = "dot busy"; connTitle.textContent = "Working"; connSub.textContent = t; }
   function setConnectedUI(on) {
     dot.className = "dot " + (on ? "on" : "");
     connTitle.textContent = on ? "Connected" : "Disconnected";
@@ -708,54 +482,43 @@
     const name = btn.dataset.hold;
     btn.addEventListener("pointerdown", e => { e.preventDefault(); if (!connected) return; btn.classList.add("holding"); startHold(name); });
   });
-  // Release anywhere stops movement
   ["pointerup", "pointercancel"].forEach(ev => window.addEventListener(ev, () => { if (holdTimer) stopHold(); }));
 
-  document.querySelectorAll("[data-cmd]").forEach(btn =>
-    btn.addEventListener("click", () => { if (connected) sendNamed(btn.dataset.cmd); }));
+  document.querySelectorAll("[data-cmd]").forEach(btn => btn.addEventListener("click", () => { if (connected) sendNamed(btn.dataset.cmd); }));
+  document.querySelectorAll("[data-zone]").forEach(btn => btn.addEventListener("click", () => massageZone(btn.dataset.zone)));
 
   stopBtn.addEventListener("click", () => { stopHold(); if (connected) sendNamed("stop"); });
-  massageOnBtn.addEventListener("click", massageOn);
   massageOffBtn.addEventListener("click", massageOff);
   connectBtn.addEventListener("click", () => connected ? disconnect() : connect());
   pipeRow.querySelectorAll(".pipe-btn").forEach(b => b.addEventListener("click", () => { if (connected) setPipe(b.dataset.pipe); }));
-  protoRow.querySelectorAll(".pipe-btn").forEach(b => b.addEventListener("click", () => setProtocol(b.dataset.proto)));
   calSave.addEventListener("click", saveCal);
   calReset.addEventListener("click", resetCal);
 
   $("hexSend").addEventListener("click", () => {
-    const raw = $("hexInput").value.trim();
-    if (!raw) return;
-    const parts = raw.split(/[\s,]+/).filter(Boolean);
-    let bytes;
-    if (parts.length === 1) { const b = parseByte(parts[0]); if (b === null) { log("Bad hex", "err"); return; } bytes = frame(b); }
-    else { bytes = parts.map(parseByte); if (bytes.some(b => b === null)) { log("Bad hex", "err"); return; } bytes = new Uint8Array(bytes); }
-    sendBytes(bytes);
-  });
-  $("discoverOff").addEventListener("click", discoverOff);
-
-  // ---- persistence ----
-  function load(key, def) { try { const v = localStorage.getItem(key); return v === null ? def : v; } catch (_) { return def; } }
-  function save(key, val) { try { localStorage.setItem(key, val); } catch (_) {} }
-
-  timerInput.value = load("nbr_timer", "30");
-  offByteInput.value = load("nbr_offbyte", "0x5F");
-  timerInput.addEventListener("change", () => save("nbr_timer", timerInput.value));
-  offByteInput.addEventListener("change", () => save("nbr_offbyte", offByteInput.value));
-  const savedCustom = loadJSON("nbr_custom");
-  if (savedCustom) COMMANDS.custom = savedCustom;
-  renderCal();
-  setProtocol(savedCustom ? "custom" : load("nbr_proto", "dewertokin"));
-
-  // ---- theme ----
-  function applyTheme(t) { document.documentElement.setAttribute("data-theme", t); themeBtn.innerHTML = t === "dark" ? "&#9728;" : "&#9789;"; }
-  applyTheme(load("nbr_theme", "light"));
-  themeBtn.addEventListener("click", () => {
-    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    applyTheme(next); save("nbr_theme", next);
+    const raw = $("hexInput").value.trim().replace(/[\s,]+/g, "");
+    if (raw.length < 2) { log("Enter a hex command", "err"); return; }
+    sendBytes(hexToBytes(raw));
   });
 
   // ---- init ----
+  timerInput.value = load("nbr_timer", "30");
+  timerInput.addEventListener("change", () => save("nbr_timer", timerInput.value));
+
+  // Migrate an older saved mapping (lounge->tv, lightOn->light, massageOn->massageBoth; drop lumbar)
+  let savedCustom = loadJSON("nbr_custom");
+  if (savedCustom) {
+    const ren = { lounge: "tv", lightOn: "light", massageOn: "massageBoth" };
+    for (const oldK in ren) { if (savedCustom[oldK] && !savedCustom[ren[oldK]]) savedCustom[ren[oldK]] = savedCustom[oldK]; delete savedCustom[oldK]; }
+    delete savedCustom.lumbarUp; delete savedCustom.lumbarDown; delete savedCustom.lightOff;
+    saveJSON("nbr_custom", savedCustom);
+    COMMANDS.custom = savedCustom; protoKey = "custom";
+  }
+  renderCal();
+
+  function applyTheme(t) { document.documentElement.setAttribute("data-theme", t); themeBtn.innerHTML = t === "dark" ? "&#9728;" : "&#9789;"; }
+  applyTheme(load("nbr_theme", "light"));
+  themeBtn.addEventListener("click", () => { const n = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"; applyTheme(n); save("nbr_theme", n); });
+
   if (!navigator.bluetooth) { $("unsupported").classList.add("show"); connectBtn.disabled = true; }
   log("Remote ready. Tap Connect.", "info");
 })();
